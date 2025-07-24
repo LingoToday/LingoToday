@@ -26,16 +26,21 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
 
   // Don't schedule if notifications aren't granted
   if (!("Notification" in window) || Notification.permission !== "granted") {
+    console.log("Notifications not available or not granted:", Notification.permission);
     return;
   }
 
+  console.log(`Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
+
   // Set up recurring notifications
   notificationInterval = setInterval(() => {
+    console.log("Triggering scheduled notification");
     showLearningNotification(language);
   }, frequencyMinutes * 60 * 1000);
 
   // Show first notification after a short delay
   setTimeout(() => {
+    console.log("Showing initial notification");
     showLearningNotification(language);
   }, 5000); // 5 seconds delay for demo purposes
 }
@@ -49,8 +54,11 @@ export function stopNotifications() {
 
 function showLearningNotification(language: string) {
   if (!("Notification" in window) || Notification.permission !== "granted") {
+    console.log("Cannot show notification - permission not granted");
     return;
   }
+  
+  console.log(`Showing notification for ${language}`);
 
   // Sample lesson prompts
   const prompts = {

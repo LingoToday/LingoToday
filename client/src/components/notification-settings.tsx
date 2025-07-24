@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bell, Info } from "lucide-react";
-import { setupNotifications, scheduleNotification } from "@/lib/notifications";
+import { setupNotifications, scheduleNotification, stopNotifications } from "@/lib/notifications";
 
 export default function NotificationSettings() {
   const { toast } = useToast();
@@ -58,6 +58,29 @@ export default function NotificationSettings() {
     }
   }, []);
 
+  // Initialize notifications on settings load if already enabled
+  useEffect(() => {
+    if (settings && settings.notificationsEnabled && notificationPermission === "granted") {
+      console.log("Initializing notifications with settings:", {
+        language: settings.selectedLanguage,
+        frequency: settings.notificationFrequency,
+        enabled: settings.notificationsEnabled
+      });
+      // Schedule notifications if they should be enabled
+      scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
+    } else if (settings && !settings.notificationsEnabled) {
+      console.log("Stopping notifications - disabled in settings");
+      // Stop notifications if disabled
+      stopNotifications();
+    } else if (settings) {
+      console.log("Notification setup check:", {
+        notificationsEnabled: settings.notificationsEnabled,
+        permission: notificationPermission,
+        hasSettings: !!settings
+      });
+    }
+  }, [settings, notificationPermission]);
+
   const handleNotificationToggle = async (enabled: boolean) => {
     if (enabled && notificationPermission !== "granted") {
       try {
@@ -87,9 +110,11 @@ export default function NotificationSettings() {
       notificationsEnabled: enabled,
     });
 
-    // Schedule next notification if enabled
+    // Schedule or stop notifications based on enabled state
     if (enabled && settings) {
       scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
+    } else {
+      stopNotifications();
     }
   };
 
@@ -218,13 +243,28 @@ export default function NotificationSettings() {
             Enable Notifications
           </Button>
         ) : (
-          <div className="bg-success-50 border border-success-200 rounded-lg p-3">
-            <div className="flex items-center">
-              <Bell className="h-4 w-4 text-success-600 mr-2" />
-              <span className="text-sm text-success-800 font-medium">
-                Notifications {settings.notificationsEnabled ? 'Enabled' : 'Available'}
-              </span>
+          <div className="space-y-3">
+            <div className="bg-success-50 border border-success-200 rounded-lg p-3">
+              <div className="flex items-center">
+                <Bell className="h-4 w-4 text-success-600 mr-2" />
+                <span className="text-sm text-success-800 font-medium">
+                  Notifications {settings.notificationsEnabled ? 'Enabled' : 'Available'}
+                </span>
+              </div>
             </div>
+            {settings.notificationsEnabled && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={() => {
+                  console.log("Manual notification trigger");
+                  scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
+                }}
+              >
+                Test Notification
+              </Button>
+            )}
           </div>
         )}
       </CardContent>
