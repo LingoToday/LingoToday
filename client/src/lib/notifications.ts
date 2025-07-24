@@ -32,17 +32,19 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
 
   console.log(`Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
 
-  // Set up recurring notifications
-  notificationInterval = setInterval(() => {
+  // Set up recurring notifications using function reference
+  const triggerScheduledNotification = () => {
     console.log("Triggering scheduled notification");
     showLearningNotification(language);
-  }, frequencyMinutes * 60 * 1000);
+  };
+  notificationInterval = setInterval(triggerScheduledNotification, frequencyMinutes * 60 * 1000);
 
-  // Show first notification after a short delay
-  setTimeout(() => {
+  // Show first notification after a short delay using function reference
+  const showInitialNotification = () => {
     console.log("Showing initial notification");
     showLearningNotification(language);
-  }, 5000); // 5 seconds delay for demo purposes
+  };
+  setTimeout(showInitialNotification, 5000); // 5 seconds delay for demo purposes
 }
 
 export function stopNotifications() {
@@ -108,9 +110,10 @@ function showLearningNotification(language: string) {
   };
 
   // Auto close after 15 seconds to give more time to read
-  setTimeout(() => {
+  const closeNotification = () => {
     notification.close();
-  }, 15000);
+  };
+  setTimeout(closeNotification, 15000);
 }
 
 // Store notification settings in localStorage
