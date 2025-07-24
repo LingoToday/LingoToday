@@ -40,7 +40,7 @@ export const users = pgTable("users", {
 // User settings table
 export const userSettings = pgTable("user_settings", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").notNull().references(() => users.id).unique(),
   selectedLanguage: varchar("selected_language").notNull().default("spanish"),
   notificationFrequency: integer("notification_frequency").notNull().default(30), // minutes
   notificationsEnabled: boolean("notifications_enabled").notNull().default(false),
