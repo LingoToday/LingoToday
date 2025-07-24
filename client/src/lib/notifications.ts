@@ -95,10 +95,6 @@ function showLearningNotification(language: string) {
     badge: "/favicon.ico",
     tag: "desklingo-lesson",
     requireInteraction: true,
-    actions: [
-      { action: "answer", title: "Show Answer" },
-      { action: "lesson", title: "Open Lesson" },
-    ],
   });
 
   // Handle notification click
@@ -111,10 +107,10 @@ function showLearningNotification(language: string) {
     notification.close();
   };
 
-  // Auto close after 10 seconds
+  // Auto close after 15 seconds to give more time to read
   setTimeout(() => {
     notification.close();
-  }, 10000);
+  }, 15000);
 }
 
 // Store notification settings in localStorage
