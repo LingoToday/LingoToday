@@ -44,7 +44,7 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
     console.log("Showing initial notification");
     showLearningNotification(language);
   };
-  setTimeout(showInitialNotification, 5000); // 5 seconds delay for demo purposes
+  setTimeout(showInitialNotification, 2000); // 2 seconds delay for quicker testing
 }
 
 export function stopNotifications() {
@@ -91,29 +91,56 @@ function showLearningNotification(language: string) {
   const languagePrompts = prompts[language as keyof typeof prompts] || prompts.spanish;
   const randomPrompt = languagePrompts[Math.floor(Math.random() * languagePrompts.length)];
 
-  const notification = new Notification(`${language.charAt(0).toUpperCase() + language.slice(1)} Learning`, {
+  console.log("Creating notification with content:", {
+    title: `${language.charAt(0).toUpperCase() + language.slice(1)} Learning`,
     body: randomPrompt.question,
-    icon: "/favicon.ico",
-    badge: "/favicon.ico",
-    tag: "desklingo-lesson",
-    requireInteraction: true,
+    icon: "/favicon.ico"
   });
 
-  // Handle notification click
-  notification.onclick = function() {
-    window.focus();
-    // Navigate to the app
-    if (window.location.pathname !== "/") {
-      window.location.href = "/";
-    }
-    notification.close();
-  };
+  try {
+    const notification = new Notification(`${language.charAt(0).toUpperCase() + language.slice(1)} Learning`, {
+      body: randomPrompt.question,
+      icon: "/favicon.ico",
+      badge: "/favicon.ico",
+      tag: "desklingo-lesson",
+      requireInteraction: false, // Changed to false for better browser compatibility
+      silent: false
+    });
 
-  // Auto close after 15 seconds to give more time to read
-  const closeNotification = () => {
-    notification.close();
-  };
-  setTimeout(closeNotification, 15000);
+    console.log("Notification created successfully:", notification);
+
+    // Handle notification click
+    notification.onclick = function() {
+      console.log("Notification clicked");
+      window.focus();
+      // Navigate to the app
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+      notification.close();
+    };
+
+    // Handle notification show event
+    notification.onshow = function() {
+      console.log("Notification displayed successfully");
+    };
+
+    // Handle notification error
+    notification.onerror = function(error) {
+      console.error("Notification error:", error);
+    };
+
+    // Auto close after 15 seconds to give more time to read
+    const closeNotification = () => {
+      console.log("Auto-closing notification");
+      notification.close();
+    };
+    setTimeout(closeNotification, 15000);
+    
+  } catch (error) {
+    console.error("Failed to create notification:", error);
+    throw error;
+  }
 }
 
 // Store notification settings in localStorage

@@ -55,8 +55,20 @@ export default function NotificationSettings() {
   useEffect(() => {
     if ("Notification" in window) {
       setNotificationPermission(Notification.permission);
+      console.log("Initial notification permission:", Notification.permission);
     }
   }, []);
+
+  // Add a permission refresh function
+  const refreshPermission = () => {
+    if ("Notification" in window) {
+      const currentPermission = Notification.permission;
+      setNotificationPermission(currentPermission);
+      console.log("Refreshed notification permission:", currentPermission);
+      return currentPermission;
+    }
+    return "default";
+  };
 
   // Initialize notifications on settings load if already enabled
   useEffect(() => {
@@ -270,17 +282,44 @@ export default function NotificationSettings() {
               </div>
             </div>
             {settings.notificationsEnabled && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full"
-                onClick={() => {
-                  console.log("Manual notification trigger");
-                  scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
-                }}
-              >
-                Test Notification
-              </Button>
+              <div className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => {
+                    console.log("Manual notification trigger");
+                    // Test with a simple notification first
+                    if (Notification.permission === "granted") {
+                      try {
+                        const testNotification = new Notification("DeskLingo Test", {
+                          body: "This is a test notification. If you see this, notifications are working!",
+                          icon: "/favicon.ico"
+                        });
+                        console.log("Simple test notification created:", testNotification);
+                        setTimeout(() => testNotification.close(), 5000);
+                      } catch (error) {
+                        console.error("Simple notification failed:", error);
+                      }
+                    } else {
+                      console.log("Permission not granted for test notification");
+                    }
+                  }}
+                >
+                  Simple Test
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => {
+                    console.log("Full notification trigger");
+                    scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
+                  }}
+                >
+                  Full Test
+                </Button>
+              </div>
             )}
           </div>
         )}
