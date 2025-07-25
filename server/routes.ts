@@ -83,10 +83,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/progress', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const progressData = insertUserProgressSchema.parse({
-        ...req.body,
-        userId,
-      });
+      
+      // Convert completedAt from string to Date if provided
+      const requestData = { ...req.body, userId };
+      if (requestData.completedAt && typeof requestData.completedAt === 'string') {
+        requestData.completedAt = new Date(requestData.completedAt);
+      }
+      
+      const progressData = insertUserProgressSchema.parse(requestData);
       
       const progress = await storage.upsertUserProgress(progressData);
       

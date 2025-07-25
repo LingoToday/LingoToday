@@ -63,7 +63,7 @@ export default function Lesson() {
         lessonId: lesson!.id,
         completed: true,
         score,
-        completedAt: new Date().toISOString(),
+        completedAt: new Date(),
       });
     },
     onSuccess: () => {
@@ -206,7 +206,7 @@ export default function Lesson() {
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="font-semibold text-gray-900 mb-3">Example Usage</h3>
               <div className="space-y-2 text-gray-700">
-                <p><strong>{language?.charAt(0).toUpperCase() + language?.slice(1)}:</strong> {lesson.content.example}</p>
+                <p><strong>{language ? language.charAt(0).toUpperCase() + language.slice(1) : 'Language'}:</strong> {lesson.content.example}</p>
                 <p><strong>English:</strong> {lesson.content.exampleTranslation}</p>
               </div>
             </div>
