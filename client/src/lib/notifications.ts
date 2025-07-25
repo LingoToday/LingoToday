@@ -98,16 +98,20 @@ function showLearningNotification(language: string) {
   });
 
   try {
+    // More compatible notification options for macOS
     const notification = new Notification(`${language.charAt(0).toUpperCase() + language.slice(1)} Learning`, {
       body: randomPrompt.question,
       icon: "/favicon.ico",
-      badge: "/favicon.ico",
-      tag: "desklingo-lesson",
-      requireInteraction: false, // Changed to false for better browser compatibility
+      tag: "desklingo-lesson-" + Date.now(), // Unique tag to ensure each notification shows
+      requireInteraction: false,
       silent: false
     });
 
-    console.log("Notification created successfully:", notification);
+    console.log("✅ Notification object created:", {
+      title: notification.title,
+      body: notification.body,
+      tag: notification.tag
+    });
 
     // Handle notification click
     notification.onclick = function() {
@@ -122,12 +126,17 @@ function showLearningNotification(language: string) {
 
     // Handle notification show event
     notification.onshow = function() {
-      console.log("Notification displayed successfully");
+      console.log("✅ Notification displayed successfully - should be visible in Mac Notification Center");
     };
 
     // Handle notification error
     notification.onerror = function(error) {
-      console.error("Notification error:", error);
+      console.error("❌ Notification error:", error);
+    };
+
+    // Handle notification close
+    notification.onclose = function() {
+      console.log("Notification was closed");
     };
 
     // Auto close after 15 seconds to give more time to read

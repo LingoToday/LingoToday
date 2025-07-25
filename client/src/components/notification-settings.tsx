@@ -292,17 +292,37 @@ export default function NotificationSettings() {
                     // Test with a simple notification first
                     if (Notification.permission === "granted") {
                       try {
-                        const testNotification = new Notification("DeskLingo Test", {
-                          body: "This is a test notification. If you see this, notifications are working!",
-                          icon: "/favicon.ico"
+                        console.log("🧪 Creating simple test notification...");
+                        const testNotification = new Notification("🔔 DeskLingo Test", {
+                          body: "This is a test notification. If you see this in Mac Notification Center, notifications are working!",
+                          icon: "/favicon.ico",
+                          tag: "desklingo-test-" + Date.now(),
+                          requireInteraction: false
                         });
-                        console.log("Simple test notification created:", testNotification);
-                        setTimeout(() => testNotification.close(), 5000);
+                        
+                        testNotification.onshow = () => {
+                          console.log("✅ Simple test notification showed successfully!");
+                        };
+                        
+                        testNotification.onerror = (error) => {
+                          console.error("❌ Simple test notification error:", error);
+                        };
+                        
+                        console.log("✅ Simple test notification object created");
+                        setTimeout(() => {
+                          console.log("Auto-closing simple test notification");
+                          testNotification.close();
+                        }, 8000);
                       } catch (error) {
-                        console.error("Simple notification failed:", error);
+                        console.error("❌ Simple notification creation failed:", error);
                       }
                     } else {
-                      console.log("Permission not granted for test notification");
+                      console.log("❌ Permission not granted for test notification:", Notification.permission);
+                      toast({
+                        title: "Permission Issue",
+                        description: "Browser permission is not granted. Check your browser and macOS System Preferences.",
+                        variant: "destructive",
+                      });
                     }
                   }}
                 >
