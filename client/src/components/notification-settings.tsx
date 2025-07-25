@@ -230,17 +230,34 @@ export default function NotificationSettings() {
             <div className="flex items-start">
               <Info className="h-4 w-4 text-warning-600 mt-0.5 mr-2 flex-shrink-0" />
               <div className="text-sm text-warning-800">
-                <p className="font-medium mb-1">Permission Required</p>
-                <p>Click "Allow" when your browser asks for notification permission.</p>
+                <p className="font-medium mb-1">
+                  {notificationPermission === "denied" ? "Permission Blocked" : "Permission Required"}
+                </p>
+                {notificationPermission === "denied" ? (
+                  <div>
+                    <p className="mb-2">Notifications are blocked. To enable:</p>
+                    <ol className="list-decimal list-inside space-y-1 text-xs">
+                      <li>Click the lock/info icon in your browser's address bar</li>
+                      <li>Set Notifications to "Allow"</li>
+                      <li>Refresh this page</li>
+                    </ol>
+                  </div>
+                ) : (
+                  <p>Click "Allow" when your browser asks for notification permission.</p>
+                )}
               </div>
             </div>
           </div>
         )}
         
         {notificationPermission !== "granted" ? (
-          <Button onClick={requestNotificationPermission} className="w-full">
+          <Button 
+            onClick={requestNotificationPermission} 
+            className="w-full"
+            disabled={notificationPermission === "denied"}
+          >
             <Bell className="h-4 w-4 mr-2" />
-            Enable Notifications
+            {notificationPermission === "denied" ? "Permission Blocked - See Instructions Above" : "Enable Notifications"}
           </Button>
         ) : (
           <div className="space-y-3">

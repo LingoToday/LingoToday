@@ -8,6 +8,16 @@ DeskLingo is a full-stack language learning application that delivers micro-less
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### July 25, 2025 - Desktop Notification Fixes
+- Fixed CSP (Content Security Policy) issues preventing notifications in production
+- Removed unsupported `actions` property from browser notifications
+- Changed anonymous functions to named function references for CSP compliance
+- Added automatic notification initialization when dashboard loads if notifications already enabled
+- Improved user interface with clear instructions for blocked notification permissions
+- Added debugging logs and "Test Notification" button for troubleshooting
+
 ## System Architecture
 
 ### Frontend Architecture
