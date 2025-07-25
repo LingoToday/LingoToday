@@ -73,8 +73,16 @@ export default function NotificationSettings() {
 
   // Initialize notifications on settings load if already enabled
   useEffect(() => {
+    console.log("🔄 Settings/permission changed:", {
+      hasSettings: !!settings,
+      enabled: settings?.notificationsEnabled,
+      permission: notificationPermission,
+      language: settings?.selectedLanguage,
+      frequency: settings?.notificationFrequency
+    });
+
     if (settings && settings.notificationsEnabled && notificationPermission === "granted") {
-      console.log("Initializing notifications with settings:", {
+      console.log("✅ Starting notifications with settings:", {
         language: settings.selectedLanguage,
         frequency: settings.notificationFrequency,
         enabled: settings.notificationsEnabled
@@ -82,14 +90,13 @@ export default function NotificationSettings() {
       // Schedule notifications if they should be enabled
       scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
     } else if (settings && !settings.notificationsEnabled) {
-      console.log("Stopping notifications - disabled in settings");
+      console.log("🔇 Stopping notifications - disabled in settings");
       // Stop notifications if disabled
       stopNotifications();
-    } else if (settings) {
-      console.log("Notification setup check:", {
-        notificationsEnabled: settings.notificationsEnabled,
+    } else if (settings && settings.notificationsEnabled && notificationPermission !== "granted") {
+      console.log("⚠️ Notifications enabled but permission not granted:", {
         permission: notificationPermission,
-        hasSettings: !!settings
+        enabled: settings.notificationsEnabled
       });
     }
   }, [settings, notificationPermission]);

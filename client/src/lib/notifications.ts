@@ -21,6 +21,7 @@ export async function setupNotifications(): Promise<NotificationPermission> {
 export function scheduleNotification(language: string, frequencyMinutes: number) {
   // Clear existing interval
   if (notificationInterval) {
+    console.log("Clearing existing notification interval");
     clearInterval(notificationInterval);
   }
 
@@ -30,37 +31,58 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
     return;
   }
 
-  console.log(`Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
+  console.log(`🔔 Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
+  
+  // For testing: Use shorter intervals to see if it works
+  const intervalMs = frequencyMinutes * 60 * 1000;
+  console.log(`⏰ Notification interval set to: ${intervalMs}ms (${frequencyMinutes} minutes)`);
 
   // Set up recurring notifications using function reference
   const triggerScheduledNotification = () => {
-    console.log("Triggering scheduled notification");
+    const now = new Date().toLocaleTimeString();
+    console.log(`🚀 [${now}] Triggering scheduled notification for ${language}`);
     showLearningNotification(language);
   };
-  notificationInterval = setInterval(triggerScheduledNotification, frequencyMinutes * 60 * 1000);
+  
+  notificationInterval = setInterval(triggerScheduledNotification, intervalMs);
+  console.log("✅ Notification interval created successfully");
 
   // Show first notification after a short delay using function reference
   const showInitialNotification = () => {
-    console.log("Showing initial notification");
+    const now = new Date().toLocaleTimeString();
+    console.log(`🎯 [${now}] Showing initial notification for ${language}`);
     showLearningNotification(language);
   };
-  setTimeout(showInitialNotification, 2000); // 2 seconds delay for quicker testing
+  
+  // Shorter delay for testing
+  setTimeout(showInitialNotification, 5000); // 5 seconds delay
+  console.log("⏲️ Initial notification scheduled in 5 seconds");
 }
 
 export function stopNotifications() {
   if (notificationInterval) {
+    console.log("🛑 Stopping notification scheduling");
     clearInterval(notificationInterval);
     notificationInterval = null;
+  } else {
+    console.log("ℹ️ No notification interval to stop");
   }
 }
 
 async function showLearningNotification(language: string) {
-  if (!("Notification" in window) || Notification.permission !== "granted") {
-    console.log("Cannot show notification - permission not granted");
+  const now = new Date().toLocaleTimeString();
+  
+  if (!("Notification" in window)) {
+    console.error(`❌ [${now}] Notifications not supported by browser`);
     return;
   }
   
-  console.log(`Showing notification for ${language}`);
+  if (Notification.permission !== "granted") {
+    console.error(`❌ [${now}] Notification permission not granted:`, Notification.permission);
+    return;
+  }
+  
+  console.log(`📢 [${now}] Attempting to show notification for ${language}`);
 
   try {
     // Fetch a random lesson question from the API
