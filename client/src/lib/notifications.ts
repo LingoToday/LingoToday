@@ -54,7 +54,7 @@ export function stopNotifications() {
   }
 }
 
-function showLearningNotification(language: string) {
+async function showLearningNotification(language: string) {
   if (!("Notification" in window) || Notification.permission !== "granted") {
     console.log("Cannot show notification - permission not granted");
     return;
@@ -62,45 +62,25 @@ function showLearningNotification(language: string) {
   
   console.log(`Showing notification for ${language}`);
 
-  // Sample lesson prompts
-  const prompts = {
-    spanish: [
-      { question: "What does 'gracias' mean?", answer: "Thank you" },
-      { question: "How do you say 'Hello' in Spanish?", answer: "¡Hola!" },
-      { question: "What does 'adiós' mean?", answer: "Goodbye" },
-      { question: "How do you say 'Please' in Spanish?", answer: "Por favor" },
-      { question: "What does 'buenos días' mean?", answer: "Good morning" },
-    ],
-    italian: [
-      { question: "What does 'ciao' mean?", answer: "Hello/Goodbye" },
-      { question: "How do you say 'Thank you' in Italian?", answer: "Grazie" },
-      { question: "What does 'buongiorno' mean?", answer: "Good morning" },
-    ],
-    french: [
-      { question: "What does 'bonjour' mean?", answer: "Hello/Good morning" },
-      { question: "How do you say 'Thank you' in French?", answer: "Merci" },
-      { question: "What does 'au revoir' mean?", answer: "Goodbye" },
-    ],
-    german: [
-      { question: "What does 'hallo' mean?", answer: "Hello" },
-      { question: "How do you say 'Thank you' in German?", answer: "Danke" },
-      { question: "What does 'auf wiedersehen' mean?", answer: "Goodbye" },
-    ],
-  };
-
-  const languagePrompts = prompts[language as keyof typeof prompts] || prompts.spanish;
-  const randomPrompt = languagePrompts[Math.floor(Math.random() * languagePrompts.length)];
-
-  console.log("Creating notification with content:", {
-    title: `${language.charAt(0).toUpperCase() + language.slice(1)} Learning`,
-    body: randomPrompt.question,
-    icon: "/favicon.ico"
-  });
-
   try {
+    // Fetch a random lesson question from the API
+    const response = await fetch(`/api/notification-lesson/${language}`);
+    if (!response.ok) {
+      console.error("Failed to fetch notification lesson:", response.statusText);
+      return;
+    }
+    
+    const lessonData = await response.json();
+    
+    console.log("Creating notification with content:", {
+      title: `${language.charAt(0).toUpperCase() + language.slice(1)} Learning`,
+      body: lessonData.question,
+      icon: "/favicon.ico"
+    });
+
     // More compatible notification options for macOS
     const notification = new Notification(`${language.charAt(0).toUpperCase() + language.slice(1)} Learning`, {
-      body: randomPrompt.question,
+      body: lessonData.question,
       icon: "/favicon.ico",
       tag: "desklingo-lesson-" + Date.now(), // Unique tag to ensure each notification shows
       requireInteraction: false,
@@ -113,14 +93,12 @@ function showLearningNotification(language: string) {
       tag: notification.tag
     });
 
-    // Handle notification click
+    // Handle notification click - redirect to specific lesson
     notification.onclick = function() {
-      console.log("Notification clicked");
+      console.log("Notification clicked, redirecting to:", lessonData.lessonPath);
       window.focus();
-      // Navigate to the app
-      if (window.location.pathname !== "/") {
-        window.location.href = "/";
-      }
+      // Navigate to the specific lesson with a notification flag
+      window.location.href = lessonData.lessonPath + "?from=notification";
       notification.close();
     };
 

@@ -219,9 +219,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/lessons/:language/:week/:day', async (req, res) => {
+  // Notification lesson route - gets a random lesson question for notifications
+  app.get('/api/notification-lesson/:language', async (req, res) => {
     try {
-      const { language, week, day } = req.params;
+      const { language } = req.params;
       const lessonsPath = path.join(import.meta.dirname, 'lessons.json');
       
       if (!fs.existsSync(lessonsPath)) {
@@ -229,16 +230,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
-      const lesson = lessonsData[language]?.[`week_${week}`]?.[`day_${day}`];
+      const languageLessons = lessonsData[language];
       
-      if (!lesson) {
-        return res.status(404).json({ message: `Lesson not found for ${language} week ${week} day ${day}` });
+      if (!languageLessons) {
+        return res.status(404).json({ message: `Lessons not found for language: ${language}` });
       }
       
-      res.json(lesson);
+      // Get all available lessons
+      const allLessons: Array<{
+        lesson: any;
+        week: number;
+        day: number;
+      }> = [];
+      
+      Object.keys(languageLessons).forEach(weekKey => {
+        const week = parseInt(weekKey.replace('week_', ''));
+        Object.keys(languageLessons[weekKey]).forEach(dayKey => {
+          const day = parseInt(dayKey.replace('day_', ''));
+          const lesson = languageLessons[weekKey][dayKey];
+          allLessons.push({ lesson, week, day });
+        });
+      });
+      
+      if (allLessons.length === 0) {
+        return res.status(404).json({ message: `No lessons found for ${language}` });
+      }
+      
+      // Pick a random lesson
+      const randomIndex = Math.floor(Math.random() * allLessons.length);
+      const { lesson, week, day } = allLessons[randomIndex];
+      
+      res.json({
+        question: lesson.quiz.question,
+        lessonPath: `/lesson/${language}/${week}/${day}`,
+        week,
+        day,
+        title: lesson.title
+      });
     } catch (error) {
-      console.error("Error fetching lesson:", error);
-      res.status(500).json({ message: "Failed to fetch lesson" });
+      console.error("Error fetching notification lesson:", error);
+      res.status(500).json({ message: "Failed to fetch notification lesson" });
     }
   });
 

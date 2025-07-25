@@ -12,11 +12,12 @@ import ProgressOverview from "@/components/progress-overview";
 import LessonModal from "@/components/lesson-modal";
 import { useState } from "react";
 import { Link } from "wouter";
+import type { DashboardData, Lesson, User } from "@shared/schema";
 
 export default function Dashboard() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth() as { user: User | null; isAuthenticated: boolean; isLoading: boolean };
   const { toast } = useToast();
-  const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -34,13 +35,13 @@ export default function Dashboard() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
+  const { data: dashboardData, isLoading: dashboardLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
     enabled: isAuthenticated,
     retry: false,
   });
 
-  const { data: currentLesson } = useQuery({
+  const { data: currentLesson } = useQuery<Lesson>({
     queryKey: ["/api/lessons", dashboardData?.settings?.selectedLanguage, "2", "3"],
     enabled: !!dashboardData?.settings?.selectedLanguage,
     retry: false,

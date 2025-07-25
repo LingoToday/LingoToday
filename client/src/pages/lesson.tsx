@@ -9,8 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Volume2, Check } from "lucide-react";
+import { ArrowLeft, Volume2, Check, Bell } from "lucide-react";
 import { Link } from "wouter";
+import type { Lesson } from "@shared/schema";
 
 export default function Lesson() {
   const { language, week, day } = useParams();
@@ -19,6 +20,17 @@ export default function Lesson() {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [fromNotification, setFromNotification] = useState(false);
+
+  // Check if user came from notification
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'notification') {
+      setFromNotification(true);
+      // Clean the URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -36,7 +48,7 @@ export default function Lesson() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  const { data: lesson, isLoading: lessonLoading } = useQuery({
+  const { data: lesson, isLoading: lessonLoading } = useQuery<Lesson>({
     queryKey: ["/api/lessons", language, week, day],
     enabled: isAuthenticated && !!language && !!week && !!day,
     retry: false,
@@ -48,7 +60,7 @@ export default function Lesson() {
         language,
         week: parseInt(week!),
         day: parseInt(day!),
-        lessonId: lesson.id,
+        lessonId: lesson!.id,
         completed: true,
         score,
         completedAt: new Date().toISOString(),
@@ -143,6 +155,19 @@ export default function Lesson() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
         
+        {/* Notification Banner */}
+        {fromNotification && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center">
+              <Bell className="h-5 w-5 text-blue-600 mr-2" />
+              <div>
+                <p className="text-blue-800 font-medium">Welcome back!</p>
+                <p className="text-blue-600 text-sm">You clicked on a notification. Let's answer this question!</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Header */}
         <div className="flex items-center mb-6">
           <Link href="/">
@@ -181,7 +206,7 @@ export default function Lesson() {
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="font-semibold text-gray-900 mb-3">Example Usage</h3>
               <div className="space-y-2 text-gray-700">
-                <p><strong>{language.charAt(0).toUpperCase() + language.slice(1)}:</strong> {lesson.content.example}</p>
+                <p><strong>{language?.charAt(0).toUpperCase() + language?.slice(1)}:</strong> {lesson.content.example}</p>
                 <p><strong>English:</strong> {lesson.content.exampleTranslation}</p>
               </div>
             </div>
@@ -226,11 +251,23 @@ export default function Lesson() {
                 </RadioGroup>
 
                 {showResult && (
-                  <div className={`p-4 rounded-lg mb-4 ${isCorrect ? 'bg-success-50 text-success-700' : 'bg-red-50 text-red-700'}`}>
+                  <div className={`p-4 rounded-lg mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
                     <div className="flex items-center">
-                      <Check className="h-5 w-5 mr-2" />
-                      {isCorrect ? 'Correct! Well done!' : `Incorrect. The correct answer is: ${lesson.quiz.options[lesson.quiz.correct]}`}
+                      <Check className={`h-5 w-5 mr-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}`} />
+                      <span className={`font-medium ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                        {isCorrect ? 'Correct! Well done!' : 'Incorrect'}
+                      </span>
                     </div>
+                    {!isCorrect && (
+                      <p className="mt-2 text-sm text-red-700">
+                        The correct answer is: <strong>{lesson.quiz.options[lesson.quiz.correct]}</strong>
+                      </p>
+                    )}
+                    {fromNotification && (
+                      <p className="mt-2 text-sm text-blue-600">
+                        ✨ You successfully answered a notification question!
+                      </p>
+                    )}
                   </div>
                 )}
                 
@@ -246,9 +283,9 @@ export default function Lesson() {
                   <Button 
                     onClick={handleCompleteLesson}
                     disabled={completeLessonMutation.isPending}
-                    className="w-full bg-success-500 hover:bg-success-600 text-white"
+                    className={`w-full text-white ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
                   >
-                    {completeLessonMutation.isPending ? 'Saving...' : 'Complete Lesson'}
+                    {completeLessonMutation.isPending ? 'Saving Progress...' : 'Complete Lesson'}
                   </Button>
                 )}
               </div>

@@ -10,18 +10,19 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bell, Info } from "lucide-react";
 import { setupNotifications, scheduleNotification, stopNotifications } from "@/lib/notifications";
+import type { UserSettings } from "@shared/schema";
 
 export default function NotificationSettings() {
   const { toast } = useToast();
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
 
-  const { data: settings } = useQuery({
+  const { data: settings } = useQuery<UserSettings>({
     queryKey: ["/api/settings"],
     retry: false,
   });
 
   const updateSettingsMutation = useMutation({
-    mutationFn: async (updatedSettings: any) => {
+    mutationFn: async (updatedSettings: Partial<UserSettings>) => {
       await apiRequest("PUT", "/api/settings", updatedSettings);
     },
     onSuccess: () => {

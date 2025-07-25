@@ -129,6 +129,38 @@ export const insertUserStatsSchema = createInsertSchema(userStats).omit({
   updatedAt: true,
 });
 
+// Lesson content types
+export interface LessonContent {
+  word: string;
+  translation: string;
+  pronunciation: string;
+  example: string;
+  exampleTranslation: string;
+}
+
+export interface LessonQuiz {
+  question: string;
+  options: string[];
+  correct: number;
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  emoji: string;
+  description: string;
+  content: LessonContent;
+  quiz: LessonQuiz;
+  words: string[];
+}
+
+export interface DashboardData {
+  settings: UserSettings;
+  stats: UserStats;
+  progress: UserProgress[];
+  latestProgress?: UserProgress;
+}
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;

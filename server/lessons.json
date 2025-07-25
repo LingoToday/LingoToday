@@ -199,22 +199,195 @@
     "week_1": {
       "day_1": {
         "id": "italian_w1_d1",
-        "title": "Basic Greetings",
+        "title": "Greetings & Basic Phrases",
         "emoji": "👋",
         "description": "Learn essential Italian greetings",
         "content": {
           "word": "Ciao",
-          "translation": "Hello/Goodbye",
+          "translation": "Hello",
           "pronunciation": "/ˈtʃao/",
-          "example": "Ciao! Come stai?",
-          "exampleTranslation": "Hello! How are you?"
+          "example": "Ciao, come stai?",
+          "exampleTranslation": "Hello, how are you?"
         },
         "quiz": {
-          "question": "How do you say 'Hello' in Italian?",
+          "question": "What's the Italian word for 'Hello'?",
           "options": ["Arrivederci", "Ciao", "Grazie"],
           "correct": 1
         },
-        "words": ["Ciao", "Buongiorno", "Buonasera"]
+        "words": ["Ciao", "Buongiorno", "Buonasera", "Arrivederci"]
+      },
+      "day_2": {
+        "id": "italian_w1_d2",
+        "title": "Personal Pronouns",
+        "emoji": "👤",
+        "description": "Learn Italian personal pronouns",
+        "content": {
+          "word": "Io",
+          "translation": "I",
+          "pronunciation": "/ˈi.o/",
+          "example": "Io sono Maria.",
+          "exampleTranslation": "I am Maria."
+        },
+        "quiz": {
+          "question": "What is the Italian word for 'I'?",
+          "options": ["Tu", "Io", "Lei"],
+          "correct": 1
+        },
+        "words": ["Io", "Tu", "Lui", "Lei"]
+      },
+      "day_3": {
+        "id": "italian_w1_d3",
+        "title": "Verb 'Essere' (To Be)",
+        "emoji": "🌟",
+        "description": "Learn the verb 'to be' in Italian",
+        "content": {
+          "word": "Io sono",
+          "translation": "I am",
+          "pronunciation": "/ˈi.o ˈso.no/",
+          "example": "Io sono felice.",
+          "exampleTranslation": "I am happy."
+        },
+        "quiz": {
+          "question": "How do you say 'I am' in Italian?",
+          "options": ["Tu sei", "Io sono", "Lei è"],
+          "correct": 1
+        },
+        "words": ["Io sono", "Tu sei", "Lui è", "Lei è"]
+      },
+      "day_4": {
+        "id": "italian_w1_d4",
+        "title": "Introducing Yourself",
+        "emoji": "🤝",
+        "description": "Learn how to introduce yourself",
+        "content": {
+          "word": "Mi chiamo",
+          "translation": "My name is",
+          "pronunciation": "/mi ˈkja.mo/",
+          "example": "Mi chiamo Marco.",
+          "exampleTranslation": "My name is Marco."
+        },
+        "quiz": {
+          "question": "How do you say 'My name is…' in Italian?",
+          "options": ["Come stai", "Mi chiamo", "Piacere"],
+          "correct": 1
+        },
+        "words": ["Mi chiamo", "Piacere", "Come ti chiami"]
+      },
+      "day_5": {
+        "id": "italian_w1_d5",
+        "title": "Basic Questions",
+        "emoji": "❓",
+        "description": "Learn to ask basic questions",
+        "content": {
+          "word": "Come ti chiami?",
+          "translation": "What's your name?",
+          "pronunciation": "/ˈko.me ti ˈkja.mi/",
+          "example": "Come ti chiami? Mi chiamo Anna.",
+          "exampleTranslation": "What's your name? My name is Anna."
+        },
+        "quiz": {
+          "question": "How do you ask 'What's your name?' in Italian?",
+          "options": ["Di dove sei?", "Come ti chiami?", "Come stai?"],
+          "correct": 1
+        },
+        "words": ["Come ti chiami?", "Di dove sei?", "Come stai?"]
+      }
+    },
+    "week_2": {
+      "day_1": {
+        "id": "italian_w2_d1",
+        "title": "Numbers 1–10",
+        "emoji": "🔢",
+        "description": "Learn numbers 1 to 10 in Italian",
+        "content": {
+          "word": "tre",
+          "translation": "three",
+          "pronunciation": "/tre/",
+          "example": "Ho tre gatti.",
+          "exampleTranslation": "I have three cats."
+        },
+        "quiz": {
+          "question": "What is the Italian word for 'three'?",
+          "options": ["due", "tre", "quattro"],
+          "correct": 1
+        },
+        "words": ["uno", "due", "tre", "quattro", "cinque"]
+      },
+      "day_2": {
+        "id": "italian_w2_d2",
+        "title": "Numbers 11–20",
+        "emoji": "🔢",
+        "description": "Learn numbers 11 to 20 in Italian",
+        "content": {
+          "word": "quindici",
+          "translation": "fifteen",
+          "pronunciation": "/kwin.di.tʃi/",
+          "example": "Sono le quindici.",
+          "exampleTranslation": "It's three PM (fifteen o'clock)."
+        },
+        "quiz": {
+          "question": "How do you say 'fifteen' in Italian?",
+          "options": ["quattordici", "quindici", "sedici"],
+          "correct": 1
+        },
+        "words": ["undici", "dodici", "tredici", "quattordici", "quindici"]
+      },
+      "day_3": {
+        "id": "italian_w2_d3",
+        "title": "Days of the Week",
+        "emoji": "📅",
+        "description": "Learn the days of the week",
+        "content": {
+          "word": "giovedì",
+          "translation": "Thursday",
+          "pronunciation": "/dʒo.ve.ˈdi/",
+          "example": "Oggi è giovedì.",
+          "exampleTranslation": "Today is Thursday."
+        },
+        "quiz": {
+          "question": "What day is 'giovedì'?",
+          "options": ["Wednesday", "Thursday", "Friday"],
+          "correct": 1
+        },
+        "words": ["lunedì", "martedì", "mercoledì", "giovedì"]
+      },
+      "day_4": {
+        "id": "italian_w2_d4",
+        "title": "Yes/No Questions",
+        "emoji": "❓",
+        "description": "Learn to ask yes/no questions",
+        "content": {
+          "word": "Parli inglese?",
+          "translation": "Do you speak English?",
+          "pronunciation": "/ˈpar.li in.ˈgle.se/",
+          "example": "Scusa, parli inglese?",
+          "exampleTranslation": "Excuse me, do you speak English?"
+        },
+        "quiz": {
+          "question": "How do you ask 'Do you speak English?' in Italian?",
+          "options": ["Parli italiano?", "Parli inglese?", "Parli francese?"],
+          "correct": 1
+        },
+        "words": ["Parli inglese?", "È la tua borsa?", "Capisci?"]
+      },
+      "day_5": {
+        "id": "italian_w2_d5",
+        "title": "Simple Responses",
+        "emoji": "💬",
+        "description": "Learn basic response words",
+        "content": {
+          "word": "Sì",
+          "translation": "Yes",
+          "pronunciation": "/si/",
+          "example": "Sì, parlo italiano.",
+          "exampleTranslation": "Yes, I speak Italian."
+        },
+        "quiz": {
+          "question": "What is the Italian for 'Yes' and 'No'?",
+          "options": ["Oui, Non", "Sì, No", "Ja, Nein"],
+          "correct": 1
+        },
+        "words": ["Sì", "No", "Forse", "Non lo so"]
       }
     }
   },
