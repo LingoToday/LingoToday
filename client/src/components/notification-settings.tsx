@@ -309,10 +309,11 @@ export default function NotificationSettings() {
                         };
                         
                         console.log("✅ Simple test notification object created");
-                        setTimeout(() => {
+                        const closeTestNotification = () => {
                           console.log("Auto-closing simple test notification");
                           testNotification.close();
-                        }, 8000);
+                        };
+                        setTimeout(closeTestNotification, 8000);
                       } catch (error) {
                         console.error("❌ Simple notification creation failed:", error);
                       }

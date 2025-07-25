@@ -10,13 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### July 25, 2025 - Desktop Notification Fixes
+### July 25, 2025 - Desktop Notification Fixes & API Route Completion
 - Fixed CSP (Content Security Policy) issues preventing notifications in production
 - Removed unsupported `actions` property from browser notifications
 - Changed anonymous functions to named function references for CSP compliance
-- Added automatic notification initialization when dashboard loads if notifications already enabled
-- Improved user interface with clear instructions for blocked notification permissions
-- Added debugging logs and "Test Notification" button for troubleshooting
+- Fixed all string-based setTimeout/setInterval calls causing CSP violations
+- Added missing API route GET /api/lessons/:language/:week/:day for dynamic lesson content
+- Enhanced notification debugging with clear success/error indicators
+- Added unique notification tags to prevent browser grouping
+- Improved macOS compatibility with better notification settings
+- Added comprehensive test buttons ("Simple Test" and "Full Test") for debugging
+- Updated lesson data structure to support week 2, day 3 lesson requests
 
 ## System Architecture
 

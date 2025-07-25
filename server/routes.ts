@@ -182,6 +182,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get specific lesson by week and day
+  app.get('/api/lessons/:language/:week/:day', async (req, res) => {
+    try {
+      const { language, week, day } = req.params;
+      const lessonsPath = path.join(import.meta.dirname, 'lessons.json');
+      
+      if (!fs.existsSync(lessonsPath)) {
+        return res.status(404).json({ message: "Lessons file not found" });
+      }
+      
+      const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
+      const languageLessons = lessonsData[language];
+      
+      if (!languageLessons) {
+        return res.status(404).json({ message: `Lessons not found for language: ${language}` });
+      }
+
+      const weekKey = `week_${week}`;
+      const dayKey = `day_${day}`;
+      
+      const weekLessons = languageLessons[weekKey];
+      if (!weekLessons) {
+        return res.status(404).json({ message: `Week ${week} not found for ${language}` });
+      }
+
+      const dayLesson = weekLessons[dayKey];
+      if (!dayLesson) {
+        return res.status(404).json({ message: `Day ${day} of week ${week} not found for ${language}` });
+      }
+      
+      res.json(dayLesson);
+    } catch (error) {
+      console.error("Error fetching specific lesson:", error);
+      res.status(500).json({ message: "Failed to fetch lesson" });
+    }
+  });
+
   app.get('/api/lessons/:language/:week/:day', async (req, res) => {
     try {
       const { language, week, day } = req.params;

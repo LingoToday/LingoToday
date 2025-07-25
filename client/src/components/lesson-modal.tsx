@@ -51,9 +51,10 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
           description: "You are logged out. Logging in again...",
           variant: "destructive",
         });
-        setTimeout(() => {
+        const redirectToLogin = () => {
           window.location.href = "/api/login";
-        }, 500);
+        };
+        setTimeout(redirectToLogin, 500);
         return;
       }
       toast({
