@@ -99,7 +99,56 @@ export async function showLearningNotification(language: string) {
       storageKeys: Object.keys(localStorage).filter(key => key.includes('lesson'))
     });
     
-    const selectedLesson = getRandomLesson(completedLessonIds);
+    // Instead of relying on localStorage, fetch lesson data directly from API
+    console.log('🔄 Fetching lesson data directly from API for notification...');
+    
+    let selectedLesson = null;
+    try {
+      const lessonsResponse = await fetch(`/api/lessons/${cleanLanguage}`, {
+        credentials: 'same-origin'
+      });
+      
+      if (lessonsResponse.ok) {
+        const lessonsData = await lessonsResponse.json();
+        console.log(`📚 Fetched lesson data from API:`, Object.keys(lessonsData));
+        
+        // Convert API data to flat array (same logic as lessonStore)
+        const lessons: any[] = [];
+        Object.keys(lessonsData).forEach(weekKey => {
+          const week = parseInt(weekKey.replace('week_', ''));
+          const weekData = lessonsData[weekKey];
+          
+          Object.keys(weekData).forEach(dayKey => {
+            const day = parseInt(dayKey.replace('day_', ''));
+            const lesson = weekData[dayKey];
+            
+            lessons.push({
+              ...lesson,
+              week,
+              day
+            });
+          });
+        });
+        
+        console.log(`🔢 Processed ${lessons.length} lessons from API`);
+        
+        // Filter out completed lessons
+        const availableLessons = lessons.filter(lesson => 
+          !completedLessonIds.includes(lesson.id)
+        );
+        
+        console.log(`🎯 ${availableLessons.length} lessons available (${lessons.length - availableLessons.length} completed)`);
+        
+        if (availableLessons.length > 0) {
+          selectedLesson = availableLessons[Math.floor(Math.random() * availableLessons.length)];
+          console.log(`✅ Selected lesson: ${selectedLesson.id} - "${selectedLesson.title}"`);
+        }
+      } else {
+        console.error(`❌ Failed to fetch lessons from API: ${lessonsResponse.status}`);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching lessons from API:', error);
+    }
     
     if (!selectedLesson) {
       console.log("💪 No lessons available, showing motivational notification");
