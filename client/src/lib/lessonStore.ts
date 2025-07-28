@@ -70,13 +70,38 @@ export function storeLessons(lessons: LessonData[], language: string): void {
 export function processLessonData(apiData: any, language: string): LessonData[] {
   const lessons: LessonData[] = [];
   
+  console.log(`🔧 Processing lesson data for ${language}:`, { 
+    dataType: typeof apiData, 
+    isArray: Array.isArray(apiData),
+    keys: Object.keys(apiData || {})
+  });
+  
+  if (!apiData || typeof apiData !== 'object') {
+    console.error('❌ Invalid API data received:', apiData);
+    return lessons;
+  }
+  
   Object.keys(apiData).forEach(weekKey => {
     const week = parseInt(weekKey.replace('week_', ''));
     const weekData = apiData[weekKey];
     
+    console.log(`📅 Processing ${weekKey} (week ${week}):`, Object.keys(weekData || {}));
+    
+    if (!weekData || typeof weekData !== 'object') {
+      console.error(`❌ Invalid week data for ${weekKey}:`, weekData);
+      return;
+    }
+    
     Object.keys(weekData).forEach(dayKey => {
       const day = parseInt(dayKey.replace('day_', ''));
       const lesson = weekData[dayKey];
+      
+      if (!lesson || !lesson.id) {
+        console.error(`❌ Invalid lesson data for ${weekKey}/${dayKey}:`, lesson);
+        return;
+      }
+      
+      console.log(`📚 Adding lesson: ${lesson.id} (Week ${week}, Day ${day})`);
       
       lessons.push({
         ...lesson,
@@ -86,10 +111,13 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
     });
   });
   
-  return lessons.sort((a, b) => {
+  const sortedLessons = lessons.sort((a, b) => {
     if (a.week !== b.week) return a.week - b.week;
     return a.day - b.day;
   });
+  
+  console.log(`✅ Processed ${sortedLessons.length} lessons total`);
+  return sortedLessons;
 }
 
 // Get next uncompleted lessons
@@ -148,7 +176,7 @@ export function getRandomLesson(completedLessonIds: string[]): LessonData | null
 // Load lessons from API and store locally
 export async function loadAndStoreLessons(language: string): Promise<boolean> {
   try {
-    console.log(`Loading lessons for ${language} from API...`);
+    console.log(`🔄 Loading lessons for ${language} from API...`);
     
     const response = await fetch(`/api/lessons/${language}`, {
       credentials: 'same-origin',
@@ -158,20 +186,31 @@ export async function loadAndStoreLessons(language: string): Promise<boolean> {
       }
     });
     
+    console.log(`📡 API Response status: ${response.status} ${response.statusText}`);
+    
     if (!response.ok) {
-      console.error(`Failed to load lessons: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`❌ Failed to load lessons: ${response.status} - ${errorText}`);
       return false;
     }
     
     const apiData = await response.json();
+    console.log(`📊 Received API data:`, { keys: Object.keys(apiData), sample: Object.keys(apiData)[0] });
+    
     const lessons = processLessonData(apiData, language);
+    console.log(`🔢 Processed ${lessons.length} lessons from API data`);
+    
+    if (lessons.length === 0) {
+      console.error('❌ No lessons were processed from API data');
+      return false;
+    }
     
     storeLessons(lessons, language);
-    console.log(`Successfully loaded and stored ${lessons.length} lessons`);
+    console.log(`✅ Successfully loaded and stored ${lessons.length} lessons`);
     
     return true;
   } catch (error) {
-    console.error('Error loading lessons from API:', error);
+    console.error('❌ Error loading lessons from API:', error);
     return false;
   }
 }
@@ -186,6 +225,12 @@ export async function initializeLessonStore(language: string, completedLessonIds
   if (cached && cached.language === language) {
     console.log('Using cached lesson data');
     console.log(`📚 Cached data contains ${cached.lessons.length} lessons for ${cached.language}`);
+    
+    // Test accessing data immediately to verify it's working
+    const testLesson = cached.lessons[0];
+    if (testLesson) {
+      console.log(`🧪 Test lesson access successful: ${testLesson.id} - "${testLesson.title}"`);
+    }
     return;
   }
   
@@ -195,6 +240,14 @@ export async function initializeLessonStore(language: string, completedLessonIds
   
   if (success) {
     console.log(`✅ Successfully initialized lesson store for ${language}`);
+    
+    // Verify the data was stored correctly
+    const verifyStored = loadStoredLessons();
+    if (verifyStored) {
+      console.log(`🔍 Verification: ${verifyStored.lessons.length} lessons stored for ${verifyStored.language}`);
+    } else {
+      console.error(`❌ Verification failed: No data found after storage`);
+    }
   } else {
     console.error(`❌ Failed to initialize lesson store for ${language}`);
   }

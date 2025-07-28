@@ -88,7 +88,17 @@ export async function showLearningNotification(language: string) {
     }
     
     // Get lesson from stored data using lesson store
-    const { getRandomLesson, getLessonById } = await import("@/lib/lessonStore");
+    const { getRandomLesson, getLessonById, loadStoredLessons } = await import("@/lib/lessonStore");
+    
+    // Debug: Check stored lessons before trying to get random one
+    const storedData = loadStoredLessons();
+    console.log(`🔍 Debug stored lessons before getRandomLesson:`, { 
+      hasData: !!storedData, 
+      language: storedData?.language, 
+      count: storedData?.lessons?.length || 0,
+      storageKeys: Object.keys(localStorage).filter(key => key.includes('lesson'))
+    });
+    
     const selectedLesson = getRandomLesson(completedLessonIds);
     
     if (!selectedLesson) {
