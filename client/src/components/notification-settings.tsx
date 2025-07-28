@@ -58,7 +58,17 @@ export default function NotificationSettings() {
       setNotificationPermission(Notification.permission);
       console.log("Initial notification permission:", Notification.permission);
     }
-  }, []);
+    
+    // Check permission periodically in case user changed it
+    const permissionCheck = setInterval(() => {
+      if ("Notification" in window && Notification.permission !== notificationPermission) {
+        console.log("Permission changed from", notificationPermission, "to", Notification.permission);
+        setNotificationPermission(Notification.permission);
+      }
+    }, 1000);
+    
+    return () => clearInterval(permissionCheck);
+  }, [notificationPermission]);
 
   // Add a permission refresh function
   const refreshPermission = () => {
@@ -303,6 +313,7 @@ export default function NotificationSettings() {
               <h4 className="font-medium text-gray-800 mb-2">Debug Info</h4>
               <div className="space-y-1 text-gray-600">
                 <div>Permission: <span className="font-mono">{notificationPermission}</span></div>
+                <div>Actual: <span className="font-mono">{typeof window !== 'undefined' && "Notification" in window ? Notification.permission : 'unknown'}</span></div>
                 <div>API Support: <span className="font-mono">{"Notification" in window ? 'yes' : 'no'}</span></div>
                 <div>Browser: <span className="font-mono">{navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other'}</span></div>
               </div>
@@ -311,10 +322,26 @@ export default function NotificationSettings() {
                 size="sm"
                 variant="outline"
                 className="mt-2 w-full text-xs"
+                onClick={() => {
+                  console.log("🔄 Refreshing permission status");
+                  const actualPermission = Notification.permission;
+                  setNotificationPermission(actualPermission);
+                  console.log("Permission updated to:", actualPermission);
+                }}
+              >
+                Refresh Permission
+              </Button>
+              
+              <Button 
+                size="sm"
+                variant="outline"
+                className="mt-2 w-full text-xs"
                 disabled={notificationPermission !== "granted"}
                 onClick={() => {
                   console.log("🧪 Testing API endpoint directly");
-                  fetch('/api/notification-lesson/italian')
+                  const apiUrl = `${window.location.origin}/api/notification-lesson/italian`;
+                  console.log("Testing URL:", apiUrl);
+                  fetch(apiUrl)
                     .then(response => response.json())
                     .then(data => {
                       console.log("✅ API test successful:", data);
@@ -439,7 +466,11 @@ export default function NotificationSettings() {
                     className="mt-1 w-full text-xs"
                     onClick={() => {
                       console.log("🧪 Simple notification test");
-                      if (notificationPermission === "granted") {
+                      const actualPermission = Notification.permission;
+                      console.log("Actual browser permission:", actualPermission);
+                      console.log("State permission:", notificationPermission);
+                      
+                      if (actualPermission === "granted") {
                         try {
                           const testNotification = new Notification("DeskLingo Test", {
                             body: "Testing simple notification without API call",
@@ -447,11 +478,15 @@ export default function NotificationSettings() {
                             tag: "test-" + Date.now()
                           });
                           console.log("✅ Simple notification created successfully");
+                          // Update state if needed
+                          if (notificationPermission !== actualPermission) {
+                            setNotificationPermission(actualPermission);
+                          }
                         } catch (error) {
                           console.error("❌ Simple notification failed:", error);
                         }
                       } else {
-                        console.log("❌ Permission not granted");
+                        console.log("❌ Permission not granted - actual:", actualPermission);
                       }
                     }}
                   >

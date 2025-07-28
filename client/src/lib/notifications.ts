@@ -89,8 +89,8 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    // Fetch a random lesson question from the API
-    const apiUrl = `/api/notification-lesson/${cleanLanguage}`;
+    // Fetch a random lesson question from the API - use window.location.origin to ensure absolute URL
+    const apiUrl = `${window.location.origin}/api/notification-lesson/${cleanLanguage}`;
     console.log(`🔗 Fetching lesson from: ${apiUrl}`);
     const response = await fetch(apiUrl);
     if (!response.ok) {
