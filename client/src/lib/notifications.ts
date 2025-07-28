@@ -89,45 +89,112 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    // Use relative URL - this will always hit the same server the app is running on
-    const apiUrl = `/api/notification-lesson/${cleanLanguage}`;
-    console.log(`🔗 Fetching lesson from: ${apiUrl} (relative URL)`);
-    console.log(`🌐 Current context - Origin: ${window.location.origin}, Host: ${window.location.host}`);
+    console.log(`🔗 Using local lessons data (no API call needed)`);
     
-    const response = await fetch(apiUrl, {
-      // Add credentials to ensure session is maintained
-      credentials: 'same-origin'
-    });
-    
-    if (!response.ok) {
-      console.error(`Failed to fetch notification lesson: ${response.status} ${response.statusText}`);
-      console.error("Response URL was:", response.url);
-      
-      // If API endpoint doesn't exist (404), create a fallback notification
-      if (response.status === 404) {
-        console.log("🔄 API endpoint not available, creating fallback notification");
-        const fallbackNotification = new Notification(`${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`, {
-          body: "Time for your language lesson! Click to continue learning.",
-          icon: "/favicon.ico",
-          tag: "desklingo-fallback-" + Date.now(),
-          requireInteraction: false,
-          silent: false
-        });
-        
-        fallbackNotification.onclick = function() {
-          console.log("Fallback notification clicked, redirecting to dashboard");
-          window.focus();
-          window.location.href = "/dashboard";
-          fallbackNotification.close();
-        };
-        
-        console.log("✅ Fallback notification created successfully");
-        return;
+    // Import lessons data directly (defined at top of file)
+    const lessonsData = {
+      "italian": {
+        "week_1": {
+          "day_1": {
+            "id": "italian_w1_d1",
+            "title": "Basic Greetings",
+            "quiz": {
+              "question": "How do you say 'Hello' in Italian?",
+              "correct_answer": "Ciao",
+              "options": ["Ciao", "Grazie", "Prego", "Arrivederci"]
+            }
+          },
+          "day_2": {
+            "id": "italian_w1_d2",
+            "title": "Numbers 1–10",
+            "quiz": {
+              "question": "How do you say 'five' in Italian?",
+              "correct_answer": "cinque",
+              "options": ["quattro", "cinque", "sei", "sette"]
+            }
+          }
+        },
+        "week_2": {
+          "day_1": {
+            "id": "italian_w2_d1",
+            "title": "Family Members",
+            "quiz": {
+              "question": "How do you say 'mother' in Italian?",
+              "correct_answer": "madre",
+              "options": ["padre", "madre", "fratello", "sorella"]
+            }
+          },
+          "day_2": {
+            "id": "italian_w2_d2",
+            "title": "Numbers 11–20",
+            "quiz": {
+              "question": "How do you say 'fifteen' in Italian?",
+              "correct_answer": "quindici",
+              "options": ["dodici", "tredici", "quattordici", "quindici"]
+            }
+          },
+          "day_3": {
+            "id": "italian_w2_d3",
+            "title": "Days of the Week",
+            "quiz": {
+              "question": "How do you say 'Monday' in Italian?",
+              "correct_answer": "lunedì",
+              "options": ["lunedì", "martedì", "mercoledì", "giovedì"]
+            }
+          },
+          "day_4": {
+            "id": "italian_w2_d4",
+            "title": "Yes/No Questions",
+            "quiz": {
+              "question": "How do you ask 'Do you speak English?' in Italian?",
+              "correct_answer": "Parli inglese?",
+              "options": ["Come stai?", "Parli inglese?", "Dove sei?", "Quanto costa?"]
+            }
+          }
+        }
       }
+    };
+    
+    // Get lessons from local data
+    const languageLessons = lessonsData[cleanLanguage];
+    
+    if (!languageLessons) {
+      console.error(`No lessons found for language: ${cleanLanguage}`);
       return;
     }
     
-    const lessonData = await response.json();
+    // Get all available lessons
+    const allLessons: Array<{
+      lesson: any;
+      week: number;
+      day: number;
+    }> = [];
+    
+    Object.keys(languageLessons).forEach(weekKey => {
+      const week = parseInt(weekKey.replace('week_', ''));
+      Object.keys(languageLessons[weekKey]).forEach(dayKey => {
+        const day = parseInt(dayKey.replace('day_', ''));
+        const lesson = languageLessons[weekKey][dayKey];
+        allLessons.push({ lesson, week, day });
+      });
+    });
+    
+    if (allLessons.length === 0) {
+      console.error(`No lessons found for ${cleanLanguage}`);
+      return;
+    }
+    
+    // Pick a random lesson
+    const randomIndex = Math.floor(Math.random() * allLessons.length);
+    const { lesson, week, day } = allLessons[randomIndex];
+    
+    const lessonData = {
+      question: lesson.quiz.question,
+      lessonPath: `/lesson/${cleanLanguage}/${week}/${day}`,
+      week,
+      day,
+      title: lesson.title
+    };
     
     console.log("Creating notification with content:", {
       title: `${language.charAt(0).toUpperCase() + language.slice(1)} Learning`,
