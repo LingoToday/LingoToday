@@ -70,8 +70,17 @@ export async function showLearningNotification(language: string) {
     console.log(`🔗 Fetching lessons data from backend API`);
     
     // Fetch lessons data from backend API to ensure consistency
-    const response = await fetch(`/api/lessons/${cleanLanguage}`);
+    const response = await fetch(`/api/lessons/${cleanLanguage}`, {
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    console.log(`API response status: ${response.status}`);
     if (!response.ok) {
+      console.error(`API error: ${response.status} ${response.statusText}`);
       throw new Error(`API returned ${response.status}`);
     }
     
