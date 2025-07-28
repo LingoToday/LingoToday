@@ -74,7 +74,7 @@ export async function showLearningNotification(language: string) {
     
     try {
       // Fetch user progress to filter out completed lessons
-      const progressResponse = await fetch('/api/progress', { credentials: 'same-origin' });
+      const progressResponse = await fetch(`/api/progress/${cleanLanguage}`, { credentials: 'same-origin' });
       
       if (progressResponse.ok) {
         const progressData = await progressResponse.json();

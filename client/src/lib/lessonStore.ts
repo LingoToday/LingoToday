@@ -111,23 +111,33 @@ export function getLessonById(lessonId: string): LessonData | null {
 
 // Get random lesson for notification
 export function getRandomLesson(completedLessonIds: string[]): LessonData | null {
+  const stored = loadStoredLessons();
+  if (!stored || stored.lessons.length === 0) {
+    console.log("❌ No stored lessons available");
+    return null;
+  }
+  
+  // First try to get an uncompleted lesson
   const nextLessons = getNextLessons(completedLessonIds, 10);
   
-  if (nextLessons.length === 0) {
-    // No new lessons, get random completed lesson for review
-    const stored = loadStoredLessons();
-    if (!stored || stored.lessons.length === 0) return null;
-    
-    const completedLessons = stored.lessons.filter(lesson => 
-      completedLessonIds.includes(lesson.id)
-    );
-    
-    if (completedLessons.length === 0) return null;
-    
+  if (nextLessons.length > 0) {
+    console.log(`🎯 Found ${nextLessons.length} uncompleted lessons`);
+    return nextLessons[Math.floor(Math.random() * nextLessons.length)];
+  }
+  
+  // If no uncompleted lessons, get a random completed lesson for review
+  const completedLessons = stored.lessons.filter(lesson => 
+    completedLessonIds.includes(lesson.id)
+  );
+  
+  if (completedLessons.length > 0) {
+    console.log(`🔄 All lessons completed, using ${completedLessons.length} lessons for review`);
     return completedLessons[Math.floor(Math.random() * completedLessons.length)];
   }
   
-  return nextLessons[Math.floor(Math.random() * nextLessons.length)];
+  // If no completed lessons (empty progress), just return a random lesson from stored data
+  console.log(`🆕 No progress found, using random lesson from ${stored.lessons.length} available lessons`);
+  return stored.lessons[Math.floor(Math.random() * stored.lessons.length)];
 }
 
 // Load lessons from API and store locally
