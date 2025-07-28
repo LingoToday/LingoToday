@@ -29,7 +29,10 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 export function loadStoredLessons(): LessonStore | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
+    if (!stored) {
+      console.log('❌ No stored lesson data found in localStorage');
+      return null;
+    }
     
     const data = JSON.parse(stored);
     
@@ -111,9 +114,11 @@ export function getLessonById(lessonId: string): LessonData | null {
 
 // Get random lesson for notification
 export function getRandomLesson(completedLessonIds: string[]): LessonData | null {
+  console.log('🔍 Getting random lesson, checking stored data...');
   const stored = loadStoredLessons();
   if (!stored || stored.lessons.length === 0) {
-    console.log("❌ No stored lessons available");
+    console.log("❌ No stored lessons available", { stored: !!stored, count: stored?.lessons?.length || 0 });
+    console.log("🔧 Debug: localStorage keys:", Object.keys(localStorage));
     return null;
   }
   
@@ -173,15 +178,24 @@ export async function loadAndStoreLessons(language: string): Promise<boolean> {
 
 // Initialize lesson store on app start
 export async function initializeLessonStore(language: string, completedLessonIds: string[]): Promise<void> {
+  console.log(`🔧 Initializing lesson store for language: "${language}"`);
+  
   // Check if we have valid cached data
   const cached = loadStoredLessons();
   
   if (cached && cached.language === language) {
     console.log('Using cached lesson data');
+    console.log(`📚 Cached data contains ${cached.lessons.length} lessons for ${cached.language}`);
     return;
   }
   
   // Load fresh data from API
   console.log('Loading fresh lesson data from API...');
-  await loadAndStoreLessons(language);
+  const success = await loadAndStoreLessons(language);
+  
+  if (success) {
+    console.log(`✅ Successfully initialized lesson store for ${language}`);
+  } else {
+    console.error(`❌ Failed to initialize lesson store for ${language}`);
+  }
 }
