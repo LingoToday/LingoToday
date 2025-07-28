@@ -36,7 +36,7 @@ export default function Landing() {
           
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Easy language learning<br />
-            <span className="text-primary">for your remote work</span>
+            <span className="text-primary">as you work</span>
           </h1>
           
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
