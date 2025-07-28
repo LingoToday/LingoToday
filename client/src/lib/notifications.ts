@@ -67,179 +67,88 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    console.log(`🔗 Fetching lessons data from backend API`);
+    console.log(`📚 Using stored lesson data (offline-first approach)`);
     
-    // Fetch lessons data from backend API to ensure consistency
-    const response = await fetch(`/api/lessons/${cleanLanguage}`, {
-      credentials: 'same-origin',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    console.log(`API response status: ${response.status}`);
-    if (!response.ok) {
-      console.error(`API error: ${response.status} ${response.statusText}`);
-      throw new Error(`API returned ${response.status}`);
-    }
-    
-    const languageLessons = await response.json();
-    console.log(`✅ Fetched lesson data from API for ${cleanLanguage}`);
-    
-    if (!languageLessons) {
-      console.error(`No lessons found for language: ${cleanLanguage}`);
-      return;
-    }
-    
-    // Get user's progress to determine which lessons they haven't completed
-    let availableLessons: Array<{
-      lesson: any;
-      week: number;
-      day: number;
-    }> = [];
+    // Get user's completed lessons from progress data
+    let completedLessonIds: string[] = [];
     
     try {
       // Fetch user progress to filter out completed lessons
       const progressResponse = await fetch('/api/progress', { credentials: 'same-origin' });
-      let completedLessons: string[] = [];
       
       if (progressResponse.ok) {
         const progressData = await progressResponse.json();
-        completedLessons = progressData.map((p: any) => `${p.language}_w${p.week}_d${p.day}`);
-        console.log(`📊 Found ${completedLessons.length} completed lessons`);
+        completedLessonIds = progressData.map((p: any) => `${p.language}_w${p.week}_d${p.day}`);
+        console.log(`📊 Found ${completedLessonIds.length} completed lessons`);
       } else {
-        console.log("⚠️ Could not fetch progress, showing all lessons");
+        console.log("⚠️ Could not fetch progress, using empty progress");
       }
-      
-      // Get all lessons and filter out completed ones
-      Object.keys(languageLessons).forEach(weekKey => {
-        const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = languageLessons[weekKey];
-        Object.keys(weekData).forEach(dayKey => {
-          const day = parseInt(dayKey.replace('day_', ''));
-          const lesson = weekData[dayKey];
-          const lessonId = `${cleanLanguage}_w${week}_d${day}`;
-          
-          // Only include lessons that haven't been completed
-          if (!completedLessons.includes(lessonId)) {
-            availableLessons.push({ lesson, week, day });
-          }
-        });
-      });
-      
-      console.log(`📚 Available lessons after filtering: ${availableLessons.length}`);
-      
     } catch (error) {
-      console.log("⚠️ Error fetching progress, showing all lessons:", error);
-      // Fallback: show all lessons if we can't get progress
-      Object.keys(languageLessons).forEach(weekKey => {
-        const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = languageLessons[weekKey];
-        Object.keys(weekData).forEach(dayKey => {
-          const day = parseInt(dayKey.replace('day_', ''));
-          const lesson = weekData[dayKey];
-          availableLessons.push({ lesson, week, day });
-        });
-      });
+      console.log("⚠️ Error fetching progress:", error);
     }
     
-    let selectedLesson;
-    let lessonType: "new" | "review" | "motivational" = "new";
-    
-    // Three-tier notification strategy
-    if (availableLessons.length > 0) {
-      // Active lessons - show new lessons to learn
-      selectedLesson = availableLessons[Math.floor(Math.random() * availableLessons.length)];
-      lessonType = "new";
-      console.log(`🆕 Selected new lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
-    } else {
-      // No more new lessons - switch to review mode
-      console.log(`🔄 No new lessons available, switching to review mode`);
-      
-      // Get all lessons for review
-      const allLessons: Array<{
-        lesson: any;
-        week: number;
-        day: number;
-      }> = [];
-      
-      Object.keys(languageLessons).forEach(weekKey => {
-        const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = languageLessons[weekKey];
-        Object.keys(weekData).forEach(dayKey => {
-          const day = parseInt(dayKey.replace('day_', ''));
-          const lesson = weekData[dayKey];
-          allLessons.push({ lesson, week, day });
-        });
-      });
-      
-      if (allLessons.length > 0) {
-        selectedLesson = allLessons[Math.floor(Math.random() * allLessons.length)];
-        lessonType = "review";
-        console.log(`🔄 Selected review lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
-      } else {
-        // No lessons at all - show motivational notification
-        lessonType = "motivational";
-        console.log(`💪 No lessons available, showing motivational notification`);
-        
-        const motivationalMessages = [
-          "Keep up your language learning streak! 🌟",
-          "Ready for more language practice? 📚",
-          "Time to strengthen your language skills! 💪",
-          "Your daily language learning awaits! 🎯"
-        ];
-        
-        const motivationalNotification = new Notification("Language Learning", {
-          body: motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)],
-          icon: "/favicon.ico",
-          tag: "desklingo-motivational-" + Date.now(),
-          requireInteraction: false,
-          silent: false
-        });
-        
-        motivationalNotification.onclick = function() {
-          console.log("Motivational notification clicked, opening dashboard");
-          window.focus();
-          window.location.href = "/dashboard";
-          motivationalNotification.close();
-        };
-        
-        console.log("✅ Motivational notification created for completed course");
-        return;
-      }
-    }
+    // Get lesson from stored data using lesson store
+    const { getRandomLesson, getLessonById } = await import("@/lib/lessonStore");
+    const selectedLesson = getRandomLesson(completedLessonIds);
     
     if (!selectedLesson) {
-      console.error("No lesson could be selected");
+      console.log("💪 No lessons available, showing motivational notification");
+      
+      const motivationalMessages = [
+        "Keep up your language learning streak!",
+        "Ready for more language practice?",
+        "Time to strengthen your language skills!",
+        "Your daily language learning awaits!"
+      ];
+      
+      const motivationalNotification = new Notification("Language Learning", {
+        body: motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)],
+        icon: "/favicon.ico",
+        tag: "desklingo-motivational-" + Date.now(),
+        requireInteraction: false,
+        silent: false
+      });
+      
+      motivationalNotification.onclick = function() {
+        console.log("Motivational notification clicked, opening dashboard");
+        window.focus();
+        window.location.href = "/dashboard";
+        motivationalNotification.close();
+      };
+      
+      console.log("✅ Motivational notification created");
       return;
     }
     
-    const { lesson, week, day } = selectedLesson;
+    // Determine if this is a review or new lesson
+    const isReview = completedLessonIds.includes(selectedLesson.id);
+    const lessonType = isReview ? "review" : "new";
     
     // Modify the question based on lesson type
-    let questionText = lesson.quiz.question;
+    let questionText = selectedLesson.quiz.question;
     let notificationTitle = `${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`;
     
-    if (lessonType === "review") {
-      questionText = `🔄 Review: ${lesson.quiz.question}`;
+    if (isReview) {
+      questionText = `Review: ${selectedLesson.quiz.question}`;
       notificationTitle = `${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Review`;
     }
     
     const lessonData = {
       question: questionText,
-      lessonPath: `/lesson/${cleanLanguage}/${week}/${day}`,
-      week,
-      day,
-      title: lesson.title,
-      isReview: lessonType === "review"
+      lessonPath: `/lesson/${cleanLanguage}/${selectedLesson.week}/${selectedLesson.day}`,
+      lessonId: selectedLesson.id,
+      week: selectedLesson.week,
+      day: selectedLesson.day,
+      title: selectedLesson.title,
+      isReview
     };
     
     console.log(`📝 Selected lesson details:`, {
-      week: week,
-      day: day,
+      id: selectedLesson.id,
+      week: selectedLesson.week,
+      day: selectedLesson.day,
       lessonPath: lessonData.lessonPath,
-      title: lesson.title,
+      title: selectedLesson.title,
       type: lessonType
     });
     
@@ -250,11 +159,11 @@ export async function showLearningNotification(language: string) {
       type: lessonType
     });
 
-    // More compatible notification options for macOS
+    // Create notification with lesson data
     const notification = new Notification(notificationTitle, {
       body: lessonData.question,
       icon: "/favicon.ico",
-      tag: "desklingo-lesson-" + Date.now(), // Unique tag to ensure each notification shows
+      tag: "desklingo-lesson-" + Date.now(),
       requireInteraction: false,
       silent: false
     });
@@ -265,28 +174,23 @@ export async function showLearningNotification(language: string) {
       tag: notification.tag
     });
 
-    // Handle notification click - redirect to specific lesson
+    // Handle notification click - redirect to specific lesson using lesson ID
     notification.onclick = function() {
       console.log("Notification clicked, redirecting to:", lessonData.lessonPath);
-      console.log("Full URL will be:", lessonData.lessonPath + (lessonData.isReview ? "?from=notification&mode=review" : "?from=notification"));
+      console.log("Lesson ID:", lessonData.lessonId);
       
       try {
         window.focus();
-        // Navigate to the specific lesson with a notification flag and review status
-        const urlParams = lessonData.isReview ? "?from=notification&mode=review" : "?from=notification";
+        
+        // Navigate using lesson ID approach for guaranteed data availability
+        const urlParams = lessonData.isReview ? "?from=notification&mode=review&id=" + lessonData.lessonId : "?from=notification&id=" + lessonData.lessonId;
         const fullUrl = lessonData.lessonPath + urlParams;
         
-        // Force navigation by opening a new window/tab or redirecting current window
-        if (window.location.origin.includes('languagemate.replit.app') || window.location.origin.includes('localhost')) {
-          // Same origin, use direct navigation
-          window.location.href = fullUrl;
-        } else {
-          // Different origin, open new tab
-          window.open(fullUrl, '_blank');
-        }
-        
+        // Use direct navigation for same origin
+        window.location.href = fullUrl;
         notification.close();
-        console.log("✅ Navigation initiated successfully");
+        
+        console.log("✅ Navigation initiated successfully with lesson ID:", lessonData.lessonId);
       } catch (error) {
         console.error("❌ Error during notification click navigation:", error);
         // Fallback - try to open dashboard
@@ -295,27 +199,24 @@ export async function showLearningNotification(language: string) {
       }
     };
 
-    // Handle notification show event
+    // Handle notification events
     notification.onshow = function() {
-      console.log("✅ Notification displayed successfully - should be visible in Mac Notification Center");
+      console.log("✅ Notification displayed successfully");
     };
 
-    // Handle notification error
     notification.onerror = function(error) {
       console.error("❌ Notification error:", error);
     };
 
-    // Handle notification close
     notification.onclose = function() {
       console.log("Notification was closed");
     };
 
-    // Auto close after 15 seconds to give more time to read
-    const closeNotification = () => {
+    // Auto close after 15 seconds
+    setTimeout(() => {
       console.log("Auto-closing notification");
       notification.close();
-    };
-    setTimeout(closeNotification, 15000);
+    }, 15000);
     
   } catch (error) {
     console.error("Failed to create notification:", error);

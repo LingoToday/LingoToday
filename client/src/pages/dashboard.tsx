@@ -12,6 +12,7 @@ import ProgressOverview from "@/components/progress-overview";
 import LessonModal from "@/components/lesson-modal";
 import { useState } from "react";
 import { Link } from "wouter";
+import { initializeLessonStore } from "@/lib/lessonStore";
 import type { DashboardData, Lesson, User } from "@shared/schema";
 
 export default function Dashboard() {
@@ -40,6 +41,20 @@ export default function Dashboard() {
     enabled: isAuthenticated,
     retry: false,
   });
+
+  // Initialize lesson store when dashboard data is loaded
+  useEffect(() => {
+    if (dashboardData?.settings?.selectedLanguage && dashboardData?.progress) {
+      const completedLessonIds = dashboardData.progress.map(p => `${p.language}_w${p.week}_d${p.day}`);
+      initializeLessonStore(dashboardData.settings.selectedLanguage, completedLessonIds)
+        .then(() => {
+          console.log('Lesson store initialized successfully');
+        })
+        .catch(error => {
+          console.error('Failed to initialize lesson store:', error);
+        });
+    }
+  }, [dashboardData]);
 
   const { data: currentLesson } = useQuery<Lesson>({
     queryKey: ["/api/lessons", dashboardData?.settings?.selectedLanguage, "2", "3"],
