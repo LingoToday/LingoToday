@@ -339,9 +339,14 @@ export default function NotificationSettings() {
                 disabled={notificationPermission !== "granted"}
                 onClick={() => {
                   console.log("🧪 Testing API endpoint directly");
-                  const apiUrl = `${window.location.origin}/api/notification-lesson/italian`;
+                  console.log(`🌐 Current window context: ${window.location.origin}`);
+                  
+                  const baseUrl = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+                    ? 'http://localhost:5000' 
+                    : window.location.origin;
+                  const apiUrl = `${baseUrl}/api/notification-lesson/italian`;
                   console.log("Testing URL:", apiUrl);
-                  fetch(apiUrl)
+                  fetch(apiUrl, { credentials: 'same-origin' })
                     .then(response => response.json())
                     .then(data => {
                       console.log("✅ API test successful:", data);

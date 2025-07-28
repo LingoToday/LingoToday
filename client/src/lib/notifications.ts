@@ -89,10 +89,20 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    // Fetch a random lesson question from the API - use window.location.origin to ensure absolute URL
-    const apiUrl = `${window.location.origin}/api/notification-lesson/${cleanLanguage}`;
+    // Debug the current context
+    console.log(`🌐 Current context - Origin: ${window.location.origin}, Host: ${window.location.host}`);
+    
+    // Use the current origin to ensure we hit the right server
+    const baseUrl = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+      ? 'http://localhost:5000' 
+      : window.location.origin;
+    const apiUrl = `${baseUrl}/api/notification-lesson/${cleanLanguage}`;
     console.log(`🔗 Fetching lesson from: ${apiUrl}`);
-    const response = await fetch(apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      // Add credentials to ensure session is maintained
+      credentials: 'same-origin'
+    });
     if (!response.ok) {
       console.error(`Failed to fetch notification lesson: ${response.status} ${response.statusText}`);
       console.error("Response URL was:", response.url);
