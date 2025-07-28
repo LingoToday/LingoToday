@@ -89,23 +89,41 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    // Debug the current context
+    // Use relative URL - this will always hit the same server the app is running on
+    const apiUrl = `/api/notification-lesson/${cleanLanguage}`;
+    console.log(`🔗 Fetching lesson from: ${apiUrl} (relative URL)`);
     console.log(`🌐 Current context - Origin: ${window.location.origin}, Host: ${window.location.host}`);
-    
-    // Use the current origin to ensure we hit the right server
-    const baseUrl = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
-      ? 'http://localhost:5000' 
-      : window.location.origin;
-    const apiUrl = `${baseUrl}/api/notification-lesson/${cleanLanguage}`;
-    console.log(`🔗 Fetching lesson from: ${apiUrl}`);
     
     const response = await fetch(apiUrl, {
       // Add credentials to ensure session is maintained
       credentials: 'same-origin'
     });
+    
     if (!response.ok) {
       console.error(`Failed to fetch notification lesson: ${response.status} ${response.statusText}`);
       console.error("Response URL was:", response.url);
+      
+      // If API endpoint doesn't exist (404), create a fallback notification
+      if (response.status === 404) {
+        console.log("🔄 API endpoint not available, creating fallback notification");
+        const fallbackNotification = new Notification(`${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`, {
+          body: "Time for your language lesson! Click to continue learning.",
+          icon: "/favicon.ico",
+          tag: "desklingo-fallback-" + Date.now(),
+          requireInteraction: false,
+          silent: false
+        });
+        
+        fallbackNotification.onclick = function() {
+          console.log("Fallback notification clicked, redirecting to dashboard");
+          window.focus();
+          window.location.href = "/dashboard";
+          fallbackNotification.close();
+        };
+        
+        console.log("✅ Fallback notification created successfully");
+        return;
+      }
       return;
     }
     
