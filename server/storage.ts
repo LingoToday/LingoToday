@@ -26,7 +26,7 @@ export interface IStorage {
   upsertUserSettings(settings: InsertUserSettings): Promise<UserSettings>;
   
   // User progress operations
-  getUserProgress(userId: string, language: string): Promise<UserProgress[]>;
+  getUserProgress(userId: string, language?: string): Promise<UserProgress[]>;
   upsertUserProgress(progress: InsertUserProgress): Promise<UserProgress>;
   getLatestProgress(userId: string, language: string): Promise<UserProgress | undefined>;
   
@@ -87,12 +87,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   // User progress operations
-  async getUserProgress(userId: string, language: string): Promise<UserProgress[]> {
-    return await db
-      .select()
-      .from(userProgress)
-      .where(and(eq(userProgress.userId, userId), eq(userProgress.language, language)))
-      .orderBy(desc(userProgress.completedAt));
+  async getUserProgress(userId: string, language?: string): Promise<UserProgress[]> {
+    if (language) {
+      return await db
+        .select()
+        .from(userProgress)
+        .where(and(eq(userProgress.userId, userId), eq(userProgress.language, language)))
+        .orderBy(desc(userProgress.completedAt));
+    } else {
+      return await db
+        .select()
+        .from(userProgress)
+        .where(eq(userProgress.userId, userId))
+        .orderBy(desc(userProgress.completedAt));
+    }
   }
 
   async upsertUserProgress(progressData: InsertUserProgress): Promise<UserProgress> {
