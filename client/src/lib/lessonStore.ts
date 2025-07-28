@@ -219,20 +219,8 @@ export async function loadAndStoreLessons(language: string): Promise<boolean> {
 export async function initializeLessonStore(language: string, completedLessonIds: string[]): Promise<void> {
   console.log(`🔧 Initializing lesson store for language: "${language}"`);
   
-  // Check if we have valid cached data
-  const cached = loadStoredLessons();
-  
-  if (cached && cached.language === language) {
-    console.log('Using cached lesson data');
-    console.log(`📚 Cached data contains ${cached.lessons.length} lessons for ${cached.language}`);
-    
-    // Test accessing data immediately to verify it's working
-    const testLesson = cached.lessons[0];
-    if (testLesson) {
-      console.log(`🧪 Test lesson access successful: ${testLesson.id} - "${testLesson.title}"`);
-    }
-    return;
-  }
+  // Always load fresh data from API instead of using cache for now
+  console.log('💫 Loading fresh lesson data from API (bypassing cache)...');
   
   // Load fresh data from API
   console.log('Loading fresh lesson data from API...');

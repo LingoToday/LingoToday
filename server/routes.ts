@@ -166,7 +166,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/lessons/:language', async (req, res) => {
     try {
       const { language } = req.params;
-      const lessonsPath = path.join(import.meta.dirname, 'lessons.json');
+      const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
+      
+      console.log(`Looking for lessons file at: ${lessonsPath}`);
+      console.log(`File exists: ${fs.existsSync(lessonsPath)}`);
       
       if (!fs.existsSync(lessonsPath)) {
         return res.status(404).json({ message: "Lessons file not found" });
@@ -190,7 +193,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/lessons/:language/:week/:day', async (req, res) => {
     try {
       const { language, week, day } = req.params;
-      const lessonsPath = path.join(import.meta.dirname, 'lessons.json');
+      const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
       
       if (!fs.existsSync(lessonsPath)) {
         return res.status(404).json({ message: "Lessons file not found" });

@@ -46,12 +46,17 @@ export default function Dashboard() {
   useEffect(() => {
     if (dashboardData?.settings?.selectedLanguage && dashboardData?.progress) {
       const completedLessonIds = dashboardData.progress.map(p => `${p.language}_w${p.week}_d${p.day}`);
+      
+      // Clear any old cached data and force reload from API
+      console.log('🔄 Clearing lesson cache and reloading from API...');
+      localStorage.removeItem('deskLingo_lessons');
+      
       initializeLessonStore(dashboardData.settings.selectedLanguage, completedLessonIds)
         .then(() => {
-          console.log('Lesson store initialized successfully');
+          console.log('✅ Lesson store initialized successfully with fresh API data');
         })
         .catch(error => {
-          console.error('Failed to initialize lesson store:', error);
+          console.error('❌ Failed to initialize lesson store:', error);
         });
     }
   }, [dashboardData]);
