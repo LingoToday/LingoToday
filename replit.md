@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 28, 2025 - Notification System & Session Management Fixes
+- Fixed critical notification system issue where localStorage was inaccessible in notification context
+- Notifications now fetch lesson data directly from API instead of relying on localStorage
+- Fixed API file path resolution issue preventing lesson data loading (changed from import.meta.dirname to process.cwd())
+- Confirmed API endpoints working correctly with 200 status responses
+- Extended user session duration from 1 week to 24 hours with rolling sessions
+- Added 5-minute buffer before token expiry to prevent premature logouts
+- Notifications now display actual Italian lesson content instead of motivational messages
+- Enhanced session management to keep users logged in during notification interactions
+
 ### July 25, 2025 - Desktop Notification Fixes & API Route Completion
 - Fixed CSP (Content Security Policy) issues preventing notifications in production
 - Removed unsupported `actions` property from browser notifications

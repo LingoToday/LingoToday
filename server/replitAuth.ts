@@ -23,7 +23,7 @@ const getOidcConfig = memoize(
 );
 
 export function getSession() {
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  const sessionTtl = 24 * 60 * 60 * 1000; // 24 hours
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
@@ -42,6 +42,7 @@ export function getSession() {
       maxAge: sessionTtl,
       sameSite: 'lax',
     },
+    rolling: true, // Extend session on each request
   });
 }
 
@@ -136,7 +137,8 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   }
 
   const now = Math.floor(Date.now() / 1000);
-  if (now <= user.expires_at) {
+  // Give 5 minute buffer before token expiry
+  if (now <= (user.expires_at - 300)) {
     return next();
   }
 
