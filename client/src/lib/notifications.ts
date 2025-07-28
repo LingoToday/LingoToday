@@ -72,6 +72,8 @@ export function stopNotifications() {
 export async function showLearningNotification(language: string) {
   const now = new Date().toLocaleTimeString();
   
+  console.log(`📢 [${now}] showLearningNotification called with language:`, language, typeof language);
+  
   if (!("Notification" in window)) {
     console.error(`❌ [${now}] Notifications not supported by browser`);
     return;
@@ -82,13 +84,18 @@ export async function showLearningNotification(language: string) {
     return;
   }
   
-  console.log(`📢 [${now}] Attempting to show notification for ${language}`);
+  // Clean the language parameter to ensure it's just the language name
+  const cleanLanguage = String(language).trim().toLowerCase().split(':')[0];
+  console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
     // Fetch a random lesson question from the API
-    const response = await fetch(`/api/notification-lesson/${language}`);
+    const apiUrl = `/api/notification-lesson/${cleanLanguage}`;
+    console.log(`🔗 Fetching lesson from: ${apiUrl}`);
+    const response = await fetch(apiUrl);
     if (!response.ok) {
-      console.error("Failed to fetch notification lesson:", response.statusText);
+      console.error(`Failed to fetch notification lesson: ${response.status} ${response.statusText}`);
+      console.error("Response URL was:", response.url);
       return;
     }
     
@@ -101,7 +108,8 @@ export async function showLearningNotification(language: string) {
     });
 
     // More compatible notification options for macOS
-    const notification = new Notification(`${language.charAt(0).toUpperCase() + language.slice(1)} Learning`, {
+    const languageTitle = cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1);
+    const notification = new Notification(`${languageTitle} Learning`, {
       body: lessonData.question,
       icon: "/favicon.ico",
       tag: "desklingo-lesson-" + Date.now(), // Unique tag to ensure each notification shows

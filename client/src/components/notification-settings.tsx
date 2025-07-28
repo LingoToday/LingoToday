@@ -288,14 +288,46 @@ export default function NotificationSettings() {
         )}
         
         {notificationPermission !== "granted" ? (
-          <Button 
-            onClick={requestNotificationPermission} 
-            className="w-full"
-            disabled={notificationPermission === "denied"}
-          >
-            <Bell className="h-4 w-4 mr-2" />
-            {notificationPermission === "denied" ? "Permission Blocked - See Instructions Above" : "Enable Notifications"}
-          </Button>
+          <div className="space-y-2">
+            <Button 
+              onClick={requestNotificationPermission} 
+              className="w-full"
+              disabled={notificationPermission === "denied"}
+            >
+              <Bell className="h-4 w-4 mr-2" />
+              {notificationPermission === "denied" ? "Permission Blocked - See Instructions Above" : "Enable Notifications"}
+            </Button>
+            
+            {/* Debug info even when permission not granted */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs">
+              <h4 className="font-medium text-gray-800 mb-2">Debug Info</h4>
+              <div className="space-y-1 text-gray-600">
+                <div>Permission: <span className="font-mono">{notificationPermission}</span></div>
+                <div>API Support: <span className="font-mono">{"Notification" in window ? 'yes' : 'no'}</span></div>
+                <div>Browser: <span className="font-mono">{navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other'}</span></div>
+              </div>
+              
+              <Button 
+                size="sm"
+                variant="outline"
+                className="mt-2 w-full text-xs"
+                disabled={notificationPermission !== "granted"}
+                onClick={() => {
+                  console.log("🧪 Testing API endpoint directly");
+                  fetch('/api/notification-lesson/italian')
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log("✅ API test successful:", data);
+                    })
+                    .catch(error => {
+                      console.error("❌ API test failed:", error);
+                    });
+                }}
+              >
+                Test API Endpoint
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="space-y-3">
             <div className="bg-success-50 border border-success-200 rounded-lg p-3">
@@ -399,6 +431,31 @@ export default function NotificationSettings() {
                     }}
                   >
                     Force Schedule (1min test)
+                  </Button>
+                  
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="mt-1 w-full text-xs"
+                    onClick={() => {
+                      console.log("🧪 Simple notification test");
+                      if (notificationPermission === "granted") {
+                        try {
+                          const testNotification = new Notification("DeskLingo Test", {
+                            body: "Testing simple notification without API call",
+                            icon: "/favicon.ico",
+                            tag: "test-" + Date.now()
+                          });
+                          console.log("✅ Simple notification created successfully");
+                        } catch (error) {
+                          console.error("❌ Simple notification failed:", error);
+                        }
+                      } else {
+                        console.log("❌ Permission not granted");
+                      }
+                    }}
+                  >
+                    Simple Notification Test
                   </Button>
                 </div>
               </div>
