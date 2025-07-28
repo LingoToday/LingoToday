@@ -69,10 +69,10 @@ export default function Dashboard() {
 
   if (isLoading || dashboardLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -80,12 +80,14 @@ export default function Dashboard() {
 
   if (!dashboardData || !dashboardData.settings) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4 glass-card border-border/40">
           <CardContent className="pt-6 text-center">
-            <Globe className="h-16 w-16 text-primary-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Welcome to DeskLingo!</h2>
-            <p className="text-gray-600 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow">
+              <Globe className="text-primary-foreground text-2xl" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground mb-2">Welcome to DeskLingo!</h2>
+            <p className="text-muted-foreground mb-6">
               Let's set up your language learning preferences to get started.
             </p>
             <NotificationSettings />
@@ -98,30 +100,30 @@ export default function Dashboard() {
   const { settings, stats, progress } = dashboardData;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header Navigation */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-card/50 backdrop-blur-xl border-b border-border/40 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-                <Globe className="text-white text-sm" />
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-700 rounded-xl flex items-center justify-center shadow-glow">
+                <Globe className="text-primary-foreground text-sm" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">DeskLingo</h1>
+              <h1 className="text-xl font-bold text-foreground">DeskLingo</h1>
             </div>
             
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-primary-500 transition-colors">Dashboard</Link>
-              <span className="text-gray-700 hover:text-primary-500 transition-colors">Lessons</span>
-              <span className="text-gray-700 hover:text-primary-500 transition-colors">Progress</span>
-              <span className="text-gray-700 hover:text-primary-500 transition-colors">Settings</span>
+              <Link href="/" className="text-foreground hover:text-primary transition-colors font-medium">Dashboard</Link>
+              <span className="text-muted-foreground hover:text-primary transition-colors font-medium">Lessons</span>
+              <span className="text-muted-foreground hover:text-primary transition-colors font-medium">Progress</span>
+              <span className="text-muted-foreground hover:text-primary transition-colors font-medium">Settings</span>
             </nav>
             
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="relative glass-card hover-lift">
+                <Bell className="h-4 w-4 text-foreground" />
                 {settings.notificationsEnabled && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-warning-500 rounded-full"></span>
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full shadow-glow"></span>
                 )}
               </Button>
               
@@ -130,13 +132,18 @@ export default function Dashboard() {
                   <img 
                     src={user.profileImageUrl} 
                     alt="User profile" 
-                    className="w-8 h-8 rounded-full object-cover" 
+                    className="w-8 h-8 rounded-full object-cover border-2 border-primary/20" 
                   />
                 )}
-                <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                <span className="text-sm font-medium text-foreground hidden sm:block">
                   {user?.firstName || user?.email?.split('@')[0] || 'User'}
                 </span>
-                <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-muted-foreground hover:text-foreground" 
+                  onClick={() => window.location.href = "/api/logout"}
+                >
                   Logout
                 </Button>
               </div>
@@ -150,30 +157,30 @@ export default function Dashboard() {
         
         {/* Welcome & Status Section */}
         <div className="mb-8">
-          <Card className="shadow-material">
-            <CardContent className="p-6">
+          <Card className="glass-card border-border/40 shadow-card hover-lift">
+            <CardContent className="p-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div className="mb-4 lg:mb-0">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                <div className="mb-6 lg:mb-0">
+                  <h2 className="text-3xl font-bold text-foreground mb-3">
                     Welcome back, {user?.firstName || user?.email?.split('@')[0] || 'there'}!
                   </h2>
-                  <p className="text-gray-600">
-                    Continue your {settings.selectedLanguage.charAt(0).toUpperCase() + settings.selectedLanguage.slice(1)} learning journey
+                  <p className="text-muted-foreground text-lg">
+                    Continue your <span className="text-gradient-primary font-semibold">{settings.selectedLanguage.charAt(0).toUpperCase() + settings.selectedLanguage.slice(1)}</span> learning journey
                   </p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="bg-primary-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-primary-600">{stats.streak}</div>
-                    <div className="text-sm text-gray-600">Day Streak</div>
+                  <div className="glass-card bg-primary/10 border-primary/20 rounded-2xl p-6 text-center hover-lift">
+                    <div className="text-3xl font-bold text-primary mb-1">{stats.streak}</div>
+                    <div className="text-sm text-muted-foreground font-medium">Day Streak</div>
                   </div>
-                  <div className="bg-success-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-success-600">{stats.totalLessons}</div>
-                    <div className="text-sm text-gray-600">Lessons Done</div>
+                  <div className="glass-card bg-success-500/10 border-success-500/20 rounded-2xl p-6 text-center hover-lift">
+                    <div className="text-3xl font-bold text-success-500 mb-1">{stats.totalLessons}</div>
+                    <div className="text-sm text-muted-foreground font-medium">Lessons Done</div>
                   </div>
-                  <div className="bg-secondary-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-secondary-600">{stats.wordsLearned}</div>
-                    <div className="text-sm text-gray-600">Words Learned</div>
+                  <div className="glass-card bg-secondary-500/10 border-secondary-500/20 rounded-2xl p-6 text-center hover-lift">
+                    <div className="text-3xl font-bold text-secondary-500 mb-1">{stats.wordsLearned}</div>
+                    <div className="text-sm text-muted-foreground font-medium">Words Learned</div>
                   </div>
                 </div>
               </div>
@@ -187,34 +194,34 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Current Lesson Card */}
-            <Card className="shadow-material">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Today's Lesson</h3>
-                  <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
+            <Card className="glass-card border-border/40 shadow-card hover-lift">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-foreground">Today's Lesson</h3>
+                  <span className="bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium border border-primary/20">
                     Week 2, Day 3
                   </span>
                 </div>
                 
                 {currentLesson && (
-                  <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-6 text-white mb-4">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="bg-gradient-to-br from-primary via-primary-600 to-primary-700 rounded-3xl p-8 text-primary-foreground mb-6 shadow-glow">
+                    <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h4 className="text-xl font-semibold mb-2">{currentLesson.title}</h4>
-                        <p className="text-primary-100">{currentLesson.description}</p>
+                        <h4 className="text-2xl font-bold mb-3">{currentLesson.title}</h4>
+                        <p className="text-primary-foreground/80 text-lg">{currentLesson.description}</p>
                       </div>
-                      <div className="text-3xl">{currentLesson.emoji}</div>
+                      <div className="text-5xl">{currentLesson.emoji}</div>
                     </div>
                     
-                    <div className="bg-white/10 rounded-lg p-4 mb-4">
+                    <div className="glass-card bg-primary-foreground/10 border-primary-foreground/20 rounded-2xl p-6 mb-6">
                       <div className="text-center">
-                        <div className="text-2xl font-bold mb-2">{currentLesson.content.word}</div>
-                        <div className="text-primary-100 text-lg">{currentLesson.content.translation}</div>
+                        <div className="text-3xl font-bold mb-3">{currentLesson.content.word}</div>
+                        <div className="text-primary-foreground/80 text-xl">{currentLesson.content.translation}</div>
                       </div>
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        className="mt-3 bg-white/20 hover:bg-white/30 text-white"
+                        className="mt-4 bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground border-primary-foreground/20"
                         onClick={() => {
                           if ('speechSynthesis' in window) {
                             const utterance = new SpeechSynthesisUtterance(currentLesson.content.word);
@@ -229,7 +236,7 @@ export default function Dashboard() {
                     </div>
                     
                     <Button 
-                      className="w-full bg-white text-primary-600 font-semibold hover:bg-gray-50"
+                      className="w-full bg-primary-foreground text-primary font-bold py-4 text-lg hover:bg-primary-foreground/90 hover-lift"
                       onClick={() => setSelectedLesson(currentLesson)}
                     >
                       Start Lesson
@@ -238,22 +245,22 @@ export default function Dashboard() {
                 )}
                 
                 {/* Quick Practice */}
-                <div className="border-t pt-4">
-                  <h5 className="font-medium text-gray-900 mb-3">Quick Practice</h5>
+                <div className="border-t border-border/40 pt-6">
+                  <h5 className="font-bold text-foreground mb-4 text-lg">Quick Practice</h5>
                   <div className="space-y-3">
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between p-3 bg-gray-50 hover:bg-gray-100 h-auto"
+                      className="w-full justify-between p-4 glass-card border-border/40 hover-lift h-auto"
                     >
-                      <span className="font-medium">What does "gracias" mean?</span>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-foreground">What does "gracias" mean?</span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </Button>
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between p-3 bg-gray-50 hover:bg-gray-100 h-auto"
+                      className="w-full justify-between p-4 glass-card border-border/40 hover-lift h-auto"
                     >
-                      <span className="font-medium">Translate: "Good morning"</span>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-foreground">Translate: "Good morning"</span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </div>
                 </div>
