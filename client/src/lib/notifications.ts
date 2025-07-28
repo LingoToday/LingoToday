@@ -1,67 +1,45 @@
+// Notification system for language learning reminders
+
 let notificationInterval: NodeJS.Timeout | null = null;
 
-export async function setupNotifications(): Promise<NotificationPermission> {
+// Request notification permission
+export async function requestNotificationPermission(): Promise<NotificationPermission> {
   if (!("Notification" in window)) {
-    throw new Error("This browser does not support notifications");
-  }
-
-  if (Notification.permission === "granted") {
-    return "granted";
-  }
-
-  if (Notification.permission === "denied") {
+    console.error("Notifications not supported by browser");
     return "denied";
   }
 
-  // Request permission
-  const permission = await Notification.requestPermission();
-  return permission;
-}
-
-export function scheduleNotification(language: string, frequencyMinutes: number) {
-  // Clear existing interval
-  if (notificationInterval) {
-    console.log("Clearing existing notification interval");
-    clearInterval(notificationInterval);
+  if (Notification.permission === "default") {
+    const permission = await Notification.requestPermission();
+    console.log("Notification permission result:", permission);
+    return permission;
   }
 
-  // Don't schedule if notifications aren't granted
-  if (!("Notification" in window) || Notification.permission !== "granted") {
-    console.log("Notifications not available or not granted:", Notification.permission);
-    return;
-  }
-
-  console.log(`🔔 Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
-  
-  // For testing: Use much shorter intervals to debug
-  const intervalMs = Math.min(frequencyMinutes * 60 * 1000, 30000); // Max 30 seconds for testing
-  console.log(`⏰ Notification interval set to: ${intervalMs}ms (${frequencyMinutes} minutes requested, using ${intervalMs/1000}s for testing)`);
-
-  // Set up recurring notifications using function reference
-  const triggerScheduledNotification = () => {
-    const now = new Date().toLocaleTimeString();
-    console.log(`🚀 [${now}] Triggering scheduled notification for ${language}`);
-    showLearningNotification(language);
-  };
-  
-  notificationInterval = setInterval(triggerScheduledNotification, intervalMs);
-  console.log("✅ Notification interval created with ID:", notificationInterval);
-
-  // Show first notification after a short delay using function reference
-  const showInitialNotification = () => {
-    const now = new Date().toLocaleTimeString();
-    console.log(`🎯 [${now}] Showing initial notification for ${language}`);
-    showLearningNotification(language);
-  };
-  
-  // Shorter delay for testing
-  setTimeout(showInitialNotification, 3000); // 3 seconds delay
-  console.log("⏲️ Initial notification scheduled in 3 seconds");
+  return Notification.permission;
 }
 
+// Schedule notifications at specified intervals
+export function scheduleNotification(language: string, intervalMinutes: number) {
+  console.log(`📅 Scheduling notifications for ${language} every ${intervalMinutes} minutes`);
+  
+  // Clear any existing notification interval
+  stopNotifications();
+
+  // Set up new interval
+  notificationInterval = setInterval(() => {
+    showLearningNotification(language);
+  }, intervalMinutes * 60 * 1000);
+
+  // Show first notification immediately
+  setTimeout(() => {
+    showLearningNotification(language);
+  }, 1000);
+}
+
+// Stop all scheduled notifications
 export function stopNotifications() {
   if (notificationInterval) {
-    console.log("🛑 Stopping notification scheduling");
+    console.log("🛑 Stopping notifications");
     clearInterval(notificationInterval);
     notificationInterval = null;
   } else {
@@ -89,74 +67,16 @@ export async function showLearningNotification(language: string) {
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
   try {
-    console.log(`🔗 Using local lessons data (no API call needed)`);
+    console.log(`🔗 Fetching lessons data from backend API`);
     
-    // Import lessons data directly (defined at top of file)
-    const lessonsData = {
-      "italian": {
-        "week_1": {
-          "day_1": {
-            "id": "italian_w1_d1",
-            "title": "Basic Greetings",
-            "quiz": {
-              "question": "How do you say 'Hello' in Italian?",
-              "correct_answer": "Ciao",
-              "options": ["Ciao", "Grazie", "Prego", "Arrivederci"]
-            }
-          },
-          "day_2": {
-            "id": "italian_w1_d2",
-            "title": "Numbers 1–10",
-            "quiz": {
-              "question": "How do you say 'five' in Italian?",
-              "correct_answer": "cinque",
-              "options": ["quattro", "cinque", "sei", "sette"]
-            }
-          }
-        },
-        "week_2": {
-          "day_1": {
-            "id": "italian_w2_d1",
-            "title": "Family Members",
-            "quiz": {
-              "question": "How do you say 'mother' in Italian?",
-              "correct_answer": "madre",
-              "options": ["padre", "madre", "fratello", "sorella"]
-            }
-          },
-          "day_2": {
-            "id": "italian_w2_d2",
-            "title": "Numbers 11–20",
-            "quiz": {
-              "question": "How do you say 'fifteen' in Italian?",
-              "correct_answer": "quindici",
-              "options": ["dodici", "tredici", "quattordici", "quindici"]
-            }
-          },
-          "day_3": {
-            "id": "italian_w2_d3",
-            "title": "Days of the Week",
-            "quiz": {
-              "question": "How do you say 'Monday' in Italian?",
-              "correct_answer": "lunedì",
-              "options": ["lunedì", "martedì", "mercoledì", "giovedì"]
-            }
-          },
-          "day_4": {
-            "id": "italian_w2_d4",
-            "title": "Yes/No Questions",
-            "quiz": {
-              "question": "How do you ask 'Do you speak English?' in Italian?",
-              "correct_answer": "Parli inglese?",
-              "options": ["Come stai?", "Parli inglese?", "Dove sei?", "Quanto costa?"]
-            }
-          }
-        }
-      }
-    };
+    // Fetch lessons data from backend API to ensure consistency
+    const response = await fetch(`/api/lessons/${cleanLanguage}`);
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
     
-    // Get lessons from local data
-    const languageLessons = lessonsData[cleanLanguage as keyof typeof lessonsData];
+    const languageLessons = await response.json();
+    console.log(`✅ Fetched lesson data from API for ${cleanLanguage}`);
     
     if (!languageLessons) {
       console.error(`No lessons found for language: ${cleanLanguage}`);
@@ -186,7 +106,7 @@ export async function showLearningNotification(language: string) {
       // Get all lessons and filter out completed ones
       Object.keys(languageLessons).forEach(weekKey => {
         const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = (languageLessons as any)[weekKey];
+        const weekData = languageLessons[weekKey];
         Object.keys(weekData).forEach(dayKey => {
           const day = parseInt(dayKey.replace('day_', ''));
           const lesson = weekData[dayKey];
@@ -199,14 +119,14 @@ export async function showLearningNotification(language: string) {
         });
       });
       
-      console.log(`📚 Available lessons after filtering: ${availableLessons.length}/${Object.keys(languageLessons).length * 2}`);
+      console.log(`📚 Available lessons after filtering: ${availableLessons.length}`);
       
     } catch (error) {
       console.log("⚠️ Error fetching progress, showing all lessons:", error);
       // Fallback: show all lessons if we can't get progress
       Object.keys(languageLessons).forEach(weekKey => {
         const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = (languageLessons as any)[weekKey];
+        const weekData = languageLessons[weekKey];
         Object.keys(weekData).forEach(dayKey => {
           const day = parseInt(dayKey.replace('day_', ''));
           const lesson = weekData[dayKey];
@@ -215,20 +135,20 @@ export async function showLearningNotification(language: string) {
       });
     }
     
-    // Handle different scenarios based on available lessons
     let selectedLesson;
-    let lessonType = "active"; // active, review, or motivational
+    let lessonType: "new" | "review" | "motivational" = "new";
     
+    // Three-tier notification strategy
     if (availableLessons.length > 0) {
-      // Normal case: pick a random uncompleted lesson
-      const randomIndex = Math.floor(Math.random() * availableLessons.length);
-      selectedLesson = availableLessons[randomIndex];
-      console.log(`🎯 Showing new lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
+      // Active lessons - show new lessons to learn
+      selectedLesson = availableLessons[Math.floor(Math.random() * availableLessons.length)];
+      lessonType = "new";
+      console.log(`🆕 Selected new lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
     } else {
-      // All lessons completed: provide review questions or motivational content
-      console.log("🎉 All lessons completed! Showing review content");
+      // No more new lessons - switch to review mode
+      console.log(`🔄 No new lessons available, switching to review mode`);
       
-      // Strategy 1: Review mode - randomly pick from completed lessons for practice
+      // Get all lessons for review
       const allLessons: Array<{
         lesson: any;
         week: number;
@@ -237,7 +157,7 @@ export async function showLearningNotification(language: string) {
       
       Object.keys(languageLessons).forEach(weekKey => {
         const week = parseInt(weekKey.replace('week_', ''));
-        const weekData = (languageLessons as any)[weekKey];
+        const weekData = languageLessons[weekKey];
         Object.keys(weekData).forEach(dayKey => {
           const day = parseInt(dayKey.replace('day_', ''));
           const lesson = weekData[dayKey];
@@ -246,24 +166,23 @@ export async function showLearningNotification(language: string) {
       });
       
       if (allLessons.length > 0) {
-        const randomIndex = Math.floor(Math.random() * allLessons.length);
-        selectedLesson = allLessons[randomIndex];
+        selectedLesson = allLessons[Math.floor(Math.random() * allLessons.length)];
         lessonType = "review";
-        console.log(`🔄 Showing review lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
+        console.log(`🔄 Selected review lesson: Week ${selectedLesson.week}, Day ${selectedLesson.day}`);
       } else {
-        // Strategy 2: No lessons available - create motivational notification
+        // No lessons at all - show motivational notification
+        lessonType = "motivational";
+        console.log(`💪 No lessons available, showing motivational notification`);
+        
         const motivationalMessages = [
-          "Great progress! Check your stats and keep learning!",
-          "You're doing amazing! Time to review your achievements.",
-          "Ready for more? New lessons coming soon!",
-          "Keep up the streak! Your consistency is impressive.",
-          "Language learning journey continues - check your progress!"
+          "Keep up your language learning streak! 🌟",
+          "Ready for more language practice? 📚",
+          "Time to strengthen your language skills! 💪",
+          "Your daily language learning awaits! 🎯"
         ];
         
-        const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-        
-        const motivationalNotification = new Notification(`${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`, {
-          body: randomMessage,
+        const motivationalNotification = new Notification("Language Learning", {
+          body: motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)],
           icon: "/favicon.ico",
           tag: "desklingo-motivational-" + Date.now(),
           requireInteraction: false,
@@ -271,7 +190,7 @@ export async function showLearningNotification(language: string) {
         });
         
         motivationalNotification.onclick = function() {
-          console.log("Motivational notification clicked, redirecting to dashboard");
+          console.log("Motivational notification clicked, opening dashboard");
           window.focus();
           window.location.href = "/dashboard";
           motivationalNotification.close();
@@ -428,6 +347,24 @@ export function initializeNotifications() {
   if (settings && settings.enabled && Notification.permission === "granted") {
     scheduleNotification(settings.language, settings.frequency);
   }
+}
+
+// Setup notifications based on user settings (async version for compatibility)
+export async function setupNotifications(settings?: any): Promise<NotificationPermission> {
+  console.log("Setting up notifications with settings:", settings);
+  
+  // If no settings provided, request permission first
+  if (!settings) {
+    return await requestNotificationPermission();
+  }
+  
+  if (settings.enabled && Notification.permission === "granted") {
+    scheduleNotification(settings.language, settings.frequency);
+  } else {
+    stopNotifications();
+  }
+  
+  return Notification.permission;
 }
 
 // Clean up on page unload
