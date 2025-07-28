@@ -307,6 +307,14 @@ export async function showLearningNotification(language: string) {
       isReview: lessonType === "review"
     };
     
+    console.log(`📝 Selected lesson details:`, {
+      week: week,
+      day: day,
+      lessonPath: lessonData.lessonPath,
+      title: lesson.title,
+      type: lessonType
+    });
+    
     console.log("Creating notification with content:", {
       title: notificationTitle,
       body: lessonData.question,
@@ -332,11 +340,31 @@ export async function showLearningNotification(language: string) {
     // Handle notification click - redirect to specific lesson
     notification.onclick = function() {
       console.log("Notification clicked, redirecting to:", lessonData.lessonPath);
-      window.focus();
-      // Navigate to the specific lesson with a notification flag and review status
-      const urlParams = lessonData.isReview ? "?from=notification&mode=review" : "?from=notification";
-      window.location.href = lessonData.lessonPath + urlParams;
-      notification.close();
+      console.log("Full URL will be:", lessonData.lessonPath + (lessonData.isReview ? "?from=notification&mode=review" : "?from=notification"));
+      
+      try {
+        window.focus();
+        // Navigate to the specific lesson with a notification flag and review status
+        const urlParams = lessonData.isReview ? "?from=notification&mode=review" : "?from=notification";
+        const fullUrl = lessonData.lessonPath + urlParams;
+        
+        // Force navigation by opening a new window/tab or redirecting current window
+        if (window.location.origin.includes('languagemate.replit.app') || window.location.origin.includes('localhost')) {
+          // Same origin, use direct navigation
+          window.location.href = fullUrl;
+        } else {
+          // Different origin, open new tab
+          window.open(fullUrl, '_blank');
+        }
+        
+        notification.close();
+        console.log("✅ Navigation initiated successfully");
+      } catch (error) {
+        console.error("❌ Error during notification click navigation:", error);
+        // Fallback - try to open dashboard
+        window.location.href = "/dashboard";
+        notification.close();
+      }
     };
 
     // Handle notification show event
