@@ -25,15 +25,34 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
   // Clear any existing notification interval
   stopNotifications();
 
+  // Check if we should respect a cooldown period
+  const lastNotificationTime = localStorage.getItem('lastNotificationTime');
+  const now = Date.now();
+  const cooldownMs = intervalMinutes * 60 * 1000;
+  
+  let delayMs = cooldownMs; // Default to full interval
+  
+  if (lastNotificationTime) {
+    const timeSinceLastNotification = now - parseInt(lastNotificationTime);
+    if (timeSinceLastNotification < cooldownMs) {
+      // Still in cooldown period, delay the first notification
+      delayMs = cooldownMs - timeSinceLastNotification;
+      console.log(`⏰ Respecting cooldown: ${Math.round(delayMs / 1000 / 60)} minutes until next notification`);
+    } else {
+      // Cooldown has passed, can send notification soon
+      delayMs = 1000; // 1 second delay
+    }
+  }
+
   // Set up new interval
   notificationInterval = setInterval(() => {
     showLearningNotification(language);
-  }, intervalMinutes * 60 * 1000);
+  }, cooldownMs);
 
-  // Show first notification immediately
+  // Schedule first notification with appropriate delay
   setTimeout(() => {
     showLearningNotification(language);
-  }, 1000);
+  }, delayMs);
 }
 
 // Stop all scheduled notifications
@@ -45,6 +64,12 @@ export function stopNotifications() {
   } else {
     console.log("ℹ️ No notification interval to stop");
   }
+}
+
+// Reset notification cooldown (call this when user completes a lesson)
+export function resetNotificationCooldown() {
+  console.log("🔄 Resetting notification cooldown");
+  localStorage.setItem('lastNotificationTime', Date.now().toString());
 }
 
 export async function showLearningNotification(language: string) {
@@ -61,6 +86,9 @@ export async function showLearningNotification(language: string) {
     console.error(`❌ [${now}] Notification permission not granted:`, Notification.permission);
     return;
   }
+
+  // Record this notification time
+  localStorage.setItem('lastNotificationTime', Date.now().toString());
   
   // Clean the language parameter to ensure it's just the language name
   const cleanLanguage = String(language).trim().toLowerCase().split(':')[0];

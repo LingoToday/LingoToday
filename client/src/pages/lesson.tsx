@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Volume2, Check, Bell } from "lucide-react";
 import { Link } from "wouter";
 import { getLessonById } from "@/lib/lessonStore";
+import { resetNotificationCooldown } from "@/lib/notifications";
 import type { Lesson } from "@shared/schema";
 
 export default function Lesson() {
@@ -103,6 +104,9 @@ export default function Lesson() {
       });
     },
     onSuccess: () => {
+      // Reset notification cooldown when lesson is completed
+      resetNotificationCooldown();
+      
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/progress", language] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats", language] });
