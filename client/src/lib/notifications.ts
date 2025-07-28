@@ -33,9 +33,9 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
 
   console.log(`🔔 Scheduling notifications for ${language} every ${frequencyMinutes} minutes`);
   
-  // For testing: Use shorter intervals to see if it works
-  const intervalMs = frequencyMinutes * 60 * 1000;
-  console.log(`⏰ Notification interval set to: ${intervalMs}ms (${frequencyMinutes} minutes)`);
+  // For testing: Use much shorter intervals to debug
+  const intervalMs = Math.min(frequencyMinutes * 60 * 1000, 30000); // Max 30 seconds for testing
+  console.log(`⏰ Notification interval set to: ${intervalMs}ms (${frequencyMinutes} minutes requested, using ${intervalMs/1000}s for testing)`);
 
   // Set up recurring notifications using function reference
   const triggerScheduledNotification = () => {
@@ -45,7 +45,7 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
   };
   
   notificationInterval = setInterval(triggerScheduledNotification, intervalMs);
-  console.log("✅ Notification interval created successfully");
+  console.log("✅ Notification interval created with ID:", notificationInterval);
 
   // Show first notification after a short delay using function reference
   const showInitialNotification = () => {
@@ -55,8 +55,8 @@ export function scheduleNotification(language: string, frequencyMinutes: number)
   };
   
   // Shorter delay for testing
-  setTimeout(showInitialNotification, 5000); // 5 seconds delay
-  console.log("⏲️ Initial notification scheduled in 5 seconds");
+  setTimeout(showInitialNotification, 3000); // 3 seconds delay
+  console.log("⏲️ Initial notification scheduled in 3 seconds");
 }
 
 export function stopNotifications() {
@@ -69,7 +69,7 @@ export function stopNotifications() {
   }
 }
 
-async function showLearningNotification(language: string) {
+export async function showLearningNotification(language: string) {
   const now = new Date().toLocaleTimeString();
   
   if (!("Notification" in window)) {

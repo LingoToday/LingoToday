@@ -131,9 +131,15 @@ export default function NotificationSettings() {
     });
 
     // Schedule or stop notifications based on enabled state
-    if (enabled && settings) {
+    if (enabled && settings && notificationPermission === "granted") {
+      console.log("🔄 Re-scheduling notifications after toggle:", {
+        language: settings.selectedLanguage,
+        frequency: settings.notificationFrequency,
+        permission: notificationPermission
+      });
       scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
     } else {
+      console.log("🛑 Stopping notifications after toggle");
       stopNotifications();
     }
   };
@@ -146,10 +152,21 @@ export default function NotificationSettings() {
   };
 
   const handleFrequencyChange = (frequency: string) => {
+    const newFrequency = parseInt(frequency);
     updateSettingsMutation.mutate({
       ...settings,
-      notificationFrequency: parseInt(frequency),
+      notificationFrequency: newFrequency,
     });
+
+    // Re-schedule notifications with new frequency if enabled and permission granted
+    if (settings?.notificationsEnabled && notificationPermission === "granted") {
+      console.log("🔄 Re-scheduling notifications after frequency change:", {
+        oldFrequency: settings.notificationFrequency,
+        newFrequency,
+        language: settings.selectedLanguage,
+      });
+      scheduleNotification(settings.selectedLanguage, newFrequency);
+    }
   };
 
   const requestNotificationPermission = async () => {
@@ -342,12 +359,48 @@ export default function NotificationSettings() {
                   size="sm" 
                   className="w-full"
                   onClick={() => {
-                    console.log("Full notification trigger");
-                    scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
+                    console.log("🔔 Full notification test trigger");
+                    import("@/lib/notifications").then(({ showLearningNotification }) => {
+                      // Call the actual showLearningNotification function
+                      showLearningNotification(settings.selectedLanguage);
+                    }).catch(error => {
+                      console.error("❌ Failed to import notifications:", error);
+                    });
                   }}
                 >
                   Full Test
                 </Button>
+                
+                {/* Debug Panel for notifications */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs">
+                  <h4 className="font-medium text-gray-800 mb-2">Debug Info</h4>
+                  <div className="space-y-1 text-gray-600">
+                    <div>Permission: <span className="font-mono">{notificationPermission}</span></div>
+                    <div>Enabled: <span className="font-mono">{settings.notificationsEnabled ? 'true' : 'false'}</span></div>
+                    <div>Language: <span className="font-mono">{settings.selectedLanguage}</span></div>
+                    <div>Frequency: <span className="font-mono">{settings.notificationFrequency} min</span></div>
+                    <div>API Support: <span className="font-mono">{"Notification" in window ? 'yes' : 'no'}</span></div>
+                  </div>
+                  
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="mt-2 w-full text-xs"
+                    onClick={() => {
+                      console.log("🔄 Manual scheduling trigger");
+                      if (notificationPermission === "granted") {
+                        import("@/lib/notifications").then(({ scheduleNotification }) => {
+                          console.log("🚀 Manually triggering scheduleNotification");
+                          scheduleNotification(settings.selectedLanguage, 1); // 1 minute for testing
+                        });
+                      } else {
+                        console.log("❌ Cannot schedule - permission not granted");
+                      }
+                    }}
+                  >
+                    Force Schedule (1min test)
+                  </Button>
+                </div>
               </div>
             )}
           </div>
