@@ -20,6 +20,10 @@ export interface Lesson {
   content: LessonContent;
   quiz: LessonQuiz;
   words: string[];
+  week?: number;
+  day?: number;
+  category?: string;
+  level?: string;
 }
 
 export interface WeekData {

@@ -1,244 +1,953 @@
 {
-
   "italian": {
-    "week_1": {
-      "day_1": {
-        "id": "italian_w1_d1",
-        "title": "Greetings & Basic Phrases",
+    "greetings___politeness": {
+      "lesson_1": {
+        "id": "italian_greetings___politeness_1",
+        "title": "Greetings & Politeness - Hello, how are you?",
+        "category": "Greetings & Politeness",
+        "level": "A1",
         "emoji": "👋",
-        "description": "Learn essential Italian greetings",
+        "description": "Learn essential Italian: Hello, how are you?",
         "content": {
-          "word": "Ciao",
-          "translation": "Hello",
-          "pronunciation": "/ˈtʃao/",
+          "word": "Ciao, come stai?",
+          "translation": "Hello, how are you?",
+          "pronunciation": "/ciao, come stai?/",
           "example": "Ciao, come stai?",
           "exampleTranslation": "Hello, how are you?"
         },
         "quiz": {
-          "question": "What's the Italian word for 'Hello'?",
-          "options": ["Arrivederci", "Ciao", "Grazie"],
-          "correct": 1
+          "question": "What's the Italian for 'Hello, how are you?'?",
+          "options": [
+            "Ciao, come stai?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Ciao", "Buongiorno", "Buonasera", "Arrivederci"]
+        "words": [
+          "Ciao, come stai?"
+        ]
       },
-      "day_2": {
-        "id": "italian_w1_d2",
-        "title": "Personal Pronouns",
-        "emoji": "👤",
-        "description": "Learn Italian personal pronouns",
+      "lesson_2": {
+        "id": "italian_greetings___politeness_2",
+        "title": "Greetings & Politeness - Thank you very much.",
+        "category": "Greetings & Politeness",
+        "level": "A1",
+        "emoji": "👋",
+        "description": "Learn essential Italian: Thank you very much.",
         "content": {
-          "word": "Io",
-          "translation": "I",
-          "pronunciation": "/ˈi.o/",
-          "example": "Io sono Maria.",
-          "exampleTranslation": "I am Maria."
+          "word": "Grazie mille.",
+          "translation": "Thank you very much.",
+          "pronunciation": "/grazie mille./",
+          "example": "Grazie mille.",
+          "exampleTranslation": "Thank you very much."
         },
         "quiz": {
-          "question": "What is the Italian word for 'I'?",
-          "options": ["Tu", "Io", "Lei"],
-          "correct": 1
+          "question": "What's the Italian for 'Thank you very much.'?",
+          "options": [
+            "Grazie mille.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Io", "Tu", "Lui", "Lei"]
+        "words": [
+          "Grazie mille."
+        ]
       },
-      "day_3": {
-        "id": "italian_w1_d3",
-        "title": "Verb 'Essere' (To Be)",
-        "emoji": "🌟",
-        "description": "Learn the verb 'to be' in Italian",
+      "lesson_3": {
+        "id": "italian_greetings___politeness_3",
+        "title": "Greetings & Politeness - You're welcome.",
+        "category": "Greetings & Politeness",
+        "level": "A1",
+        "emoji": "👋",
+        "description": "Learn essential Italian: You're welcome.",
         "content": {
-          "word": "Io sono",
-          "translation": "I am",
-          "pronunciation": "/ˈi.o ˈso.no/",
-          "example": "Io sono felice.",
-          "exampleTranslation": "I am happy."
+          "word": "Prego.",
+          "translation": "You're welcome.",
+          "pronunciation": "/prego./",
+          "example": "Prego.",
+          "exampleTranslation": "You're welcome."
         },
         "quiz": {
-          "question": "How do you say 'I am' in Italian?",
-          "options": ["Tu sei", "Io sono", "Lei è"],
-          "correct": 1
+          "question": "What's the Italian for 'You're welcome.'?",
+          "options": [
+            "Prego.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Io sono", "Tu sei", "Lui è", "Lei è"]
+        "words": [
+          "Prego."
+        ]
       },
-      "day_4": {
-        "id": "italian_w1_d4",
-        "title": "Introducing Yourself",
-        "emoji": "🤝",
-        "description": "Learn how to introduce yourself",
+      "lesson_4": {
+        "id": "italian_greetings___politeness_4",
+        "title": "Greetings & Politeness - Excuse me.",
+        "category": "Greetings & Politeness",
+        "level": "A1",
+        "emoji": "👋",
+        "description": "Learn essential Italian: Excuse me.",
         "content": {
-          "word": "Mi chiamo",
-          "translation": "My name is",
-          "pronunciation": "/mi ˈkja.mo/",
-          "example": "Mi chiamo Marco.",
-          "exampleTranslation": "My name is Marco."
+          "word": "Scusa.",
+          "translation": "Excuse me.",
+          "pronunciation": "/scusa./",
+          "example": "Scusa.",
+          "exampleTranslation": "Excuse me."
         },
         "quiz": {
-          "question": "How do you say 'My name is…' in Italian?",
-          "options": ["Come stai", "Mi chiamo", "Piacere"],
-          "correct": 1
+          "question": "What's the Italian for 'Excuse me.'?",
+          "options": [
+            "Scusa.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Mi chiamo", "Piacere", "Come ti chiami"]
-      },
-      "day_5": {
-        "id": "italian_w1_d5",
-        "title": "Basic Questions",
-        "emoji": "❓",
-        "description": "Learn to ask basic questions",
-        "content": {
-          "word": "Come ti chiami?",
-          "translation": "What's your name?",
-          "pronunciation": "/ˈko.me ti ˈkja.mi/",
-          "example": "Come ti chiami? Mi chiamo Anna.",
-          "exampleTranslation": "What's your name? My name is Anna."
-        },
-        "quiz": {
-          "question": "How do you ask 'What's your name?' in Italian?",
-          "options": ["Di dove sei?", "Come ti chiami?", "Come stai?"],
-          "correct": 1
-        },
-        "words": ["Come ti chiami?", "Di dove sei?", "Come stai?"]
+        "words": [
+          "Scusa."
+        ]
       }
     },
-    "week_2": {
-      "day_1": {
-        "id": "italian_w2_d1",
-        "title": "Numbers 1–10",
-        "emoji": "🔢",
-        "description": "Learn numbers 1 to 10 in Italian",
+    "introducing_yourself___others": {
+      "lesson_1": {
+        "id": "italian_introducing_yourself___others_1",
+        "title": "Introducing Yourself & Others - My name is Anna.",
+        "category": "Introducing Yourself & Others",
+        "level": "A1",
+        "emoji": "🙋",
+        "description": "Learn essential Italian: My name is Anna.",
         "content": {
-          "word": "tre",
-          "translation": "three",
-          "pronunciation": "/tre/",
-          "example": "Ho tre gatti.",
-          "exampleTranslation": "I have three cats."
+          "word": "Mi chiamo Anna.",
+          "translation": "My name is Anna.",
+          "pronunciation": "/mi chiamo anna./",
+          "example": "Mi chiamo Anna.",
+          "exampleTranslation": "My name is Anna."
         },
         "quiz": {
-          "question": "What is the Italian word for 'three'?",
-          "options": ["due", "tre", "quattro"],
-          "correct": 1
+          "question": "What's the Italian for 'My name is Anna.'?",
+          "options": [
+            "Mi chiamo Anna.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["uno", "due", "tre", "quattro", "cinque"]
+        "words": [
+          "Mi chiamo Anna."
+        ]
       },
-      "day_2": {
-        "id": "italian_w2_d2",
-        "title": "Numbers 11–20",
-        "emoji": "🔢",
-        "description": "Learn numbers 11 to 20 in Italian",
+      "lesson_2": {
+        "id": "italian_introducing_yourself___others_2",
+        "title": "Introducing Yourself & Others - I am a teacher.",
+        "category": "Introducing Yourself & Others",
+        "level": "A1",
+        "emoji": "🙋",
+        "description": "Learn essential Italian: I am a teacher.",
         "content": {
-          "word": "quindici",
-          "translation": "fifteen",
-          "pronunciation": "/kwin.di.tʃi/",
-          "example": "Sono le quindici.",
-          "exampleTranslation": "It's three PM (fifteen o'clock)."
+          "word": "Sono un insegnante.",
+          "translation": "I am a teacher.",
+          "pronunciation": "/sono un insegnante./",
+          "example": "Sono un insegnante.",
+          "exampleTranslation": "I am a teacher."
         },
         "quiz": {
-          "question": "How do you say 'fifteen' in Italian?",
-          "options": ["quattordici", "quindici", "sedici"],
-          "correct": 1
+          "question": "What's the Italian for 'I am a teacher.'?",
+          "options": [
+            "Sono un insegnante.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["undici", "dodici", "tredici", "quattordici", "quindici"]
+        "words": [
+          "Sono un insegnante."
+        ]
       },
-      "day_3": {
-        "id": "italian_w2_d3",
-        "title": "Days of the Week",
-        "emoji": "📅",
-        "description": "Learn the days of the week",
+      "lesson_3": {
+        "id": "italian_introducing_yourself___others_3",
+        "title": "Introducing Yourself & Others - This is my friend Marco.",
+        "category": "Introducing Yourself & Others",
+        "level": "A1",
+        "emoji": "🙋",
+        "description": "Learn essential Italian: This is my friend Marco.",
         "content": {
-          "word": "giovedì",
-          "translation": "Thursday",
-          "pronunciation": "/dʒo.ve.ˈdi/",
-          "example": "Oggi è giovedì.",
-          "exampleTranslation": "Today is Thursday."
+          "word": "Questo è il mio amico Marco.",
+          "translation": "This is my friend Marco.",
+          "pronunciation": "/questo è il mio amico marco./",
+          "example": "Questo è il mio amico Marco.",
+          "exampleTranslation": "This is my friend Marco."
         },
         "quiz": {
-          "question": "What day is 'giovedì'?",
-          "options": ["Wednesday", "Thursday", "Friday"],
-          "correct": 1
+          "question": "What's the Italian for 'This is my friend Marco.'?",
+          "options": [
+            "Questo è il mio amico Marco.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["lunedì", "martedì", "mercoledì", "giovedì"]
-      },
-      "day_4": {
-        "id": "italian_w2_d4",
-        "title": "Yes/No Questions",
-        "emoji": "❓",
-        "description": "Learn to ask yes/no questions",
-        "content": {
-          "word": "Parli inglese?",
-          "translation": "Do you speak English?",
-          "pronunciation": "/ˈpar.li in.ˈgle.se/",
-          "example": "Scusa, parli inglese?",
-          "exampleTranslation": "Excuse me, do you speak English?"
-        },
-        "quiz": {
-          "question": "How do you ask 'Do you speak English?' in Italian?",
-          "options": ["Parli italiano?", "Parli inglese?", "Parli francese?"],
-          "correct": 1
-        },
-        "words": ["Parli inglese?", "È la tua borsa?", "Capisci?"]
-      },
-      "day_5": {
-        "id": "italian_w2_d5",
-        "title": "Simple Responses",
-        "emoji": "💬",
-        "description": "Learn basic response words",
-        "content": {
-          "word": "Sì",
-          "translation": "Yes",
-          "pronunciation": "/si/",
-          "example": "Sì, parlo italiano.",
-          "exampleTranslation": "Yes, I speak Italian."
-        },
-        "quiz": {
-          "question": "What is the Italian for 'Yes' and 'No'?",
-          "options": ["Oui, Non", "Sì, No", "Ja, Nein"],
-          "correct": 1
-        },
-        "words": ["Sì", "No", "Forse", "Non lo so"]
+        "words": [
+          "Questo è il mio amico Marco."
+        ]
       }
-    }
-  },
-  "french": {
-    "week_1": {
-      "day_1": {
-        "id": "french_w1_d1",
-        "title": "Basic Greetings",
-        "emoji": "👋",
-        "description": "Learn essential French greetings",
+    },
+    "basic_questions___responses": {
+      "lesson_1": {
+        "id": "italian_basic_questions___responses_1",
+        "title": "Basic Questions & Responses - What is your name?",
+        "category": "Basic Questions & Responses",
+        "level": "A1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: What is your name?",
         "content": {
-          "word": "Bonjour",
-          "translation": "Hello/Good morning",
-          "pronunciation": "/bon.ˈʒuʁ/",
-          "example": "Bonjour! Comment allez-vous?",
-          "exampleTranslation": "Hello! How are you?"
+          "word": "Come ti chiami?",
+          "translation": "What is your name?",
+          "pronunciation": "/come ti chiami?/",
+          "example": "Come ti chiami?",
+          "exampleTranslation": "What is your name?"
         },
         "quiz": {
-          "question": "How do you say 'Hello' in French?",
-          "options": ["Au revoir", "Bonjour", "Merci"],
-          "correct": 1
+          "question": "What's the Italian for 'What is your name?'?",
+          "options": [
+            "Come ti chiami?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Bonjour", "Bonsoir", "Salut"]
+        "words": [
+          "Come ti chiami?"
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_basic_questions___responses_2",
+        "title": "Basic Questions & Responses - Where are you from?",
+        "category": "Basic Questions & Responses",
+        "level": "A1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Where are you from?",
+        "content": {
+          "word": "Di dove sei?",
+          "translation": "Where are you from?",
+          "pronunciation": "/di dove sei?/",
+          "example": "Di dove sei?",
+          "exampleTranslation": "Where are you from?"
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Where are you from?'?",
+          "options": [
+            "Di dove sei?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Di dove sei?"
+        ]
+      },
+      "lesson_3": {
+        "id": "italian_basic_questions___responses_3",
+        "title": "Basic Questions & Responses - I don’t know.",
+        "category": "Basic Questions & Responses",
+        "level": "A1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I don’t know.",
+        "content": {
+          "word": "Non lo so.",
+          "translation": "I don’t know.",
+          "pronunciation": "/non lo so./",
+          "example": "Non lo so.",
+          "exampleTranslation": "I don’t know."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I don’t know.'?",
+          "options": [
+            "Non lo so.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Non lo so."
+        ]
       }
-    }
-  },
-  "german": {
-    "week_1": {
-      "day_1": {
-        "id": "german_w1_d1",
-        "title": "Basic Greetings",
-        "emoji": "👋",
-        "description": "Learn essential German greetings",
+    },
+    "numbers___time": {
+      "lesson_1": {
+        "id": "italian_numbers___time_1",
+        "title": "Numbers & Time - What time is it?",
+        "category": "Numbers & Time",
+        "level": "A1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: What time is it?",
         "content": {
-          "word": "Hallo",
-          "translation": "Hello",
-          "pronunciation": "/ˈhalo/",
-          "example": "Hallo! Wie geht es dir?",
-          "exampleTranslation": "Hello! How are you?"
+          "word": "Che ore sono?",
+          "translation": "What time is it?",
+          "pronunciation": "/che ore sono?/",
+          "example": "Che ore sono?",
+          "exampleTranslation": "What time is it?"
         },
         "quiz": {
-          "question": "How do you say 'Hello' in German?",
-          "options": ["Auf Wiedersehen", "Hallo", "Danke"],
-          "correct": 1
+          "question": "What's the Italian for 'What time is it?'?",
+          "options": [
+            "Che ore sono?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
         },
-        "words": ["Hallo", "Guten Morgen", "Guten Abend"]
+        "words": [
+          "Che ore sono?"
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_numbers___time_2",
+        "title": "Numbers & Time - It is five o'clock.",
+        "category": "Numbers & Time",
+        "level": "A1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: It is five o'clock.",
+        "content": {
+          "word": "Sono le cinque.",
+          "translation": "It is five o'clock.",
+          "pronunciation": "/sono le cinque./",
+          "example": "Sono le cinque.",
+          "exampleTranslation": "It is five o'clock."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'It is five o'clock.'?",
+          "options": [
+            "Sono le cinque.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Sono le cinque."
+        ]
+      }
+    },
+    "food___drinks": {
+      "lesson_1": {
+        "id": "italian_food___drinks_1",
+        "title": "Food & Drinks - I would like a coffee.",
+        "category": "Food & Drinks",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I would like a coffee.",
+        "content": {
+          "word": "Vorrei un caffè.",
+          "translation": "I would like a coffee.",
+          "pronunciation": "/vorrei un caffè./",
+          "example": "Vorrei un caffè.",
+          "exampleTranslation": "I would like a coffee."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I would like a coffee.'?",
+          "options": [
+            "Vorrei un caffè.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Vorrei un caffè."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_food___drinks_2",
+        "title": "Food & Drinks - Do you have vegetarian dishes?",
+        "category": "Food & Drinks",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Do you have vegetarian dishes?",
+        "content": {
+          "word": "Avete piatti vegetariani?",
+          "translation": "Do you have vegetarian dishes?",
+          "pronunciation": "/avete piatti vegetariani?/",
+          "example": "Avete piatti vegetariani?",
+          "exampleTranslation": "Do you have vegetarian dishes?"
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Do you have vegetarian dishes?'?",
+          "options": [
+            "Avete piatti vegetariani?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Avete piatti vegetariani?"
+        ]
+      }
+    },
+    "shopping___prices": {
+      "lesson_1": {
+        "id": "italian_shopping___prices_1",
+        "title": "Shopping & Prices - How much is this?",
+        "category": "Shopping & Prices",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: How much is this?",
+        "content": {
+          "word": "Quanto costa questo?",
+          "translation": "How much is this?",
+          "pronunciation": "/quanto costa questo?/",
+          "example": "Quanto costa questo?",
+          "exampleTranslation": "How much is this?"
+        },
+        "quiz": {
+          "question": "What's the Italian for 'How much is this?'?",
+          "options": [
+            "Quanto costa questo?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Quanto costa questo?"
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_shopping___prices_2",
+        "title": "Shopping & Prices - Can I try it on?",
+        "category": "Shopping & Prices",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Can I try it on?",
+        "content": {
+          "word": "Posso provarlo?",
+          "translation": "Can I try it on?",
+          "pronunciation": "/posso provarlo?/",
+          "example": "Posso provarlo?",
+          "exampleTranslation": "Can I try it on?"
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Can I try it on?'?",
+          "options": [
+            "Posso provarlo?",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Posso provarlo?"
+        ]
+      }
+    },
+    "daily_routines": {
+      "lesson_1": {
+        "id": "italian_daily_routines_1",
+        "title": "Daily Routines - I wake up at 7.",
+        "category": "Daily Routines",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I wake up at 7.",
+        "content": {
+          "word": "Mi sveglio alle sette.",
+          "translation": "I wake up at 7.",
+          "pronunciation": "/mi sveglio alle sette./",
+          "example": "Mi sveglio alle sette.",
+          "exampleTranslation": "I wake up at 7."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I wake up at 7.'?",
+          "options": [
+            "Mi sveglio alle sette.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Mi sveglio alle sette."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_daily_routines_2",
+        "title": "Daily Routines - I have dinner at 8.",
+        "category": "Daily Routines",
+        "level": "A2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I have dinner at 8.",
+        "content": {
+          "word": "Ceno alle otto.",
+          "translation": "I have dinner at 8.",
+          "pronunciation": "/ceno alle otto./",
+          "example": "Ceno alle otto.",
+          "exampleTranslation": "I have dinner at 8."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I have dinner at 8.'?",
+          "options": [
+            "Ceno alle otto.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Ceno alle otto."
+        ]
+      }
+    },
+    "describing_people___things": {
+      "lesson_1": {
+        "id": "italian_describing_people___things_1",
+        "title": "Describing People & Things - She is tall and kind.",
+        "category": "Describing People & Things",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: She is tall and kind.",
+        "content": {
+          "word": "Lei è alta e gentile.",
+          "translation": "She is tall and kind.",
+          "pronunciation": "/lei è alta e gentile./",
+          "example": "Lei è alta e gentile.",
+          "exampleTranslation": "She is tall and kind."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'She is tall and kind.'?",
+          "options": [
+            "Lei è alta e gentile.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Lei è alta e gentile."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_describing_people___things_2",
+        "title": "Describing People & Things - He has blond hair.",
+        "category": "Describing People & Things",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: He has blond hair.",
+        "content": {
+          "word": "Ha i capelli biondi.",
+          "translation": "He has blond hair.",
+          "pronunciation": "/ha i capelli biondi./",
+          "example": "Ha i capelli biondi.",
+          "exampleTranslation": "He has blond hair."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'He has blond hair.'?",
+          "options": [
+            "Ha i capelli biondi.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Ha i capelli biondi."
+        ]
+      }
+    },
+    "talking_about_the_past": {
+      "lesson_1": {
+        "id": "italian_talking_about_the_past_1",
+        "title": "Talking About the Past - I went to Naples last year.",
+        "category": "Talking About the Past",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I went to Naples last year.",
+        "content": {
+          "word": "Sono andato a Napoli l’anno scorso.",
+          "translation": "I went to Naples last year.",
+          "pronunciation": "/sono andato a napoli l’anno scorso./",
+          "example": "Sono andato a Napoli l’anno scorso.",
+          "exampleTranslation": "I went to Naples last year."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I went to Naples last year.'?",
+          "options": [
+            "Sono andato a Napoli l’anno scorso.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Sono andato a Napoli l’anno scorso."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_talking_about_the_past_2",
+        "title": "Talking About the Past - We visited three museums.",
+        "category": "Talking About the Past",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: We visited three museums.",
+        "content": {
+          "word": "Abbiamo visitato tre musei.",
+          "translation": "We visited three museums.",
+          "pronunciation": "/abbiamo visitato tre musei./",
+          "example": "Abbiamo visitato tre musei.",
+          "exampleTranslation": "We visited three museums."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'We visited three museums.'?",
+          "options": [
+            "Abbiamo visitato tre musei.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Abbiamo visitato tre musei."
+        ]
+      }
+    },
+    "future_plans": {
+      "lesson_1": {
+        "id": "italian_future_plans_1",
+        "title": "Future Plans - Tomorrow I will work from home.",
+        "category": "Future Plans",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Tomorrow I will work from home.",
+        "content": {
+          "word": "Domani lavorerò da casa.",
+          "translation": "Tomorrow I will work from home.",
+          "pronunciation": "/domani lavorerò da casa./",
+          "example": "Domani lavorerò da casa.",
+          "exampleTranslation": "Tomorrow I will work from home."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Tomorrow I will work from home.'?",
+          "options": [
+            "Domani lavorerò da casa.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Domani lavorerò da casa."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_future_plans_2",
+        "title": "Future Plans - We will travel to Florence.",
+        "category": "Future Plans",
+        "level": "B1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: We will travel to Florence.",
+        "content": {
+          "word": "Viaggeremo a Firenze.",
+          "translation": "We will travel to Florence.",
+          "pronunciation": "/viaggeremo a firenze./",
+          "example": "Viaggeremo a Firenze.",
+          "exampleTranslation": "We will travel to Florence."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'We will travel to Florence.'?",
+          "options": [
+            "Viaggeremo a Firenze.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Viaggeremo a Firenze."
+        ]
+      }
+    },
+    "expressing_opinions": {
+      "lesson_1": {
+        "id": "italian_expressing_opinions_1",
+        "title": "Expressing Opinions - I believe it's important to learn languages.",
+        "category": "Expressing Opinions",
+        "level": "B2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I believe it's important to learn languages.",
+        "content": {
+          "word": "Ritengo che sia importante imparare le lingue.",
+          "translation": "I believe it's important to learn languages.",
+          "pronunciation": "/ritengo che sia importante imparare le lingue./",
+          "example": "Ritengo che sia importante imparare le lingue.",
+          "exampleTranslation": "I believe it's important to learn languages."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I believe it's important to learn languages.'?",
+          "options": [
+            "Ritengo che sia importante imparare le lingue.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Ritengo che sia importante imparare le lingue."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_expressing_opinions_2",
+        "title": "Expressing Opinions - In my opinion, that film was excellent.",
+        "category": "Expressing Opinions",
+        "level": "B2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: In my opinion, that film was excellent.",
+        "content": {
+          "word": "Secondo me, quel film era ottimo.",
+          "translation": "In my opinion, that film was excellent.",
+          "pronunciation": "/secondo me, quel film era ottimo./",
+          "example": "Secondo me, quel film era ottimo.",
+          "exampleTranslation": "In my opinion, that film was excellent."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'In my opinion, that film was excellent.'?",
+          "options": [
+            "Secondo me, quel film era ottimo.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Secondo me, quel film era ottimo."
+        ]
+      }
+    },
+    "work___daily_life": {
+      "lesson_1": {
+        "id": "italian_work___daily_life_1",
+        "title": "Work & Daily Life - I start work at 9 AM.",
+        "category": "Work & Daily Life",
+        "level": "B2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: I start work at 9 AM.",
+        "content": {
+          "word": "Inizio a lavorare alle 9.",
+          "translation": "I start work at 9 AM.",
+          "pronunciation": "/inizio a lavorare alle 9./",
+          "example": "Inizio a lavorare alle 9.",
+          "exampleTranslation": "I start work at 9 AM."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'I start work at 9 AM.'?",
+          "options": [
+            "Inizio a lavorare alle 9.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Inizio a lavorare alle 9."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_work___daily_life_2",
+        "title": "Work & Daily Life - The meeting was long but useful.",
+        "category": "Work & Daily Life",
+        "level": "B2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: The meeting was long but useful.",
+        "content": {
+          "word": "La riunione è stata lunga ma utile.",
+          "translation": "The meeting was long but useful.",
+          "pronunciation": "/la riunione è stata lunga ma utile./",
+          "example": "La riunione è stata lunga ma utile.",
+          "exampleTranslation": "The meeting was long but useful."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'The meeting was long but useful.'?",
+          "options": [
+            "La riunione è stata lunga ma utile.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "La riunione è stata lunga ma utile."
+        ]
+      }
+    },
+    "advanced_debate___argumentation": {
+      "lesson_1": {
+        "id": "italian_advanced_debate___argumentation_1",
+        "title": "Advanced Debate & Argumentation - Although I agree, I have some doubts.",
+        "category": "Advanced Debate & Argumentation",
+        "level": "C1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Although I agree, I have some doubts.",
+        "content": {
+          "word": "Benché sia d’accordo, ho alcuni dubbi.",
+          "translation": "Although I agree, I have some doubts.",
+          "pronunciation": "/benché sia d’accordo, ho alcuni dubbi./",
+          "example": "Benché sia d’accordo, ho alcuni dubbi.",
+          "exampleTranslation": "Although I agree, I have some doubts."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Although I agree, I have some doubts.'?",
+          "options": [
+            "Benché sia d’accordo, ho alcuni dubbi.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Benché sia d’accordo, ho alcuni dubbi."
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_advanced_debate___argumentation_2",
+        "title": "Advanced Debate & Argumentation - Therefore, we should reconsider the proposal.",
+        "category": "Advanced Debate & Argumentation",
+        "level": "C1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Therefore, we should reconsider the proposal.",
+        "content": {
+          "word": "Pertanto, dovremmo riconsiderare la proposta.",
+          "translation": "Therefore, we should reconsider the proposal.",
+          "pronunciation": "/pertanto, dovremmo riconsiderare la proposta./",
+          "example": "Pertanto, dovremmo riconsiderare la proposta.",
+          "exampleTranslation": "Therefore, we should reconsider the proposal."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Therefore, we should reconsider the proposal.'?",
+          "options": [
+            "Pertanto, dovremmo riconsiderare la proposta.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Pertanto, dovremmo riconsiderare la proposta."
+        ]
+      }
+    },
+    "news___formal_writing": {
+      "lesson_1": {
+        "id": "italian_news___formal_writing_1",
+        "title": "News & Formal Writing - This article discusses global warming.",
+        "category": "News & Formal Writing",
+        "level": "C1",
+        "emoji": "📖",
+        "description": "Learn essential Italian: This article discusses global warming.",
+        "content": {
+          "word": "Questo articolo tratta il riscaldamento globale.",
+          "translation": "This article discusses global warming.",
+          "pronunciation": "/questo articolo tratta il riscaldamento globale./",
+          "example": "Questo articolo tratta il riscaldamento globale.",
+          "exampleTranslation": "This article discusses global warming."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'This article discusses global warming.'?",
+          "options": [
+            "Questo articolo tratta il riscaldamento globale.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Questo articolo tratta il riscaldamento globale."
+        ]
+      }
+    },
+    "idioms___figurative_language": {
+      "lesson_1": {
+        "id": "italian_idioms___figurative_language_1",
+        "title": "Idioms & Figurative Language - Break a leg!",
+        "category": "Idioms & Figurative Language",
+        "level": "C2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: Break a leg!",
+        "content": {
+          "word": "In bocca al lupo!",
+          "translation": "Break a leg!",
+          "pronunciation": "/in bocca al lupo!/",
+          "example": "In bocca al lupo!",
+          "exampleTranslation": "Break a leg!"
+        },
+        "quiz": {
+          "question": "What's the Italian for 'Break a leg!'?",
+          "options": [
+            "In bocca al lupo!",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "In bocca al lupo!"
+        ]
+      },
+      "lesson_2": {
+        "id": "italian_idioms___figurative_language_2",
+        "title": "Idioms & Figurative Language - He spends money like water.",
+        "category": "Idioms & Figurative Language",
+        "level": "C2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: He spends money like water.",
+        "content": {
+          "word": "Ha le mani bucate.",
+          "translation": "He spends money like water.",
+          "pronunciation": "/ha le mani bucate./",
+          "example": "Ha le mani bucate.",
+          "exampleTranslation": "He spends money like water."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'He spends money like water.'?",
+          "options": [
+            "Ha le mani bucate.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "Ha le mani bucate."
+        ]
+      }
+    },
+    "academic___literary_expression": {
+      "lesson_1": {
+        "id": "italian_academic___literary_expression_1",
+        "title": "Academic & Literary Expression - It is therefore essential to proceed carefully.",
+        "category": "Academic & Literary Expression",
+        "level": "C2",
+        "emoji": "📖",
+        "description": "Learn essential Italian: It is therefore essential to proceed carefully.",
+        "content": {
+          "word": "È altresì essenziale procedere con cautela.",
+          "translation": "It is therefore essential to proceed carefully.",
+          "pronunciation": "/è altresì essenziale procedere con cautela./",
+          "example": "È altresì essenziale procedere con cautela.",
+          "exampleTranslation": "It is therefore essential to proceed carefully."
+        },
+        "quiz": {
+          "question": "What's the Italian for 'It is therefore essential to proceed carefully.'?",
+          "options": [
+            "È altresì essenziale procedere con cautela.",
+            "Sbagliato",
+            "Non so"
+          ],
+          "correct": 0
+        },
+        "words": [
+          "È altresì essenziale procedere con cautela."
+        ]
       }
     }
   }

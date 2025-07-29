@@ -222,10 +222,11 @@ export async function showLearningNotification(language: string) {
     
     const lessonData = {
       question: questionText,
-      lessonPath: `/lesson/${cleanLanguage}/${selectedLesson.week}/${selectedLesson.day}`,
+      lessonPath: `/lesson/${cleanLanguage}/${selectedLesson.week || 1}/${selectedLesson.day || 1}`,
       lessonId: selectedLesson.id,
-      week: selectedLesson.week,
-      day: selectedLesson.day,
+      week: selectedLesson.week || 1,
+      day: selectedLesson.day || 1,
+      category: selectedLesson.category,
       title: selectedLesson.title,
       isReview
     };

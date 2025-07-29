@@ -199,7 +199,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-gray-900">Today's Lesson</h3>
                   <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-medium border border-purple-200">
-                    Week 2, Day 3
+                    {currentLesson?.category || 'Greetings & Politeness'}
                   </span>
                 </div>
                 

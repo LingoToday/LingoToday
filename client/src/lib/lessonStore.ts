@@ -12,8 +12,10 @@ interface LessonData {
     correct: number;
   };
   words: string[];
-  week: number;
-  day: number;
+  week?: number;
+  day?: number;
+  category?: string;
+  level?: string;
 }
 
 interface LessonStore {
@@ -66,7 +68,7 @@ export function storeLessons(lessons: LessonData[], language: string): void {
   }
 }
 
-// Convert API lesson data to flat array
+// Convert API lesson data to flat array (now handles category-based structure)
 export function processLessonData(apiData: any, language: string): LessonData[] {
   const lessons: LessonData[] = [];
   
@@ -81,39 +83,71 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
     return lessons;
   }
   
-  Object.keys(apiData).forEach(weekKey => {
-    const week = parseInt(weekKey.replace('week_', ''));
-    const weekData = apiData[weekKey];
+  // Handle both old week-based and new category-based structures
+  Object.keys(apiData).forEach(categoryKey => {
+    const categoryData = apiData[categoryKey];
     
-    console.log(`📅 Processing ${weekKey} (week ${week}):`, Object.keys(weekData || {}));
+    console.log(`📅 Processing ${categoryKey}:`, Object.keys(categoryData || {}));
     
-    if (!weekData || typeof weekData !== 'object') {
-      console.error(`❌ Invalid week data for ${weekKey}:`, weekData);
+    if (!categoryData || typeof categoryData !== 'object') {
+      console.error(`❌ Invalid category data for ${categoryKey}:`, categoryData);
       return;
     }
     
-    Object.keys(weekData).forEach(dayKey => {
-      const day = parseInt(dayKey.replace('day_', ''));
-      const lesson = weekData[dayKey];
+    // Check if this is old week-based structure (week_1, week_2) or new category structure
+    if (categoryKey.startsWith('week_')) {
+      // Handle old week-based structure
+      const week = parseInt(categoryKey.replace('week_', ''));
       
-      if (!lesson || !lesson.id) {
-        console.error(`❌ Invalid lesson data for ${weekKey}/${dayKey}:`, lesson);
-        return;
-      }
-      
-      console.log(`📚 Adding lesson: ${lesson.id} (Week ${week}, Day ${day})`);
-      
-      lessons.push({
-        ...lesson,
-        week,
-        day
+      Object.keys(categoryData).forEach(dayKey => {
+        const day = parseInt(dayKey.replace('day_', ''));
+        const lesson = categoryData[dayKey];
+        
+        if (!lesson || !lesson.id) {
+          console.error(`❌ Invalid lesson data for ${categoryKey}/${dayKey}:`, lesson);
+          return;
+        }
+        
+        console.log(`📚 Adding lesson: ${lesson.id} (Week ${week}, Day ${day})`);
+        
+        lessons.push({
+          ...lesson,
+          week,
+          day
+        });
       });
-    });
+    } else {
+      // Handle new category-based structure
+      Object.keys(categoryData).forEach(lessonKey => {
+        const lesson = categoryData[lessonKey];
+        
+        if (!lesson || !lesson.id) {
+          console.error(`❌ Invalid lesson data for ${categoryKey}/${lessonKey}:`, lesson);
+          return;
+        }
+        
+        console.log(`📚 Adding lesson: ${lesson.id} (Category: ${lesson.category || categoryKey})`);
+        
+        // Add week/day defaults for compatibility with existing code
+        lessons.push({
+          ...lesson,
+          week: lesson.week || 1,
+          day: lesson.day || lessons.length + 1,
+          category: lesson.category || categoryKey
+        });
+      });
+    }
   });
   
+  // Sort by category order then by lesson ID
   const sortedLessons = lessons.sort((a, b) => {
-    if (a.week !== b.week) return a.week - b.week;
-    return a.day - b.day;
+    // If both have week/day, use that
+    if (a.week && b.week && a.day && b.day) {
+      if (a.week !== b.week) return a.week - b.week;
+      return a.day - b.day;
+    }
+    // Otherwise sort by ID
+    return a.id.localeCompare(b.id);
   });
   
   console.log(`✅ Processed ${sortedLessons.length} lessons total`);

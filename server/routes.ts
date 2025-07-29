@@ -230,33 +230,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/notification-lesson/:language', async (req, res) => {
     try {
       const { language } = req.params;
-      const lessonsPath = path.join(import.meta.dirname, 'lessons.json');
+      const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
+      
+      console.log(`🔍 Looking for lessons at: ${lessonsPath}`);
       
       if (!fs.existsSync(lessonsPath)) {
+        console.error(`❌ Lessons file not found at: ${lessonsPath}`);
         return res.status(404).json({ message: "Lessons file not found" });
       }
       
       const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
       const languageLessons = lessonsData[language];
       
+      console.log(`🔍 Available languages: ${Object.keys(lessonsData)}`);
+      console.log(`🔍 Looking for language: ${language}`);
+      console.log(`🔍 Language lessons found: ${!!languageLessons}`);
+      
       if (!languageLessons) {
         return res.status(404).json({ message: `Lessons not found for language: ${language}` });
       }
       
-      // Get all available lessons
+      // Get all available lessons (handle both old week-based and new category-based structure)
       const allLessons: Array<{
         lesson: any;
-        week: number;
-        day: number;
+        week?: number;
+        day?: number;
+        category?: string;
       }> = [];
       
-      Object.keys(languageLessons).forEach(weekKey => {
-        const week = parseInt(weekKey.replace('week_', ''));
-        Object.keys(languageLessons[weekKey]).forEach(dayKey => {
-          const day = parseInt(dayKey.replace('day_', ''));
-          const lesson = languageLessons[weekKey][dayKey];
-          allLessons.push({ lesson, week, day });
-        });
+      Object.keys(languageLessons).forEach(categoryKey => {
+        const categoryData = languageLessons[categoryKey];
+        
+        if (categoryKey.startsWith('week_')) {
+          // Handle old week-based structure
+          const week = parseInt(categoryKey.replace('week_', ''));
+          Object.keys(categoryData).forEach(dayKey => {
+            const day = parseInt(dayKey.replace('day_', ''));
+            const lesson = categoryData[dayKey];
+            allLessons.push({ lesson, week, day });
+          });
+        } else {
+          // Handle new category-based structure
+          Object.keys(categoryData).forEach(lessonKey => {
+            const lesson = categoryData[lessonKey];
+            allLessons.push({ 
+              lesson, 
+              category: lesson.category || categoryKey,
+              week: lesson.week || 1,
+              day: lesson.day || allLessons.length + 1
+            });
+          });
+        }
       });
       
       if (allLessons.length === 0) {
@@ -265,13 +289,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Pick a random lesson
       const randomIndex = Math.floor(Math.random() * allLessons.length);
-      const { lesson, week, day } = allLessons[randomIndex];
+      const { lesson, week, day, category } = allLessons[randomIndex];
       
       res.json({
         question: lesson.quiz.question,
         lessonPath: `/lesson/${language}/${week}/${day}`,
         week,
         day,
+        category,
         title: lesson.title
       });
     } catch (error) {
