@@ -15,6 +15,7 @@ interface LessonData {
   week?: number;
   day?: number;
   category?: string;
+  categoryOrder?: number;
   level?: string;
 }
 
@@ -139,14 +140,14 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
     }
   });
   
-  // Sort by category order then by lesson ID
+  // Sort by category order first, then by lesson number within category
   const sortedLessons = lessons.sort((a, b) => {
-    // If both have week/day, use that
-    if (a.week && b.week && a.day && b.day) {
-      if (a.week !== b.week) return a.week - b.week;
-      return a.day - b.day;
-    }
-    // Otherwise sort by ID
+    // Primary sort: by categoryOrder (learning progression)
+    const orderA = a.categoryOrder || 999;
+    const orderB = b.categoryOrder || 999;
+    if (orderA !== orderB) return orderA - orderB;
+    
+    // Secondary sort: by lesson ID within same category
     return a.id.localeCompare(b.id);
   });
   
@@ -272,5 +273,43 @@ export async function initializeLessonStore(language: string, completedLessonIds
     }
   } else {
     console.error(`❌ Failed to initialize lesson store for ${language}`);
+  }
+}
+
+// Get lessons in learning order (sorted by categoryOrder)
+export function getLessonsInOrder(): LessonData[] {
+  try {
+    const stored = loadStoredLessons();
+    if (!stored || stored.lessons.length === 0) return [];
+    
+    return stored.lessons.sort((a, b) => {
+      const orderA = a.categoryOrder || 999;
+      const orderB = b.categoryOrder || 999;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.id.localeCompare(b.id);
+    });
+  } catch (error) {
+    console.error('Error getting lessons in order:', error);
+    return [];
+  }
+}
+
+// Get the next lesson to learn (first incomplete lesson in order)
+export function getNextLessonToLearn(completedLessonIds: string[] = []): LessonData | null {
+  try {
+    const orderedLessons = getLessonsInOrder();
+    
+    // Find the first lesson that hasn't been completed
+    for (const lesson of orderedLessons) {
+      if (!completedLessonIds.includes(lesson.id)) {
+        return lesson;
+      }
+    }
+    
+    // If all lessons are completed, return the first lesson for review
+    return orderedLessons[0] || null;
+  } catch (error) {
+    console.error('Error getting next lesson:', error);
+    return null;
   }
 }

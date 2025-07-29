@@ -10,15 +10,17 @@ import { Globe, Bell, Play, Check, ArrowRight, BarChart3, BookOpen, Settings, Sh
 import NotificationSettings from "@/components/notification-settings";
 import ProgressOverview from "@/components/progress-overview";
 import LessonModal from "@/components/lesson-modal";
+import LessonProgress from "@/components/lesson-progress";
 import { useState } from "react";
 import { Link } from "wouter";
-import { initializeLessonStore } from "@/lib/lessonStore";
+import { initializeLessonStore, getNextLessonToLearn, getLessonsInOrder } from "@/lib/lessonStore";
 import type { DashboardData, Lesson, User } from "@shared/schema";
 
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth() as { user: User | null; isAuthenticated: boolean; isLoading: boolean };
   const { toast } = useToast();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [currentLesson, setCurrentLesson] = useState<any>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -54,6 +56,13 @@ export default function Dashboard() {
       initializeLessonStore(dashboardData.settings.selectedLanguage, completedLessonIds)
         .then(() => {
           console.log('✅ Lesson store initialized successfully with fresh API data');
+          
+          // Get the next lesson to learn based on progress
+          const nextLesson = getNextLessonToLearn(completedLessonIds);
+          if (nextLesson) {
+            console.log('📚 Next lesson to learn:', nextLesson.title, nextLesson.category);
+            setCurrentLesson(nextLesson);
+          }
         })
         .catch(error => {
           console.error('❌ Failed to initialize lesson store:', error);
@@ -61,11 +70,7 @@ export default function Dashboard() {
     }
   }, [dashboardData]);
 
-  const { data: currentLesson } = useQuery<Lesson>({
-    queryKey: ["/api/lessons", dashboardData?.settings?.selectedLanguage, "2", "3"],
-    enabled: !!dashboardData?.settings?.selectedLanguage,
-    retry: false,
-  });
+  // Remove the old query - we now get currentLesson from the lesson store
 
   if (isLoading || dashboardLoading) {
     return (
@@ -199,7 +204,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-gray-900">Today's Lesson</h3>
                   <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-medium border border-purple-200">
-                    {currentLesson?.category || 'Greetings & Politeness'}
+                    {(currentLesson as any)?.category || 'Greetings & Politeness'}
                   </span>
                 </div>
                 
@@ -305,6 +310,9 @@ export default function Dashboard() {
           
           {/* Sidebar */}
           <div className="space-y-6">
+            
+            {/* Learning Progress */}
+            <LessonProgress completedLessonIds={progress.map(p => `${p.language}_w${p.week}_d${p.day}`)} />
             
             {/* Notification Settings */}
             <NotificationSettings />

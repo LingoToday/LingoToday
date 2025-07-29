@@ -23,6 +23,7 @@ export interface Lesson {
   week?: number;
   day?: number;
   category?: string;
+  categoryOrder?: number;
   level?: string;
 }
 
