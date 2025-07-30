@@ -212,7 +212,9 @@ export async function showLearningNotification(language: string) {
             lessons.push({
               ...lesson,
               categoryKey,
-              lessonKey
+              lessonKey,
+              // Ensure we have proper ID format
+              id: lesson.id || `${cleanLanguage}_${categoryKey}_${lessonKey.replace('lesson_', '')}`
             });
           });
         });
@@ -295,6 +297,8 @@ export async function showLearningNotification(language: string) {
     // Category order 1 = Week 1, Category order 2 = Week 2, etc.
     const week = selectedLesson.categoryOrder || 1;
     const day = parseInt(selectedLesson.lessonKey?.replace('lesson_', '') || '1');
+    
+    console.log(`🗺️ Mapping lesson to URL: categoryOrder=${selectedLesson.categoryOrder} -> week=${week}, lessonKey=${selectedLesson.lessonKey} -> day=${day}`);
     
     // Modify the question based on lesson type
     let questionText = selectedLesson.quiz.question;
