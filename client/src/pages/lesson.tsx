@@ -43,18 +43,28 @@ export default function Lesson() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
+      console.log("User not authenticated on lesson page, redirecting to login");
+      
+      // If coming from notification, preserve the lesson URL for after login
+      if (fromNotification && language && week && day) {
+        const currentUrl = window.location.pathname + window.location.search;
+        sessionStorage.setItem('redirect-after-login', currentUrl);
+        console.log("Stored redirect URL for after login:", currentUrl);
+      }
+      
       toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
+        title: "Please log in",
+        description: "Redirecting to login page...",
+        variant: "default",
       });
+      
       const redirectToLogin = () => {
         window.location.href = "/api/login";
       };
-      setTimeout(redirectToLogin, 500);
+      setTimeout(redirectToLogin, 1000);
       return;
     }
-  }, [isAuthenticated, isLoading, toast]);
+  }, [isAuthenticated, isLoading, toast, fromNotification, language, week, day]);
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
     queryKey: ["/api/lessons", language, week, day],

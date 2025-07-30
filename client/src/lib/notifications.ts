@@ -426,13 +426,24 @@ export async function showLearningNotification(language: string) {
       console.log("Lesson ID:", lessonData.lessonId);
       
       try {
-        window.focus();
+        // First try to focus the current window
+        if (window.focus) {
+          window.focus();
+        }
+        
+        // Check if the current page is already the app (same origin)
+        const currentUrl = window.location.href;
+        const appDomain = window.location.origin;
+        
+        console.log("Current URL:", currentUrl);
+        console.log("App domain:", appDomain);
         
         // Navigate using lesson ID approach for guaranteed data availability
         const urlParams = lessonData.isReview ? "?from=notification&mode=review&id=" + lessonData.lessonId : "?from=notification&id=" + lessonData.lessonId;
         const fullUrl = lessonData.lessonPath + urlParams;
         
-        // Use direct navigation for same origin
+        // Always use same-window navigation to preserve session
+        console.log("Navigating to:", fullUrl);
         window.location.href = fullUrl;
         notification.close();
         
@@ -440,8 +451,13 @@ export async function showLearningNotification(language: string) {
       } catch (error) {
         console.error("❌ Error during notification click navigation:", error);
         // Fallback - try to open dashboard
-        window.location.href = "/dashboard";
-        notification.close();
+        try {
+          window.location.href = "/dashboard";
+          notification.close();
+        } catch (fallbackError) {
+          console.error("❌ Fallback navigation also failed:", fallbackError);
+          notification.close();
+        }
       }
     };
 

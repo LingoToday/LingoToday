@@ -45,6 +45,19 @@ export default function Dashboard() {
       setTimeout(redirectToLogin, 500);
       return;
     }
+    
+    // Check for post-login redirect (from notifications)
+    if (isAuthenticated && !isLoading) {
+      const redirectUrl = sessionStorage.getItem('redirect-after-login');
+      if (redirectUrl) {
+        console.log('Redirecting after login to:', redirectUrl);
+        sessionStorage.removeItem('redirect-after-login');
+        // Use a slight delay to ensure dashboard is fully loaded
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 500);
+      }
+    }
   }, [isAuthenticated, isLoading, toast]);
 
   // Function to start daily session
