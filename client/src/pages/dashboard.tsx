@@ -76,6 +76,16 @@ export default function Dashboard() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
+  // Function to reset lesson progression (for testing)
+  const resetLessonProgression = () => {
+    localStorage.removeItem('lastShownLessonId');
+    console.log('🔄 Reset lesson progression - will start from first lesson');
+    toast({
+      title: "Lesson progression reset",
+      description: "Next notification will start from the first lesson",
+    });
+  };
+
   // Function to start daily session
   const handleStartDailySession = async () => {
     if (!dashboardData?.settings?.selectedLanguage) {
@@ -320,6 +330,16 @@ export default function Dashboard() {
                       size="lg"
                     >
                       Start Today's Lessons
+                    </Button>
+                    
+                    {/* Debug button to reset lesson progression */}
+                    <Button 
+                      onClick={resetLessonProgression}
+                      variant="outline"
+                      className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-sm"
+                      size="sm"
+                    >
+                      🔄 Reset Lesson Progression (Debug)
                     </Button>
                     
                     {/* Test notification button */}

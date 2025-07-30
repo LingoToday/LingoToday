@@ -220,13 +220,16 @@ export async function showLearningNotification(language: string) {
       
       if (progressResponse.ok) {
         const progressData = await progressResponse.json();
-        completedLessonIds = progressData.map((p: any) => `${p.language}_w${p.week}_d${p.day}`);
-        console.log(`📊 Found ${completedLessonIds.length} completed lessons`);
+        completedLessonIds = progressData.map((p: any) => p.lessonId || `${p.language}_w${p.week}_d${p.day}`);
+        console.log(`📊 Found ${completedLessonIds.length} completed lessons:`, completedLessonIds.slice(0, 3));
       } else {
-        console.log("⚠️ Could not fetch progress, using empty progress");
+        console.log("⚠️ Could not fetch progress (status " + progressResponse.status + "), showing all lessons");
+        // Don't filter out any lessons if we can't get progress data
+        completedLessonIds = [];
       }
     } catch (error) {
       console.log("⚠️ Error fetching progress:", error);
+      completedLessonIds = [];
     }
     
     // Get lesson from stored data using lesson store
@@ -291,6 +294,7 @@ export async function showLearningNotification(language: string) {
         
         console.log(`🔢 Processed ${lessons.length} lessons in A1 progression order`);
         console.log(`📋 First few lessons:`, lessons.slice(0, 5).map(l => `${l.category}: ${l.title}`));
+        console.log(`🆔 First few lesson IDs:`, lessons.slice(0, 5).map(l => l.id));
         
         // Filter A1 lessons only and remove completed ones
         const a1Lessons = lessons.filter(lesson => lesson.level === 'A1');
@@ -301,27 +305,34 @@ export async function showLearningNotification(language: string) {
         console.log(`🎯 ${availableLessons.length} A1 lessons available (${a1Lessons.length - availableLessons.length} completed)`);
         
         if (availableLessons.length > 0) {
-          // Get the last shown lesson to avoid repetition
+          // Get the last shown lesson to find the next one in sequence
           const lastShownLessonId = localStorage.getItem('lastShownLessonId');
           
           if (lastShownLessonId && availableLessons.length > 1) {
-            // Find a different lesson than the last one shown
-            const differentLessons = availableLessons.filter(lesson => lesson.id !== lastShownLessonId);
-            if (differentLessons.length > 0) {
-              selectedLesson = differentLessons[0];
-              console.log(`✅ Selected NEXT available A1 lesson (avoiding repeat): ${selectedLesson.category} - "${selectedLesson.title}"`);
-            } else {
-              // If we only have one lesson, still select it
+            // Find the next lesson in sequence after the last shown one
+            const lastShownIndex = availableLessons.findIndex(lesson => lesson.id === lastShownLessonId);
+            console.log(`🔍 Last shown lesson "${lastShownLessonId}" found at index: ${lastShownIndex} of ${availableLessons.length} available lessons`);
+            
+            if (lastShownIndex >= 0 && lastShownIndex < availableLessons.length - 1) {
+              // Get the next lesson in sequence
+              selectedLesson = availableLessons[lastShownIndex + 1];
+              console.log(`✅ Selected NEXT lesson in sequence (${lastShownIndex + 1}/${availableLessons.length}): ${selectedLesson.category} - "${selectedLesson.title}"`);
+            } else if (lastShownIndex >= 0) {
+              // If last shown lesson was the last available, start from beginning
               selectedLesson = availableLessons[0];
-              console.log(`✅ Selected only available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+              console.log(`🔄 Last lesson reached, restarting from first: ${selectedLesson.category} - "${selectedLesson.title}"`);
+            } else {
+              // Last shown lesson not found in available lessons, start from first
+              selectedLesson = availableLessons[0];
+              console.log(`⚠️ Last shown lesson not found in available, starting from first: ${selectedLesson.category} - "${selectedLesson.title}"`);
             }
           } else {
-            // First time or only one lesson available
+            // First time or last shown lesson not found in available lessons
             selectedLesson = availableLessons[0];
-            console.log(`✅ Selected FIRST available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+            console.log(`✅ Selected FIRST available A1 lesson (${availableLessons.length} total): ${selectedLesson.category} - "${selectedLesson.title}"`);
           }
           
-          // Store this lesson ID to avoid repeating it next time
+          // Store this lesson ID for next progression
           localStorage.setItem('lastShownLessonId', selectedLesson.id);
         } else if (a1Lessons.length > 0) {
           // If all A1 lessons completed, rotate through them for review
