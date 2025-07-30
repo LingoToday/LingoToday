@@ -26,50 +26,35 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
   // Clear any existing notification interval
   stopNotifications();
 
-  // Check if we should respect a cooldown period
-  const lastNotificationTime = localStorage.getItem('lastNotificationTime');
-  const lastScheduleTime = localStorage.getItem('lastScheduleTime');
   const now = Date.now();
-  const cooldownMs = intervalMinutes * 60 * 1000;
+  const intervalMs = intervalMinutes * 60 * 1000;
   
   // Store when we scheduled notifications for recovery
   localStorage.setItem('lastScheduleTime', now.toString());
   localStorage.setItem('scheduledLanguage', language);
   localStorage.setItem('scheduledInterval', intervalMinutes.toString());
   
-  let delayMs = cooldownMs; // Default to full interval
-  
-  if (lastNotificationTime) {
-    const timeSinceLastNotification = now - parseInt(lastNotificationTime);
-    if (timeSinceLastNotification < cooldownMs) {
-      // Still in cooldown period, delay the first notification
-      delayMs = cooldownMs - timeSinceLastNotification;
-      console.log(`⏰ Respecting cooldown: ${Math.round(delayMs / 1000 / 60)} minutes until next notification`);
-    } else {
-      // Cooldown has passed, can send notification soon
-      delayMs = Math.min(5000, cooldownMs); // Max 5 seconds delay if cooldown passed
-      console.log(`✅ Cooldown passed, scheduling notification in ${delayMs/1000} seconds`);
-    }
-  } else {
-    // First time scheduling, start with a short delay
-    delayMs = 5000; // 5 seconds for first notification
-    console.log(`🆕 First time scheduling, starting in ${delayMs/1000} seconds`);
-  }
+  console.log(`⏰ Setting up notifications every ${intervalMinutes} minutes (${intervalMs}ms)`);
 
-  // Set up new interval
-  notificationInterval = setInterval(() => {
-    showLearningNotification(language);
-  }, cooldownMs);
-
-  // Schedule first notification with appropriate delay
+  // Create a consistent interval-based system
+  // First notification after 30 seconds (to avoid immediate spam)
   setTimeout(() => {
+    console.log(`🚀 Firing first notification for ${language}`);
     showLearningNotification(language);
-  }, delayMs);
+    
+    // Then set up regular interval
+    notificationInterval = setInterval(() => {
+      console.log(`⏰ Interval triggered - firing notification for ${language}`);
+      showLearningNotification(language);
+    }, intervalMs);
+    
+    console.log(`✅ Regular interval set: every ${intervalMinutes} minutes`);
+  }, 30000); // 30 seconds initial delay
   
   // Start health check to ensure notifications keep running
   startNotificationHealthCheck();
   
-  console.log(`✅ Notification system active: next in ${Math.round(delayMs/1000/60)} min, then every ${intervalMinutes} min`);
+  console.log(`✅ Notification system initialized: first notification in 30 seconds, then every ${intervalMinutes} minutes`);
 }
 
 // Stop all scheduled notifications
@@ -100,15 +85,29 @@ function startNotificationHealthCheck() {
     clearInterval(healthCheckInterval);
   }
   
-  // Check every 5 minutes
+  console.log("🩺 Starting notification health check (every 10 minutes)");
+  
+  // Check every 10 minutes (less aggressive)
   healthCheckInterval = setInterval(() => {
     const settings = loadNotificationSettings();
+    const lastScheduleTime = localStorage.getItem('lastScheduleTime');
+    const timeSinceSchedule = lastScheduleTime ? Date.now() - parseInt(lastScheduleTime) : 0;
+    
+    console.log("🩺 Health check running:", {
+      hasSettings: !!settings,
+      enabled: settings?.enabled,
+      permission: Notification.permission,
+      hasInterval: !!notificationInterval,
+      timeSinceSchedule: Math.round(timeSinceSchedule / 1000 / 60) + " minutes"
+    });
     
     if (settings && settings.enabled && Notification.permission === "granted" && !notificationInterval) {
       console.log("🩺 Health check: notifications should be running but aren't - recovering");
       scheduleNotification(settings.language, settings.frequency);
+    } else if (notificationInterval) {
+      console.log("🩺 Health check: notifications are running correctly");
     }
-  }, 5 * 60 * 1000); // 5 minutes
+  }, 10 * 60 * 1000); // 10 minutes
 }
 
 // Reset notification cooldown (call this when user completes a lesson)
@@ -119,6 +118,7 @@ export function resetNotificationCooldown() {
 
 export async function showLearningNotification(language: string) {
   const now = new Date().toLocaleTimeString();
+  const timestamp = Date.now();
   
   console.log(`📢 [${now}] showLearningNotification called with language:`, language, typeof language);
   
@@ -133,7 +133,20 @@ export async function showLearningNotification(language: string) {
   }
 
   // Record this notification time
-  localStorage.setItem('lastNotificationTime', Date.now().toString());
+  localStorage.setItem('lastNotificationTime', timestamp.toString());
+  
+  // Log detailed timing information
+  const lastNotificationTime = localStorage.getItem('lastNotificationTime');
+  const lastScheduleTime = localStorage.getItem('lastScheduleTime');
+  const scheduledInterval = localStorage.getItem('scheduledInterval');
+  
+  console.log(`⏰ Notification timing:`, {
+    currentTime: new Date(timestamp).toLocaleTimeString(),
+    lastNotification: lastNotificationTime ? new Date(parseInt(lastNotificationTime)).toLocaleTimeString() : 'none',
+    lastSchedule: lastScheduleTime ? new Date(parseInt(lastScheduleTime)).toLocaleTimeString() : 'none',
+    scheduledInterval: scheduledInterval + ' minutes',
+    timeSinceLastNotification: lastNotificationTime ? Math.round((timestamp - parseInt(lastNotificationTime)) / 1000 / 60) + ' minutes' : 'N/A'
+  });
   
   // Clean the language parameter to ensure it's just the language name
   const cleanLanguage = String(language).trim().toLowerCase().split(':')[0];

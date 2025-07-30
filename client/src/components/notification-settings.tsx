@@ -336,7 +336,6 @@ export default function NotificationSettings() {
                 size="sm"
                 variant="outline"
                 className="mt-2 w-full text-xs"
-                disabled={notificationPermission !== "granted"}
                 onClick={() => {
                   console.log("🧪 Testing API endpoint directly");
                   console.log(`🌐 Current window context: ${window.location.origin}`);
@@ -460,6 +459,35 @@ export default function NotificationSettings() {
                     }}
                   >
                     Force Schedule (1min test)
+                  </Button>
+                  
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="mt-1 w-full text-xs"
+                    onClick={() => {
+                      console.log("🕐 Checking notification timing status");
+                      const lastScheduleTime = localStorage.getItem('lastScheduleTime');
+                      const lastNotificationTime = localStorage.getItem('lastNotificationTime');
+                      const scheduledLanguage = localStorage.getItem('scheduledLanguage');
+                      const scheduledInterval = localStorage.getItem('scheduledInterval');
+                      
+                      const now = Date.now();
+                      
+                      console.log("📊 Current Notification Status:", {
+                        currentTime: new Date().toLocaleTimeString(),
+                        lastScheduled: lastScheduleTime ? new Date(parseInt(lastScheduleTime)).toLocaleTimeString() : 'Never',
+                        lastNotification: lastNotificationTime ? new Date(parseInt(lastNotificationTime)).toLocaleTimeString() : 'Never',
+                        scheduledLanguage: scheduledLanguage || 'None',
+                        scheduledInterval: (scheduledInterval || 'None') + ' minutes',
+                        timeSinceLastSchedule: lastScheduleTime ? Math.round((now - parseInt(lastScheduleTime)) / 1000 / 60) + ' minutes ago' : 'N/A',
+                        timeSinceLastNotification: lastNotificationTime ? Math.round((now - parseInt(lastNotificationTime)) / 1000 / 60) + ' minutes ago' : 'N/A',
+                        nextExpectedNotification: lastNotificationTime && scheduledInterval ? 
+                          new Date(parseInt(lastNotificationTime) + (parseInt(scheduledInterval) * 60 * 1000)).toLocaleTimeString() : 'Unknown'
+                      });
+                    }}
+                  >
+                    Check Timing Status
                   </Button>
                   
                   <Button 

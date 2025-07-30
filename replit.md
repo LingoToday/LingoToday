@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 30, 2025 - Notification Timing & Consistency Fixes
+- Fixed critical notification timing issue causing inconsistent 15-minute intervals
+- Simplified notification scheduling to use consistent setTimeout + setInterval pattern
+- Removed complex cooldown logic that was interfering with regular timing
+- Reduced health check frequency from 5 minutes to 10 minutes to prevent interference
+- Added comprehensive debugging tools with timing status checks and test buttons
+- Enhanced logging to track notification scheduling and firing times precisely
+- Fixed first notification delay to be 30 seconds instead of variable timing
+- Added detailed timing diagnostics showing last notification, schedule times, and expected next notification
+
 ### July 30, 2025 - Fixed A1 Lesson Progression in Notifications
 - Fixed critical issue where notifications showed random lessons instead of following A1 progression order
 - Implemented proper A1 lesson ordering: starts with "Greetings & Politeness" then "Introducing Yourself & Others"
