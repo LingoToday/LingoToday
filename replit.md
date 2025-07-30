@@ -21,6 +21,10 @@ Preferred communication style: Simple, everyday language.
 - Removed automatic notification initialization from settings changes to give users full control
 - Added visual session status indicators showing when daily learning session is active
 - Sessions automatically recover if page is refreshed (maintains state throughout the day)
+- Fixed notification timing issue where notifications fired immediately after lesson completion
+- Added auto-redirect to dashboard after lesson completion with proper timer reset
+- Enhanced cooldown system to respect notification intervals even when session is restarted
+- Notifications now properly wait for the full interval (15/30 minutes) after lesson completion
 
 ### July 30, 2025 - Fixed A1 Lesson Progression in Notifications
 - Fixed critical issue where notifications showed random lessons instead of following A1 progression order

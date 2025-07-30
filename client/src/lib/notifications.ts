@@ -34,11 +34,29 @@ export function startDailySession(language: string, intervalMinutes: number = 15
   localStorage.setItem('sessionLanguage', language);
   localStorage.setItem('sessionInterval', intervalMinutes.toString());
   
-  // First notification after 10 seconds to start the session
+  // Check if there's a recent notification cooldown (from lesson completion)
+  const lastNotificationTime = localStorage.getItem('lastNotificationTime');
+  const now = Date.now();
+  let initialDelay = 10000; // Default 10 seconds for new sessions
+  
+  if (lastNotificationTime) {
+    const timeSinceLastNotification = now - parseInt(lastNotificationTime);
+    const cooldownRemaining = intervalMs - timeSinceLastNotification;
+    
+    if (cooldownRemaining > 0) {
+      // If there's still cooldown time remaining, wait for it
+      initialDelay = cooldownRemaining;
+      console.log(`⏰ Respecting existing cooldown: next notification in ${Math.round(cooldownRemaining/1000/60)} minutes`);
+    } else {
+      console.log(`✅ Cooldown expired, starting with normal delay`);
+    }
+  }
+  
+  // Schedule first notification with appropriate delay
   setTimeout(() => {
-    console.log(`🚀 Starting daily session with first lesson for ${language}`);
+    console.log(`🚀 Daily session notification triggered for ${language}`);
     showLearningNotification(language);
-  }, 10000); // 10 seconds initial delay
+  }, initialDelay);
   
   // Then set up regular interval for the rest of the day
   notificationInterval = setInterval(() => {
@@ -49,7 +67,8 @@ export function startDailySession(language: string, intervalMinutes: number = 15
   // Start health check to ensure notifications keep running
   startNotificationHealthCheck();
   
-  console.log(`✅ Daily session started: first lesson in 10 seconds, then every ${intervalMinutes} minutes`);
+  const delayMinutes = Math.round(initialDelay / 1000 / 60);
+  console.log(`✅ Daily session started: next lesson in ${delayMinutes} minutes, then every ${intervalMinutes} minutes`);
 }
 
 // Check if session is already started today

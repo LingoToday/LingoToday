@@ -114,17 +114,19 @@ export default function Lesson() {
       });
     },
     onSuccess: () => {
-      // Reset notification cooldown when lesson is completed
-      resetNotificationCooldown();
-      
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/progress", language] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats", language] });
       
       toast({
         title: "Lesson completed!",
-        description: "Great job! Keep up the learning streak.",
+        description: "Great job! Returning to dashboard...",
       });
+      
+      // Auto-redirect to dashboard after lesson completion and restart timer from there
+      setTimeout(() => {
+        window.location.href = "/dashboard?completed=true";
+      }, 2000);
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {

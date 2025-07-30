@@ -24,11 +24,27 @@ export default function Dashboard() {
   const [currentLesson, setCurrentLesson] = useState<any>(null);
   const [sessionStarted, setSessionStarted] = useState(false);
 
-  // Check if session is started today
+  // Check if session is started today and handle lesson completion
   useEffect(() => {
     const isStarted = isSessionStartedToday();
     setSessionStarted(isStarted);
     console.log('📅 Session started today:', isStarted);
+    
+    // Check if user just completed a lesson
+    const urlParams = new URLSearchParams(window.location.search);
+    const justCompleted = urlParams.get('completed') === 'true';
+    
+    if (justCompleted) {
+      console.log('🎉 User just completed a lesson, restarting notification timer');
+      // Clean the URL
+      window.history.replaceState({}, '', window.location.pathname);
+      
+      // Set a new notification cooldown to prevent immediate notification
+      // This ensures the next notification comes after the proper interval
+      const now = Date.now();
+      localStorage.setItem('lastNotificationTime', now.toString());
+      console.log('⏰ Set notification cooldown after lesson completion');
+    }
   }, []);
 
   // Redirect if not authenticated
