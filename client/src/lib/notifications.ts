@@ -126,21 +126,21 @@ function startNotificationHealthCheck() {
   
   // Check every 10 minutes (less aggressive)
   healthCheckInterval = setInterval(() => {
-    const settings = loadNotificationSettings();
-    const lastScheduleTime = localStorage.getItem('lastScheduleTime');
-    const timeSinceSchedule = lastScheduleTime ? Date.now() - parseInt(lastScheduleTime) : 0;
+    const sessionLanguage = localStorage.getItem('sessionLanguage');
+    const sessionInterval = localStorage.getItem('sessionInterval');
+    const isSessionActive = isSessionStartedToday();
     
     console.log("🩺 Health check running:", {
-      hasSettings: !!settings,
-      enabled: settings?.enabled,
+      sessionActive: isSessionActive,
+      language: sessionLanguage,
+      interval: sessionInterval,
       permission: Notification.permission,
-      hasInterval: !!notificationInterval,
-      timeSinceSchedule: Math.round(timeSinceSchedule / 1000 / 60) + " minutes"
+      hasInterval: !!notificationInterval
     });
     
-    if (settings && settings.enabled && Notification.permission === "granted" && !notificationInterval) {
-      console.log("🩺 Health check: notifications should be running but aren't - recovering");
-      scheduleNotification(settings.language, settings.frequency);
+    if (isSessionActive && sessionLanguage && sessionInterval && Notification.permission === "granted" && !notificationInterval) {
+      console.log("🩺 Health check: session active but notifications stopped - recovering");
+      startDailySession(sessionLanguage, parseInt(sessionInterval));
     } else if (notificationInterval) {
       console.log("🩺 Health check: notifications are running correctly");
     }
@@ -485,17 +485,7 @@ export function saveNotificationSettings(settings: {
   }
 }
 
-export function loadNotificationSettings() {
-  const stored = localStorage.getItem("desklingo-notifications");
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      console.error("Failed to parse notification settings:", e);
-    }
-  }
-  return null;
-}
+// Legacy function removed - now using session-based approach only
 
 // Check for notification recovery after page reload
 export function checkNotificationRecovery() {
@@ -528,36 +518,27 @@ export function checkNotificationRecovery() {
 export function initializeNotifications() {
   console.log("🔄 Initializing notifications on page load");
   
-  // First check if we need to recover notifications
-  const recoveryData = checkNotificationRecovery();
+  // Check if there's an active session that needs to be recovered
+  const isSessionActive = isSessionStartedToday();
+  const sessionLanguage = localStorage.getItem('sessionLanguage');
+  const sessionInterval = localStorage.getItem('sessionInterval');
   
-  const settings = loadNotificationSettings();
-  console.log("📋 Loaded notification settings:", {
-    hasSettings: !!settings,
-    enabled: settings?.enabled,
-    language: settings?.language,
-    frequency: settings?.frequency,
-    permission: Notification.permission,
-    hasRecoveryData: !!recoveryData
+  console.log("📋 Session status check:", {
+    sessionActive: isSessionActive,
+    language: sessionLanguage,
+    interval: sessionInterval,
+    permission: Notification.permission
   });
   
-  if (settings && settings.enabled && Notification.permission === "granted") {
-    console.log("✅ Starting notifications from initialization");
-    scheduleNotification(settings.language, settings.frequency);
-  } else if (recoveryData && Notification.permission === "granted") {
-    console.log("🔄 Recovering notifications from previous session");
-    scheduleNotification(recoveryData.language, recoveryData.interval);
-  } else if (settings && settings.enabled && Notification.permission !== "granted") {
-    console.warn("⚠️  Notifications enabled but permission not granted. Current permission:", Notification.permission);
-  } else if (!settings) {
-    console.log("ℹ️  No notification settings found");
+  if (isSessionActive && sessionLanguage && sessionInterval && Notification.permission === "granted") {
+    console.log("🔄 Recovering active session from page refresh");
+    startDailySession(sessionLanguage, parseInt(sessionInterval));
+  } else if (isSessionActive && Notification.permission !== "granted") {
+    console.warn("⚠️ Session active but notification permission not granted:", Notification.permission);
+  } else if (!isSessionActive) {
+    console.log("ℹ️ No active session - user must click 'Start Today's Lessons'");
   } else {
-    console.log("ℹ️  Notifications disabled in settings");
-  }
-  
-  // Always start health check if we have settings (for recovery scenarios)
-  if ((settings && settings.enabled) || recoveryData) {
-    startNotificationHealthCheck();
+    console.log("ℹ️ Session recovery not needed or not possible");
   }
 }
 
