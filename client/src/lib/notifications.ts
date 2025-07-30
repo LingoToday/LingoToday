@@ -63,6 +63,13 @@ export function isSessionStartedToday(): boolean {
 export function scheduleNotification(language: string, intervalMinutes: number) {
   console.log(`⚠️ Legacy notification schedule called - session must be started manually`);
   
+  // Check actual notification permission
+  if ('Notification' in window) {
+    console.log(`🔍 Browser notification permission: ${Notification.permission}`);
+  } else {
+    console.log(`❌ Notifications not supported in this browser`);
+  }
+  
   // Only auto-start if session was already started today (for page refreshes)
   if (isSessionStartedToday()) {
     console.log(`📱 Recovering session from page refresh...`);

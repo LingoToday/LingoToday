@@ -284,13 +284,49 @@ export default function Dashboard() {
                     </div>
                   )}
                   
-                  <Button 
-                    onClick={handleStartDailySession}
-                    className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-8 text-lg"
-                    size="lg"
-                  >
-                    Start Today's Lessons
-                  </Button>
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={handleStartDailySession}
+                      className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-8 text-lg w-full"
+                      size="lg"
+                    >
+                      Start Today's Lessons
+                    </Button>
+                    
+                    {/* Test notification button */}
+                    <Button 
+                      onClick={async () => {
+                        console.log('🧪 Testing notification manually...');
+                        console.log('🔍 Notification permission:', 'Notification' in window ? Notification.permission : 'Not supported');
+                        
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                          try {
+                            const notification = new Notification('🎓 DeskLingo Test', {
+                              body: 'Test notification working! Click to open lesson.',
+                              icon: '/favicon.ico',
+                              tag: 'test-' + Date.now()
+                            });
+                            
+                            notification.onclick = () => {
+                              console.log('Test notification clicked');
+                              window.focus();
+                            };
+                            
+                            console.log('✅ Test notification created successfully');
+                          } catch (error) {
+                            console.error('❌ Test notification failed:', error);
+                          }
+                        } else {
+                          console.log('❌ Cannot create test notification - permission not granted');
+                        }
+                      }}
+                      variant="outline"
+                      className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-sm"
+                      size="sm"
+                    >
+                      Test Notification
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             )}
