@@ -41,15 +41,15 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
   setTimeout(() => {
     console.log(`🚀 Firing first notification for ${language}`);
     showLearningNotification(language);
-    
-    // Then set up regular interval
-    notificationInterval = setInterval(() => {
-      console.log(`⏰ Interval triggered - firing notification for ${language}`);
-      showLearningNotification(language);
-    }, intervalMs);
-    
-    console.log(`✅ Regular interval set: every ${intervalMinutes} minutes`);
   }, 30000); // 30 seconds initial delay
+  
+  // Then set up regular interval
+  notificationInterval = setInterval(() => {
+    console.log(`⏰ Interval triggered - firing notification for ${language}`);
+    showLearningNotification(language);
+  }, intervalMs);
+  
+  console.log(`✅ Regular interval set: every ${intervalMinutes} minutes (${intervalMs}ms)`)
   
   // Start health check to ensure notifications keep running
   startNotificationHealthCheck();
@@ -59,17 +59,30 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
 
 // Stop all scheduled notifications
 export function stopNotifications() {
+  console.log("🛑 Stopping all notifications and intervals");
+  
   if (notificationInterval) {
-    console.log("🛑 Stopping notifications");
+    console.log("🛑 Clearing main notification interval");
     clearInterval(notificationInterval);
     notificationInterval = null;
-  } else {
-    console.log("ℹ️ No notification interval to stop");
   }
   
   if (healthCheckInterval) {
+    console.log("🛑 Clearing health check interval");
     clearInterval(healthCheckInterval);
     healthCheckInterval = null;
+  }
+  
+  // Force clear any lingering intervals (browser-specific cleanup)
+  try {
+    // Clear a range of possible interval IDs
+    for (let i = 1; i <= 1000; i++) {
+      clearTimeout(i);
+      clearInterval(i);
+    }
+    console.log(`🧹 Aggressively cleared timeout/interval IDs 1-1000`);
+  } catch (error) {
+    console.log("⚠️ Interval cleanup completed with minor issues");
   }
   
   // Clear recovery data when explicitly stopping
@@ -245,13 +258,44 @@ export async function showLearningNotification(language: string) {
         console.log(`🎯 ${availableLessons.length} A1 lessons available (${a1Lessons.length - availableLessons.length} completed)`);
         
         if (availableLessons.length > 0) {
-          // Select the FIRST available lesson (following A1 progression)
-          selectedLesson = availableLessons[0];
-          console.log(`✅ Selected FIRST available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+          // Get the last shown lesson to avoid repetition
+          const lastShownLessonId = localStorage.getItem('lastShownLessonId');
+          
+          if (lastShownLessonId && availableLessons.length > 1) {
+            // Find a different lesson than the last one shown
+            const differentLessons = availableLessons.filter(lesson => lesson.id !== lastShownLessonId);
+            if (differentLessons.length > 0) {
+              selectedLesson = differentLessons[0];
+              console.log(`✅ Selected NEXT available A1 lesson (avoiding repeat): ${selectedLesson.category} - "${selectedLesson.title}"`);
+            } else {
+              // If we only have one lesson, still select it
+              selectedLesson = availableLessons[0];
+              console.log(`✅ Selected only available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+            }
+          } else {
+            // First time or only one lesson available
+            selectedLesson = availableLessons[0];
+            console.log(`✅ Selected FIRST available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+          }
+          
+          // Store this lesson ID to avoid repeating it next time
+          localStorage.setItem('lastShownLessonId', selectedLesson.id);
         } else if (a1Lessons.length > 0) {
-          // If all A1 lessons completed, pick from the earliest ones for review
-          selectedLesson = a1Lessons[0];
-          console.log(`🔄 All A1 lessons completed, selecting first for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
+          // If all A1 lessons completed, rotate through them for review
+          const lastShownLessonId = localStorage.getItem('lastShownLessonId');
+          
+          if (lastShownLessonId && a1Lessons.length > 1) {
+            const currentIndex = a1Lessons.findIndex(lesson => lesson.id === lastShownLessonId);
+            const nextIndex = (currentIndex + 1) % a1Lessons.length;
+            selectedLesson = a1Lessons[nextIndex];
+            console.log(`🔄 All A1 lessons completed, rotating to next for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
+          } else {
+            selectedLesson = a1Lessons[0];
+            console.log(`🔄 All A1 lessons completed, selecting first for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
+          }
+          
+          // Store this lesson ID for rotation
+          localStorage.setItem('lastShownLessonId', selectedLesson.id);
         }
       } else {
         console.error(`❌ Failed to fetch lessons from API: ${lessonsResponse.status}`);
