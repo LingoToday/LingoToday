@@ -1,6 +1,7 @@
 // Notification system for language learning reminders
 
 let notificationInterval: NodeJS.Timeout | null = null;
+let healthCheckInterval: NodeJS.Timeout | null = null;
 
 // Request notification permission
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
@@ -27,8 +28,14 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
 
   // Check if we should respect a cooldown period
   const lastNotificationTime = localStorage.getItem('lastNotificationTime');
+  const lastScheduleTime = localStorage.getItem('lastScheduleTime');
   const now = Date.now();
   const cooldownMs = intervalMinutes * 60 * 1000;
+  
+  // Store when we scheduled notifications for recovery
+  localStorage.setItem('lastScheduleTime', now.toString());
+  localStorage.setItem('scheduledLanguage', language);
+  localStorage.setItem('scheduledInterval', intervalMinutes.toString());
   
   let delayMs = cooldownMs; // Default to full interval
   
@@ -40,8 +47,13 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
       console.log(`⏰ Respecting cooldown: ${Math.round(delayMs / 1000 / 60)} minutes until next notification`);
     } else {
       // Cooldown has passed, can send notification soon
-      delayMs = 1000; // 1 second delay
+      delayMs = Math.min(5000, cooldownMs); // Max 5 seconds delay if cooldown passed
+      console.log(`✅ Cooldown passed, scheduling notification in ${delayMs/1000} seconds`);
     }
+  } else {
+    // First time scheduling, start with a short delay
+    delayMs = 5000; // 5 seconds for first notification
+    console.log(`🆕 First time scheduling, starting in ${delayMs/1000} seconds`);
   }
 
   // Set up new interval
@@ -53,6 +65,11 @@ export function scheduleNotification(language: string, intervalMinutes: number) 
   setTimeout(() => {
     showLearningNotification(language);
   }, delayMs);
+  
+  // Start health check to ensure notifications keep running
+  startNotificationHealthCheck();
+  
+  console.log(`✅ Notification system active: next in ${Math.round(delayMs/1000/60)} min, then every ${intervalMinutes} min`);
 }
 
 // Stop all scheduled notifications
@@ -64,6 +81,34 @@ export function stopNotifications() {
   } else {
     console.log("ℹ️ No notification interval to stop");
   }
+  
+  if (healthCheckInterval) {
+    clearInterval(healthCheckInterval);
+    healthCheckInterval = null;
+  }
+  
+  // Clear recovery data when explicitly stopping
+  localStorage.removeItem('lastScheduleTime');
+  localStorage.removeItem('scheduledLanguage');
+  localStorage.removeItem('scheduledInterval');
+}
+
+// Start health check to ensure notifications stay running
+function startNotificationHealthCheck() {
+  // Clear any existing health check
+  if (healthCheckInterval) {
+    clearInterval(healthCheckInterval);
+  }
+  
+  // Check every 5 minutes
+  healthCheckInterval = setInterval(() => {
+    const settings = loadNotificationSettings();
+    
+    if (settings && settings.enabled && Notification.permission === "granted" && !notificationInterval) {
+      console.log("🩺 Health check: notifications should be running but aren't - recovering");
+      scheduleNotification(settings.language, settings.frequency);
+    }
+  }, 5 * 60 * 1000); // 5 minutes
 }
 
 // Reset notification cooldown (call this when user completes a lesson)
@@ -339,11 +384,67 @@ export function loadNotificationSettings() {
   return null;
 }
 
+// Check for notification recovery after page reload
+export function checkNotificationRecovery() {
+  const lastScheduleTime = localStorage.getItem('lastScheduleTime');
+  const scheduledLanguage = localStorage.getItem('scheduledLanguage');
+  const scheduledInterval = localStorage.getItem('scheduledInterval');
+  
+  if (lastScheduleTime && scheduledLanguage && scheduledInterval) {
+    const timeSinceSchedule = Date.now() - parseInt(lastScheduleTime);
+    const maxRecoveryTime = 24 * 60 * 60 * 1000; // 24 hours
+    
+    if (timeSinceSchedule < maxRecoveryTime) {
+      console.log(`🔄 Notification recovery: scheduled ${Math.round(timeSinceSchedule/1000/60)} minutes ago`);
+      return {
+        language: scheduledLanguage,
+        interval: parseInt(scheduledInterval)
+      };
+    } else {
+      console.log("🗑️ Clearing old schedule data (> 24 hours)");
+      localStorage.removeItem('lastScheduleTime');
+      localStorage.removeItem('scheduledLanguage');
+      localStorage.removeItem('scheduledInterval');
+    }
+  }
+  
+  return null;
+}
+
 // Initialize notifications on page load
 export function initializeNotifications() {
+  console.log("🔄 Initializing notifications on page load");
+  
+  // First check if we need to recover notifications
+  const recoveryData = checkNotificationRecovery();
+  
   const settings = loadNotificationSettings();
+  console.log("📋 Loaded notification settings:", {
+    hasSettings: !!settings,
+    enabled: settings?.enabled,
+    language: settings?.language,
+    frequency: settings?.frequency,
+    permission: Notification.permission,
+    hasRecoveryData: !!recoveryData
+  });
+  
   if (settings && settings.enabled && Notification.permission === "granted") {
+    console.log("✅ Starting notifications from initialization");
     scheduleNotification(settings.language, settings.frequency);
+  } else if (recoveryData && Notification.permission === "granted") {
+    console.log("🔄 Recovering notifications from previous session");
+    scheduleNotification(recoveryData.language, recoveryData.interval);
+  } else if (settings && settings.enabled && Notification.permission !== "granted") {
+    console.warn("⚠️  Notifications enabled but permission not granted. Current permission:", Notification.permission);
+  } else if (!settings) {
+    console.log("ℹ️  No notification settings found");
+  } else {
+    console.log("ℹ️  Notifications disabled in settings");
+  }
+  
+  // Always start health check if we have settings (for recovery scenarios)
+  if ((settings && settings.enabled) || recoveryData) {
+    startNotificationHealthCheck();
   }
 }
 
