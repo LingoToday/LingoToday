@@ -172,8 +172,8 @@ export async function showLearningNotification(language: string) {
       storageKeys: Object.keys(localStorage).filter(key => key.includes('lesson'))
     });
     
-    // Instead of relying on localStorage, fetch lesson data directly from API
-    console.log('🔄 Fetching lesson data directly from API for notification...');
+    // Fetch lesson data from the correct endpoint with proper A1 progression
+    console.log('🔄 Fetching lesson data with A1 progression order...');
     
     let selectedLesson = null;
     try {
@@ -183,38 +183,60 @@ export async function showLearningNotification(language: string) {
       
       if (lessonsResponse.ok) {
         const lessonsData = await lessonsResponse.json();
-        console.log(`📚 Fetched lesson data from API:`, Object.keys(lessonsData));
+        console.log(`📚 Fetched lesson categories:`, Object.keys(lessonsData));
         
-        // Convert API data to flat array (same logic as lessonStore)
+        // Convert lessons to flat array with proper ordering
         const lessons: any[] = [];
-        Object.keys(lessonsData).forEach(weekKey => {
-          const week = parseInt(weekKey.replace('week_', ''));
-          const weekData = lessonsData[weekKey];
+        
+        // Process each category
+        Object.keys(lessonsData).forEach(categoryKey => {
+          const categoryData = lessonsData[categoryKey];
           
-          Object.keys(weekData).forEach(dayKey => {
-            const day = parseInt(dayKey.replace('day_', ''));
-            const lesson = weekData[dayKey];
+          // Process each lesson in the category
+          Object.keys(categoryData).forEach(lessonKey => {
+            const lesson = categoryData[lessonKey];
             
             lessons.push({
               ...lesson,
-              week,
-              day
+              categoryKey,
+              lessonKey
             });
           });
         });
         
-        console.log(`🔢 Processed ${lessons.length} lessons from API`);
+        // Sort lessons by categoryOrder (A1 progression) and then by lesson order
+        lessons.sort((a, b) => {
+          // First sort by categoryOrder (1 = Greetings, 2 = Introducing, etc.)
+          const categoryOrderA = a.categoryOrder || 999;
+          const categoryOrderB = b.categoryOrder || 999;
+          
+          if (categoryOrderA !== categoryOrderB) {
+            return categoryOrderA - categoryOrderB;
+          }
+          
+          // Within same category, maintain lesson order
+          return a.lessonKey.localeCompare(b.lessonKey);
+        });
         
-        // Filter out completed lessons
-        const availableLessons = lessons.filter(lesson => 
+        console.log(`🔢 Processed ${lessons.length} lessons in A1 progression order`);
+        console.log(`📋 First few lessons:`, lessons.slice(0, 5).map(l => `${l.category}: ${l.title}`));
+        
+        // Filter A1 lessons only and remove completed ones
+        const a1Lessons = lessons.filter(lesson => lesson.level === 'A1');
+        const availableLessons = a1Lessons.filter(lesson => 
           !completedLessonIds.includes(lesson.id)
         );
         
-        console.log(`🎯 ${availableLessons.length} lessons available (${lessons.length - availableLessons.length} completed)`);
+        console.log(`🎯 ${availableLessons.length} A1 lessons available (${a1Lessons.length - availableLessons.length} completed)`);
         
         if (availableLessons.length > 0) {
-          selectedLesson = availableLessons[Math.floor(Math.random() * availableLessons.length)];
-          console.log(`✅ Selected lesson: ${selectedLesson.id} - "${selectedLesson.title}"`);
+          // Select the FIRST available lesson (following A1 progression)
+          selectedLesson = availableLessons[0];
+          console.log(`✅ Selected FIRST available A1 lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+        } else if (a1Lessons.length > 0) {
+          // If all A1 lessons completed, pick from the earliest ones for review
+          selectedLesson = a1Lessons[0];
+          console.log(`🔄 All A1 lessons completed, selecting first for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
         }
       } else {
         console.error(`❌ Failed to fetch lessons from API: ${lessonsResponse.status}`);
@@ -256,6 +278,11 @@ export async function showLearningNotification(language: string) {
     const isReview = completedLessonIds.includes(selectedLesson.id);
     const lessonType = isReview ? "review" : "new";
     
+    // Create a week/day mapping based on categoryOrder and lesson order
+    // Category order 1 = Week 1, Category order 2 = Week 2, etc.
+    const week = selectedLesson.categoryOrder || 1;
+    const day = parseInt(selectedLesson.lessonKey?.replace('lesson_', '') || '1');
+    
     // Modify the question based on lesson type
     let questionText = selectedLesson.quiz.question;
     let notificationTitle = `${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`;
@@ -267,10 +294,10 @@ export async function showLearningNotification(language: string) {
     
     const lessonData = {
       question: questionText,
-      lessonPath: `/lesson/${cleanLanguage}/${selectedLesson.week || 1}/${selectedLesson.day || 1}`,
+      lessonPath: `/lesson/${cleanLanguage}/${week}/${day}`,
       lessonId: selectedLesson.id,
-      week: selectedLesson.week || 1,
-      day: selectedLesson.day || 1,
+      week: week,
+      day: day,
       category: selectedLesson.category,
       title: selectedLesson.title,
       isReview
@@ -278,10 +305,11 @@ export async function showLearningNotification(language: string) {
     
     console.log(`📝 Selected lesson details:`, {
       id: selectedLesson.id,
-      week: selectedLesson.week,
-      day: selectedLesson.day,
+      week: week,
+      day: day,
       lessonPath: lessonData.lessonPath,
       title: selectedLesson.title,
+      category: selectedLesson.category,
       type: lessonType
     });
     

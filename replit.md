@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 30, 2025 - Fixed A1 Lesson Progression in Notifications
+- Fixed critical issue where notifications showed random lessons instead of following A1 progression order
+- Implemented proper A1 lesson ordering: starts with "Greetings & Politeness" then "Introducing Yourself & Others"
+- Added automatic notification initialization when app loads (fixes morning restart issue)
+- Enhanced notification system with recovery mechanism to restore notifications after page reloads
+- Added health check system to ensure notifications stay running throughout the day
+- Improved lesson API mapping to handle category-based structure with week/day URL compatibility
+- Notifications now select the FIRST available A1 lesson instead of random selection
+- Added persistence tracking to prevent notification loss during browser sessions
+
 ### July 28, 2025 - Notification System & Session Management Fixes
 - Fixed critical notification system issue where localStorage was inaccessible in notification context
 - Notifications now fetch lesson data directly from API instead of relying on localStorage
