@@ -48,7 +48,7 @@ export default function Dashboard() {
   }, [isAuthenticated, isLoading, toast]);
 
   // Function to start daily session
-  const handleStartDailySession = () => {
+  const handleStartDailySession = async () => {
     if (!dashboardData?.settings?.selectedLanguage) {
       toast({
         title: "Setup Required",
@@ -56,6 +56,37 @@ export default function Dashboard() {
         variant: "destructive",
       });
       return;
+    }
+
+    // Check notification permission first
+    if (!("Notification" in window)) {
+      toast({
+        title: "Notifications Not Supported",
+        description: "Your browser doesn't support notifications.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (Notification.permission === "denied") {
+      toast({
+        title: "Notifications Blocked",
+        description: "Please enable notifications in your browser settings and refresh the page.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (Notification.permission === "default") {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        toast({
+          title: "Permission Required",
+          description: "Please allow notifications to start your daily session.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     const language = dashboardData.settings.selectedLanguage;
@@ -240,6 +271,19 @@ export default function Dashboard() {
                   <p className="text-white/80 mb-6">
                     Start your daily learning session to receive lesson notifications every {dashboardData?.settings?.notificationFrequency || 15} minutes
                   </p>
+                  
+                  {/* Notification permission warning */}
+                  {typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'denied' && (
+                    <div className="bg-red-500/20 border border-red-300/30 rounded-lg p-3 mb-4 text-white">
+                      <div className="flex items-center justify-center space-x-2">
+                        <Bell className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          Notifications are blocked - Enable them in your browser settings first
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
                   <Button 
                     onClick={handleStartDailySession}
                     className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-8 text-lg"
