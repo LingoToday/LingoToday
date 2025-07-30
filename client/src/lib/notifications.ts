@@ -19,42 +19,59 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
   return Notification.permission;
 }
 
-// Schedule notifications at specified intervals
-export function scheduleNotification(language: string, intervalMinutes: number) {
-  console.log(`📅 Scheduling notifications for ${language} every ${intervalMinutes} minutes`);
+// Start daily learning session 
+export function startDailySession(language: string, intervalMinutes: number = 15) {
+  console.log(`🌅 Starting daily learning session for ${language}`);
   
-  // Clear any existing notification interval
+  // Stop any existing notifications first
   stopNotifications();
-
-  const now = Date.now();
+  
   const intervalMs = intervalMinutes * 60 * 1000;
   
-  // Store when we scheduled notifications for recovery
-  localStorage.setItem('lastScheduleTime', now.toString());
-  localStorage.setItem('scheduledLanguage', language);
-  localStorage.setItem('scheduledInterval', intervalMinutes.toString());
+  // Mark session as started for today
+  const today = new Date().toDateString();
+  localStorage.setItem('sessionStartedToday', today);
+  localStorage.setItem('sessionLanguage', language);
+  localStorage.setItem('sessionInterval', intervalMinutes.toString());
   
-  console.log(`⏰ Setting up notifications every ${intervalMinutes} minutes (${intervalMs}ms)`);
-
-  // Create a consistent interval-based system
-  // First notification after 30 seconds (to avoid immediate spam)
+  // First notification after 10 seconds to start the session
   setTimeout(() => {
-    console.log(`🚀 Firing first notification for ${language}`);
+    console.log(`🚀 Starting daily session with first lesson for ${language}`);
     showLearningNotification(language);
-  }, 30000); // 30 seconds initial delay
+  }, 10000); // 10 seconds initial delay
   
-  // Then set up regular interval
+  // Then set up regular interval for the rest of the day
   notificationInterval = setInterval(() => {
-    console.log(`⏰ Interval triggered - firing notification for ${language}`);
+    console.log(`⏰ Daily session interval triggered - firing notification for ${language}`);
     showLearningNotification(language);
   }, intervalMs);
-  
-  console.log(`✅ Regular interval set: every ${intervalMinutes} minutes (${intervalMs}ms)`)
   
   // Start health check to ensure notifications keep running
   startNotificationHealthCheck();
   
-  console.log(`✅ Notification system initialized: first notification in 30 seconds, then every ${intervalMinutes} minutes`);
+  console.log(`✅ Daily session started: first lesson in 10 seconds, then every ${intervalMinutes} minutes`);
+}
+
+// Check if session is already started today
+export function isSessionStartedToday(): boolean {
+  const today = new Date().toDateString();
+  const sessionStarted = localStorage.getItem('sessionStartedToday');
+  return sessionStarted === today;
+}
+
+// Legacy function for backwards compatibility - now does nothing unless session started
+export function scheduleNotification(language: string, intervalMinutes: number) {
+  console.log(`⚠️ Legacy notification schedule called - session must be started manually`);
+  
+  // Only auto-start if session was already started today (for page refreshes)
+  if (isSessionStartedToday()) {
+    console.log(`📱 Recovering session from page refresh...`);
+    const sessionLanguage = localStorage.getItem('sessionLanguage') || language;
+    const sessionInterval = parseInt(localStorage.getItem('sessionInterval') || intervalMinutes.toString());
+    startDailySession(sessionLanguage, sessionInterval);
+  } else {
+    console.log(`🛑 No session active - user must click 'Start today's lessons'`);
+  }
 }
 
 // Stop all scheduled notifications

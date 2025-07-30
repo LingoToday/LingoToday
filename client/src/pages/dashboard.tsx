@@ -6,7 +6,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { queryClient } from "@/lib/queryClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, Play, Check, ArrowRight, BarChart3, BookOpen, Settings, Shuffle } from "lucide-react";
+import { Globe, Bell, Play, Check, ArrowRight, BarChart3, BookOpen, Settings, Shuffle, Rocket } from "lucide-react";
 import NotificationSettings from "@/components/notification-settings";
 import ProgressOverview from "@/components/progress-overview";
 import LessonModal from "@/components/lesson-modal";
@@ -14,6 +14,7 @@ import LessonProgress from "@/components/lesson-progress";
 import { useState } from "react";
 import { Link } from "wouter";
 import { initializeLessonStore, getNextLessonToLearn, getLessonsInOrder } from "@/lib/lessonStore";
+import { startDailySession, isSessionStartedToday } from "@/lib/notifications";
 import type { DashboardData, Lesson, User } from "@shared/schema";
 
 export default function Dashboard() {
@@ -21,6 +22,14 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [currentLesson, setCurrentLesson] = useState<any>(null);
+  const [sessionStarted, setSessionStarted] = useState(false);
+
+  // Check if session is started today
+  useEffect(() => {
+    const isStarted = isSessionStartedToday();
+    setSessionStarted(isStarted);
+    console.log('📅 Session started today:', isStarted);
+  }, []);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -37,6 +46,30 @@ export default function Dashboard() {
       return;
     }
   }, [isAuthenticated, isLoading, toast]);
+
+  // Function to start daily session
+  const handleStartDailySession = () => {
+    if (!dashboardData?.settings?.selectedLanguage) {
+      toast({
+        title: "Setup Required",
+        description: "Please configure your language settings first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const language = dashboardData.settings.selectedLanguage;
+    const interval = dashboardData.settings.notificationFrequency || 15;
+    
+    console.log(`🌅 Starting daily session: ${language} every ${interval} minutes`);
+    startDailySession(language, interval);
+    setSessionStarted(true);
+    
+    toast({
+      title: "Daily Session Started!",
+      description: `Your first lesson will arrive in 10 seconds, then every ${interval} minutes.`,
+    });
+  };
 
   const { data: dashboardData, isLoading: dashboardLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
@@ -197,6 +230,40 @@ export default function Dashboard() {
           
           {/* Main Dashboard Content */}
           <div className="lg:col-span-2 space-y-6">
+            
+            {/* Daily Session Start Card */}
+            {!sessionStarted && (
+              <Card className="bg-gradient-to-r from-blue-500 to-purple-600 border-0 shadow-lg">
+                <CardContent className="p-6 text-white text-center">
+                  <Rocket className="h-12 w-12 mx-auto mb-4 text-white" />
+                  <h3 className="text-2xl font-bold mb-2">Ready to Learn Today?</h3>
+                  <p className="text-white/80 mb-6">
+                    Start your daily learning session to receive lesson notifications every {dashboardData?.settings?.notificationFrequency || 15} minutes
+                  </p>
+                  <Button 
+                    onClick={handleStartDailySession}
+                    className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-8 text-lg"
+                    size="lg"
+                  >
+                    Start Today's Lessons
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Session Active Status */}
+            {sessionStarted && (
+              <Card className="bg-green-50 border border-green-200 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-green-700 font-medium">
+                      Daily session active - notifications every {dashboardData?.settings?.notificationFrequency || 15} minutes
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Current Lesson Card */}
             <Card className="bg-white border border-gray-200 shadow-card">

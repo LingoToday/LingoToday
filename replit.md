@@ -10,15 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### July 30, 2025 - Notification Timing & Consistency Fixes
-- Fixed critical notification timing issue causing inconsistent 15-minute intervals
-- Simplified notification scheduling to use consistent setTimeout + setInterval pattern
-- Removed complex cooldown logic that was interfering with regular timing
-- Reduced health check frequency from 5 minutes to 10 minutes to prevent interference
-- Added comprehensive debugging tools with timing status checks and test buttons
-- Enhanced logging to track notification scheduling and firing times precisely
-- Fixed first notification delay to be 30 seconds instead of variable timing
-- Added detailed timing diagnostics showing last notification, schedule times, and expected next notification
+### July 30, 2025 - Daily Session Control & Notification Management Overhaul
+- Implemented controlled daily session management to prevent automatic notification restarts
+- Added "Start Today's Lessons" master button on dashboard for user-initiated learning sessions
+- Fixed notification frequency issue (was firing every 30 seconds instead of 15 minutes) 
+- Added lesson rotation logic to prevent showing the same lesson repeatedly in notifications
+- Sessions now start with 10-second delay, then follow user's preferred interval (15 or 30 minutes)
+- Notifications only activate when user explicitly starts daily session, not on page navigation
+- Enhanced session persistence tracking to maintain state across page reloads within same day
+- Removed automatic notification initialization from settings changes to give users full control
+- Added visual session status indicators showing when daily learning session is active
+- Sessions automatically recover if page is refreshed (maintains state throughout the day)
 
 ### July 30, 2025 - Fixed A1 Lesson Progression in Notifications
 - Fixed critical issue where notifications showed random lessons instead of following A1 progression order

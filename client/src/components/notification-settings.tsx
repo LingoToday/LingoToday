@@ -81,7 +81,7 @@ export default function NotificationSettings() {
     return "default";
   };
 
-  // Initialize notifications on settings load if already enabled
+  // Check settings but don't auto-start notifications (requires manual daily session start)
   useEffect(() => {
     console.log("🔄 Settings/permission changed:", {
       hasSettings: !!settings,
@@ -91,17 +91,9 @@ export default function NotificationSettings() {
       frequency: settings?.notificationFrequency
     });
 
-    if (settings && settings.notificationsEnabled && notificationPermission === "granted") {
-      console.log("✅ Starting notifications with settings:", {
-        language: settings.selectedLanguage,
-        frequency: settings.notificationFrequency,
-        enabled: settings.notificationsEnabled
-      });
-      // Schedule notifications if they should be enabled
-      scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
-    } else if (settings && !settings.notificationsEnabled) {
+    // Only stop notifications if explicitly disabled
+    if (settings && !settings.notificationsEnabled) {
       console.log("🔇 Stopping notifications - disabled in settings");
-      // Stop notifications if disabled
       stopNotifications();
     } else if (settings && settings.notificationsEnabled && notificationPermission !== "granted") {
       console.log("⚠️ Notifications enabled but permission not granted:", {
@@ -109,6 +101,8 @@ export default function NotificationSettings() {
         enabled: settings.notificationsEnabled
       });
     }
+    
+    // Note: Notifications now require manual session start via dashboard button
   }, [settings, notificationPermission]);
 
   const handleNotificationToggle = async (enabled: boolean) => {
@@ -140,17 +134,12 @@ export default function NotificationSettings() {
       notificationsEnabled: enabled,
     });
 
-    // Schedule or stop notifications based on enabled state
-    if (enabled && settings && notificationPermission === "granted") {
-      console.log("🔄 Re-scheduling notifications after toggle:", {
-        language: settings.selectedLanguage,
-        frequency: settings.notificationFrequency,
-        permission: notificationPermission
-      });
-      scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
-    } else {
-      console.log("🛑 Stopping notifications after toggle");
+    // Stop notifications if disabled, but don't auto-start when enabled
+    if (!enabled) {
+      console.log("🛑 Stopping notifications - disabled by user");
       stopNotifications();
+    } else {
+      console.log("✅ Notifications enabled - user must start daily session on dashboard");
     }
   };
 
@@ -168,15 +157,8 @@ export default function NotificationSettings() {
       notificationFrequency: newFrequency,
     });
 
-    // Re-schedule notifications with new frequency if enabled and permission granted
-    if (settings?.notificationsEnabled && notificationPermission === "granted") {
-      console.log("🔄 Re-scheduling notifications after frequency change:", {
-        oldFrequency: settings.notificationFrequency,
-        newFrequency,
-        language: settings.selectedLanguage,
-      });
-      scheduleNotification(settings.selectedLanguage, newFrequency);
-    }
+    // Frequency change saved - will apply when user starts next daily session
+    console.log("✅ Notification frequency updated - will apply to next daily session");
   };
 
   const requestNotificationPermission = async () => {
@@ -195,10 +177,7 @@ export default function NotificationSettings() {
           description: "You'll now receive learning reminders at your chosen frequency.",
         });
 
-        // Schedule first notification
-        if (settings) {
-          scheduleNotification(settings.selectedLanguage, settings.notificationFrequency);
-        }
+        // Permission granted - user can now start daily session on dashboard
       } else {
         toast({
           title: "Permission denied",
