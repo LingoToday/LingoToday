@@ -125,7 +125,7 @@ export default function Lesson() {
       
       // Auto-redirect to dashboard after lesson completion and restart timer from there
       setTimeout(() => {
-        window.location.href = "/dashboard?completed=true";
+        window.location.href = "/?completed=true";
       }, 2000);
     },
     onError: (error) => {

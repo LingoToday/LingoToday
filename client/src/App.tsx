@@ -32,6 +32,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>
       )}

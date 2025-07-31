@@ -39,6 +39,12 @@ export default function Dashboard() {
       // Clean the URL
       window.history.replaceState({}, '', window.location.pathname);
       
+      // Show success message
+      toast({
+        title: "Lesson completed!",
+        description: "Great job! Your next notification will arrive soon.",
+      });
+      
       // Set a new notification cooldown to prevent immediate notification
       // This ensures the next notification comes after the proper interval
       const now = Date.now();
