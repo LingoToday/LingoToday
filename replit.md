@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### August 1, 2025 - Notification Persistence & 404 Fix
+- Removed auto-close timeout from notifications to prevent premature closure
+- Set requireInteraction: true for better notification persistence
+- Fixed 404 error on lesson completion redirect by adding /dashboard route
+- Changed redirect URL from /dashboard?completed=true to /?completed=true
+- Enhanced user feedback with success toast on lesson completion return
+- Notifications now stay open until user explicitly clicks or dismisses them
+
 ### July 30, 2025 - Daily Session Control & Notification Management Overhaul
 - Implemented controlled daily session management to prevent automatic notification restarts
 - Added "Start Today's Lessons" master button on dashboard for user-initiated learning sessions

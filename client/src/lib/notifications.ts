@@ -372,7 +372,7 @@ export async function showLearningNotification(language: string) {
         body: motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)],
         icon: "/favicon.ico",
         tag: "desklingo-motivational-" + Date.now(),
-        requireInteraction: false,
+        requireInteraction: true,
         silent: false
       });
       
@@ -440,7 +440,7 @@ export async function showLearningNotification(language: string) {
       body: lessonData.question,
       icon: "/favicon.ico",
       tag: "desklingo-lesson-" + Date.now(),
-      requireInteraction: false,
+      requireInteraction: true,
       silent: false
     });
 
@@ -504,11 +504,8 @@ export async function showLearningNotification(language: string) {
       console.log("Notification was closed");
     };
 
-    // Auto close after 15 seconds
-    setTimeout(() => {
-      console.log("Auto-closing notification");
-      notification.close();
-    }, 15000);
+    // Keep notification open until user interacts with it
+    console.log("📌 Notification will stay open until user clicks or dismisses it");
     
   } catch (error) {
     console.error("Failed to create notification:", error);
