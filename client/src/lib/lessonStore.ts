@@ -219,14 +219,21 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
 
 // Get next uncompleted lessons
 export function getNextLessons(completedLessonIds: string[], maxCount: number = 50): LessonData[] {
-  const stored = loadStoredLessons();
-  if (!stored) return [];
-  
-  const uncompletedLessons = stored.lessons.filter(lesson => 
-    !completedLessonIds.includes(lesson.id)
-  );
-  
-  return uncompletedLessons.slice(0, maxCount);
+  try {
+    // Get lessons in proper learning order
+    const orderedLessons = getLessonsInOrder();
+    
+    // Filter out completed lessons while maintaining order
+    const uncompletedLessons = orderedLessons.filter(lesson => 
+      !completedLessonIds.includes(lesson.id)
+    );
+    
+
+    return uncompletedLessons.slice(0, maxCount);
+  } catch (error) {
+    console.error('Error getting next lessons:', error);
+    return [];
+  }
 }
 
 // Get lesson by ID
@@ -353,7 +360,7 @@ export function getLessonsInOrder(): LessonData[] {
       return a.id.localeCompare(b.id);
     });
     
-    console.log('🔧 Sorted lessons:', sorted.map(l => ({ id: l.id, title: l.title, categoryOrder: l.categoryOrder })));
+
     return sorted;
   } catch (error) {
     console.error('Error getting lessons in order:', error);
@@ -366,16 +373,9 @@ export function getNextLessonToLearn(completedLessonIds: string[] = []): LessonD
   try {
     const orderedLessons = getLessonsInOrder();
     
-    console.log('🔍 Debug orderedLessons:', orderedLessons.map(l => ({ id: l.id, title: l.title, categoryOrder: l.categoryOrder })));
-    console.log('🔍 Debug completedLessonIds:', completedLessonIds);
-    
     // Find the first lesson that hasn't been completed
     for (const lesson of orderedLessons) {
-      const isCompleted = completedLessonIds.includes(lesson.id);
-      console.log(`🔍 Checking lesson ${lesson.id} (${lesson.title}): completed = ${isCompleted}`);
-      
-      if (!isCompleted) {
-        console.log(`✅ Found next lesson: ${lesson.id} (${lesson.title})`);
+      if (!completedLessonIds.includes(lesson.id)) {
         return lesson;
       }
     }

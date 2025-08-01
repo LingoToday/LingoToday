@@ -212,30 +212,19 @@ export default function Dashboard() {
         .filter(p => p.completed)
         .map(p => p.lessonId);
       
-      console.log('🔍 Debug completed lesson IDs:', completedLessonIds);
-      console.log('🔍 Debug progress data:', dashboardData.progress);
-      
       // Clear any old cached data and force reload from API
-      console.log('🔄 Clearing lesson cache and reloading from API...');
       localStorage.removeItem('deskLingo_lessons');
       
       initializeLessonStore(dashboardData.settings.selectedLanguage, completedLessonIds)
         .then(() => {
-          console.log('✅ Lesson store initialized successfully with fresh API data');
-          
           // Get the next lesson to learn based on progress
           const nextLesson = getNextLessonToLearn(completedLessonIds);
           if (nextLesson) {
-            console.log('📚 Next lesson to learn:', nextLesson.title, nextLesson.category);
-            console.log('📚 Next lesson ID:', nextLesson.id);
             setCurrentLesson(nextLesson);
-          } else {
-            console.log('❌ No next lesson found!');
           }
           
           // Get upcoming lessons (next 3-5 lessons)
           const upcomingList = getNextLessons(completedLessonIds, 5);
-          console.log('📅 Upcoming lessons:', upcomingList.map(l => l.title));
           setUpcomingLessons(upcomingList);
           
           // Get completed lessons with details for Recent Lessons section

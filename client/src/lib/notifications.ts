@@ -254,171 +254,35 @@ export async function showLearningNotification(language: string) {
       completedLessonIds = [];
     }
     
-    // Get lesson from stored data using lesson store
-    const { getRandomLesson, getLessonById, loadStoredLessons } = await import("@/lib/lessonStore");
+    // Get lesson from stored data using new lesson store
+    const { getNextLessonToLearn, initializeLessonStore } = await import("@/lib/lessonStore");
     
-    // Debug: Check stored lessons before trying to get random one
-    const storedData = loadStoredLessons();
-    console.log(`🔍 Debug stored lessons before getRandomLesson:`, { 
-      hasData: !!storedData, 
-      language: storedData?.language, 
-      count: storedData?.lessons?.length || 0,
-      storageKeys: Object.keys(localStorage).filter(key => key.includes('lesson'))
-    });
+    // Initialize lesson store for this language (uses cache if available)
+    await initializeLessonStore(cleanLanguage, completedLessonIds);
     
-    // Fetch lesson data from the correct endpoint with proper A1 progression
-    console.log('🔄 Fetching lesson data with A1 progression order...');
-    
-    let selectedLesson = null;
-    try {
-      const lessonsResponse = await fetch(`/api/lessons/${cleanLanguage}`, {
-        credentials: 'same-origin'
-      });
-      
-      if (lessonsResponse.ok) {
-        const lessonsData = await lessonsResponse.json();
-        console.log(`📚 Fetched lesson categories:`, Object.keys(lessonsData));
-        
-        // Convert lessons to flat array with proper ordering
-        const lessons: any[] = [];
-        
-        // Process each category
-        Object.keys(lessonsData).forEach(categoryKey => {
-          const categoryData = lessonsData[categoryKey];
-          
-          // Process each lesson in the category
-          Object.keys(categoryData).forEach(lessonKey => {
-            const lesson = categoryData[lessonKey];
-            
-            lessons.push({
-              ...lesson,
-              categoryKey,
-              lessonKey,
-              // Ensure we have proper ID format
-              id: lesson.id || `${cleanLanguage}_${categoryKey}_${lessonKey.replace('lesson_', '')}`
-            });
-          });
-        });
-        
-        // Sort lessons by categoryOrder (A1 progression) and then by lesson order
-        lessons.sort((a, b) => {
-          // First sort by categoryOrder (1 = Greetings, 2 = Introducing, etc.)
-          const categoryOrderA = a.categoryOrder || 999;
-          const categoryOrderB = b.categoryOrder || 999;
-          
-          if (categoryOrderA !== categoryOrderB) {
-            return categoryOrderA - categoryOrderB;
-          }
-          
-          // Within same category, maintain lesson order
-          return a.lessonKey.localeCompare(b.lessonKey);
-        });
-        
-        console.log(`🔢 Processed ${lessons.length} lessons in A1 progression order`);
-        console.log(`📋 First few lessons:`, lessons.slice(0, 5).map(l => `${l.category}: ${l.title}`));
-        console.log(`🆔 First few lesson IDs:`, lessons.slice(0, 5).map(l => l.id));
-        
-        // Filter A1 lessons only and remove completed ones
-        const a1Lessons = lessons.filter(lesson => lesson.level === 'A1');
-        const availableLessons = a1Lessons.filter(lesson => 
-          !completedLessonIds.includes(lesson.id)
-        );
-        
-        console.log(`🎯 ${availableLessons.length} A1 lessons available (${a1Lessons.length - availableLessons.length} completed)`);
-        
-        if (availableLessons.length > 0) {
-          // Get the last shown lesson to find the next one in sequence
-          const lastShownLessonId = localStorage.getItem('lastShownLessonId');
-          
-          if (lastShownLessonId && availableLessons.length > 1) {
-            // Find the next lesson in sequence after the last shown one
-            const lastShownIndex = availableLessons.findIndex(lesson => lesson.id === lastShownLessonId);
-            console.log(`🔍 Last shown lesson "${lastShownLessonId}" found at index: ${lastShownIndex} of ${availableLessons.length} available lessons`);
-            
-            if (lastShownIndex >= 0 && lastShownIndex < availableLessons.length - 1) {
-              // Get the next lesson in sequence
-              selectedLesson = availableLessons[lastShownIndex + 1];
-              console.log(`✅ Selected NEXT lesson in sequence (${lastShownIndex + 1}/${availableLessons.length}): ${selectedLesson.category} - "${selectedLesson.title}"`);
-            } else if (lastShownIndex >= 0) {
-              // If last shown lesson was the last available, start from beginning
-              selectedLesson = availableLessons[0];
-              console.log(`🔄 Last lesson reached, restarting from first: ${selectedLesson.category} - "${selectedLesson.title}"`);
-            } else {
-              // Last shown lesson not found in available lessons, start from first
-              selectedLesson = availableLessons[0];
-              console.log(`⚠️ Last shown lesson not found in available, starting from first: ${selectedLesson.category} - "${selectedLesson.title}"`);
-            }
-          } else {
-            // First time or last shown lesson not found in available lessons
-            selectedLesson = availableLessons[0];
-            console.log(`✅ Selected FIRST available A1 lesson (${availableLessons.length} total): ${selectedLesson.category} - "${selectedLesson.title}"`);
-          }
-          
-          // Store this lesson ID for next progression
-          localStorage.setItem('lastShownLessonId', selectedLesson.id);
-        } else if (a1Lessons.length > 0) {
-          // If all A1 lessons completed, rotate through them for review
-          const lastShownLessonId = localStorage.getItem('lastShownLessonId');
-          
-          if (lastShownLessonId && a1Lessons.length > 1) {
-            const currentIndex = a1Lessons.findIndex(lesson => lesson.id === lastShownLessonId);
-            const nextIndex = (currentIndex + 1) % a1Lessons.length;
-            selectedLesson = a1Lessons[nextIndex];
-            console.log(`🔄 All A1 lessons completed, rotating to next for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
-          } else {
-            selectedLesson = a1Lessons[0];
-            console.log(`🔄 All A1 lessons completed, selecting first for review: ${selectedLesson.category} - "${selectedLesson.title}"`);
-          }
-          
-          // Store this lesson ID for rotation
-          localStorage.setItem('lastShownLessonId', selectedLesson.id);
-        }
-      } else {
-        console.error(`❌ Failed to fetch lessons from API: ${lessonsResponse.status}`);
-      }
-    } catch (error) {
-      console.error('❌ Error fetching lessons from API:', error);
-    }
+    // Get the next lesson that should be learned
+    const selectedLesson = getNextLessonToLearn(completedLessonIds);
     
     if (!selectedLesson) {
-      console.log("💪 No lessons available, showing motivational notification");
-      
-      const motivationalMessages = [
-        "Keep up your language learning streak!",
-        "Ready for more language practice?",
-        "Time to strengthen your language skills!",
-        "Your daily language learning awaits!"
-      ];
-      
-      const motivationalNotification = new Notification("Language Learning", {
-        body: motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)],
-        icon: "/favicon.ico",
-        tag: "desklingo-motivational-" + Date.now(),
-        requireInteraction: true,
-        silent: false
-      });
-      
-      motivationalNotification.onclick = function() {
-        console.log("Motivational notification clicked, opening dashboard");
-        window.focus();
-        window.location.href = "/dashboard";
-        motivationalNotification.close();
-      };
-      
-      console.log("✅ Motivational notification created");
+      console.log("❌ No lessons available or all lessons completed");
       return;
     }
+    
+    console.log(`✅ Selected next lesson: ${selectedLesson.category} - "${selectedLesson.title}"`);
+    
+    // Store this lesson as the last shown for tracking
+    localStorage.setItem('lastShownLessonId', selectedLesson.id);
+
     
     // Determine if this is a review or new lesson
     const isReview = completedLessonIds.includes(selectedLesson.id);
     const lessonType = isReview ? "review" : "new";
     
-    // Create a week/day mapping based on categoryOrder and lesson order
-    // Category order 1 = Week 1, Category order 2 = Week 2, etc.
-    const week = selectedLesson.categoryOrder || 1;
-    const day = parseInt(selectedLesson.lessonKey?.replace('lesson_', '') || '1');
+    // Create a week/day mapping based on lesson properties
+    const week = selectedLesson.week || 1;
+    const day = selectedLesson.day || 1;
     
-    console.log(`🗺️ Mapping lesson to URL: categoryOrder=${selectedLesson.categoryOrder} -> week=${week}, lessonKey=${selectedLesson.lessonKey} -> day=${day}`);
+    console.log(`🗺️ Mapping lesson to URL: week=${week}, day=${day}`);
     
     // Modify the question based on lesson type
     let questionText = selectedLesson.quiz.question;
