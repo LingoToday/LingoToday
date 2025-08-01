@@ -1,0 +1,88 @@
+{
+  "course2": {
+    "title": "Introducing Yourself",
+    "description": "Learn to introduce yourself, ask names, talk about where you're from, and basic polite conversation.",
+    "lessons": {
+      "lesson1": {
+        "title": "Names and Introductions",
+        "items": [
+          {
+            "italian": "Come ti chiami?",
+            "english": "What’s your name?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come si chiama?",
+            "english": "What is your name?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Mi chiamo...",
+            "english": "My name is...",
+            "note": "Literally: I call myself"
+          },
+          {
+            "italian": "Sono...",
+            "english": "I am...",
+            "note": "Alternative way to say your name"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Origin and Nationality",
+        "items": [
+          {
+            "italian": "Di dove sei?",
+            "english": "Where are you from?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Di dov’è (Lei)?",
+            "english": "Where are you from?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Sono di...",
+            "english": "I am from...",
+            "note": "Used with a city name"
+          },
+          {
+            "italian": "Sono italiano / italiana",
+            "english": "I am Italian",
+            "note": "Male / Female forms"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Polite Social Phrases",
+        "items": [
+          {
+            "italian": "Piacere (di conoscerti)",
+            "english": "Pleased to meet you",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come stai?",
+            "english": "How are you?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come sta?",
+            "english": "How are you?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Bene, grazie.",
+            "english": "I’m fine, thank you.",
+            "note": ""
+          },
+          {
+            "italian": "E tu? / E Lei?",
+            "english": "And you?",
+            "note": "Informal / Formal"
+          }
+        ]
+      }
+    }
+  }
+}

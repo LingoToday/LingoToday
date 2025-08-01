@@ -1,0 +1,188 @@
+{
+  "course4": {
+    "title": "Numbers",
+    "description": "Learn to count, express age, and understand how numbers work in Italian.",
+    "lessons": {
+      "lesson1": {
+        "title": "Numbers 0–10",
+        "items": [
+          {
+            "italian": "zero",
+            "english": "0",
+            "note": ""
+          },
+          {
+            "italian": "uno",
+            "english": "1",
+            "note": ""
+          },
+          {
+            "italian": "due",
+            "english": "2",
+            "note": ""
+          },
+          {
+            "italian": "tre",
+            "english": "3",
+            "note": ""
+          },
+          {
+            "italian": "quattro",
+            "english": "4",
+            "note": ""
+          },
+          {
+            "italian": "cinque",
+            "english": "5",
+            "note": ""
+          },
+          {
+            "italian": "sei",
+            "english": "6",
+            "note": ""
+          },
+          {
+            "italian": "sette",
+            "english": "7",
+            "note": ""
+          },
+          {
+            "italian": "otto",
+            "english": "8",
+            "note": ""
+          },
+          {
+            "italian": "nove",
+            "english": "9",
+            "note": ""
+          },
+          {
+            "italian": "dieci",
+            "english": "10",
+            "note": ""
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Numbers 11–20",
+        "items": [
+          {
+            "italian": "undici",
+            "english": "11",
+            "note": ""
+          },
+          {
+            "italian": "dodici",
+            "english": "12",
+            "note": ""
+          },
+          {
+            "italian": "tredici",
+            "english": "13",
+            "note": ""
+          },
+          {
+            "italian": "quattordici",
+            "english": "14",
+            "note": ""
+          },
+          {
+            "italian": "quindici",
+            "english": "15",
+            "note": ""
+          },
+          {
+            "italian": "sedici",
+            "english": "16",
+            "note": ""
+          },
+          {
+            "italian": "diciassette",
+            "english": "17",
+            "note": ""
+          },
+          {
+            "italian": "diciotto",
+            "english": "18",
+            "note": ""
+          },
+          {
+            "italian": "diciannove",
+            "english": "19",
+            "note": ""
+          },
+          {
+            "italian": "venti",
+            "english": "20",
+            "note": ""
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Tens and Round Numbers",
+        "items": [
+          {
+            "italian": "trenta",
+            "english": "30",
+            "note": ""
+          },
+          {
+            "italian": "quaranta",
+            "english": "40",
+            "note": ""
+          },
+          {
+            "italian": "cinquanta",
+            "english": "50",
+            "note": ""
+          },
+          {
+            "italian": "sessanta",
+            "english": "60",
+            "note": ""
+          },
+          {
+            "italian": "settanta",
+            "english": "70",
+            "note": ""
+          },
+          {
+            "italian": "ottanta",
+            "english": "80",
+            "note": ""
+          },
+          {
+            "italian": "novanta",
+            "english": "90",
+            "note": ""
+          },
+          {
+            "italian": "cento",
+            "english": "100",
+            "note": ""
+          }
+        ]
+      },
+      "lesson4": {
+        "title": "Talking About Age",
+        "items": [
+          {
+            "italian": "Quanti anni hai?",
+            "english": "How old are you?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Quanti anni ha?",
+            "english": "How old are you?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Ho __ anni.",
+            "english": "I am __ years old.",
+            "note": "Use number in the blank"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Learn how to greet people at different times of day and in formal/informal situations.",
+    "lessons": {
+      "lesson1": {
+        "title": "Saying Hello",
+        "items": [
+          {
+            "italian": "Ciao!",
+            "english": "Hi / Bye",
+            "note": "Informal"
+          },
+          {
+            "italian": "Salve!",
+            "english": "Hello",
+            "note": "Formal or polite"
+          },
+          {
+            "italian": "Buongiorno",
+            "english": "Good morning / Good day",
+            "note": "Formal"
+          },
+          {
+            "italian": "Buonasera",
+            "english": "Good evening",
+            "note": "Formal"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Time-Specific Greetings",
+        "items": [
+          {
+            "italian": "Buon pomeriggio",
+            "english": "Good afternoon",
+            "note": "Less common, formal"
+          },
+          {
+            "italian": "Buonanotte",
+            "english": "Good night",
+            "note": "When parting late"
+          },
+          {
+            "italian": "Buona giornata",
+            "english": "Have a nice day",
+            "note": "Farewell during day"
+          },
+          {
+            "italian": "Buona serata",
+            "english": "Have a good evening",
+            "note": "Farewell in the evening"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Saying Goodbye",
+        "items": [
+          {
+            "italian": "Arrivederci",
+            "english": "Goodbye",
+            "note": "Formal"
+          },
+          {
+            "italian": "Ciao!",
+            "english": "Bye!",
+            "note": "Informal"
+          },
+          {
+            "italian": "A presto",
+            "english": "See you soon",
+            "note": ""
+          },
+          {
+            "italian": "Ci vediamo",
+            "english": "See you",
+            "note": "Friendly farewell"
+          }
+        ]
+      }
+    }
+  }
+}

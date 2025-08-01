@@ -69,7 +69,7 @@ export function storeLessons(lessons: LessonData[], language: string): void {
   }
 }
 
-// Convert API lesson data to flat array (now handles category-based structure)
+// Convert API lesson data to flat array (handles both old and new structures)
 export function processLessonData(apiData: any, language: string): LessonData[] {
   const lessons: LessonData[] = [];
   
@@ -84,61 +84,122 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
     return lessons;
   }
   
-  // Handle both old week-based and new category-based structures
-  Object.keys(apiData).forEach(categoryKey => {
-    const categoryData = apiData[categoryKey];
+  // Check if this is the new Italian course structure
+  if (language === 'italian' && apiData.course1) {
+    console.log('🆕 Processing new Italian course structure');
     
-    console.log(`📅 Processing ${categoryKey}:`, Object.keys(categoryData || {}));
+    // Course order for proper progression
+    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
     
-    if (!categoryData || typeof categoryData !== 'object') {
-      console.error(`❌ Invalid category data for ${categoryKey}:`, categoryData);
-      return;
-    }
-    
-    // Check if this is old week-based structure (week_1, week_2) or new category structure
-    if (categoryKey.startsWith('week_')) {
-      // Handle old week-based structure
-      const week = parseInt(categoryKey.replace('week_', ''));
+    courseOrder.forEach((courseId, courseIndex) => {
+      const courseData = apiData[courseId];
+      if (!courseData || !courseData.lessons) {
+        console.log(`⚠️ No course data for ${courseId}`);
+        return;
+      }
       
-      Object.keys(categoryData).forEach(dayKey => {
-        const day = parseInt(dayKey.replace('day_', ''));
-        const lesson = categoryData[dayKey];
+      console.log(`📚 Processing ${courseId}: ${courseData.title}`);
+      
+      // Lesson order within each course
+      const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
+      
+      lessonOrder.forEach((lessonId, lessonIndex) => {
+        const lessonData = courseData.lessons[lessonId];
+        if (!lessonData) return; // Skip if lesson doesn't exist
         
-        if (!lesson || !lesson.id) {
-          console.error(`❌ Invalid lesson data for ${categoryKey}/${dayKey}:`, lesson);
-          return;
-        }
+        // Create a standardized lesson object
+        const lesson: LessonData = {
+          id: `${courseId}_${lessonId}`,
+          title: lessonData.title,
+          emoji: '📚',
+          description: `${courseData.title}: ${lessonData.title}`,
+          content: {
+            word: lessonData.items[0]?.italian || '',
+            translation: lessonData.items[0]?.english || '',
+            pronunciation: lessonData.items[0]?.italian || '',
+            example: lessonData.items[1]?.italian || lessonData.items[0]?.italian || '',
+            exampleTranslation: lessonData.items[1]?.english || lessonData.items[0]?.english || ''
+          },
+          quiz: {
+            question: `What does "${lessonData.items[0]?.italian || ''}" mean?`,
+            options: [
+              lessonData.items[0]?.english || '',
+              'Wrong answer 1',
+              'Wrong answer 2',
+              'Wrong answer 3'
+            ],
+            correct: 0
+          },
+          words: lessonData.items.map((item: any) => item.italian).filter(Boolean),
+          week: courseIndex + 1,
+          day: lessonIndex + 1,
+          category: courseData.title,
+          categoryOrder: (courseIndex * 10) + lessonIndex
+        };
         
-        console.log(`📚 Adding lesson: ${lesson.id} (Week ${week}, Day ${day})`);
-        
-        lessons.push({
-          ...lesson,
-          week,
-          day
-        });
+        console.log(`📚 Adding lesson: ${lesson.id} (${courseData.title}: ${lessonData.title})`);
+        lessons.push(lesson);
       });
-    } else {
-      // Handle new category-based structure
-      Object.keys(categoryData).forEach(lessonKey => {
-        const lesson = categoryData[lessonKey];
+    });
+  } else {
+    // Handle old lesson structures for other languages
+    console.log('📜 Processing legacy lesson structure');
+    
+    Object.keys(apiData).forEach(categoryKey => {
+      const categoryData = apiData[categoryKey];
+      
+      console.log(`📅 Processing ${categoryKey}:`, Object.keys(categoryData || {}));
+      
+      if (!categoryData || typeof categoryData !== 'object') {
+        console.error(`❌ Invalid category data for ${categoryKey}:`, categoryData);
+        return;
+      }
+      
+      // Check if this is old week-based structure (week_1, week_2) or new category structure
+      if (categoryKey.startsWith('week_')) {
+        // Handle old week-based structure
+        const week = parseInt(categoryKey.replace('week_', ''));
         
-        if (!lesson || !lesson.id) {
-          console.error(`❌ Invalid lesson data for ${categoryKey}/${lessonKey}:`, lesson);
-          return;
-        }
-        
-        console.log(`📚 Adding lesson: ${lesson.id} (Category: ${lesson.category || categoryKey})`);
-        
-        // Add week/day defaults for compatibility with existing code
-        lessons.push({
-          ...lesson,
-          week: lesson.week || 1,
-          day: lesson.day || lessons.length + 1,
-          category: lesson.category || categoryKey
+        Object.keys(categoryData).forEach(dayKey => {
+          const day = parseInt(dayKey.replace('day_', ''));
+          const lesson = categoryData[dayKey];
+          
+          if (!lesson || !lesson.id) {
+            console.error(`❌ Invalid lesson data for ${categoryKey}/${dayKey}:`, lesson);
+            return;
+          }
+          
+          console.log(`📚 Adding lesson: ${lesson.id} (Week ${week}, Day ${day})`);
+          
+          lessons.push({
+            ...lesson,
+            week,
+            day
+          });
         });
-      });
-    }
-  });
+      } else {
+        // Handle category-based structure
+        Object.keys(categoryData).forEach(lessonKey => {
+          const lesson = categoryData[lessonKey];
+          
+          if (!lesson || !lesson.id) {
+            console.error(`❌ Invalid lesson data for ${categoryKey}/${lessonKey}:`, lesson);
+            return;
+          }
+          
+          console.log(`📚 Adding lesson: ${lesson.id} (Category: ${lesson.category || categoryKey})`);
+          
+          // Add week/day defaults for compatibility with existing code
+          lessons.push({
+            ...lesson,
+            week: lesson.week || 1,
+            day: lesson.day || lessons.length + 1,
+            category: lesson.category || categoryKey
+          });
+        });
+      }
+    });
+  }
   
   // Sort by category order first, then by lesson number within category
   const sortedLessons = lessons.sort((a, b) => {
@@ -213,7 +274,9 @@ export async function loadAndStoreLessons(language: string): Promise<boolean> {
   try {
     console.log(`🔄 Loading lessons for ${language} from API...`);
     
-    const response = await fetch(`/api/lessons/${language}`, {
+    // Use the courses endpoint for Italian to get the proper course structure
+    const endpoint = language === 'italian' ? `/api/courses/${language}` : `/api/lessons/${language}`;
+    const response = await fetch(endpoint, {
       credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
