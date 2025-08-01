@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users } from "lucide-react";
+import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -30,17 +30,18 @@ export default function Landing() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
-            <Sparkles className="w-4 h-4" />
-            4900+ 5 Stars Reviews
+            <Clock className="w-4 h-4" />
+            Start learning in under 60 seconds
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Easy language learning<br />
-            <span className="text-primary">as you work</span>
+            Learn a Language Without<br />
+            <span className="text-primary">Leaving Your Desk</span>
           </h1>
           
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
-            Streamline your language learning, manage micro-lessons, and empower your brain with DeskLingo — the all-in-one language learning solution.
+          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
+            DeskLingo is a smarter way to learn languages — built for people who spend their day on a laptop. 
+            No long lessons. No phone apps. Just short, well-timed language prompts that show up on your desktop while you work. Backed by science. Built for real life.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -49,7 +50,7 @@ export default function Landing() {
               className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
               onClick={() => window.location.href = "/api/login"}
             >
-              Book a Demo
+              Get your first 5 lessons free
             </Button>
             <Button 
               size="lg" 
@@ -57,28 +58,33 @@ export default function Landing() {
               className="border-gray-300 text-gray-700 font-medium px-8 py-3 rounded-full hover:bg-gray-50"
               onClick={() => window.location.href = "/api/login"}
             >
-              Contact Sales
+              Try It Free
             </Button>
           </div>
         </div>
 
-        {/* Quick Action Buttons Section */}
+        {/* Target Audience Section */}
         <div className="flex items-center justify-center gap-8 mb-12">
           <div className="flex items-center gap-2 text-gray-500">
-            <Zap className="w-5 h-5 text-blue-500" />
-            <span className="text-sm font-medium">Quick Action Buttons</span>
+            <Target className="w-5 h-5 text-blue-500" />
+            <span className="text-sm font-medium">You work at a desk</span>
           </div>
           <div className="flex items-center gap-2 text-gray-500">
-            <Users className="w-5 h-5 text-purple-500" />
-            <span className="text-sm font-medium">Clean and Minimal Layout</span>
+            <Brain className="w-5 h-5 text-purple-500" />
+            <span className="text-sm font-medium">You like efficient learning</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-500">
+            <Clock className="w-5 h-5 text-green-500" />
+            <span className="text-sm font-medium">You want steady progress</span>
           </div>
         </div>
 
         {/* Features Cards */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What makes us different</h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            Simplify language learning, streamline micro-lessons, and boost productivity all with DeskLingo language learning solution
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why This Works Better</h2>
+          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+            Traditional language learning expects you to block out 15–60 minutes a day, open an app, and grind through a course. Most people quit in a week. 
+            DeskLingo flips that. You stay at your desk. We deliver focused micro-lessons — 2 to 3 minutes each — across your day.
           </p>
         </div>
 
@@ -86,11 +92,11 @@ export default function Landing() {
           <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
-                <Bell className="text-blue-600 w-6 h-6" />
+                <Brain className="text-blue-600 w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-3">Activity tracking & insights</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">Spaced repetition</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                DeskLingo is built to work seamlessly on desktop devices, ensuring you stay connected to your learning goals.
+                You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
               </p>
             </CardContent>
           </Card>
@@ -98,11 +104,11 @@ export default function Landing() {
           <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
-                <BookOpen className="text-green-600 w-6 h-6" />
+                <Zap className="text-green-600 w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-3">Task prioritization</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">Microlearning</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Organize your lessons by priority levels to make sure you focus on what matters most for your learning.
+                Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
               </p>
             </CardContent>
           </Card>
@@ -112,47 +118,49 @@ export default function Landing() {
               <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
                 <TrendingUp className="text-purple-600 w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-3">Team collaboration</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">The science backs it</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Collaborate effortlessly with your learning community, no matter where they are, in real-time.
+                Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Features Section */}
+        {/* How It Works Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-yellow-50 text-yellow-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
-            <BookOpen className="w-4 h-4" />
-            Features
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
+            <Globe className="w-4 h-4" />
+            How It Works
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Powerful features to<br />
-            <span className="text-primary">boost your daily workflow</span>
+            Simple Steps to<br />
+            <span className="text-primary">Language Mastery</span>
           </h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            Simplify language learning, streamline micro-lessons, and boost productivity all with DeskLingo language learning solution
+          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+            Pick your language and goals. Set your lesson frequency. Each one is quick and focused — a phrase, rule, or word that actually matters. 
+            Click to expand and complete it. Smart review system brings content back when it's at risk of being forgotten.
           </p>
         </div>
 
-        {/* Feature Highlights */}
+        {/* Progress Highlights */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 items-center">
           <div className="space-y-6">
             <div>
-              <div className="inline-flex items-center gap-2 text-blue-600 text-sm font-medium mb-4">
-                In-app notifications and real-time feedback
+              <div className="inline-flex items-center gap-2 text-green-600 text-sm font-medium mb-4">
+                See Real Progress (Without the Overwhelm)
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                Seamless desktop integration
+                Built for your work setup
               </h3>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Communicate and learn effortlessly with DeskLingo's real-time updates, built-in notifications, and lesson assignments.
+                Whether you're writing emails, working in Figma, or coding in VS Code — DeskLingo drops in when you've got a moment. 
+                You learn without needing to "find time." Most learning platforms are mobile-first. DeskLingo is built for desktop.
               </p>
               <Button 
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-full"
                 onClick={() => window.location.href = "/api/login"}
               >
-                Book a Demo
+                Try It Now
               </Button>
             </div>
           </div>
@@ -161,22 +169,20 @@ export default function Landing() {
             <div className="bg-white border border-gray-200 shadow-card p-6 rounded-2xl">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                    <Bell className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">Desktop Notifications</div>
-                    <div className="text-sm text-gray-500">Gentle reminders for lessons</div>
-                  </div>
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-900 font-medium">Fits into your day</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">Micro Learning</div>
-                    <div className="text-sm text-gray-500">Quick 2-minute lessons</div>
-                  </div>
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-900 font-medium">Builds a daily habit</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-900 font-medium">Keeps your brain engaged</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-900 font-medium">Actually sticks</span>
                 </div>
               </div>
             </div>
@@ -186,18 +192,19 @@ export default function Landing() {
         {/* Final CTA */}
         <div className="text-center bg-gray-50 rounded-2xl p-12 border border-gray-200">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Build a trendy learning habit<br />
-            <span className="text-primary">within days, not weeks!</span>
+            Smarter Language Learning,<br />
+            <span className="text-primary">Finally on Desktop</span>
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            DeskLingo is the ultimate language learning platform designed for professionals and fast-growing minds.
+          <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
+            There are thousands of language apps. This isn't one of them. DeskLingo is for people who want to learn while they work — not after.
+            No signup delays. No app stores. Just hit start and learn right in your browser.
           </p>
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
             onClick={() => window.location.href = "/api/login"}
           >
-            Get Started Now
+            🎯 Try it now. It takes less time than reading this page.
           </Button>
         </div>
       </main>
