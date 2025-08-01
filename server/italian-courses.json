@@ -1,0 +1,446 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Learn how to greet people at different times of day and in formal/informal situations.",
+    "lessons": {
+      "lesson1": {
+        "title": "Saying Hello",
+        "items": [
+          {
+            "italian": "Ciao!",
+            "english": "Hi / Bye",
+            "note": "Informal"
+          },
+          {
+            "italian": "Salve!",
+            "english": "Hello",
+            "note": "Formal or polite"
+          },
+          {
+            "italian": "Buongiorno",
+            "english": "Good morning / Good day",
+            "note": "Formal"
+          },
+          {
+            "italian": "Buonasera",
+            "english": "Good evening",
+            "note": "Formal"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Time-Specific Greetings",
+        "items": [
+          {
+            "italian": "Buon pomeriggio",
+            "english": "Good afternoon",
+            "note": "Less common, formal"
+          },
+          {
+            "italian": "Buonanotte",
+            "english": "Good night",
+            "note": "When parting late"
+          },
+          {
+            "italian": "Buona giornata",
+            "english": "Have a nice day",
+            "note": "Farewell during day"
+          },
+          {
+            "italian": "Buona serata",
+            "english": "Have a good evening",
+            "note": "Farewell in the evening"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Saying Goodbye",
+        "items": [
+          {
+            "italian": "Arrivederci",
+            "english": "Goodbye",
+            "note": "Formal"
+          },
+          {
+            "italian": "Ciao!",
+            "english": "Bye!",
+            "note": "Informal"
+          },
+          {
+            "italian": "A presto",
+            "english": "See you soon",
+            "note": ""
+          },
+          {
+            "italian": "Ci vediamo",
+            "english": "See you",
+            "note": "Friendly farewell"
+          }
+        ]
+      }
+    }
+  },
+  "course2": {
+    "title": "Introducing Yourself",
+    "description": "Learn to introduce yourself, ask names, talk about where you're from, and basic polite conversation.",
+    "lessons": {
+      "lesson1": {
+        "title": "Names and Introductions",
+        "items": [
+          {
+            "italian": "Come ti chiami?",
+            "english": "What's your name?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come si chiama?",
+            "english": "What is your name?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Mi chiamo...",
+            "english": "My name is...",
+            "note": "Literally: I call myself"
+          },
+          {
+            "italian": "Sono...",
+            "english": "I am...",
+            "note": "Alternative way to say your name"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Origin and Nationality",
+        "items": [
+          {
+            "italian": "Di dove sei?",
+            "english": "Where are you from?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Di dov'è (Lei)?",
+            "english": "Where are you from?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Sono di...",
+            "english": "I am from...",
+            "note": "Used with a city name"
+          },
+          {
+            "italian": "Sono italiano / italiana",
+            "english": "I am Italian",
+            "note": "Male / Female forms"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Polite Social Phrases",
+        "items": [
+          {
+            "italian": "Piacere (di conoscerti)",
+            "english": "Pleased to meet you",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come stai?",
+            "english": "How are you?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Come sta?",
+            "english": "How are you?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Bene, grazie.",
+            "english": "I'm fine, thank you.",
+            "note": ""
+          },
+          {
+            "italian": "E tu? / E Lei?",
+            "english": "And you?",
+            "note": "Informal / Formal"
+          }
+        ]
+      }
+    }
+  },
+  "course3": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Master the basic polite words and expressions like yes, no, please, thank you, and apologies.",
+    "lessons": {
+      "lesson1": {
+        "title": "Yes, No, Please, Thank You",
+        "items": [
+          {
+            "italian": "Sì",
+            "english": "Yes",
+            "note": ""
+          },
+          {
+            "italian": "No",
+            "english": "No",
+            "note": ""
+          },
+          {
+            "italian": "Per favore",
+            "english": "Please",
+            "note": ""
+          },
+          {
+            "italian": "Grazie",
+            "english": "Thank you",
+            "note": ""
+          },
+          {
+            "italian": "Prego",
+            "english": "You're welcome",
+            "note": "Also used to offer or invite"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Apologies and Excuse Me",
+        "items": [
+          {
+            "italian": "Mi dispiace",
+            "english": "I'm sorry",
+            "note": "To apologize for something"
+          },
+          {
+            "italian": "Scusa",
+            "english": "Excuse me / Sorry",
+            "note": "Informal"
+          },
+          {
+            "italian": "Scusi",
+            "english": "Excuse me",
+            "note": "Formal"
+          },
+          {
+            "italian": "Permesso",
+            "english": "May I pass?",
+            "note": "Used when squeezing by someone"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Communication Helpers",
+        "items": [
+          {
+            "italian": "Parli inglese?",
+            "english": "Do you speak English?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Non capisco",
+            "english": "I don't understand",
+            "note": ""
+          },
+          {
+            "italian": "Non lo so",
+            "english": "I don't know",
+            "note": ""
+          },
+          {
+            "italian": "Parlo un po' di italiano",
+            "english": "I speak a little Italian",
+            "note": ""
+          },
+          {
+            "italian": "Può ripetere, per favore?",
+            "english": "Can you repeat, please?",
+            "note": "Formal"
+          }
+        ]
+      }
+    }
+  },
+  "course4": {
+    "title": "Numbers",
+    "description": "Learn to count, express age, and understand how numbers work in Italian.",
+    "lessons": {
+      "lesson1": {
+        "title": "Numbers 0–10",
+        "items": [
+          {
+            "italian": "zero",
+            "english": "0",
+            "note": ""
+          },
+          {
+            "italian": "uno",
+            "english": "1",
+            "note": ""
+          },
+          {
+            "italian": "due",
+            "english": "2",
+            "note": ""
+          },
+          {
+            "italian": "tre",
+            "english": "3",
+            "note": ""
+          },
+          {
+            "italian": "quattro",
+            "english": "4",
+            "note": ""
+          },
+          {
+            "italian": "cinque",
+            "english": "5",
+            "note": ""
+          },
+          {
+            "italian": "sei",
+            "english": "6",
+            "note": ""
+          },
+          {
+            "italian": "sette",
+            "english": "7",
+            "note": ""
+          },
+          {
+            "italian": "otto",
+            "english": "8",
+            "note": ""
+          },
+          {
+            "italian": "nove",
+            "english": "9",
+            "note": ""
+          },
+          {
+            "italian": "dieci",
+            "english": "10",
+            "note": ""
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Numbers 11–20",
+        "items": [
+          {
+            "italian": "undici",
+            "english": "11",
+            "note": ""
+          },
+          {
+            "italian": "dodici",
+            "english": "12",
+            "note": ""
+          },
+          {
+            "italian": "tredici",
+            "english": "13",
+            "note": ""
+          },
+          {
+            "italian": "quattordici",
+            "english": "14",
+            "note": ""
+          },
+          {
+            "italian": "quindici",
+            "english": "15",
+            "note": ""
+          },
+          {
+            "italian": "sedici",
+            "english": "16",
+            "note": ""
+          },
+          {
+            "italian": "diciassette",
+            "english": "17",
+            "note": ""
+          },
+          {
+            "italian": "diciotto",
+            "english": "18",
+            "note": ""
+          },
+          {
+            "italian": "diciannove",
+            "english": "19",
+            "note": ""
+          },
+          {
+            "italian": "venti",
+            "english": "20",
+            "note": ""
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Tens and Round Numbers",
+        "items": [
+          {
+            "italian": "trenta",
+            "english": "30",
+            "note": ""
+          },
+          {
+            "italian": "quaranta",
+            "english": "40",
+            "note": ""
+          },
+          {
+            "italian": "cinquanta",
+            "english": "50",
+            "note": ""
+          },
+          {
+            "italian": "sessanta",
+            "english": "60",
+            "note": ""
+          },
+          {
+            "italian": "settanta",
+            "english": "70",
+            "note": ""
+          },
+          {
+            "italian": "ottanta",
+            "english": "80",
+            "note": ""
+          },
+          {
+            "italian": "novanta",
+            "english": "90",
+            "note": ""
+          },
+          {
+            "italian": "cento",
+            "english": "100",
+            "note": ""
+          }
+        ]
+      },
+      "lesson4": {
+        "title": "Talking About Age",
+        "items": [
+          {
+            "italian": "Quanti anni hai?",
+            "english": "How old are you?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Quanti anni ha?",
+            "english": "How old are you?",
+            "note": "Formal"
+          },
+          {
+            "italian": "Ho __ anni.",
+            "english": "I am __ years old.",
+            "note": "Use number in the blank"
+          }
+        ]
+      }
+    }
+  }
+}

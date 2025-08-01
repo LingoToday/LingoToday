@@ -53,8 +53,7 @@ export const userProgress = pgTable("user_progress", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   language: varchar("language").notNull(),
-  week: integer("week").notNull(),
-  day: integer("day").notNull(),
+  courseId: varchar("course_id").notNull(),
   lessonId: varchar("lesson_id").notNull(),
   completed: boolean("completed").notNull().default(false),
   score: integer("score").default(0), // percentage
@@ -129,7 +128,24 @@ export const insertUserStatsSchema = createInsertSchema(userStats).omit({
   updatedAt: true,
 });
 
-// Lesson content types
+// Course and lesson types
+export interface CourseItem {
+  italian: string;
+  english: string;
+  note: string;
+}
+
+export interface CourseLesson {
+  title: string;
+  items: CourseItem[];
+}
+
+export interface Course {
+  title: string;
+  description: string;
+  lessons: Record<string, CourseLesson>;
+}
+
 export interface LessonContent {
   word: string;
   translation: string;

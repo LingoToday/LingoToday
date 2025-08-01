@@ -80,6 +80,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get next lesson for user
+  app.get('/api/next-lesson/:language', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { language } = req.params;
+      
+      const nextLesson = await storage.getNextLesson(userId, language);
+      
+      if (!nextLesson) {
+        return res.json({ message: "All lessons completed!", completed: true });
+      }
+
+      // Get the actual lesson data
+      if (language === 'italian') {
+        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+        const course = coursesData[nextLesson.courseId];
+        
+        if (course && course.lessons[nextLesson.lessonId]) {
+          res.json({
+            courseId: nextLesson.courseId,
+            courseTitle: course.title,
+            courseDescription: course.description,
+            lessonId: nextLesson.lessonId,
+            lesson: course.lessons[nextLesson.lessonId]
+          });
+        } else {
+          res.status(404).json({ message: "Lesson data not found" });
+        }
+      } else {
+        res.status(404).json({ message: "Language not supported for course structure" });
+      }
+    } catch (error) {
+      console.error("Error fetching next lesson:", error);
+      res.status(500).json({ message: "Failed to fetch next lesson" });
+    }
+  });
+
   app.post('/api/progress', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -162,7 +200,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Lessons routes
+  // Italian courses routes
+  app.get('/api/courses/:language', async (req, res) => {
+    try {
+      const { language } = req.params;
+      let coursesPath;
+      
+      if (language === 'italian') {
+        coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+      } else {
+        // Fallback to old lessons structure for other languages
+        coursesPath = path.join(process.cwd(), 'server', 'lessons.json');
+      }
+      
+      if (!fs.existsSync(coursesPath)) {
+        return res.status(404).json({ message: "Courses file not found" });
+      }
+      
+      const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+      
+      if (language === 'italian') {
+        res.json(coursesData);
+      } else {
+        const languageLessons = coursesData[language];
+        if (!languageLessons) {
+          return res.status(404).json({ message: `Courses not found for language: ${language}` });
+        }
+        res.json(languageLessons);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      res.status(500).json({ message: "Failed to fetch courses" });
+    }
+  });
+
+  // Get specific course and lesson
+  app.get('/api/courses/:language/:courseId/:lessonId', async (req, res) => {
+    try {
+      const { language, courseId, lessonId } = req.params;
+      
+      if (language === 'italian') {
+        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        
+        if (!fs.existsSync(coursesPath)) {
+          return res.status(404).json({ message: "Italian courses file not found" });
+        }
+        
+        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+        const course = coursesData[courseId];
+        
+        if (!course || !course.lessons[lessonId]) {
+          return res.status(404).json({ message: `Lesson not found: ${courseId}/${lessonId}` });
+        }
+        
+        res.json({
+          courseId,
+          courseTitle: course.title,
+          courseDescription: course.description,
+          lessonId,
+          lesson: course.lessons[lessonId]
+        });
+      } else {
+        // Fallback for other languages using old structure
+        return res.status(404).json({ message: "Course structure not supported for this language" });
+      }
+    } catch (error) {
+      console.error("Error fetching specific course lesson:", error);
+      res.status(500).json({ message: "Failed to fetch course lesson" });
+    }
+  });
+
+  // Lessons routes (backward compatibility)
   app.get('/api/lessons/:language', async (req, res) => {
     try {
       const { language } = req.params;

@@ -228,7 +228,7 @@ export default function Dashboard() {
             
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/" className="text-gray-900 hover:text-primary transition-colors font-medium">Dashboard</Link>
-              <span className="text-gray-600 hover:text-primary transition-colors font-medium">Lessons</span>
+              <Link href="/courses" className="text-gray-600 hover:text-primary transition-colors font-medium">Courses</Link>
               <span className="text-gray-600 hover:text-primary transition-colors font-medium">Progress</span>
               <span className="text-gray-600 hover:text-primary transition-colors font-medium">Settings</span>
             </nav>

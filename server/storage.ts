@@ -103,6 +103,36 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getNextLesson(userId: string, language: string): Promise<{courseId: string, lessonId: string} | null> {
+    // Get all completed lessons for the user
+    const completedLessons = await db
+      .select()
+      .from(userProgress)
+      .where(and(
+        eq(userProgress.userId, userId), 
+        eq(userProgress.language, language),
+        eq(userProgress.completed, true)
+      ));
+
+    // For Italian, we have courses 1-4, each with lessons 1-4 (some have 3)
+    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
+    const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
+
+    for (const courseId of courseOrder) {
+      for (const lessonId of lessonOrder) {
+        const isCompleted = completedLessons.some(
+          lesson => lesson.courseId === courseId && lesson.lessonId === lessonId
+        );
+        
+        if (!isCompleted) {
+          return { courseId, lessonId };
+        }
+      }
+    }
+
+    return null; // All lessons completed
+  }
+
   async upsertUserProgress(progressData: InsertUserProgress): Promise<UserProgress> {
     const [progress] = await db
       .insert(userProgress)
@@ -111,7 +141,7 @@ export class DatabaseStorage implements IStorage {
         updatedAt: new Date(),
       })
       .onConflictDoUpdate({
-        target: [userProgress.userId, userProgress.language, userProgress.week, userProgress.day],
+        target: [userProgress.userId, userProgress.language, userProgress.courseId, userProgress.lessonId],
         set: {
           ...progressData,
           updatedAt: new Date(),
@@ -126,7 +156,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(userProgress)
       .where(and(eq(userProgress.userId, userId), eq(userProgress.language, language)))
-      .orderBy(desc(userProgress.week), desc(userProgress.day))
+      .orderBy(desc(userProgress.createdAt))
       .limit(1);
     return progress;
   }
