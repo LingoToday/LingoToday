@@ -2,6 +2,8 @@
 
 let notificationInterval: NodeJS.Timeout | null = null;
 let healthCheckInterval: NodeJS.Timeout | null = null;
+let isNotificationSystemActive = false; // Global flag to prevent duplicate systems
+let lastNotificationId: string | null = null; // Track last notification to prevent duplicates
 
 // Request notification permission
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
@@ -22,6 +24,11 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 // Start daily learning session 
 export function startDailySession(language: string, intervalMinutes: number = 15) {
   console.log(`🌅 Starting daily learning session for ${language}`);
+  
+  // Prevent duplicate sessions
+  if (isNotificationSystemActive) {
+    console.log(`⚠️ Notification system already active, stopping duplicates first`);
+  }
   
   // Stop any existing notifications first
   stopNotifications();
@@ -63,6 +70,9 @@ export function startDailySession(language: string, intervalMinutes: number = 15
     console.log(`⏰ Daily session interval triggered - firing notification for ${language}`);
     showLearningNotification(language);
   }, intervalMs);
+  
+  // Mark notification system as active
+  isNotificationSystemActive = true;
   
   // Start health check to ensure notifications keep running
   startNotificationHealthCheck();
@@ -115,6 +125,10 @@ export function stopNotifications() {
     clearInterval(healthCheckInterval);
     healthCheckInterval = null;
   }
+  
+  // Mark notification system as inactive and clear deduplication
+  isNotificationSystemActive = false;
+  lastNotificationId = null;
   
   // Force clear any lingering intervals (browser-specific cleanup)
   try {
@@ -177,6 +191,14 @@ export async function showLearningNotification(language: string) {
   const timestamp = Date.now();
   
   console.log(`📢 [${now}] showLearningNotification called with language:`, language, typeof language);
+  
+  // Prevent duplicate notifications within a short time frame (30 seconds)
+  const currentNotificationId = `${language}_${Math.floor(timestamp / 30000)}`;
+  if (lastNotificationId === currentNotificationId) {
+    console.log(`⚠️ Duplicate notification prevented for ${language} within 30 seconds`);
+    return;
+  }
+  lastNotificationId = currentNotificationId;
   
   if (!("Notification" in window)) {
     console.error(`❌ [${now}] Notifications not supported by browser`);
@@ -560,6 +582,12 @@ export function checkNotificationRecovery() {
 // Initialize notifications on page load
 export function initializeNotifications() {
   console.log("🔄 Initializing notifications on page load");
+  
+  // Prevent multiple initialization
+  if (isNotificationSystemActive) {
+    console.log("⚠️ Notification system already initialized, skipping");
+    return;
+  }
   
   // Check if there's an active session that needs to be recovered
   const isSessionActive = isSessionStartedToday();

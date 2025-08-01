@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### August 1, 2025 - Duplicate Notification Fix & Enhanced Deduplication
+- Fixed critical duplicate notification issue caused by multiple notification system instances
+- Added isNotificationSystemActive global flag to prevent concurrent notification systems
+- Implemented 30-second deduplication window with lastNotificationId tracking
+- Enhanced stopNotifications function to properly reset all deduplication flags
+- Added initialization guard to prevent multiple initializeNotifications calls
+- Notifications now have comprehensive duplicate prevention at multiple levels
+- System maintains single active notification instance across page refreshes
+
 ### August 1, 2025 - Notification Persistence & 404 Fix
 - Removed auto-close timeout from notifications to prevent premature closure
 - Set requireInteraction: true for better notification persistence
