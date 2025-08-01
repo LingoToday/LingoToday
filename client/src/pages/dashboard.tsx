@@ -6,14 +6,14 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { queryClient } from "@/lib/queryClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, Play, Check, ArrowRight, BarChart3, BookOpen, Settings, Shuffle, Rocket } from "lucide-react";
+import { Globe, Bell, Play, Check, ArrowRight, BarChart3, BookOpen, Settings, Shuffle, Rocket, Volume2, Calendar, Star } from "lucide-react";
 import NotificationSettings from "@/components/notification-settings";
 import ProgressOverview from "@/components/progress-overview";
 import LessonModal from "@/components/lesson-modal";
 import LessonProgress from "@/components/lesson-progress";
 import { useState } from "react";
 import { Link } from "wouter";
-import { initializeLessonStore, getNextLessonToLearn, getLessonsInOrder } from "@/lib/lessonStore";
+import { initializeLessonStore, getNextLessonToLearn, getLessonsInOrder, getNextLessons, getLessonById } from "@/lib/lessonStore";
 import { startDailySession, isSessionStartedToday } from "@/lib/notifications";
 import type { DashboardData, Lesson, User } from "@shared/schema";
 
@@ -22,6 +22,8 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [currentLesson, setCurrentLesson] = useState<any>(null);
+  const [upcomingLessons, setUpcomingLessons] = useState<any[]>([]);
+  const [recentLessonsWithDetails, setRecentLessonsWithDetails] = useState<any[]>([]);
   const [sessionStarted, setSessionStarted] = useState(false);
 
   // Check if session is started today and handle lesson completion
@@ -156,7 +158,7 @@ export default function Dashboard() {
   // Initialize lesson store when dashboard data is loaded
   useEffect(() => {
     if (dashboardData?.settings?.selectedLanguage && dashboardData?.progress) {
-      const completedLessonIds = dashboardData.progress.map(p => `${p.language}_w${p.week}_d${p.day}`);
+      const completedLessonIds = dashboardData.progress.map(p => p.lessonId);
       
       // Clear any old cached data and force reload from API
       console.log('🔄 Clearing lesson cache and reloading from API...');
@@ -172,6 +174,30 @@ export default function Dashboard() {
             console.log('📚 Next lesson to learn:', nextLesson.title, nextLesson.category);
             setCurrentLesson(nextLesson);
           }
+          
+          // Get upcoming lessons (next 3-5 lessons)
+          const upcomingList = getNextLessons(completedLessonIds, 5);
+          setUpcomingLessons(upcomingList);
+          
+          // Get completed lessons with details for Recent Lessons section
+          const completedLessonsWithDetails = dashboardData.progress
+            .filter(p => p.completed)
+            .sort((a, b) => {
+              const dateA = a.completedAt || a.updatedAt;
+              const dateB = b.completedAt || b.updatedAt;
+              return new Date(dateB || 0).getTime() - new Date(dateA || 0).getTime();
+            })
+            .slice(0, 5)
+            .map(progressItem => {
+              const lessonData = getLessonById(progressItem.lessonId);
+              return {
+                ...progressItem,
+                lessonData: lessonData
+              };
+            })
+            .filter(item => item.lessonData); // Only include items where we found lesson data
+          
+          setRecentLessonsWithDetails(completedLessonsWithDetails);
         })
         .catch(error => {
           console.error('❌ Failed to initialize lesson store:', error);
@@ -400,56 +426,98 @@ export default function Dashboard() {
               </Card>
             )}
             
-            {/* Current Lesson Card */}
+            {/* Coming Up Next Card */}
             <Card className="bg-white border border-gray-200 shadow-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Today's Lesson</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Coming Up Next</h3>
                   <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-medium border border-purple-200">
                     {(currentLesson as any)?.category || 'Greetings & Politeness'}
                   </span>
                 </div>
                 
-                {currentLesson && (
-                  <div className="bg-gradient-to-r from-primary to-primary-600 rounded-2xl p-6 text-white mb-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h4 className="text-xl font-bold mb-2">{currentLesson.title}</h4>
-                        <p className="text-white/80">{currentLesson.description}</p>
-                      </div>
-                      <div className="text-3xl">{currentLesson.emoji}</div>
-                    </div>
-                    
-                    <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold mb-2">{currentLesson.content.word}</div>
-                        <div className="text-white/80 text-lg">{currentLesson.content.translation}</div>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="mt-3 bg-white/20 hover:bg-white/30 text-white border-white/20"
-                        onClick={() => {
-                          if ('speechSynthesis' in window) {
-                            const utterance = new SpeechSynthesisUtterance(currentLesson.content.word);
-                            utterance.lang = settings.selectedLanguage === 'spanish' ? 'es-ES' : 'en-US';
-                            speechSynthesis.speak(utterance);
-                          }
-                        }}
+                {/* Upcoming Lessons List */}
+                <div className="space-y-4">
+                  {upcomingLessons.length > 0 ? (
+                    upcomingLessons.slice(0, 4).map((lesson, index) => (
+                      <div 
+                        key={lesson.id} 
+                        className={`border rounded-xl p-4 transition-all hover:shadow-md cursor-pointer ${
+                          index === 0 
+                            ? 'bg-gradient-to-r from-primary to-primary-600 text-white border-primary' 
+                            : 'bg-white border-gray-200 hover:border-primary/30'
+                        }`}
+                        onClick={() => setSelectedLesson(lesson)}
                       >
-                        <Bell className="h-4 w-4 mr-2" />
-                        Listen
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <div className="text-2xl">{lesson.emoji}</div>
+                              <div>
+                                <h4 className={`font-bold text-lg ${index === 0 ? 'text-white' : 'text-gray-900'}`}>
+                                  {lesson.title}
+                                </h4>
+                                <p className={`text-sm ${index === 0 ? 'text-white/80' : 'text-gray-600'}`}>
+                                  {lesson.category}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {index === 0 && lesson.content && (
+                              <div className="bg-white/10 border border-white/20 rounded-lg p-3 mt-3">
+                                <div className="text-center">
+                                  <div className="text-xl font-bold mb-1">{lesson.content.word}</div>
+                                  <div className="text-white/80">{lesson.content.translation}</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {index === 0 && (
+                            <Button 
+                              className="ml-4 bg-white text-primary font-bold hover:bg-gray-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedLesson(lesson);
+                              }}
+                            >
+                              Start Now
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : currentLesson ? (
+                    <div className="bg-gradient-to-r from-primary to-primary-600 rounded-2xl p-6 text-white">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h4 className="text-xl font-bold mb-2">{currentLesson.title}</h4>
+                          <p className="text-white/80">{currentLesson.description}</p>
+                        </div>
+                        <div className="text-3xl">{currentLesson.emoji}</div>
+                      </div>
+                      
+                      <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold mb-2">{currentLesson.content.word}</div>
+                          <div className="text-white/80 text-lg">{currentLesson.content.translation}</div>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full bg-white text-primary font-bold py-3 hover:bg-gray-50"
+                        onClick={() => setSelectedLesson(currentLesson)}
+                      >
+                        Start Lesson
                       </Button>
                     </div>
-                    
-                    <Button 
-                      className="w-full bg-white text-primary font-bold py-3 hover:bg-gray-50"
-                      onClick={() => setSelectedLesson(currentLesson)}
-                    >
-                      Start Lesson
-                    </Button>
-                  </div>
-                )}
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <BookOpen className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                      <p>Loading upcoming lessons...</p>
+                    </div>
+                  )}
+                </div>
                 
                 {/* Quick Practice */}
                 <div className="border-t border-gray-200 pt-6">
@@ -479,23 +547,98 @@ export default function Dashboard() {
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Lessons</h3>
                 
-                <div className="space-y-3">
-                  {progress.length > 0 ? progress.map((lesson: any, index: number) => (
-                    <div key={lesson.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                      <div className={`w-10 h-10 ${lesson.completed ? 'bg-success-500' : 'bg-warning-500'} rounded-lg flex items-center justify-center text-white mr-3`}>
-                        {lesson.completed ? <Check className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900">Lesson {lesson.week}-{lesson.day}</div>
-                        <div className="text-sm text-gray-500">
-                          Week {lesson.week}, Day {lesson.day} • {lesson.completed ? 'Completed' : 'In Progress'}
+                <div className="space-y-4">
+                  {recentLessonsWithDetails.length > 0 ? recentLessonsWithDetails.map((item: any, index: number) => (
+                    <div key={item.id} className="border border-gray-200 rounded-xl p-4 bg-white hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white">
+                            <Check className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">{item.lessonData?.title || 'Lesson'}</div>
+                            <div className="text-sm text-gray-500 flex items-center space-x-2">
+                              <span>{item.lessonData?.category || item.courseId}</span>
+                              <span>•</span>
+                              <span className="flex items-center space-x-1">
+                                <Calendar className="h-3 w-3" />
+                                <span>{new Date(item.completedAt || item.updatedAt).toLocaleDateString()}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1 text-yellow-600">
+                            <Star className="h-4 w-4 fill-current" />
+                            <span className="text-sm font-semibold">{item.score || 0}%</span>
+                          </div>
                         </div>
                       </div>
-                      <div className={`${lesson.completed ? 'text-success-600' : 'text-warning-600'} font-semibold`}>
-                        {lesson.score || 0}%
-                      </div>
+                      
+                      {/* Lesson Content Preview */}
+                      {item.lessonData?.content && (
+                        <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="text-lg font-bold text-gray-900">{item.lessonData.content.word}</div>
+                              <div className="text-gray-600">{item.lessonData.content.translation}</div>
+                              {item.lessonData.content.example && (
+                                <div className="text-sm text-gray-500 mt-1 italic">
+                                  "{item.lessonData.content.example}"
+                                </div>
+                              )}
+                            </div>
+                            
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="ml-3 text-primary hover:text-primary-600"
+                              onClick={() => {
+                                if ('speechSynthesis' in window && item.lessonData?.content?.word) {
+                                  const utterance = new SpeechSynthesisUtterance(item.lessonData.content.word);
+                                  utterance.lang = settings.selectedLanguage === 'spanish' ? 'es-ES' : 
+                                                  settings.selectedLanguage === 'italian' ? 'it-IT' : 'en-US';
+                                  speechSynthesis.speak(utterance);
+                                }
+                              }}
+                            >
+                              <Volume2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Quiz Answer if available */}
+                      {item.lessonData?.quiz && (
+                        <div className="text-sm text-gray-600">
+                          <span className="font-medium">Quiz:</span> {item.lessonData.quiz.question}
+                          <div className="text-green-600 font-medium mt-1">
+                            ✓ {item.lessonData.quiz.options[item.lessonData.quiz.correct]}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )) : (
+                  )) : progress.filter(p => p.completed).length > 0 ? (
+                    <div className="space-y-3">
+                      {progress.filter(p => p.completed).slice(0, 3).map((lesson: any, index: number) => (
+                        <div key={lesson.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
+                          <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white mr-3">
+                            <Check className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900">{lesson.courseId}</div>
+                            <div className="text-sm text-gray-500">
+                              {lesson.lessonId} • Completed
+                            </div>
+                          </div>
+                          <div className="text-green-600 font-semibold">
+                            {lesson.score || 0}%
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
                     <div className="text-center py-8 text-gray-500">
                       <BookOpen className="h-12 w-12 mx-auto mb-2 text-gray-300" />
                       <p>No lessons completed yet. Start your first lesson above!</p>
@@ -514,7 +657,7 @@ export default function Dashboard() {
           <div className="space-y-6">
             
             {/* Learning Progress */}
-            <LessonProgress completedLessonIds={progress.map(p => `${p.language}_w${p.week}_d${p.day}`)} />
+            <LessonProgress completedLessonIds={progress.map(p => p.lessonId)} />
             
             {/* Notification Settings */}
             <NotificationSettings />
