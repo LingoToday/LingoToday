@@ -200,6 +200,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reset user progress endpoint
+  app.delete('/api/progress/:language/reset', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { language } = req.params;
+      
+      console.log(`🔄 Resetting progress for user ${userId} in language ${language}`);
+      
+      // Reset user progress and stats
+      await storage.resetUserProgress(userId, language);
+      await storage.resetUserStats(userId, language);
+      
+      console.log(`✅ Successfully reset all progress for user ${userId} in language ${language}`);
+      
+      res.json({ 
+        message: "Progress reset successfully", 
+        language,
+        resetAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error resetting progress:", error);
+      res.status(500).json({ message: "Failed to reset progress" });
+    }
+  });
+
   // Italian courses routes
   app.get('/api/courses/:language', async (req, res) => {
     try {

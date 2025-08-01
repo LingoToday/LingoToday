@@ -94,6 +94,55 @@ export default function Dashboard() {
     });
   };
 
+  // Mutation to reset all user progress from database
+  const resetProgressMutation = useMutation({
+    mutationFn: async () => {
+      const language = dashboardData?.settings?.selectedLanguage || 'italian';
+      const response = await fetch(`/api/progress/${language}/reset`, {
+        method: 'DELETE',
+        credentials: 'same-origin'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to reset progress');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      // Clear local storage
+      localStorage.removeItem('deskLingo_lessons');
+      localStorage.removeItem('lastShownLessonId');
+      localStorage.removeItem('lastNotificationTime');
+      
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/progress"] });
+      
+      toast({
+        title: "Progress Reset Successfully",
+        description: "All your progress has been cleared. You'll start fresh from italian course1, lesson1.",
+      });
+      
+      console.log('✅ All user progress cleared, starting fresh from course1/lesson1');
+    },
+    onError: (error) => {
+      console.error('❌ Failed to reset progress:', error);
+      toast({
+        title: "Reset Failed",
+        description: "Could not reset your progress. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Function to handle complete progress reset
+  const handleResetAllProgress = () => {
+    if (window.confirm('Are you sure you want to reset ALL your progress? This will clear all completed lessons and you\'ll start from the beginning. This action cannot be undone.')) {
+      resetProgressMutation.mutate();
+    }
+  };
+
   // Function to start daily session
   const handleStartDailySession = async () => {
     if (!dashboardData?.settings?.selectedLanguage) {
@@ -364,14 +413,15 @@ export default function Dashboard() {
                       Start Today's Lessons
                     </Button>
                     
-                    {/* Debug button to reset lesson progression */}
+                    {/* Reset all progress button */}
                     <Button 
-                      onClick={resetLessonProgression}
+                      onClick={handleResetAllProgress}
                       variant="outline"
                       className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-sm"
                       size="sm"
+                      disabled={resetProgressMutation.isPending}
                     >
-                      🔄 Reset Lesson Progression (Debug)
+                      {resetProgressMutation.isPending ? '🔄 Resetting...' : '🗑️ Reset All Progress'}
                     </Button>
                     
                     {/* Test notification button */}

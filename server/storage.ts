@@ -35,6 +35,10 @@ export interface IStorage {
   upsertUserStats(stats: InsertUserStats): Promise<UserStats>;
   updateStreak(userId: string, language: string, streak: number): Promise<void>;
   incrementWordsLearned(userId: string, language: string, count: number): Promise<void>;
+  
+  // Reset operations
+  resetUserProgress(userId: string, language: string): Promise<void>;
+  resetUserStats(userId: string, language: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -117,6 +121,12 @@ export class DatabaseStorage implements IStorage {
     // For Italian, we have courses 1-4, each with lessons 1-4 (some have 3)
     const courseOrder = ['course1', 'course2', 'course3', 'course4'];
     const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
+
+    // If no progress at all, start from course1/lesson1
+    if (completedLessons.length === 0) {
+      console.log('🆕 No progress found, starting from course1/lesson1');
+      return { courseId: 'course1', lessonId: 'lesson1' };
+    }
 
     for (const courseId of courseOrder) {
       for (const lessonId of lessonOrder) {
@@ -209,6 +219,19 @@ export class DatabaseStorage implements IStorage {
         wordsLearned: newWordsLearned,
         updatedAt: new Date()
       })
+      .where(and(eq(userStats.userId, userId), eq(userStats.language, language)));
+  }
+
+  // Reset operations
+  async resetUserProgress(userId: string, language: string): Promise<void> {
+    await db
+      .delete(userProgress)
+      .where(and(eq(userProgress.userId, userId), eq(userProgress.language, language)));
+  }
+
+  async resetUserStats(userId: string, language: string): Promise<void> {
+    await db
+      .delete(userStats)
       .where(and(eq(userStats.userId, userId), eq(userStats.language, language)));
   }
 }
