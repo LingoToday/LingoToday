@@ -206,8 +206,14 @@ export default function Dashboard() {
 
   // Initialize lesson store when dashboard data is loaded
   useEffect(() => {
-    if (dashboardData?.settings?.selectedLanguage && dashboardData?.progress) {
-      const completedLessonIds = dashboardData.progress.map(p => p.lessonId);
+    if (dashboardData?.settings?.selectedLanguage) {
+      // Get completed lesson IDs from progress data (could be empty array if no progress)
+      const completedLessonIds = (dashboardData.progress || [])
+        .filter(p => p.completed)
+        .map(p => p.lessonId);
+      
+      console.log('🔍 Debug completed lesson IDs:', completedLessonIds);
+      console.log('🔍 Debug progress data:', dashboardData.progress);
       
       // Clear any old cached data and force reload from API
       console.log('🔄 Clearing lesson cache and reloading from API...');
@@ -221,11 +227,15 @@ export default function Dashboard() {
           const nextLesson = getNextLessonToLearn(completedLessonIds);
           if (nextLesson) {
             console.log('📚 Next lesson to learn:', nextLesson.title, nextLesson.category);
+            console.log('📚 Next lesson ID:', nextLesson.id);
             setCurrentLesson(nextLesson);
+          } else {
+            console.log('❌ No next lesson found!');
           }
           
           // Get upcoming lessons (next 3-5 lessons)
           const upcomingList = getNextLessons(completedLessonIds, 5);
+          console.log('📅 Upcoming lessons:', upcomingList.map(l => l.title));
           setUpcomingLessons(upcomingList);
           
           // Get completed lessons with details for Recent Lessons section
