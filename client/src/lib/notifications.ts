@@ -242,7 +242,7 @@ export async function showLearningNotification(language: string) {
       
       if (progressResponse.ok) {
         const progressData = await progressResponse.json();
-        completedLessonIds = progressData.map((p: any) => p.lessonId || `${p.language}_w${p.week}_d${p.day}`);
+        completedLessonIds = progressData.map((p: any) => p.lessonId);
         console.log(`📊 Found ${completedLessonIds.length} completed lessons:`, completedLessonIds.slice(0, 3));
       } else {
         console.log("⚠️ Could not fetch progress (status " + progressResponse.status + "), showing all lessons");
