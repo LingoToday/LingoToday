@@ -135,10 +135,68 @@ export default function Landing() {
             Simple Steps to<br />
             <span className="text-primary">Language Mastery</span>
           </h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
-            Pick your language and goals. Set your lesson frequency. Each one is quick and focused — a phrase, rule, or word that actually matters. 
-            Click to expand and complete it. Smart review system brings content back when it's at risk of being forgotten.
-          </p>
+          {/* How It Works Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {/* Step 1 */}
+            <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded-full text-xl font-bold mb-4">
+                  1
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Pick your language and goals
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Choose from Italian, Spanish, German, French, and more to come soon
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Step 2 */}
+            <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded-full text-xl font-bold mb-4">
+                  2
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Set your notifications frequency for the day
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Each one is quick and focused — a phrase, rule, or word that actually matters
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Step 3 */}
+            <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded-full text-xl font-bold mb-4">
+                  3
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Click the notifications to complete the micro lesson
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  See the full lesson, hear the translated audio, test your memory, and get cultural context
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Step 4 */}
+            <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded-full text-xl font-bold mb-4">
+                  4
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Track your progress
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  See your progress and how far you have to reach your goals. Smart review system brings content back when it's at risk of being forgotten
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Progress Highlights */}
