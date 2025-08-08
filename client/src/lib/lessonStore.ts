@@ -118,7 +118,8 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
             translation: lessonData.items[0]?.english || '',
             pronunciation: lessonData.items[0]?.italian || '',
             example: lessonData.items[1]?.italian || lessonData.items[0]?.italian || '',
-            exampleTranslation: lessonData.items[1]?.english || lessonData.items[0]?.english || ''
+            exampleTranslation: lessonData.items[1]?.english || lessonData.items[0]?.english || '',
+            note: lessonData.items[0]?.note || ''
           },
           quiz: {
             question: `What does "${lessonData.items[0]?.italian || ''}" mean?`,

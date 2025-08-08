@@ -152,6 +152,7 @@ export interface LessonContent {
   pronunciation: string;
   example: string;
   exampleTranslation: string;
+  note?: string;
 }
 
 export interface LessonQuiz {
