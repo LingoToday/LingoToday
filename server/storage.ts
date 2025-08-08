@@ -144,21 +144,41 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUserProgress(progressData: InsertUserProgress): Promise<UserProgress> {
-    const [progress] = await db
-      .insert(userProgress)
-      .values({
-        ...progressData,
-        updatedAt: new Date(),
-      })
-      .onConflictDoUpdate({
-        target: [userProgress.userId, userProgress.language, userProgress.courseId, userProgress.lessonId],
-        set: {
+    // Check if progress already exists
+    const [existingProgress] = await db
+      .select()
+      .from(userProgress)
+      .where(
+        and(
+          eq(userProgress.userId, progressData.userId),
+          eq(userProgress.language, progressData.language),
+          eq(userProgress.courseId, progressData.courseId),
+          eq(userProgress.lessonId, progressData.lessonId)
+        )
+      );
+
+    if (existingProgress) {
+      // Update existing progress
+      const [updatedProgress] = await db
+        .update(userProgress)
+        .set({
           ...progressData,
           updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return progress;
+        })
+        .where(eq(userProgress.id, existingProgress.id))
+        .returning();
+      return updatedProgress;
+    } else {
+      // Insert new progress
+      const [newProgress] = await db
+        .insert(userProgress)
+        .values({
+          ...progressData,
+          updatedAt: new Date(),
+        })
+        .returning();
+      return newProgress;
+    }
   }
 
   async getLatestProgress(userId: string, language: string): Promise<UserProgress | undefined> {
