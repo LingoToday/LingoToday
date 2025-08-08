@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle } from "lucide-react";
+import Footer from "@/components/ui/footer";
 
 export default function Landing() {
   return (
@@ -265,6 +266,8 @@ export default function Landing() {
           </Button>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

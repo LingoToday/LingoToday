@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { initializeLessonStore, getNextLessonToLearn, getLessonsInOrder, getNextLessons, getLessonById } from "@/lib/lessonStore";
 import { startDailySession, isSessionStartedToday } from "@/lib/notifications";
+import Footer from "@/components/ui/footer";
 import type { DashboardData, Lesson, User } from "@shared/schema";
 
 export default function Dashboard() {
@@ -745,6 +746,8 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+      
+      <Footer />
 
       {/* Lesson Modal */}
       {selectedLesson && (
