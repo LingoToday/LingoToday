@@ -25,8 +25,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     mutationFn: async (score: number) => {
       await apiRequest("POST", "/api/progress", {
         language,
-        week: 2, // Current lesson is week 2 day 3
-        day: 3,
+        courseId: "course1", // Default course ID
         lessonId: lesson.id,
         completed: true,
         score,

@@ -66,47 +66,59 @@ export default function Lesson() {
     }
   }, [isAuthenticated, isLoading, toast, fromNotification, language, week, day]);
 
+  // Check for notification lesson ID first
+  const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (fromNotification) {
+      const storedLessonId = sessionStorage.getItem('notification-lesson-id');
+      if (storedLessonId) {
+        setNotificationLessonId(storedLessonId);
+        console.log('Found notification lesson ID:', storedLessonId);
+      }
+    }
+  }, [fromNotification]);
+
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
     queryKey: ["/api/lessons", language, week, day],
-    enabled: isAuthenticated && !!language && !!week && !!day,
+    enabled: isAuthenticated && !!language && !!week && !!day && !notificationLessonId, // Disable if we have a notification lesson
     retry: false,
   });
 
-  // Fallback: try to get lesson from stored data if API fails
+  // Fallback: try to get lesson from stored data if API fails or if we have a notification lesson
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
   
   useEffect(() => {
+    // If coming from notification, prioritize the notification lesson
+    if (notificationLessonId) {
+      const notificationLesson = getLessonById(notificationLessonId);
+      if (notificationLesson) {
+        console.log('Using lesson from notification ID:', notificationLessonId);
+        setFallbackLesson(notificationLesson as Lesson);
+        return;
+      }
+    }
+    
+    // Fallback to URL-based lesson if API fails
     if (lessonError && !lesson) {
-      // Try to get lesson from stored data
       const expectedLessonId = `${language}_w${week}_d${day}`;
       const storedLesson = getLessonById(expectedLessonId);
       
       if (storedLesson) {
         console.log('Using fallback lesson from stored data:', expectedLessonId);
         setFallbackLesson(storedLesson as Lesson);
-      } else {
-        // Try session storage lesson ID from notification
-        const notificationLessonId = sessionStorage.getItem('notification-lesson-id');
-        if (notificationLessonId) {
-          const notificationLesson = getLessonById(notificationLessonId);
-          if (notificationLesson) {
-            console.log('Using lesson from notification ID:', notificationLessonId);
-            setFallbackLesson(notificationLesson as Lesson);
-          }
-        }
       }
     }
-  }, [lessonError, lesson, language, week, day]);
+  }, [notificationLessonId, lessonError, lesson, language, week, day]);
 
-  // Use fallback lesson if API lesson is not available
-  const currentLesson = lesson || fallbackLesson;
+  // Use fallback lesson if API lesson is not available, or notification lesson if coming from notification
+  const currentLesson = (notificationLessonId && fallbackLesson) ? fallbackLesson : (lesson || fallbackLesson);
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
       await apiRequest("POST", "/api/progress", {
         language,
-        week: parseInt(week!),
-        day: parseInt(day!),
+        courseId: "course1", // Default course ID
         lessonId: currentLesson!.id,
         completed: true,
         score,
