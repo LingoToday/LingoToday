@@ -75,6 +75,15 @@ export const userStats = pgTable("user_stats", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Waitlist table for intermediate/advanced level signups
+export const waitlist = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  email: varchar("email").notNull(),
+  language: varchar("language").notNull(),
+  level: varchar("level").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   settings: one(userSettings, {
@@ -126,6 +135,11 @@ export const insertUserStatsSchema = createInsertSchema(userStats).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
+  id: true,
+  createdAt: true,
 });
 
 // Course and lesson types
@@ -187,3 +201,5 @@ export type UserProgress = typeof userProgress.$inferSelect;
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
 export type UserStats = typeof userStats.$inferSelect;
 export type InsertUserStats = z.infer<typeof insertUserStatsSchema>;
+export type Waitlist = typeof waitlist.$inferSelect;
+export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;

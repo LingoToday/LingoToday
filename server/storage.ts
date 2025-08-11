@@ -3,6 +3,7 @@ import {
   userSettings,
   userProgress,
   userStats,
+  waitlist,
   type User,
   type UpsertUser,
   type UserSettings,
@@ -11,6 +12,8 @@ import {
   type InsertUserProgress,
   type UserStats,
   type InsertUserStats,
+  type Waitlist,
+  type InsertWaitlist,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -39,6 +42,10 @@ export interface IStorage {
   // Reset operations
   resetUserProgress(userId: string, language: string): Promise<void>;
   resetUserStats(userId: string, language: string): Promise<void>;
+  
+  // Waitlist operations
+  addToWaitlist(waitlistData: InsertWaitlist): Promise<Waitlist>;
+  getWaitlistEntries(): Promise<Waitlist[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -253,6 +260,30 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(userStats)
       .where(and(eq(userStats.userId, userId), eq(userStats.language, language)));
+  }
+
+  // Waitlist operations
+  async addToWaitlist(waitlistData: InsertWaitlist): Promise<Waitlist> {
+    const [entry] = await db
+      .insert(waitlist)
+      .values(waitlistData)
+      .onConflictDoNothing()
+      .returning();
+    
+    if (!entry) {
+      // Email already exists, fetch the existing entry
+      const [existingEntry] = await db
+        .select()
+        .from(waitlist)
+        .where(eq(waitlist.email, waitlistData.email));
+      return existingEntry;
+    }
+    
+    return entry;
+  }
+
+  async getWaitlistEntries(): Promise<Waitlist[]> {
+    return await db.select().from(waitlist).orderBy(desc(waitlist.createdAt));
   }
 }
 

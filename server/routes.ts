@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertUserSettingsSchema, insertUserProgressSchema } from "@shared/schema";
+import { insertUserSettingsSchema, insertUserProgressSchema, insertWaitlistSchema } from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
@@ -10,6 +10,46 @@ import path from "path";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+
+  // Waitlist route (no auth required)
+  app.post('/api/waitlist', async (req, res) => {
+    try {
+      const waitlistData = insertWaitlistSchema.parse(req.body);
+      
+      // Check if email already exists
+      const existingEntries = await storage.getWaitlistEntries();
+      const emailExists = existingEntries.find(entry => 
+        entry.email.toLowerCase() === waitlistData.email.toLowerCase()
+      );
+      
+      if (emailExists) {
+        return res.status(400).json({ 
+          message: "This email is already on the waitlist." 
+        });
+      }
+      
+      const entry = await storage.addToWaitlist(waitlistData);
+      res.json({ 
+        message: "Successfully added to waitlist",
+        entry: {
+          id: entry.id,
+          email: entry.email,
+          language: entry.language,
+          level: entry.level,
+          createdAt: entry.createdAt
+        }
+      });
+    } catch (error) {
+      console.error("Error adding to waitlist:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to add to waitlist" });
+    }
+  });
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {

@@ -35,6 +35,10 @@ export default function Onboarding() {
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [showUnavailable, setShowUnavailable] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState('');
 
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
@@ -47,8 +51,47 @@ export default function Onboarding() {
     setSelectedLevel(level);
     if (level === 'intermediate' || level === 'advanced') {
       setShowUnavailable(true);
+      setEmailSubmitted(false); // Reset email submission state
     } else {
       setShowUnavailable(false);
+    }
+  };
+
+  const handleEmailSubmit = async () => {
+    if (!email.trim()) {
+      setEmailError('Email is required');
+      return;
+    }
+    
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setEmailError('');
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          language: selectedLanguage,
+          level: selectedLevel,
+        }),
+      });
+
+      if (response.ok) {
+        setEmailSubmitted(true);
+      } else {
+        const error = await response.json();
+        setEmailError(error.message || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      setEmailError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -236,20 +279,101 @@ export default function Onboarding() {
             </Card>
           )}
 
-          {/* Alternative Options for Unavailable Levels */}
-          {showUnavailable && (
+          {/* Email Form for Unavailable Levels */}
+          {showUnavailable && !emailSubmitted && (
             <Card className="bg-white shadow-lg border-0">
               <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto">
-                    <GraduationCap className="h-8 w-8 text-orange-600" />
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Mail className="h-8 w-8 text-orange-600" />
                   </div>
-                  <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Get Notified When Ready
+                  </h3>
+                  <p className="text-gray-600">
+                    We'll email you as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course launches.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="waitlist-email">Email Address</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="waitlist-email"
+                        type="email"
+                        placeholder="Enter your email address"
+                        className="pl-10"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setEmailError(''); // Clear error on input
+                        }}
+                      />
+                    </div>
+                    {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                  </div>
+
+                  <Button
+                    onClick={handleEmailSubmit}
+                    disabled={isSubmitting}
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                  >
+                    {isSubmitting ? 'Adding to Waitlist...' : 'Notify Me When Ready'}
+                  </Button>
+
+                  <div className="space-y-3 pt-4 border-t">
+                    <p className="text-sm text-gray-600 text-center">
+                      Or start with a different level:
+                    </p>
+                    <Button
+                      onClick={() => handleLevelSelect('beginner')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Try Beginner Level Instead
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => window.location.href = '/'}
+                      className="w-full"
+                    >
+                      Back to Homepage
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Success Message for Email Submission */}
+          {showUnavailable && emailSubmitted && (
+            <Card className="bg-white shadow-lg border-0 border-green-200">
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      You're on the list!
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      We'll email you at <strong>{email}</strong> as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course is ready.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 pt-4 border-t">
+                    <p className="text-sm text-gray-600">
+                      Want to start learning now?
+                    </p>
                     <Button
                       onClick={() => handleLevelSelect('beginner')}
                       className="w-full bg-primary hover:bg-primary/90 text-white"
                     >
-                      Try Beginner Level Instead
+                      Try Beginner Level
                     </Button>
                     
                     <Button
