@@ -478,21 +478,21 @@ export default function Dashboard() {
             
             {/* Coming Up Next Card */}
             <Card className="bg-white border border-gray-200 shadow-card">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Coming Up Next</h3>
-                  <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-medium border border-purple-200">
-                    {(currentLesson as any)?.category || 'Greetings & Politeness'}
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-gray-900">Coming Up Next</h3>
+                  <span className="bg-purple-50 text-purple-600 px-2 py-1 rounded-full text-xs font-medium border border-purple-200">
+                    {(currentLesson as any)?.category || 'Greetings'}
                   </span>
                 </div>
                 
                 {/* Upcoming Lessons List */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {upcomingLessons.length > 0 ? (
                     upcomingLessons.slice(0, 4).map((lesson, index) => (
                       <div 
                         key={lesson.id} 
-                        className={`border rounded-xl p-4 transition-all hover:shadow-md cursor-pointer ${
+                        className={`border rounded-lg p-3 transition-all hover:shadow-md cursor-pointer ${
                           index === 0 
                             ? 'bg-gradient-to-r from-primary to-primary-600 text-white border-primary' 
                             : 'bg-white border-gray-200 hover:border-primary/30'
@@ -500,32 +500,29 @@ export default function Dashboard() {
                         onClick={() => setSelectedLesson(lesson)}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <div className="text-2xl">{lesson.emoji}</div>
-                              <div>
-                                <h4 className={`font-bold text-lg ${index === 0 ? 'text-white' : 'text-gray-900'}`}>
-                                  {lesson.title}
-                                </h4>
-                                <p className={`text-sm ${index === 0 ? 'text-white/80' : 'text-gray-600'}`}>
-                                  {lesson.category}
-                                </p>
-                              </div>
+                          <div className="flex items-center space-x-2 flex-1 min-w-0">
+                            <div className="text-lg">{lesson.emoji}</div>
+                            <div className="min-w-0 flex-1">
+                              <h4 className={`font-semibold text-sm truncate ${index === 0 ? 'text-white' : 'text-gray-900'}`}>
+                                {lesson.title}
+                              </h4>
+                              <p className={`text-xs truncate ${index === 0 ? 'text-white/80' : 'text-gray-600'}`}>
+                                {lesson.category}
+                              </p>
                             </div>
                             
                             {index === 0 && lesson.content && (
-                              <div className="bg-white/10 border border-white/20 rounded-lg p-3 mt-3">
-                                <div className="text-center">
-                                  <div className="text-xl font-bold mb-1">{lesson.content.word}</div>
-                                  <div className="text-white/80">{lesson.content.translation}</div>
-                                </div>
+                              <div className="bg-white/10 border border-white/20 rounded px-2 py-1">
+                                <div className="text-xs font-medium">{lesson.content.word}</div>
+                                <div className="text-xs text-white/80">{lesson.content.translation}</div>
                               </div>
                             )}
                           </div>
                           
                           {index === 0 && (
                             <Button 
-                              className="ml-4 bg-white text-primary font-bold hover:bg-gray-50"
+                              size="sm"
+                              className="ml-2 bg-white text-primary font-semibold hover:bg-gray-50 text-xs px-3 py-1"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedLesson(lesson);
@@ -538,54 +535,54 @@ export default function Dashboard() {
                       </div>
                     ))
                   ) : currentLesson ? (
-                    <div className="bg-gradient-to-r from-primary to-primary-600 rounded-2xl p-6 text-white">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h4 className="text-xl font-bold mb-2">{currentLesson.title}</h4>
-                          <p className="text-white/80">{currentLesson.description}</p>
+                    <div className="bg-gradient-to-r from-primary to-primary-600 rounded-lg p-4 text-white">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-lg font-bold truncate">{currentLesson.title}</h4>
+                          <p className="text-white/80 text-sm truncate">{currentLesson.description}</p>
                         </div>
-                        <div className="text-3xl">{currentLesson.emoji}</div>
+                        <div className="text-2xl ml-2">{currentLesson.emoji}</div>
                       </div>
                       
-                      <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-4">
+                      <div className="bg-white/10 border border-white/20 rounded-lg p-3 mb-3">
                         <div className="text-center">
-                          <div className="text-2xl font-bold mb-2">{currentLesson.content.word}</div>
-                          <div className="text-white/80 text-lg">{currentLesson.content.translation}</div>
+                          <div className="text-lg font-bold mb-1">{currentLesson.content.word}</div>
+                          <div className="text-white/80">{currentLesson.content.translation}</div>
                         </div>
                       </div>
                       
                       <Button 
-                        className="w-full bg-white text-primary font-bold py-3 hover:bg-gray-50"
+                        className="w-full bg-white text-primary font-semibold py-2 hover:bg-gray-50 text-sm"
                         onClick={() => setSelectedLesson(currentLesson)}
                       >
                         Start Lesson
                       </Button>
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <BookOpen className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                      <p>Loading upcoming lessons...</p>
+                    <div className="text-center py-4 text-gray-500">
+                      <BookOpen className="h-8 w-8 mx-auto mb-1 text-gray-300" />
+                      <p className="text-sm">Loading upcoming lessons...</p>
                     </div>
                   )}
                 </div>
                 
                 {/* Quick Practice */}
-                <div className="border-t border-gray-200 pt-6">
-                  <h5 className="font-bold text-gray-900 mb-4">Quick Practice</h5>
-                  <div className="space-y-3">
+                <div className="border-t border-gray-200 pt-4 mt-4">
+                  <h5 className="font-semibold text-gray-900 mb-3 text-sm">Quick Practice</h5>
+                  <div className="space-y-2">
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto"
+                      className="w-full justify-between p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto text-xs"
                     >
-                      <span className="font-medium text-gray-900">What does "gracias" mean?</span>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-gray-900 truncate">What does "gracias" mean?</span>
+                      <ArrowRight className="h-3 w-3 text-gray-400 ml-2 flex-shrink-0" />
                     </Button>
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto"
+                      className="w-full justify-between p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto text-xs"
                     >
-                      <span className="font-medium text-gray-900">Translate: "Good morning"</span>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-gray-900 truncate">Translate: "Good morning"</span>
+                      <ArrowRight className="h-3 w-3 text-gray-400 ml-2 flex-shrink-0" />
                     </Button>
                   </div>
                 </div>
