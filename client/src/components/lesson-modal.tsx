@@ -109,8 +109,9 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
   const handlePhase2Submit = () => {
     if (!fillInAnswer.trim()) return;
     
-    // Check if the answer matches the word (case insensitive)
-    const correct = fillInAnswer.toLowerCase().trim() === lesson.content.word.toLowerCase();
+    // Check if the answer matches only the missing letters (case insensitive)
+    const expectedLetters = getMissingLetters(lesson.content.word);
+    const correct = fillInAnswer.toLowerCase().trim() === expectedLetters.toLowerCase();
     setPhase2Correct(correct);
     setShowPhase2Result(true);
     
@@ -145,10 +146,15 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     return false;
   };
 
-  // Generate fill-in text for Phase 2
+  // Generate fill-in text for Phase 2 and get missing letters
   const generateFillInText = (word: string) => {
     if (word.length <= 3) return word.charAt(0) + "_".repeat(word.length - 1);
     return word.substring(0, 2) + "_".repeat(word.length - 2);
+  };
+
+  const getMissingLetters = (word: string) => {
+    if (word.length <= 3) return word.substring(1);
+    return word.substring(2);
   };
 
   return (
@@ -317,23 +323,16 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                   <div className="text-2xl font-mono mb-4">
                     "{generateFillInText(lesson.content.word)}" = {lesson.content.translation}
                   </div>
+                  <div className="text-sm text-purple-600 mb-3">
+                    Type only the missing letters
+                  </div>
                   <Input
                     value={fillInAnswer}
                     onChange={(e) => setFillInAnswer(e.target.value)}
-                    placeholder="Type the complete word"
+                    placeholder="Type the missing letters only"
                     className="text-center text-lg max-w-xs mx-auto"
                     disabled={showPhase2Result}
                   />
-                </div>
-              </div>
-
-              {/* Matching Exercise */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Match:</h4>
-                <div className="flex items-center justify-center space-x-4 text-lg">
-                  <span className="font-bold text-purple-600">{lesson.content.word}</span>
-                  <span>→</span>
-                  <span className="text-gray-700">{lesson.content.translation}</span>
                 </div>
               </div>
 
@@ -341,7 +340,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                 <div className={`p-4 rounded-lg mb-4 ${phase2Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                   <div className="flex items-center">
                     <Check className="h-5 w-5 mr-2" />
-                    {phase2Correct ? 'Excellent! You got it right!' : `Not quite. The correct answer is: ${lesson.content.word}`}
+                    {phase2Correct ? 'Excellent! You got it right!' : `Not quite. The missing letters are: ${getMissingLetters(lesson.content.word)}`}
                   </div>
                 </div>
               )}
