@@ -89,12 +89,12 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
 
   return (
     <Card className="bg-white border border-gray-200 shadow-card">
-      <CardContent className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Learning Path</h3>
-        <div className="space-y-4">
+      <CardContent className="p-4">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Learning Path</h3>
+        <div className="space-y-2">
           {categoryProgress.map((category, index) => (
-            <div key={category.name} className="flex items-center space-x-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+            <div key={category.name} className="flex items-center space-x-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                 category.completedLessons === category.totalLessons 
                   ? 'bg-green-100 text-green-700'
                   : category.isUnlocked 
@@ -102,36 +102,34 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
                     : 'bg-gray-100 text-gray-400'
               }`}>
                 {category.completedLessons === category.totalLessons ? (
-                  <Check className="h-5 w-5 text-green-600" />
+                  <Check className="h-4 w-4 text-green-600" />
                 ) : category.isUnlocked ? (
-                  <span className="text-lg">{category.emoji}</span>
+                  <span className="text-sm">{category.emoji}</span>
                 ) : (
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-3 w-3" />
                 )}
               </div>
               
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-base font-medium ${
-                      category.isUnlocked ? 'text-gray-900' : 'text-gray-400'
-                    }`}>
-                      {category.name}
-                    </span>
-                  </div>
-                  <span className={`text-sm font-medium ${
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-sm font-medium truncate ${
+                    category.isUnlocked ? 'text-gray-900' : 'text-gray-400'
+                  }`}>
+                    {category.name}
+                  </span>
+                  <span className={`text-sm font-medium ml-2 flex-shrink-0 ${
                     category.completedLessons === category.totalLessons 
                       ? 'text-green-600' 
                       : category.completedLessons > 0 
                         ? 'text-primary-600' 
                         : 'text-gray-500'
                   }`}>
-                    {category.completedLessons}/{category.totalLessons} lessons
+                    {category.completedLessons}/{category.totalLessons}
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                    className={`h-2 rounded-full transition-all duration-300 ${
                       category.completedLessons === category.totalLessons 
                         ? 'bg-green-500'
                         : 'bg-primary'
@@ -141,20 +139,15 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
                     }}
                   />
                 </div>
-                {category.completedLessons === category.totalLessons && (
-                  <div className="text-xs text-green-600 mt-1 font-medium">
-                    ✓ Course completed!
-                  </div>
-                )}
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
           <div className="text-sm text-blue-800">
-            <p className="font-medium mb-1">Complete Italian Course</p>
-            <p className="text-xs text-blue-600">
-              Total: {categoryProgress.reduce((sum, cat) => sum + cat.totalLessons, 0)} lessons across {categoryProgress.length} courses
+            <p className="font-medium">Complete Italian Course</p>
+            <p className="text-sm text-blue-600 mt-1">
+              {categoryProgress.reduce((sum, cat) => sum + cat.totalLessons, 0)} lessons • {categoryProgress.length} courses
             </p>
           </div>
         </div>
