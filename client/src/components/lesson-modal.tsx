@@ -160,10 +160,10 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
   };
 
   const getMissingLetters = (word: string) => {
-    // For phrases with spaces, return everything after the first word (including the space)
+    // For phrases with spaces, return everything after the first word (excluding the space)
     if (word.includes(' ')) {
       const firstSpaceIndex = word.indexOf(' ');
-      return word.substring(firstSpaceIndex);
+      return word.substring(firstSpaceIndex + 1); // +1 to skip the space
     }
     // For single words
     if (word.length <= 3) return word.substring(1);
