@@ -284,9 +284,6 @@ export default function Onboarding() {
             <Card className="bg-white shadow-lg border-0">
               <CardContent className="p-6">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Mail className="h-8 w-8 text-orange-600" />
-                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     Get Notified When Ready
                   </h3>
