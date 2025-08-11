@@ -739,6 +739,13 @@ export default function Dashboard() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 
                 <div className="space-y-3">
+                  <Link href="/lesson-example">
+                    <Button variant="ghost" className="w-full justify-start bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border border-blue-200">
+                      <Play className="h-4 w-4 text-blue-600 mr-3" />
+                      <span className="text-blue-700 font-medium">Try New 3-Phase Lessons</span>
+                    </Button>
+                  </Link>
+                  
                   <Button variant="ghost" className="w-full justify-start bg-gray-50 hover:bg-gray-100">
                     <Shuffle className="h-4 w-4 text-primary-500 mr-3" />
                     Random Practice

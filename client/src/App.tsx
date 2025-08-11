@@ -11,6 +11,7 @@ import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import Lesson from "@/pages/lesson";
 import Courses from "@/pages/courses";
+import LessonExample from "@/pages/lesson-example";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -38,6 +39,7 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/courses" component={Courses} />
+          <Route path="/lesson-example" component={LessonExample} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>
       )}

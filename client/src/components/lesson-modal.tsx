@@ -102,7 +102,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     setShowPhase1Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...prev, 1]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 1]));
     }
   };
 
@@ -115,7 +115,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     setShowPhase2Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...prev, 2]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 2]));
     }
   };
 
@@ -128,7 +128,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     setShowPhase3Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...prev, 3]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 3]));
     }
   };
 
