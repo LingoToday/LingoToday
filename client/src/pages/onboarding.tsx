@@ -39,6 +39,18 @@ export default function Onboarding() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
+  
+  // Email registration states
+  const [authMethod, setAuthMethod] = useState<'replit' | 'email'>('replit');
+  const [registerData, setRegisterData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
@@ -107,6 +119,91 @@ export default function Onboarding() {
     
     // Redirect to Replit auth
     window.location.href = '/api/login';
+  };
+
+  const handleRegister = async () => {
+    // Clear previous errors
+    setRegisterErrors({});
+    
+    // Validation
+    const errors: Record<string, string> = {};
+    if (!registerData.firstName.trim()) errors.firstName = 'First name is required';
+    if (!registerData.lastName.trim()) errors.lastName = 'Last name is required';
+    if (!registerData.email.trim()) errors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
+    if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
+    if (registerData.password !== registerData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    
+    if (Object.keys(errors).length > 0) {
+      setRegisterErrors(errors);
+      return;
+    }
+
+    setIsRegistering(true);
+    
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: registerData.firstName.trim(),
+          lastName: registerData.lastName.trim(),
+          email: registerData.email.trim(),
+          password: registerData.password,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store onboarding preferences  
+        const onboardingData = {
+          language: selectedLanguage,
+          level: selectedLevel,
+          completedOnboarding: true
+        };
+        localStorage.setItem('deskLingo_onboarding', JSON.stringify(onboardingData));
+        
+        // Auto-login after successful registration
+        const loginResponse = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: registerData.email,
+            password: registerData.password,
+          }),
+        });
+
+        if (loginResponse.ok) {
+          window.location.href = '/';
+        } else {
+          // Registration successful but login failed, redirect to login page
+          window.location.href = '/?registered=true';
+        }
+      } else {
+        if (data.errors) {
+          const fieldErrors: Record<string, string> = {};
+          data.errors.forEach((error: any) => {
+            fieldErrors[error.path?.[0] || 'general'] = error.message;
+          });
+          setRegisterErrors(fieldErrors);
+        } else {
+          setRegisterErrors({ general: data.message || 'Registration failed' });
+        }
+      }
+    } catch (error) {
+      setRegisterErrors({ general: 'Network error. Please check your connection and try again.' });
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  const handleRegisterInputChange = (field: keyof typeof registerData, value: string) => {
+    setRegisterData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (registerErrors[field]) {
+      setRegisterErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   const selectedLanguageData = languages.find(l => l.code === selectedLanguage);
@@ -264,16 +361,143 @@ export default function Onboarding() {
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={handleStart}
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-                  >
-                    Continue with Replit Authentication
-                  </Button>
+                  {/* Authentication Method Toggle */}
+                  <div className="flex items-center justify-center space-x-1 bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setAuthMethod('replit')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        authMethod === 'replit' 
+                          ? 'bg-white text-gray-900 shadow-sm' 
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Continue with Replit
+                    </button>
+                    <button
+                      onClick={() => setAuthMethod('email')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        authMethod === 'email' 
+                          ? 'bg-white text-gray-900 shadow-sm' 
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Register with Email
+                    </button>
+                  </div>
 
-                  <p className="text-xs text-gray-500 text-center">
-                    You'll be redirected to Replit to sign in securely. Your preferences will be saved.
-                  </p>
+                  {/* Replit Authentication */}
+                  {authMethod === 'replit' && (
+                    <>
+                      <Button 
+                        onClick={handleStart}
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+                      >
+                        Continue with Replit Authentication
+                      </Button>
+                      <p className="text-xs text-gray-500 text-center">
+                        You'll be redirected to Replit to sign in securely. Your preferences will be saved.
+                      </p>
+                    </>
+                  )}
+
+                  {/* Email Registration Form */}
+                  {authMethod === 'email' && (
+                    <div className="space-y-4">
+                      {registerErrors.general && (
+                        <Alert className="border-red-200 bg-red-50">
+                          <AlertCircle className="h-4 w-4 text-red-600" />
+                          <AlertDescription className="text-red-700">
+                            {registerErrors.general}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="firstName">First Name</Label>
+                          <Input
+                            id="firstName"
+                            type="text"
+                            value={registerData.firstName}
+                            onChange={(e) => handleRegisterInputChange('firstName', e.target.value)}
+                            className={registerErrors.firstName ? 'border-red-500' : ''}
+                          />
+                          {registerErrors.firstName && <p className="text-red-500 text-sm mt-1">{registerErrors.firstName}</p>}
+                        </div>
+                        <div>
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input
+                            id="lastName"
+                            type="text"
+                            value={registerData.lastName}
+                            onChange={(e) => handleRegisterInputChange('lastName', e.target.value)}
+                            className={registerErrors.lastName ? 'border-red-500' : ''}
+                          />
+                          {registerErrors.lastName && <p className="text-red-500 text-sm mt-1">{registerErrors.lastName}</p>}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="register-email">Email Address</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="register-email"
+                            type="email"
+                            placeholder="Enter your email address"
+                            className={`pl-10 ${registerErrors.email ? 'border-red-500' : ''}`}
+                            value={registerData.email}
+                            onChange={(e) => handleRegisterInputChange('email', e.target.value)}
+                          />
+                        </div>
+                        {registerErrors.email && <p className="text-red-500 text-sm mt-1">{registerErrors.email}</p>}
+                      </div>
+
+                      <div>
+                        <Label htmlFor="password">Password</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="password"
+                            type="password"
+                            placeholder="Choose a secure password"
+                            className={`pl-10 ${registerErrors.password ? 'border-red-500' : ''}`}
+                            value={registerData.password}
+                            onChange={(e) => handleRegisterInputChange('password', e.target.value)}
+                          />
+                        </div>
+                        {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
+                      </div>
+
+                      <div>
+                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            placeholder="Confirm your password"
+                            className={`pl-10 ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
+                            value={registerData.confirmPassword}
+                            onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
+                          />
+                        </div>
+                        {registerErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerErrors.confirmPassword}</p>}
+                      </div>
+
+                      <Button 
+                        onClick={handleRegister}
+                        disabled={isRegistering}
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+                      >
+                        {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
+                      </Button>
+
+                      <p className="text-xs text-gray-500 text-center">
+                        By creating an account, you agree to our Terms of Service and Privacy Policy.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

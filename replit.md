@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### August 11, 2025 - Email Registration System Added
+- Added complete email/password registration alongside existing Replit OAuth
+- Extended database schema with password and authProvider fields for dual authentication support
+- Implemented local authentication strategy using passport-local with bcrypt password hashing
+- Added comprehensive registration API endpoints (/api/auth/register and /api/auth/login)
+- Enhanced onboarding page with toggle between "Continue with Replit" and "Register with Email" options
+- Added full form validation with field-level error handling for email registration
+- Updated authentication middleware to handle both OAuth and local authentication sessions
+- Users can now choose between secure Replit OAuth or traditional email/password registration
+
 ### August 1, 2025 - Duplicate Notification Fix & Enhanced Deduplication
 - Fixed critical duplicate notification issue caused by multiple notification system instances
 - Added isNotificationSystemActive global flag to prevent concurrent notification systems

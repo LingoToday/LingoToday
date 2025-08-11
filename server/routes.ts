@@ -10,6 +10,11 @@ import path from "path";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+  
+  // Setup local authentication routes
+  const { setupLocalRoutes } = await import("./localAuth");
+  const passport = await import("passport");
+  setupLocalRoutes(app, passport.default);
 
   // Waitlist route (no auth required)
   app.post('/api/waitlist', async (req, res) => {
