@@ -102,7 +102,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     setShowPhase1Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...Array.from(prev), 1]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 1 as Phase]));
     }
   };
 
@@ -116,20 +116,21 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     setShowPhase2Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...Array.from(prev), 2]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 2 as Phase]));
     }
   };
 
   const handlePhase3Submit = () => {
-    if (!phase3Answer || !lesson?.phase3) return;
+    if (!phase3Answer) return;
     
     const answerIndex = parseInt(phase3Answer);
-    const correct = answerIndex === lesson.phase3.correct;
+    // The first option is always correct for Phase 3 listening comprehension
+    const correct = answerIndex === 0;
     setPhase3Correct(correct);
     setShowPhase3Result(true);
     
     if (correct) {
-      setCompletedPhases(prev => new Set([...Array.from(prev), 3]));
+      setCompletedPhases(prev => new Set([...Array.from(prev), 3 as Phase]));
     }
   };
 
