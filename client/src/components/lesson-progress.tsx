@@ -118,13 +118,6 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
                     }`}>
                       {category.name}
                     </span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      category.level === 'A1' 
-                        ? 'bg-blue-100 text-blue-700' 
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      {category.level}
-                    </span>
                   </div>
                   <span className={`text-sm font-medium ${
                     category.completedLessons === category.totalLessons 
@@ -159,7 +152,7 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
         </div>
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <div className="text-sm text-blue-800">
-            <p className="font-medium mb-1">Complete Italian A1 Course</p>
+            <p className="font-medium mb-1">Complete Italian Course</p>
             <p className="text-xs text-blue-600">
               Total: {categoryProgress.reduce((sum, cat) => sum + cat.totalLessons, 0)} lessons across {categoryProgress.length} courses
             </p>
