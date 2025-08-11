@@ -353,9 +353,51 @@ export default function Dashboard() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     Welcome back, {user?.firstName || user?.email?.split('@')[0] || 'there'}!
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 mb-3">
                     Continue your <span className="text-primary font-semibold">{settings.selectedLanguage.charAt(0).toUpperCase() + settings.selectedLanguage.slice(1)}</span> learning journey
                   </p>
+                  {(() => {
+                    const totalLessonsInCourse = 172; // Total lessons from course outline
+                    const completedLessons = stats.totalLessons;
+                    const progressPercent = Math.round((completedLessons / totalLessonsInCourse) * 100);
+                    
+                    let levelText = "Beginner";
+                    let nextLevelText = "Intermediate";
+                    let progressToNext = progressPercent;
+                    
+                    if (progressPercent >= 75) {
+                      levelText = "Advanced";
+                      nextLevelText = "Fluent";
+                      progressToNext = Math.round(((completedLessons - (totalLessonsInCourse * 0.75)) / (totalLessonsInCourse * 0.25)) * 100);
+                    } else if (progressPercent >= 50) {
+                      levelText = "Intermediate";
+                      nextLevelText = "Advanced";
+                      progressToNext = Math.round(((completedLessons - (totalLessonsInCourse * 0.50)) / (totalLessonsInCourse * 0.25)) * 100);
+                    } else if (progressPercent >= 25) {
+                      levelText = "Upper Beginner";
+                      nextLevelText = "Intermediate";
+                      progressToNext = Math.round(((completedLessons - (totalLessonsInCourse * 0.25)) / (totalLessonsInCourse * 0.25)) * 100);
+                    }
+                    
+                    return (
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          {levelText}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${Math.min(progressToNext, 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-sm text-gray-600 font-medium">
+                            {progressToNext}% to {nextLevelText}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
