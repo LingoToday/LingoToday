@@ -149,11 +149,23 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
 
   // Generate fill-in text for Phase 2 and get missing letters
   const generateFillInText = (word: string) => {
+    // For phrases with spaces, show the first word and blank out the rest
+    if (word.includes(' ')) {
+      const parts = word.split(' ');
+      return parts[0] + "_".repeat(word.length - parts[0].length);
+    }
+    // For single words
     if (word.length <= 3) return word.charAt(0) + "_".repeat(word.length - 1);
     return word.substring(0, 2) + "_".repeat(word.length - 2);
   };
 
   const getMissingLetters = (word: string) => {
+    // For phrases with spaces, return everything after the first word (including the space)
+    if (word.includes(' ')) {
+      const firstSpaceIndex = word.indexOf(' ');
+      return word.substring(firstSpaceIndex);
+    }
+    // For single words
     if (word.length <= 3) return word.substring(1);
     return word.substring(2);
   };
