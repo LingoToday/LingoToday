@@ -49,9 +49,9 @@ export default function Landing() {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
-              onClick={() => window.location.href = "/api/login"}
+              onClick={() => window.location.href = "/onboarding"}
             >
-              Get your first 5 lessons free
+              Try it Free for 5 Days
             </Button>
             <Button 
               size="lg" 
@@ -217,7 +217,7 @@ export default function Landing() {
               </p>
               <Button 
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-full"
-                onClick={() => window.location.href = "/api/login"}
+                onClick={() => window.location.href = "/onboarding"}
               >
                 Try It Now
               </Button>
@@ -342,7 +342,7 @@ export default function Landing() {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
-            onClick={() => window.location.href = "/api/login"}
+            onClick={() => window.location.href = "/onboarding"}
           >
             🎯 Try it now. It takes less time than reading this page.
           </Button>

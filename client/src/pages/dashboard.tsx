@@ -82,6 +82,51 @@ export default function Dashboard() {
           window.location.href = redirectUrl;
         }, 500);
       }
+
+      // Check for onboarding data and apply user preferences
+      const onboardingData = localStorage.getItem('deskLingo_onboarding');
+      if (onboardingData) {
+        try {
+          const data = JSON.parse(onboardingData);
+          console.log('Found onboarding data, applying user preferences:', data);
+          
+          // Apply user language preference
+          if (data.language && data.completedOnboarding) {
+            // Update user settings with selected language
+            fetch('/api/settings', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify({
+                selectedLanguage: data.language,
+                notificationFrequency: 15, // Default to 15 minutes from onboarding
+                notificationsEnabled: false // They'll enable this manually
+              })
+            }).then(response => {
+              if (response.ok) {
+                console.log('Updated user settings with onboarding preferences');
+                // Refresh dashboard data
+                queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+                queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+                
+                // Show welcome message
+                toast({
+                  title: `Welcome to ${data.language.charAt(0).toUpperCase() + data.language.slice(1)}!`,
+                  description: "Your account is ready. Enable notifications to start learning.",
+                });
+              }
+            }).catch(error => {
+              console.error('Failed to apply onboarding settings:', error);
+            });
+
+            // Clear onboarding data after applying
+            localStorage.removeItem('deskLingo_onboarding');
+          }
+        } catch (error) {
+          console.error('Failed to parse onboarding data:', error);
+          localStorage.removeItem('deskLingo_onboarding'); // Clear invalid data
+        }
+      }
     }
   }, [isAuthenticated, isLoading, toast]);
 

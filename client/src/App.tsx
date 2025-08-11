@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { initializeNotifications } from "@/lib/notifications";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
+import Onboarding from "@/pages/onboarding";
 import Dashboard from "@/pages/dashboard";
 import Lesson from "@/pages/lesson";
 import Courses from "@/pages/courses";
@@ -32,6 +33,7 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/onboarding" component={Onboarding} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>
       ) : (
