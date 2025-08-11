@@ -565,27 +565,6 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
-                
-                {/* Quick Practice */}
-                <div className="border-t border-gray-200 pt-4 mt-4">
-                  <h5 className="font-semibold text-gray-900 mb-3 text-sm">Quick Practice</h5>
-                  <div className="space-y-2">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-between p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto text-xs"
-                    >
-                      <span className="font-medium text-gray-900 truncate">What does "gracias" mean?</span>
-                      <ArrowRight className="h-3 w-3 text-gray-400 ml-2 flex-shrink-0" />
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-between p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg h-auto text-xs"
-                    >
-                      <span className="font-medium text-gray-900 truncate">Translate: "Good morning"</span>
-                      <ArrowRight className="h-3 w-3 text-gray-400 ml-2 flex-shrink-0" />
-                    </Button>
-                  </div>
-                </div>
               </CardContent>
             </Card>
             
