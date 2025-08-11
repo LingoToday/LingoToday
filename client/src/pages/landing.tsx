@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle } from "lucide-react";
+import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare } from "lucide-react";
 import Footer from "@/components/ui/footer";
+import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
 
 export default function Landing() {
   return (
@@ -244,6 +245,87 @@ export default function Landing() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Coming Soon Section */}
+        <div className="mb-16">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 text-purple-600 text-sm font-medium mb-4">
+              <Sparkles className="w-4 h-4" />
+              Coming Soon
+            </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+              The Future of Language Learning
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Mobile App */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <Smartphone className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900">Mobile App</h4>
+                    <p className="text-sm text-gray-500">Continuous Learning Anywhere</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Take DeskLingo beyond your desk. Our upcoming mobile app keeps your learning streak alive when you're away from your laptop, so your progress never pauses.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Real-World Immersion */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                    <Video className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900">Real-World Immersion</h4>
+                    <p className="text-sm text-gray-500">Learn in the Moment</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  Step into real-life situations with interactive "in-the-scene" video lessons. Practice language as if you were there — from ordering in a café to asking for directions in the Tuscan countryside.
+                </p>
+                <div className="relative rounded-lg overflow-hidden">
+                  <img 
+                    src={tuscanyImage} 
+                    alt="Interactive scene in Tuscan countryside with tourists getting directions from a local"
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700">
+                      Example Scene
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Integrations */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
+                    <MessageSquare className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900">Integrations</h4>
+                    <p className="text-sm text-gray-500">Learn Where You Already Work & Chat</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  DeskLingo will soon connect directly to your favourite tools — Slack, Microsoft Teams, WhatsApp, and more — so language learning meets you where you are.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
