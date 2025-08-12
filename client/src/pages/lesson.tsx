@@ -219,7 +219,31 @@ export default function Lesson() {
       const userAnswer = selectedAnswer.toLowerCase().trim();
       const expected = stepData.expected.toLowerCase();
       const alternatives = stepData.alternatives.map(alt => alt.toLowerCase());
-      correct = userAnswer === expected || alternatives.includes(userAnswer);
+      
+      // If prompt contains underscores, validate just the missing letters
+      if (stepData.prompt.includes('_')) {
+        const getMissingLetters = (word: string) => {
+          // Extract the missing part from the word based on the prompt pattern
+          const promptParts = stepData.prompt.split('_');
+          if (promptParts.length >= 2) {
+            const prefix = promptParts[0];
+            const suffix = promptParts[promptParts.length - 1].split('=')[0].trim();
+            // Remove prefix and suffix from the expected word to get missing letters
+            let missingPart = expected;
+            if (prefix) missingPart = missingPart.replace(prefix.toLowerCase(), '');
+            if (suffix) missingPart = missingPart.replace(suffix.toLowerCase(), '');
+            return missingPart;
+          }
+          return expected;
+        };
+        
+        const expectedMissing = getMissingLetters(expected);
+        const alternativesMissing = alternatives.map(alt => getMissingLetters(alt));
+        correct = userAnswer === expectedMissing || alternativesMissing.includes(userAnswer);
+      } else {
+        // For complete word/phrase exercises
+        correct = userAnswer === expected || alternatives.includes(userAnswer);
+      }
     } else if (currentStep === 3 && stepData.type === 'audio') {
       correct = selectedAnswer === stepData.answer;
     }
@@ -499,7 +523,23 @@ export default function Lesson() {
                       <p className="mt-2 text-sm text-red-700">
                         The correct answer is: <strong>
                           {stepData.type === 'learn' ? stepData.quiz.answer :
-                           stepData.type === 'type' ? stepData.expected :
+                           stepData.type === 'type' ? (
+                             stepData.prompt.includes('_') ? (
+                               // Show just the missing letters for fill-in-the-blank
+                               (() => {
+                                 const promptParts = stepData.prompt.split('_');
+                                 if (promptParts.length >= 2) {
+                                   const prefix = promptParts[0];
+                                   const suffix = promptParts[promptParts.length - 1].split('=')[0].trim();
+                                   let missingPart = stepData.expected.toLowerCase();
+                                   if (prefix) missingPart = missingPart.replace(prefix.toLowerCase(), '');
+                                   if (suffix) missingPart = missingPart.replace(suffix.toLowerCase(), '');
+                                   return missingPart;
+                                 }
+                                 return stepData.expected;
+                               })()
+                             ) : stepData.expected
+                           ) :
                            stepData.type === 'audio' ? stepData.answer : ''}
                         </strong>
                       </p>
