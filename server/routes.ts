@@ -8,37 +8,9 @@ import fs from "fs";
 import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication
-  const passport = await import("passport");
-  const session = await import("express-session");
-  
-  // Session configuration
-  app.use(session.default({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
-  }));
-  
-  app.use(passport.default.initialize());
-  app.use(passport.default.session());
-  
-  // Setup OAuth strategies (Google, GitHub)
-  setupOAuthStrategies(passport.default);
-  setupOAuthRoutes(app, passport.default);
-  
-  // Setup local authentication routes  
-  const { setupLocalAuth, setupLocalRoutes } = await import("./localAuth");
-  setupLocalAuth(passport.default);
-  setupLocalRoutes(app, passport.default);
-
-  // Simple authentication middleware
-  const isAuthenticated = (req: any, res: any, next: any) => {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.status(401).json({ message: "Unauthorized" });
-  };
+  // Setup Replit authentication system
+  const { setupAuth, isAuthenticated } = await import("./replitAuth");
+  await setupAuth(app);
 
   // Waitlist route (no auth required)
   app.post('/api/waitlist', async (req, res) => {
