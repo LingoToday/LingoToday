@@ -39,7 +39,7 @@ function Router() {
           <Route path="/onboarding" component={Onboarding} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/course-test" component={CourseTest} />
-          <Route path="/lesson/:language/:week/:day" component={Lesson} />
+          <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
         </>
       ) : (
         <>
@@ -48,7 +48,7 @@ function Router() {
           <Route path="/courses" component={Courses} />
           <Route path="/course-manager" component={CourseManager} />
           <Route path="/lesson-example" component={LessonExample} />
-          <Route path="/lesson/:language/:week/:day" component={Lesson} />
+          <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
         </>
       )}
       <Route component={NotFound} />

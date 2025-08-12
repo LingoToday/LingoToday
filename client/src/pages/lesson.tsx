@@ -16,7 +16,7 @@ import { resetNotificationCooldown } from "@/lib/notifications";
 import type { Lesson } from "@shared/schema";
 
 export default function Lesson() {
-  const { language, week, day } = useParams();
+  const { language, courseId, lessonId } = useParams();
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
@@ -46,7 +46,7 @@ export default function Lesson() {
       console.log("User not authenticated on lesson page, redirecting to login");
       
       // If coming from notification, preserve the lesson URL for after login
-      if (fromNotification && language && week && day) {
+      if (fromNotification && language && courseId && lessonId) {
         const currentUrl = window.location.pathname + window.location.search;
         sessionStorage.setItem('redirect-after-login', currentUrl);
         console.log("Stored redirect URL for after login:", currentUrl);
@@ -64,7 +64,7 @@ export default function Lesson() {
       setTimeout(redirectToLogin, 1000);
       return;
     }
-  }, [isAuthenticated, isLoading, toast, fromNotification, language, week, day]);
+  }, [isAuthenticated, isLoading, toast, fromNotification, language, courseId, lessonId]);
 
   // Check for notification lesson ID first
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
@@ -80,8 +80,8 @@ export default function Lesson() {
   }, [fromNotification]);
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
-    queryKey: ["/api/lessons", language, week, day],
-    enabled: isAuthenticated && !!language && !!week && !!day && !notificationLessonId, // Disable if we have a notification lesson
+    queryKey: ["/api/courses", language, courseId, lessonId],
+    enabled: isAuthenticated && !!language && !!courseId && !!lessonId && !notificationLessonId, // Disable if we have a notification lesson
     retry: false,
   });
 
@@ -101,7 +101,7 @@ export default function Lesson() {
     
     // Fallback to URL-based lesson if API fails
     if (lessonError && !lesson) {
-      const expectedLessonId = `${language}_w${week}_d${day}`;
+      const expectedLessonId = `${language}_${courseId}_${lessonId}`;
       const storedLesson = getLessonById(expectedLessonId);
       
       if (storedLesson) {
@@ -109,7 +109,7 @@ export default function Lesson() {
         setFallbackLesson(storedLesson as Lesson);
       }
     }
-  }, [notificationLessonId, lessonError, lesson, language, week, day]);
+  }, [notificationLessonId, lessonError, lesson, language, courseId, lessonId]);
 
   // Use fallback lesson if API lesson is not available, or notification lesson if coming from notification
   const currentLesson = (notificationLessonId && fallbackLesson) ? fallbackLesson : (lesson || fallbackLesson);
@@ -118,8 +118,8 @@ export default function Lesson() {
     mutationFn: async (score: number) => {
       await apiRequest("POST", "/api/progress", {
         language,
-        courseId: "course1", // Default course ID
-        lessonId: currentLesson!.id,
+        courseId: courseId || "course1", // Use URL courseId or default
+        lessonId: lessonId || currentLesson!.id,
         completed: true,
         score,
         completedAt: new Date(),
