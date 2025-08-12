@@ -42,6 +42,8 @@ interface ProgressData {
   lessonId: string;
   score: number;
   completedAt: string;
+  title?: string;
+  type?: string;
 }
 
 interface NextLessonData {
@@ -207,7 +209,7 @@ export default function Dashboard() {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">{user.firstName || 'Marcus'}</span>
-              <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
+              <Button variant="ghost" size="sm">
                 Logout
               </Button>
             </div>
@@ -247,7 +249,7 @@ export default function Dashboard() {
               </Card>
               <Card className="text-center">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">{stats?.streak || 4}</div>
+                  <div className="text-2xl font-bold text-gray-900">4</div>
                   <div className="text-sm text-gray-600">Streak</div>
                 </CardContent>
               </Card>
