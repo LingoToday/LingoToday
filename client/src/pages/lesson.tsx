@@ -375,14 +375,19 @@ export default function Lesson() {
                 <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
                   <div className="text-center">
                     <div className="text-3xl mb-4">✏️</div>
-                    <h2 className="text-2xl font-bold text-green-700 mb-4">Fill in the blank</h2>
-                    <p className="text-green-600 text-lg mb-4">{stepData.prompt}</p>
+                    <h2 className="text-2xl font-bold text-green-700 mb-4">Type Practice</h2>
+                    <p className="text-green-600 text-lg mb-2">{stepData.prompt}</p>
+                    <div className="text-sm text-green-600 mb-4 font-medium">
+                      {stepData.prompt.includes('_') ? 
+                        'Complete the word by filling in the missing letters' : 
+                        'Type the complete word or phrase'}
+                    </div>
                     <input
                       type="text"
                       value={selectedAnswer}
                       onChange={(e) => setSelectedAnswer(e.target.value)}
                       className="w-full max-w-xs p-2 border border-gray-300 rounded-lg text-center text-lg"
-                      placeholder="Type your answer..."
+                      placeholder={stepData.prompt.includes('_') ? 'Enter missing letters...' : 'Type your answer...'}
                       disabled={showResult}
                     />
                   </div>

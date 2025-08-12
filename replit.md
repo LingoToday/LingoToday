@@ -5,6 +5,7 @@ LingoToday is a full-stack language learning application designed to deliver mic
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## System Architecture
 
