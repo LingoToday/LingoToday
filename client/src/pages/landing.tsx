@@ -15,7 +15,7 @@ export default function Landing() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Globe className="text-white text-sm" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">DeskLingo</h1>
+              <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
             </div>
             
             <Button 
@@ -41,7 +41,7 @@ export default function Landing() {
           </h1>
           
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            DeskLingo is a smarter way to learn languages — built for people who spend their day on a laptop. 
+            LingoToday is a smarter way to learn languages — built for people who spend their day on a laptop. 
             No long lessons. No phone apps. Just short, well-timed language prompts that show up on your desktop while you work. Backed by science. Built for real life.
           </p>
           
@@ -152,7 +152,7 @@ export default function Landing() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why This Works?</h2>
           <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
             Traditional language learning expects you to block out 15–60 minutes a day, open an app, and grind through a course. Most people quit in a week. 
-            DeskLingo flips that. You stay at your desk. We deliver focused micro-lessons — 2 to 3 minutes each — across your day.
+            LingoToday flips that. You stay at your desk. We deliver focused micro-lessons — 2 to 3 minutes each — across your day.
           </p>
         </div>
 
@@ -279,8 +279,8 @@ export default function Landing() {
                 Built for your work setup
               </h3>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Whether you're writing emails, working in Figma, or coding in VS Code — DeskLingo drops in when you've got a moment. 
-                You learn without needing to "find time." Most learning platforms are mobile-first. DeskLingo is built for desktop.
+                Whether you're writing emails, working in Figma, or coding in VS Code — LingoToday drops in when you've got a moment. 
+                You learn without needing to "find time." Most learning platforms are mobile-first. LingoToday is built for desktop.
               </p>
               <Button 
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-full"
@@ -341,7 +341,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  Take DeskLingo beyond your desk. Our upcoming mobile app keeps your learning streak alive when you're away from your laptop, so your progress never pauses.
+                  Take LingoToday beyond your desk. Our upcoming mobile app keeps your learning streak alive when you're away from your laptop, so your progress never pauses.
                 </p>
               </CardContent>
             </Card>
@@ -385,7 +385,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  DeskLingo will soon connect directly to your favourite tools — Slack, Microsoft Teams, WhatsApp, and more — so language learning meets you where you are.
+                  LingoToday will soon connect directly to your favourite tools — Slack, Microsoft Teams, WhatsApp, and more — so language learning meets you where you are.
                 </p>
               </CardContent>
             </Card>
@@ -524,7 +524,7 @@ export default function Landing() {
             <span className="text-primary">Finally on Desktop</span>
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-            There are thousands of language apps. This isn't one of them. DeskLingo is for people who want to learn while they work — not after.
+            There are thousands of language apps. This isn't one of them. LingoToday is for people who want to learn while they work — not after.
             No signup delays. No app stores. Just hit start and learn right in your browser.
           </p>
           <Button 

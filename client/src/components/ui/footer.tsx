@@ -12,7 +12,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Globe className="text-white text-sm" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">DeskLingo</h3>
+              <h3 className="text-xl font-bold text-gray-900">LingoToday</h3>
             </div>
             <p className="text-gray-600 text-sm">
               Learn languages without leaving your desk. Short, well-timed prompts for busy professionals.
@@ -79,7 +79,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-gray-200 mt-8 pt-8">
           <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} DeskLingo. All rights reserved.
+            © {new Date().getFullYear()} LingoToday. All rights reserved.
           </p>
         </div>
       </div>

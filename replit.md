@@ -1,14 +1,20 @@
-# DeskLingo - Language Learning Application
+# LingoToday - Language Learning Application
 
 ## Overview
 
-DeskLingo is a full-stack language learning application that delivers micro-lessons through desktop notifications. The application uses a modern tech stack with React for the frontend, Express.js for the backend, and PostgreSQL with Drizzle ORM for data persistence. The system is designed to provide passive language learning through notifications and interactive lessons.
+LingoToday is a full-stack language learning application that delivers micro-lessons through desktop notifications. The application uses a modern tech stack with React for the frontend, Express.js for the backend, and PostgreSQL with Drizzle ORM for data persistence. The system is designed to provide passive language learning through notifications and interactive lessons.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+
+### August 12, 2025 - Brand Name Change
+- Changed all text references from 'DeskLingo' to 'LingoToday' throughout the application
+- Updated all UI components, notifications, localStorage keys, and documentation
+- Maintained all existing functionality while updating brand identity
+- Changed localStorage keys to use 'lingotoday' prefix for consistency
 
 ### August 12, 2025 - User Dashboard & Database Integration
 - Created comprehensive user dashboard with learning statistics, progress tracking, and next lesson recommendations

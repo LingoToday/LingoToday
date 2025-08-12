@@ -25,7 +25,7 @@ interface LessonStore {
   language: string;
 }
 
-const STORAGE_KEY = 'desklingo-lesson-store';
+const STORAGE_KEY = 'lingotoday-lesson-store';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 // Load lessons from localStorage

@@ -357,10 +357,10 @@ export default function NotificationSettings() {
                     if (Notification.permission === "granted") {
                       try {
                         console.log("🧪 Creating simple test notification...");
-                        const testNotification = new Notification("🔔 DeskLingo Test", {
+                        const testNotification = new Notification("🔔 LingoToday Test", {
                           body: "This is a test notification. If you see this in Mac Notification Center, notifications are working!",
                           icon: "/favicon.ico",
-                          tag: "desklingo-test-" + Date.now(),
+                          tag: "lingotoday-test-" + Date.now(),
                           requireInteraction: false
                         });
                         
@@ -481,7 +481,7 @@ export default function NotificationSettings() {
                       
                       if (actualPermission === "granted") {
                         try {
-                          const testNotification = new Notification("DeskLingo Test", {
+                          const testNotification = new Notification("LingoToday Test", {
                             body: "Testing simple notification without API call",
                             icon: "/favicon.ico",
                             tag: "test-" + Date.now()

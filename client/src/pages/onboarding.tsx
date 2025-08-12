@@ -114,7 +114,7 @@ export default function Onboarding() {
         completedOnboarding: true
       };
       
-      localStorage.setItem('deskLingo_onboarding', JSON.stringify(onboardingData));
+      localStorage.setItem('lingoToday_onboarding', JSON.stringify(onboardingData));
       
       // Check if Google OAuth is available
       const response = await fetch('/api/auth/google');
@@ -139,7 +139,7 @@ export default function Onboarding() {
         completedOnboarding: true
       };
       
-      localStorage.setItem('deskLingo_onboarding', JSON.stringify(onboardingData));
+      localStorage.setItem('lingoToday_onboarding', JSON.stringify(onboardingData));
       
       // Check if GitHub OAuth is available
       const response = await fetch('/api/auth/github');
@@ -196,7 +196,7 @@ export default function Onboarding() {
           level: selectedLevel,
           completedOnboarding: true
         };
-        localStorage.setItem('deskLingo_onboarding', JSON.stringify(onboardingData));
+        localStorage.setItem('lingoToday_onboarding', JSON.stringify(onboardingData));
         
         // Auto-login after successful registration
         const loginResponse = await fetch('/api/auth/login', {
@@ -210,7 +210,7 @@ export default function Onboarding() {
 
         if (loginResponse.ok) {
           // Clear any stored onboarding data since it's now saved to user profile
-          localStorage.removeItem('deskLingo_onboarding');
+          localStorage.removeItem('lingoToday_onboarding');
           window.location.href = '/';
         } else {
           // Registration successful but login failed, redirect to login page
@@ -256,7 +256,7 @@ export default function Onboarding() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Globe className="text-white text-sm" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">DeskLingo</h1>
+            <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Start Your Learning Journey

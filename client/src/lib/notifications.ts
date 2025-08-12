@@ -325,7 +325,7 @@ export async function showLearningNotification(language: string) {
     const notification = new Notification(notificationTitle, {
       body: lessonData.question,
       icon: "/favicon.ico",
-      tag: "desklingo-lesson-" + Date.now(),
+      tag: "lingotoday-lesson-" + Date.now(),
       requireInteraction: true,
       silent: false
     });
@@ -405,7 +405,7 @@ export function saveNotificationSettings(settings: {
   language: string;
   frequency: number;
 }) {
-  localStorage.setItem("desklingo-notifications", JSON.stringify(settings));
+  localStorage.setItem("lingotoday-notifications", JSON.stringify(settings));
   
   if (settings.enabled) {
     scheduleNotification(settings.language, settings.frequency);
