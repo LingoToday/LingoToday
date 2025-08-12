@@ -746,14 +746,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { language, courseId, lessonId } = req.params;
       
       if (language === 'italian') {
-        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        const courseFileName = `${courseId}.json`;
+        const coursePath = path.join(process.cwd(), 'server', courseFileName);
         
-        if (!fs.existsSync(coursesPath)) {
-          return res.status(404).json({ message: "Italian courses file not found" });
+        if (!fs.existsSync(coursePath)) {
+          return res.status(404).json({ message: `Italian course file not found: ${courseFileName}` });
         }
         
-        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-        const course = coursesData[courseId];
+        const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+        const course = courseData[courseId];
         
         if (!course || !course.lessons[lessonId]) {
           return res.status(404).json({ message: `Lesson not found: ${courseId}/${lessonId}` });

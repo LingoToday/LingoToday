@@ -265,6 +265,7 @@ export default function Lesson() {
     );
   }
 
+  // For debugging, let's show the lesson even if stepData is null temporarily
   if (!currentLesson) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -273,6 +274,24 @@ export default function Lesson() {
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Lesson Not Found</h2>
             <p className="text-gray-600 mb-4">
               The requested lesson could not be found.
+            </p>
+            <Link href="/">
+              <Button>Back to Dashboard</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!stepData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardContent className="pt-6 text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Lesson...</h2>
+            <p className="text-gray-600 mb-4">
+              Please wait while we load the lesson content.
             </p>
             <Link href="/">
               <Button>Back to Dashboard</Button>
