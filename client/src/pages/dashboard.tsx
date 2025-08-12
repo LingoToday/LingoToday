@@ -379,7 +379,7 @@ export default function Dashboard() {
                 <div className="pt-4 border-t">
                   <div className="text-center">
                     <div className="text-sm font-medium text-blue-600 mb-1">Complete Italian Course</div>
-                    <div className="text-xs text-gray-500 mb-2">600 lessons • 15 courses</div>
+                    <div className="text-xs text-gray-500 mb-2">78 lessons • 5 courses</div>
                     <Link href="/courses">
                       <Button variant="outline" size="sm" className="text-blue-600">
                         View
