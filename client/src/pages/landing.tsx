@@ -59,14 +59,6 @@ export default function Landing() {
               className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
               onClick={() => window.location.href = "/onboarding"}
             >Try it Free for 7 Days</Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-gray-300 text-gray-700 font-medium px-8 py-3 rounded-full hover:bg-gray-50"
-              onClick={() => window.location.href = "/api/login"}
-            >
-              Try It Free
-            </Button>
           </div>
         </div>
 
