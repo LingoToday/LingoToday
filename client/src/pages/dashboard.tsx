@@ -265,52 +265,44 @@ export default function Dashboard() {
                   {upcomingLessons[0]?.category || 'Greetings'}
                 </Badge>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 {upcomingLessons.length > 0 ? (
                   <>
-                    <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                    {/* Next lesson - prominent display */}
+                    <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-3 text-white">
                       <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold">{upcomingLessons[0].title}</h3>
-                          <p className="text-purple-100">{upcomingLessons[0].description}</p>
+                        <div className="flex-1">
+                          <div className="text-lg font-bold">{upcomingLessons[0].title}</div>
+                          <div className="text-purple-100 text-sm">{upcomingLessons[0].description}</div>
                         </div>
                         <Link href={`/lessons/${user.selectedLanguage}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`}>
-                          <Button variant="secondary" size="sm" className="bg-white text-purple-600 hover:bg-gray-100">
+                          <Button variant="secondary" size="sm" className="bg-white text-purple-600 hover:bg-gray-100 font-medium">
                             Start Now
                           </Button>
                         </Link>
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      {upcomingLessons.slice(1, 4).map((lesson, index) => {
-                        const iconColors = [
-                          'bg-orange-100 text-orange-600',
-                          'bg-blue-100 text-blue-600', 
-                          'bg-green-100 text-green-600'
-                        ];
-                        const icons = [BookOpen, MessageSquare, Target];
-                        const Icon = icons[index];
-                        
-                        return (
-                          <div key={`${lesson.courseId}-${lesson.lessonId}`} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${iconColors[index]}`}>
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium">{lesson.title}</div>
-                              <div className="text-sm text-gray-500">{lesson.description}</div>
-                            </div>
+                    {/* Upcoming lessons - compact list */}
+                    <div className="space-y-2">
+                      {upcomingLessons.slice(1, 5).map((lesson, index) => (
+                        <div key={`${lesson.courseId}-${lesson.lessonId}`} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                          <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium text-gray-600">
+                            {index + 2}
                           </div>
-                        );
-                      })}
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm truncate">{lesson.title}</div>
+                            <div className="text-xs text-gray-500 truncate">{lesson.description}</div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </>
                 ) : (
-                  <div className="text-center py-8">
-                    <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">All lessons completed!</h3>
-                    <p className="text-gray-600">Check back later for new content.</p>
+                  <div className="text-center py-6">
+                    <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                    <h3 className="text-base font-medium text-gray-900 mb-1">All lessons completed!</h3>
+                    <p className="text-sm text-gray-600">Check back later for new content.</p>
                   </div>
                 )}
               </CardContent>

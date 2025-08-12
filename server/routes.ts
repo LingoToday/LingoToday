@@ -274,39 +274,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let upcomingLessons: any[] = [];
 
       if (language === 'italian') {
-        // Use italian-courses.json for structured lessons
-        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        // Use actual Italian course JSON files from attached_assets
+        const courseFiles = [
+          'attached_assets/italian_course1_greetings_steps_corrected_1755005294493.json',
+          'attached_assets/italian_course2_introducing_yourself_steps_full_1755005294493.json',
+          'attached_assets/italian_course3_essential_courtesy_steps_full_1755005294493.json',
+          'attached_assets/italian_course4_numbers_steps_full_29_lessons_1755005294493.json',
+          'attached_assets/italian_course5_time_date_steps_split_lessons_1755005294492.json'
+        ];
+
+        const allLessons: any[] = [];
         
-        if (fs.existsSync(coursesPath)) {
-          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-          
-          // Find all lessons in order
-          const allLessons: any[] = [];
-          Object.keys(coursesData).sort().forEach(courseId => {
-            const course = coursesData[courseId];
-            Object.keys(course.lessons).sort().forEach(lessonId => {
-              const lesson = course.lessons[lessonId];
+        for (const courseFile of courseFiles) {
+          const coursePath = path.join(process.cwd(), courseFile);
+          if (fs.existsSync(coursePath)) {
+            const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+            const courseKey = Object.keys(courseData)[0]; // course1, course2, etc.
+            const course = courseData[courseKey];
+            
+            Object.keys(course.lessons).sort().forEach(lessonKey => {
+              const lesson = course.lessons[lessonKey];
               allLessons.push({
-                courseId,
-                lessonId,
-                title: lesson.title,
-                description: course.title,
+                courseId: courseKey,
+                lessonId: lessonKey,
+                title: lesson.step1.italian, // Use the Italian phrase as title
+                description: lesson.title, // Use English title as description
                 courseTitle: course.title,
                 category: course.title,
-                items: lesson.items
+                englishTitle: lesson.title,
+                italianPhrase: lesson.step1.italian,
+                englishTranslation: lesson.step1.english
               });
             });
-          });
-
-          // Filter out completed lessons
-          const completedLessonIds = new Set(
-            userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
-          );
-
-          upcomingLessons = allLessons
-            .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
-            .slice(0, 5);
+          }
         }
+
+        // Filter out completed lessons
+        const completedLessonIds = new Set(
+          userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
+        );
+
+        upcomingLessons = allLessons
+          .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
+          .slice(0, 5);
       } else {
         // Fallback to lessons.json structure
         const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
