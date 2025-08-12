@@ -61,7 +61,7 @@ export default function Landing() {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Learn a Language Without<br />
+            Learn a Language<br />
             <span className="text-primary">Whilst You Work</span>
           </h1>
           
