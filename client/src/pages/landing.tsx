@@ -72,7 +72,7 @@ export default function Landing() {
         </div>
 
         {/* Target Audience Section */}
-        <div className="flex items-center justify-center gap-8 mb-12">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-12">
           <div className="flex items-center gap-2 text-gray-500">
             <Target className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium">You work at a desk</span>
