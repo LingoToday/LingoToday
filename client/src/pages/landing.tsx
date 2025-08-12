@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare } from "lucide-react";
+import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
 import Footer from "@/components/ui/footer";
 import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
 
@@ -326,6 +326,131 @@ export default function Landing() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+
+        {/* Pricing Section */}
+        <div className="mb-16">
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Simple, Fair Pricing
+            </h3>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Choose the plan that works for you. Both include all current features and a 5-day free trial.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Monthly Plan */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift group relative">
+              <CardContent className="p-8">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Clock className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-2">Monthly</h4>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-gray-900">£3.99</span>
+                    <span className="text-gray-600 text-lg">/month</span>
+                  </div>
+                  
+                  <div className="space-y-4 mb-8 text-left">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">All current features</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Desktop notifications</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Progress tracking</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Multiple languages</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">5-day free trial</span>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-3 rounded-full"
+                    onClick={() => window.location.href = "/onboarding"}
+                  >
+                    Start Free Trial
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Yearly Plan */}
+            <Card className="bg-white border-2 border-primary shadow-card hover-lift group relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                  <Crown className="w-4 h-4" />
+                  Best Value
+                </div>
+              </div>
+              <CardContent className="p-8 pt-10">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Crown className="w-8 h-8 text-primary" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-2">Introduction Offer</h4>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-gray-900">£14.99</span>
+                    <span className="text-gray-600 text-lg">/year</span>
+                    <div className="text-sm text-green-600 font-medium mt-1">
+                      Save £33 per year
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 mb-8 text-left">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">All current features</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">All future features</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Desktop notifications</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Progress tracking</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">Multiple languages</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-gray-700">5-day free trial</span>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-full"
+                    onClick={() => window.location.href = "/onboarding"}
+                  >
+                    Start Free Trial
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              Both plans include a 5-day free trial. Cancel anytime, no questions asked.
+            </p>
           </div>
         </div>
 
