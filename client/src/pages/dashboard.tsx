@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { 
   BookOpen, 
   Target, 
@@ -13,7 +14,11 @@ import {
   Settings,
   Bell,
   CheckCircle2,
-  Circle
+  Circle,
+  BarChart3,
+  Calendar,
+  Star,
+  Zap
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -57,6 +62,69 @@ interface DashboardData {
   progress: ProgressData[];
 }
 
+// Mock data for comprehensive dashboard (matching the original design)
+const mockRecentLessons = [
+  {
+    id: 1,
+    title: "Apologies and Excuse Me",
+    subtitle: "Essential Courtesy Phrases",
+    timeAgo: "17 MINUTES",
+    score: 100,
+    quiz: "Quiz: What does \"Mi dispiace\" mean?",
+    answer: "I'm sorry"
+  },
+  {
+    id: 2,
+    title: "Yes, No, Please, Thank You",
+    subtitle: "Essential Courtesy Phrases",
+    timeAgo: "40 MINUTES",
+    score: 90,
+    quiz: "Quiz: What does \"Si\" mean?",
+    answer: "Yes"
+  },
+  {
+    id: 3,
+    title: "Polite Social Phrases",
+    subtitle: "Essential Courtesy",
+    timeAgo: "YESTERDAY",
+    score: 100,
+    quiz: "Quiz: What does \"Piacere di conoscerti\" mean?",
+    answer: "Pleased to meet you"
+  },
+  {
+    id: 4,
+    title: "Origin and Nationality",
+    subtitle: "Introducing Yourself",
+    timeAgo: "2 DAYS AGO",
+    score: 100,
+    quiz: "Quiz: What does \"Di dove sei?\" mean?",
+    answer: "Where are you from?"
+  },
+  {
+    id: 5,
+    title: "Di dove sei?",
+    subtitle: "Introducing Yourself",
+    timeAgo: "2 DAYS AGO",
+    score: 100,
+    quiz: "Quiz: What does \"Buonasera\" mean?",
+    answer: "Good evening"
+  }
+];
+
+const mockLearningPath = [
+  { course: "Greetings", progress: 100, lessons: "5/5" },
+  { course: "Introducing Yourself", progress: 100, lessons: "5/5" },
+  { course: "Essential Courtesy Phrases", progress: 80, lessons: "4/5" },
+  { course: "Numbers", progress: 0, lessons: "0/6" },
+  { course: "Family and Relatives", progress: 0, lessons: "0/7" },
+  { course: "Age and Personal Info", progress: 0, lessons: "0/4" },
+  { course: "Weather and Seasons", progress: 0, lessons: "0/5" },
+  { course: "Time and Dates", progress: 0, lessons: "0/6" },
+  { course: "Locations and Places", progress: 0, lessons: "0/8" },
+  { course: "Food and Dining", progress: 0, lessons: "0/10" },
+  { course: "Jobs and Professions", progress: 0, lessons: "0/8" }
+];
+
 export default function Dashboard() {
   const { user } = useAuth() as { user: User | null };
 
@@ -85,202 +153,215 @@ export default function Dashboard() {
     return null;
   }
 
-  const stats = dashboardData?.stats;
-  const settings = dashboardData?.settings;
-  const recentProgress = dashboardData?.progress?.slice(0, 5) || [];
+  const stats = dashboardData?.stats || { streak: 1, totalLessons: 4, wordsLearned: 0 };
+  const settings = dashboardData?.settings || { notificationsEnabled: true, notificationFrequency: 15, selectedLanguage: "Italian" };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
+      <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user.firstName || 'Student'}!
-              </h1>
-              <p className="text-gray-600">
-                Continue your {user.selectedLanguage || 'Italian'} journey at {user.selectedLevel || 'A1'} level
-              </p>
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-sm">D</span>
+              </div>
+              <span className="font-semibold text-gray-900">DeskLingo</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/settings">
-                <Button variant="outline" size="sm">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-              </Link>
+            
+            <nav className="flex space-x-8">
+              <Link href="/dashboard" className="text-blue-600 font-medium">Dashboard</Link>
+              <Link href="/courses" className="text-gray-600 hover:text-gray-900">Courses</Link>
+              <Link href="/progress" className="text-gray-600 hover:text-gray-900">Progress</Link>
+              <Link href="/settings" className="text-gray-600 hover:text-gray-900">Settings</Link>
+            </nav>
+
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.streak}</div>
+                  <div className="text-xs text-gray-500">Streak</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalLessons}</div>
+                  <div className="text-xs text-gray-500">Completed</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.wordsLearned}</div>
+                  <div className="text-xs text-gray-500">Words</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+                <span className="text-sm text-gray-600">Marcus</span>
+                <Button variant="ghost" size="sm">Logout</Button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Stats and Progress */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <Trophy className="h-8 w-8 text-yellow-600" />
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Streak</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {stats?.streak || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome back, {user.firstName || 'Marcus'}!
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Continue your {settings.selectedLanguage} learning journey
+          </p>
+          
+          <div className="flex items-center space-x-2 mb-4">
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              Start Today's Lessons
+            </Button>
+            <span className="text-sm text-gray-500">Try Intermediate</span>
+          </div>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <BookOpen className="h-8 w-8 text-blue-600" />
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Lessons</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {stats?.totalLessons || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <Target className="h-8 w-8 text-green-600" />
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Words</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {stats?.wordsLearned || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <Clock className="h-8 w-8 text-purple-600" />
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Level</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {user.selectedLevel || 'A1'}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {settings.notificationsEnabled && (
+            <div className="flex items-center space-x-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg inline-flex">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Daily session active - notifications every {settings.notificationFrequency} minutes</span>
             </div>
+          )}
+        </div>
 
-            {/* Continue Learning */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Coming Up Next */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Play className="h-5 w-5 mr-2" />
-                  Continue Learning
-                </CardTitle>
-                <CardDescription>
-                  {nextLesson 
-                    ? `Ready for your next lesson: ${nextLesson.title}`
-                    : "Great job! You're all caught up with your current lessons."
-                  }
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl">Coming Up Next</CardTitle>
+                <Badge variant="secondary" className="bg-purple-100 text-purple-800">Continue</Badge>
               </CardHeader>
               <CardContent>
                 {nextLesson ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{nextLesson.title}</h3>
-                        <p className="text-sm text-gray-600">{nextLesson.description}</p>
-                        <div className="flex items-center mt-2">
-                          <Badge variant="secondary" className="mr-2">
-                            {nextLesson.courseId}
-                          </Badge>
-                          <Badge variant="outline">
-                            {nextLesson.lessonId}
-                          </Badge>
-                        </div>
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <BookOpen className="h-6 w-6" />
                       </div>
-                      <Link href={`/lessons/${user?.selectedLanguage}/${nextLesson.courseId}/${nextLesson.lessonId}`}>
-                        <Button>
-                          <Play className="h-4 w-4 mr-2" />
-                          Start Lesson
-                        </Button>
-                      </Link>
+                      <div>
+                        <h3 className="font-semibold">{nextLesson.title}</h3>
+                        <p className="text-blue-100">{nextLesson.description}</p>
+                      </div>
                     </div>
+                    <Link href={`/lessons/${user?.selectedLanguage}/${nextLesson.courseId}/${nextLesson.lessonId}`}>
+                      <Button variant="secondary" size="sm">
+                        Start Now
+                      </Button>
+                    </Link>
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">All lessons completed!</h3>
-                    <p className="text-gray-600">Check back later for new content.</p>
+                  <div className="space-y-4">
+                    {/* Sample upcoming lessons */}
+                    <div className="flex items-center space-x-4 p-3 border rounded-lg">
+                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <BookOpen className="h-5 w-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium">Numbers</h4>
+                        <p className="text-sm text-gray-600">Learn numbers 1-20</p>
+                      </div>
+                      <Badge variant="outline">Next</Badge>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4 p-3 border rounded-lg">
+                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Target className="h-5 w-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium">Pronunciation</h4>
+                        <p className="text-sm text-gray-600">Speaking Tutorial</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-4 p-3 border rounded-lg">
+                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Zap className="h-5 w-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium">Names and Introductions</h4>
+                        <p className="text-sm text-gray-600">Introducing Yourself</p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Recent Progress */}
+            {/* Recent Lessons */}
             <Card>
-              <CardHeader>
-                <CardTitle>Recent Progress</CardTitle>
-                <CardDescription>Your latest completed lessons</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl">Recent Lessons</CardTitle>
+                <Button variant="outline" size="sm">View all lessons</Button>
               </CardHeader>
               <CardContent>
-                {recentProgress.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentProgress.map((progress: ProgressData, index: number) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-3" />
+                <div className="space-y-4">
+                  {mockRecentLessons.map((lesson) => (
+                    <div key={lesson.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <CheckCircle2 className="h-5 w-5 text-white" />
+                          </div>
                           <div>
-                            <p className="font-medium text-gray-900">
-                              {progress.courseId} - {progress.lessonId}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              Completed {new Date(progress.completedAt).toLocaleDateString()}
-                            </p>
+                            <h4 className="font-medium text-gray-900">{lesson.title}</h4>
+                            <p className="text-sm text-gray-600">{lesson.subtitle} • {lesson.timeAgo}</p>
                           </div>
                         </div>
-                        <Badge variant={progress.score >= 80 ? "default" : "secondary"}>
-                          {progress.score}%
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={lesson.score === 100 ? "default" : "secondary"} className="bg-yellow-100 text-yellow-800">
+                            {lesson.score}%
+                          </Badge>
+                          <Star className="h-4 w-4 text-yellow-500" />
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-6">
-                    <Circle className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-600">No lessons completed yet. Start your first lesson!</p>
-                  </div>
-                )}
+                      
+                      <div className="bg-gray-50 rounded p-3 text-sm">
+                        <p className="text-gray-700 mb-1">{lesson.quiz}</p>
+                        <p className="text-green-600 font-medium">✓ {lesson.answer}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Learning Goal */}
+            {/* Learning Path */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Today's Goal</CardTitle>
+                <CardTitle className="text-lg flex items-center">
+                  <BookOpen className="h-5 w-5 mr-2" />
+                  Learning Path
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span>Daily lessons</span>
-                    <span>1 / 2</span>
+                  {mockLearningPath.slice(0, 8).map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-2 h-2 rounded-full ${item.progress === 100 ? 'bg-green-500' : item.progress > 0 ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
+                        <span className="text-sm text-gray-700">{item.course}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">{item.lessons}</span>
+                    </div>
+                  ))}
+                  <div className="pt-2">
+                    <Link href="/courses">
+                      <Button variant="link" size="sm" className="text-blue-600 p-0">
+                        Complete Italian Course
+                        <br />
+                        <span className="text-xs text-gray-500">100 lessons • 16 Courses</span>
+                      </Button>
+                    </Link>
                   </div>
-                  <Progress value={50} className="h-2" />
-                  <p className="text-xs text-gray-600">
-                    Complete 1 more lesson to reach your daily goal!
-                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -288,30 +369,90 @@ export default function Dashboard() {
             {/* Notifications */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Bell className="h-4 w-4 mr-2" />
-                  Learning Reminders
+                <CardTitle className="text-lg flex items-center">
+                  <Bell className="h-5 w-5 mr-2" />
+                  Notifications
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Desktop notifications</span>
-                    <Badge variant={settings?.notificationsEnabled ? "default" : "secondary"}>
-                      {settings?.notificationsEnabled ? "ON" : "OFF"}
-                    </Badge>
+                    <span className="text-sm">Language</span>
+                    <span className="text-sm text-gray-600">Italian</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Level</span>
+                    <span className="text-sm text-gray-600">Beginner</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Frequency</span>
-                    <span className="text-sm text-gray-600">
-                      Every {settings?.notificationFrequency || 30} minutes
-                    </span>
+                    <span className="text-sm text-gray-600">Every {settings.notificationFrequency} minutes</span>
                   </div>
-                  <Link href="/settings">
-                    <Button variant="outline" size="sm" className="w-full">
-                      Manage Notifications
-                    </Button>
-                  </Link>
+                  
+                  <div className="flex items-center space-x-2 pt-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-green-600">Notifications Enabled</span>
+                  </div>
+
+                  <div className="space-y-2 text-xs text-gray-600">
+                    <div>Sample Text</div>
+                    <div>Test Example</div>
+                    <div>Debug Info</div>
+                    <div>Permission: granted</div>
+                    <div>Frequency: 15 min</div>
+                    <div>Language: Italian</div>
+                    <div>Status: Active</div>
+                    <div>Force Schedule (Dev Use)</div>
+                    <div>Check Timing (Now)</div>
+                    <div>Sample Notification Text</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* This Week's Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">This Week's Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span>Week 2 Progress</span>
+                    <span>35 days</span>
+                  </div>
+                  <div className="flex space-x-1">
+                    <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                    <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                    <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Learning Goals */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Learning Goals</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Daily Lessons</span>
+                      <span className="text-green-600">2/2 daily streak</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Current streak</span>
+                      <span>1 day</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -319,27 +460,25 @@ export default function Dashboard() {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Link href="/lessons">
-                  <Button variant="outline" className="w-full justify-start">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Browse All Lessons
-                  </Button>
-                </Link>
-                <Link href="/progress">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Trophy className="h-4 w-4 mr-2" />
-                    View Progress
-                  </Button>
-                </Link>
-                <Link href="/settings">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Button>
-                </Link>
+                <Button variant="outline" className="w-full justify-start" size="sm">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Random Practice
+                </Button>
+                <Button variant="outline" className="w-full justify-start" size="sm">
+                  <Trophy className="h-4 w-4 mr-2" />
+                  Review Words
+                </Button>
+                <Button variant="outline" className="w-full justify-start" size="sm">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View Statistics
+                </Button>
+                <Button variant="outline" className="w-full justify-start" size="sm">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Button>
               </CardContent>
             </Card>
           </div>
