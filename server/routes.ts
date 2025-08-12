@@ -102,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId,
           language,
           streak: 0,
-          totalLessons: 0,
+          lessonsCompleted: 0,
           wordsLearned: 0,
         });
       }
@@ -387,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update stats if lesson is completed
       if (progressData.completed) {
         const stats = await storage.getUserStats(userId, progressData.language);
-        const totalLessons = (stats?.totalLessons || 0) + 1;
+        const lessonsCompleted = (stats?.lessonsCompleted || 0) + 1;
         
         // Calculate streak
         const today = new Date();
@@ -410,7 +410,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId,
           language: progressData.language,
           streak,
-          totalLessons,
+          lessonsCompleted,
           wordsLearned: stats?.wordsLearned || 0,
           lastLessonDate: today,
         });
@@ -440,7 +440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId,
           language,
           streak: 0,
-          totalLessons: 0,
+          lessonsCompleted: 0,
           wordsLearned: 0,
         });
       }
@@ -980,7 +980,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         settings,
         stats: stats || {
           streak: 0,
-          totalLessons: 0,
+          lessonsCompleted: 0,
           wordsLearned: 0,
         },
         progress: progress.slice(0, 5), // Recent 5 lessons
