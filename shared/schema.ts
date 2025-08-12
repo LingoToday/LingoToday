@@ -34,7 +34,10 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   password: varchar("password"), // For local email/password authentication
-  authProvider: varchar("auth_provider").notNull().default("replit"), // 'replit' or 'local'
+  authProvider: varchar("auth_provider").notNull().default("local"), // 'google', 'github', or 'local'
+  selectedLanguage: varchar("selected_language"), // Language selected during onboarding
+  selectedLevel: varchar("selected_level"), // Level selected during onboarding (A1, A2, etc.)
+  completedOnboarding: boolean("completed_onboarding").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

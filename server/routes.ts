@@ -83,12 +83,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Dashboard route - combines user data, settings, progress, and stats
+  app.get('/api/dashboard', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get user settings, creating defaults if none exist
+      let settings = await storage.getUserSettings(userId);
+      if (!settings) {
+        settings = await storage.upsertUserSettings({
+          userId,
+          selectedLanguage: user.selectedLanguage || "italian",
+          notificationFrequency: 30,
+          notificationsEnabled: false,
+        });
+      }
+
+      // Get user stats for selected language
+      const language = user.selectedLanguage || "italian";
+      let stats = await storage.getUserStats(userId, language);
+      if (!stats) {
+        stats = await storage.upsertUserStats({
+          userId,
+          language,
+          streak: 0,
+          totalLessons: 0,
+          wordsLearned: 0,
+        });
+      }
+
+      // Get recent progress
+      const progress = await storage.getUserProgress(userId, language);
+
+      res.json({
+        user,
+        settings,
+        stats,
+        progress: progress.slice(0, 10) // Last 10 completed lessons
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // Next lesson route
+  app.get('/api/next-lesson', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
+      const user = await storage.getUser(userId);
+      const language = user?.selectedLanguage || "italian";
+      
+      const nextLesson = await storage.getNextLesson(userId, language);
+      
+      if (!nextLesson) {
+        return res.json({ message: "All lessons completed!", completed: true });
+      }
+
+      // Get the actual lesson data
+      if (language === 'italian') {
+        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        if (fs.existsSync(coursesPath)) {
+          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+          const course = coursesData[nextLesson.courseId];
+          
+          if (course && course.lessons[nextLesson.lessonId]) {
+            return res.json({
+              courseId: nextLesson.courseId,
+              lessonId: nextLesson.lessonId,
+              title: course.lessons[nextLesson.lessonId].title,
+              description: course.lessons[nextLesson.lessonId].description || course.description,
+              courseTitle: course.title,
+            });
+          }
+        }
+      }
+      
+      res.json({
+        courseId: nextLesson.courseId,
+        lessonId: nextLesson.lessonId,
+        title: `${nextLesson.courseId} - ${nextLesson.lessonId}`,
+        description: "Continue your language learning journey"
+      });
+    } catch (error) {
+      console.error("Error fetching next lesson:", error);
+      res.status(500).json({ message: "Failed to fetch next lesson" });
     }
   });
 

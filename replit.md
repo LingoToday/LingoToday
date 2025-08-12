@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### August 12, 2025 - User Dashboard & Database Integration
+- Created comprehensive user dashboard with learning statistics, progress tracking, and next lesson recommendations
+- Enhanced authentication system to save user course selection (language/level) to PostgreSQL database during registration
+- Updated database schema to include selectedLanguage, selectedLevel, and completedOnboarding fields in users table
+- Added dashboard API endpoints (/api/dashboard, /api/next-lesson) for personalized user data
+- Implemented user progress visualization with recent lessons, streak counters, and learning goals
+- Fixed authentication system to handle missing OAuth credentials gracefully with fallback error handling
+- Users now see personalized dashboard after registration/login showing their selected language and level
+
 ### August 12, 2025 - Replaced Replit Auth with Standard OAuth Providers
 - Replaced Replit authentication with Google and GitHub OAuth for broader user accessibility
 - Added Google OAuth integration with red-branded button and official Google icon

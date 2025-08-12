@@ -182,6 +182,8 @@ export default function Onboarding() {
           firstName: registerData.firstName.trim(),
           email: registerData.email.trim(),
           password: registerData.password,
+          selectedLanguage: selectedLanguage,
+          selectedLevel: selectedLevel,
         }),
       });
 
@@ -207,6 +209,8 @@ export default function Onboarding() {
         });
 
         if (loginResponse.ok) {
+          // Clear any stored onboarding data since it's now saved to user profile
+          localStorage.removeItem('deskLingo_onboarding');
           window.location.href = '/';
         } else {
           // Registration successful but login failed, redirect to login page

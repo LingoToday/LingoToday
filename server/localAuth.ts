@@ -10,6 +10,8 @@ export const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().optional(),
+  selectedLanguage: z.string().optional(),
+  selectedLevel: z.string().optional(),
 });
 
 export type RegisterRequest = z.infer<typeof registerSchema>;
@@ -59,7 +61,7 @@ export function setupLocalAuth(passport: any) {
 
 // Register user function
 export async function registerUser(userData: RegisterRequest) {
-  const { email, password, firstName, lastName } = userData;
+  const { email, password, firstName, lastName, selectedLanguage, selectedLevel } = userData;
   
   // Check if user already exists with local auth
   const existingUsers = await storage.getUserByEmail(email);
@@ -76,7 +78,7 @@ export async function registerUser(userData: RegisterRequest) {
   // Generate unique user ID for local users
   const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-  // Create user
+  // Create user with onboarding data
   const user = await storage.upsertUser({
     id: userId,
     email,
@@ -84,6 +86,9 @@ export async function registerUser(userData: RegisterRequest) {
     lastName: lastName || '', // Default to empty string if not provided
     password: hashedPassword,
     authProvider: 'local',
+    selectedLanguage: selectedLanguage || 'italian',
+    selectedLevel: selectedLevel || 'A1',
+    completedOnboarding: !!(selectedLanguage && selectedLevel), // Mark as completed if both are provided
   });
 
   return user;
