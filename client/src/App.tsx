@@ -9,6 +9,7 @@ import { initializeNotifications } from "@/lib/notifications";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Onboarding from "@/pages/onboarding";
+import SignIn from "@/pages/sign-in";
 import Dashboard from "@/pages/dashboard";
 import Lesson from "@/pages/lesson";
 import Courses from "@/pages/courses";
@@ -34,6 +35,7 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
+          <Route path="/sign-in" component={SignIn} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>
       ) : (
