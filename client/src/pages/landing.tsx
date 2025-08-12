@@ -65,21 +65,12 @@ export default function Landing() {
             <span className="text-primary">At Your Laptop</span>
           </h1>
           
-          <div className="mb-8 max-w-3xl mx-auto">
-            <ul className="text-xl text-gray-600 space-y-4 text-left list-none">
-              <li className="flex items-start gap-3">
-                <span className="text-primary font-semibold">•</span>
-                <span>Select your language — choose from our growing library.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-primary font-semibold">•</span>
-                <span>Set your notification frequency — every 30 minutes, hourly, or custom.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-primary font-semibold">•</span>
-                <span>Receive desktop lesson prompts — quick, focused lessons that appear while you work.</span>
-              </li>
-            </ul>
+          <div className="mb-8 max-w-3xl mx-auto text-center">
+            <div className="text-xl text-gray-600 space-y-4">
+              <p>Select your language — choose from our growing library.</p>
+              <p>Set your notification frequency — every 30 minutes, hourly, or custom.</p>
+              <p>Receive desktop lesson prompts — quick, focused lessons that appear while you work.</p>
+            </div>
           </div>
           
           <p className="text-lg text-gray-700 mb-10 max-w-2xl mx-auto font-medium">
