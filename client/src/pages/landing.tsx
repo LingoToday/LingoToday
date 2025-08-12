@@ -18,12 +18,20 @@ export default function Landing() {
               <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
             </div>
             
-            <Button 
-              className="bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-2 rounded-full"
-              onClick={() => window.location.href = "/api/login"}
-            >
-              Sign In
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button 
+                className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-2 rounded-full"
+                onClick={() => window.location.href = "/onboarding"}
+              >
+                Try it Free for 7 Days
+              </Button>
+              <Button 
+                className="bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-2 rounded-full"
+                onClick={() => window.location.href = "/api/login"}
+              >
+                Sign In
+              </Button>
+            </div>
           </div>
         </div>
       </header>
