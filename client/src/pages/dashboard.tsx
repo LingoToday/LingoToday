@@ -114,12 +114,12 @@ export default function Dashboard() {
     status: progress.completed ? 'completed' : 'in_progress'
   }));
 
-  // Generate learning path with accurate lesson counts for Italian
+  // Generate learning path with accurate lesson counts from JSON files
   const courseData = [
     { name: 'Greetings', totalLessons: 13 },
-    { name: 'Introducing Yourself', totalLessons: 3 },
-    { name: 'Essential Courtesy Phrases', totalLessons: 3 },
-    { name: 'Numbers', totalLessons: 4 },
+    { name: 'Introducing Yourself', totalLessons: 13 },
+    { name: 'Essential Courtesy Phrases', totalLessons: 13 },
+    { name: 'Numbers', totalLessons: 29 },
     { name: 'Days and Dates', totalLessons: 10 }
   ];
   
