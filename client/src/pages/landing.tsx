@@ -86,7 +86,10 @@ export default function Landing() {
           
           <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
             {/* French */}
-            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+            <div 
+              className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => window.location.href = "/onboarding"}
+            >
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
                 <div className="w-full h-full flex">
                   <div className="w-1/3 bg-blue-600"></div>
@@ -98,7 +101,10 @@ export default function Landing() {
             </div>
 
             {/* Spanish */}
-            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+            <div 
+              className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => window.location.href = "/onboarding"}
+            >
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
                 <div className="w-full h-full flex flex-col">
                   <div className="h-1/3 bg-red-600"></div>
@@ -110,7 +116,10 @@ export default function Landing() {
             </div>
 
             {/* German */}
-            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+            <div 
+              className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => window.location.href = "/onboarding"}
+            >
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
                 <div className="w-full h-full flex flex-col">
                   <div className="h-1/3 bg-black"></div>
@@ -122,7 +131,10 @@ export default function Landing() {
             </div>
 
             {/* Italian */}
-            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+            <div 
+              className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => window.location.href = "/onboarding"}
+            >
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
                 <div className="w-full h-full flex">
                   <div className="w-1/3 bg-green-600"></div>
