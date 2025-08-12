@@ -165,6 +165,7 @@ export default function Lesson() {
         language,
         courseId: courseId || "course1", // Use URL courseId or default
         lessonId: lessonId || currentLesson!.id,
+        stepNumber: 3, // All 3 steps completed
         completed: true,
         score,
         completedAt: new Date(),
