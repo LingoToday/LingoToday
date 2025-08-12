@@ -10,14 +10,23 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### August 12, 2025 - Enhanced Authentication UX & Simplified Registration
-- Redesigned onboarding page to show both Replit OAuth and email registration on same screen (no tabs)
+### August 12, 2025 - Replaced Replit Auth with Standard OAuth Providers
+- Replaced Replit authentication with Google and GitHub OAuth for broader user accessibility
+- Added Google OAuth integration with red-branded button and official Google icon
+- Added GitHub OAuth integration with dark-themed button and GitHub logo
+- Implemented proper OAuth callback handling and user profile creation
+- Maintained email registration option alongside OAuth providers
+- Updated authentication middleware to handle multiple OAuth providers
+- Enhanced onboarding page with professional OAuth buttons and clear provider options
+- Users can now sign in with existing Google or GitHub accounts
+
+### August 12, 2025 - Enhanced Authentication UX & Simplified Registration  
+- Redesigned onboarding page to show both OAuth and email registration on same screen (no tabs)
 - Removed last name requirement from email registration form for simplified user experience
 - Updated registration schema and API to make lastName optional
 - Added visual separation with "OR" divider between authentication methods
-- Enhanced Replit OAuth button with icon and descriptive text about provider options (Google, GitHub, etc.)
 - Improved form layout with better spacing and clear section headings
-- Users can now easily choose between quick Replit sign-in or email account creation
+- Users can now easily choose between OAuth sign-in or email account creation
 
 ### August 11, 2025 - Email Registration System Added
 - Added complete email/password registration alongside existing Replit OAuth

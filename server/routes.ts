@@ -1,20 +1,44 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupOAuthStrategies, setupOAuthRoutes } from './googleAuth';
 import { insertUserSettingsSchema, insertUserProgressSchema, insertWaitlistSchema } from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-  
-  // Setup local authentication routes
-  const { setupLocalRoutes } = await import("./localAuth");
+  // Setup authentication
   const passport = await import("passport");
+  const session = await import("express-session");
+  
+  // Session configuration
+  app.use(session.default({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+  }));
+  
+  app.use(passport.default.initialize());
+  app.use(passport.default.session());
+  
+  // Setup OAuth strategies (Google, GitHub)
+  setupOAuthStrategies(passport.default);
+  setupOAuthRoutes(app, passport.default);
+  
+  // Setup local authentication routes  
+  const { setupLocalAuth, setupLocalRoutes } = await import("./localAuth");
+  setupLocalAuth(passport.default);
   setupLocalRoutes(app, passport.default);
+
+  // Simple authentication middleware
+  const isAuthenticated = (req: any, res: any, next: any) => {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.status(401).json({ message: "Unauthorized" });
+  };
 
   // Waitlist route (no auth required)
   app.post('/api/waitlist', async (req, res) => {
