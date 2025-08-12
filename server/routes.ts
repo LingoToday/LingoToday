@@ -292,7 +292,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const courseKey = Object.keys(courseData)[0]; // course1, course2, etc.
             const course = courseData[courseKey];
             
-            Object.keys(course.lessons).sort().forEach(lessonKey => {
+            // Sort lessons numerically by lesson number (lesson1, lesson2, etc.)
+            const sortedLessonKeys = Object.keys(course.lessons).sort((a, b) => {
+              const aNum = parseInt(a.replace('lesson', ''));
+              const bNum = parseInt(b.replace('lesson', ''));
+              return aNum - bNum;
+            });
+            
+            sortedLessonKeys.forEach(lessonKey => {
               const lesson = course.lessons[lessonKey];
               allLessons.push({
                 courseId: courseKey,
