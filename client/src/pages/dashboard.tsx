@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { 
   BookOpen, 
   Target, 
@@ -26,6 +28,8 @@ import {
   MessageSquare
 } from "lucide-react";
 import { Link } from "wouter";
+import { requestNotificationPermission, setupNotifications } from "@/lib/notifications";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 
 interface User {
   id: string;
@@ -63,17 +67,128 @@ interface DashboardData {
     streak: number;
     totalLessons: number;
     wordsLearned: number;
+    lessonsCompleted: number;
   };
   progress: ProgressData[];
 }
 
 export default function Dashboard() {
   const { user } = useAuth() as { user: User | null };
+  const { toast } = useToast();
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
     enabled: !!user,
   });
+
+  // Update settings mutation
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (updatedSettings: { notificationsEnabled?: boolean; notificationFrequency?: number }) => {
+      await apiRequest("PUT", "/api/settings", updatedSettings);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      toast({
+        title: "Settings updated",
+        description: "Your notification preferences have been saved.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error", 
+        description: "Failed to update settings. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Check notification permission on mount
+  useEffect(() => {
+    if ("Notification" in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  // Test notification function
+  const handleTestNotification = async () => {
+    try {
+      const permission = await requestNotificationPermission();
+      setNotificationPermission(permission);
+      
+      if (permission === "granted") {
+        const language = user?.selectedLanguage || "Italian";
+        const notification = new Notification("Test Notification", {
+          body: `This is a test notification for your ${language} lessons!`,
+          icon: "/favicon.ico",
+          tag: "lingotoday-test"
+        });
+        
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+        
+        toast({
+          title: "Test notification sent",
+          description: "Check if you received the notification.",
+        });
+      } else {
+        toast({
+          title: "Permission denied",
+          description: "Please enable notifications in your browser settings.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send test notification.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle notification settings change
+  const handleNotificationToggle = async (enabled: boolean) => {
+    try {
+      if (enabled) {
+        const permission = await requestNotificationPermission();
+        setNotificationPermission(permission);
+        
+        if (permission !== "granted") {
+          toast({
+            title: "Permission required",
+            description: "Please allow notifications in your browser to enable this feature.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      updateSettingsMutation.mutate({ notificationsEnabled: enabled });
+      
+      // Setup or stop notifications based on the setting
+      if (enabled && user?.selectedLanguage) {
+        setupNotifications({
+          enabled: true,
+          language: user.selectedLanguage,
+          frequency: dashboardData?.settings?.notificationFrequency || 15
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update notification settings.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle frequency change
+  const handleFrequencyChange = (frequency: string) => {
+    updateSettingsMutation.mutate({ notificationFrequency: parseInt(frequency) });
+  };
 
   const { data: nextLesson } = useQuery<NextLessonData | null>({
     queryKey: ["/api/next-lesson"],
@@ -111,7 +226,7 @@ export default function Dashboard() {
     subtitle: progress.courseId,
     date: progress.completedAt ? new Date(progress.completedAt).toLocaleDateString('en-GB') : 'In Progress',
     score: progress.score ? `${progress.score}%` : 'N/A',
-    status: progress.completed ? 'completed' : 'in_progress'
+    status: progress.completedAt ? 'completed' : 'in_progress'
   }));
 
   // Generate learning path with accurate lesson counts from JSON files
@@ -125,7 +240,7 @@ export default function Dashboard() {
   
   const learningPath = courseData.map((course, index) => {
     const courseProgress = recentProgress.filter(p => p.courseId === `course${index + 1}`);
-    const completed = courseProgress.filter(p => p.completed).length;
+    const completed = courseProgress.filter(p => p.completedAt).length;
     const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
     
@@ -142,7 +257,7 @@ export default function Dashboard() {
       // Check if previous course is completed
       const prevCourse = courseData[index - 1];
       const prevProgress = recentProgress.filter(p => p.courseId === `course${index}`);
-      const prevCompleted = prevProgress.filter(p => p.completed).length;
+      const prevCompleted = prevProgress.filter(p => p.completedAt).length;
       if (prevCompleted === prevCourse.totalLessons) {
         status = 'available';
       }
@@ -325,11 +440,7 @@ export default function Dashboard() {
                     <div className="flex-1">
                       <div className="font-medium">{lesson.title}</div>
                       <div className="text-sm text-gray-500">{lesson.subtitle}</div>
-                      {lesson.questions && lesson.questions.map((q, idx) => (
-                        <div key={idx} className="text-xs text-gray-400 mt-1">
-                          Quiz: What does "{q.text.includes("'") ? q.text.split("'")[1].split("'")[0] : lesson.title}" mean? → {q.answer}
-                        </div>
-                      ))}
+
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium text-green-600">{lesson.score || '100%'}</div>
@@ -407,23 +518,35 @@ export default function Dashboard() {
                   
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Frequency</span>
-                    <Select defaultValue="15">
+                    <Select 
+                      value={dashboardData?.settings?.notificationFrequency?.toString() || "15"}
+                      onValueChange={handleFrequencyChange}
+                    >
                       <SelectTrigger className="w-24 h-8">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="5">Every 5 minutes</SelectItem>
-                        <SelectItem value="15">Every 15 minutes</SelectItem>
-                        <SelectItem value="30">Every 30 minutes</SelectItem>
-                        <SelectItem value="60">Every hour</SelectItem>
+                        <SelectItem value="5">5 min</SelectItem>
+                        <SelectItem value="15">15 min</SelectItem>
+                        <SelectItem value="30">30 min</SelectItem>
+                        <SelectItem value="60">1 hour</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Notifications Enabled</span>
-                    <Switch defaultChecked />
+                    <Switch 
+                      checked={dashboardData?.settings?.notificationsEnabled || false}
+                      onCheckedChange={handleNotificationToggle}
+                    />
                   </div>
+
+                  {notificationPermission !== "granted" && (
+                    <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+                      Browser notifications are blocked. Click "Test Now" to enable them.
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t space-y-2">
@@ -432,7 +555,12 @@ export default function Dashboard() {
                     Speak Test
                   </Button>
                   
-                  <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start"
+                    onClick={handleTestNotification}
+                  >
                     <Bell className="w-4 h-4 mr-2" />
                     Test Now
                   </Button>

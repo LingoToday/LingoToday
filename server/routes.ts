@@ -88,9 +88,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!settings) {
         settings = await storage.upsertUserSettings({
           userId,
-          selectedLanguage: user.selectedLanguage || "italian",
-          notificationFrequency: 30,
+          language: user.selectedLanguage || "italian",
           notificationsEnabled: false,
+          theme: "light",
+          soundEnabled: true,
+          difficultyLevel: "beginner",
         });
       }
 
@@ -112,8 +114,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         user,
-        settings,
-        stats,
+        settings: {
+          notificationsEnabled: settings.notificationsEnabled,
+          notificationFrequency: 15, // Default frequency for now
+          selectedLanguage: settings.language,
+        },
+        stats: {
+          ...stats,
+          lessonsCompleted: stats.lessonsCompleted || 0,
+        },
         progress: progress.slice(0, 10) // Last 10 completed lessons
       });
     } catch (error) {
@@ -192,19 +201,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const settingsData = insertUserSettingsSchema.parse({
-        ...req.body,
+      const userId = req.user.claims?.sub || req.user.id;
+      const existingSettings = await storage.getUserSettings(userId);
+      
+      const settingsData = {
         userId,
-      });
+        language: existingSettings?.language || "italian",
+        theme: existingSettings?.theme || "light",
+        soundEnabled: existingSettings?.soundEnabled ?? true,
+        notificationsEnabled: req.body.notificationsEnabled ?? (existingSettings?.notificationsEnabled ?? false),
+        difficultyLevel: existingSettings?.difficultyLevel || "beginner",
+        ...req.body,
+      };
       
       const settings = await storage.upsertUserSettings(settingsData);
       res.json(settings);
     } catch (error) {
       console.error("Error updating settings:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid settings data", errors: error.errors });
-      }
       res.status(500).json({ message: "Failed to update settings" });
     }
   });
