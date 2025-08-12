@@ -80,6 +80,61 @@ export default function Landing() {
           </div>
         </div>
 
+        {/* Language Selection Section */}
+        <div className="text-center mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-12">I want to learn</h2>
+          
+          <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+            {/* French */}
+            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
+                <div className="w-full h-full flex">
+                  <div className="w-1/3 bg-blue-600"></div>
+                  <div className="w-1/3 bg-white"></div>
+                  <div className="w-1/3 bg-red-600"></div>
+                </div>
+              </div>
+              <span className="text-gray-700 font-medium text-sm">French</span>
+            </div>
+
+            {/* Spanish */}
+            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
+                <div className="w-full h-full flex flex-col">
+                  <div className="h-1/3 bg-red-600"></div>
+                  <div className="h-1/3 bg-yellow-400"></div>
+                  <div className="h-1/3 bg-red-600"></div>
+                </div>
+              </div>
+              <span className="text-gray-700 font-medium text-sm">Spanish</span>
+            </div>
+
+            {/* German */}
+            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
+                <div className="w-full h-full flex flex-col">
+                  <div className="h-1/3 bg-black"></div>
+                  <div className="h-1/3 bg-red-600"></div>
+                  <div className="h-1/3 bg-yellow-400"></div>
+                </div>
+              </div>
+              <span className="text-gray-700 font-medium text-sm">German</span>
+            </div>
+
+            {/* Italian */}
+            <div className="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-primary transition-colors mb-3 relative">
+                <div className="w-full h-full flex">
+                  <div className="w-1/3 bg-green-600"></div>
+                  <div className="w-1/3 bg-white"></div>
+                  <div className="w-1/3 bg-red-600"></div>
+                </div>
+              </div>
+              <span className="text-gray-700 font-medium text-sm">Italian</span>
+            </div>
+          </div>
+        </div>
+
         {/* Features Cards */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why This Works?</h2>
