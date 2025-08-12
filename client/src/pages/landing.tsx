@@ -536,10 +536,11 @@ export default function Landing() {
           </p>
           <Button 
             size="lg" 
-            className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
+            className="bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-8 py-3 rounded-full text-sm sm:text-base max-w-full"
             onClick={() => window.location.href = "/onboarding"}
           >
-            🎯 Try it now. It takes less time than reading this page.
+            <span className="hidden sm:inline">🎯 Try it now. It takes less time than reading this page.</span>
+            <span className="sm:hidden">🎯 Try it now</span>
           </Button>
         </div>
       </main>
