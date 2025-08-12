@@ -82,7 +82,7 @@ export default function Landing() {
 
         {/* Language Selection Section */}
         <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-12">I want to learn</h2>
+          <h2 className="md:text-3xl font-bold text-gray-900 mb-12 text-[36px]">I Want To Learn</h2>
           
           <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
             {/* French */}
@@ -528,7 +528,6 @@ export default function Landing() {
           </Button>
         </div>
       </main>
-      
       <Footer />
     </div>
   );
