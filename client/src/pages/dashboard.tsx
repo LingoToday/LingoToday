@@ -104,77 +104,36 @@ export default function Dashboard() {
   const settings = dashboardData?.settings;
   const recentProgress = dashboardData?.progress?.slice(0, 8) || [];
 
-  // Mock recent lessons data matching the screenshot
-  const recentLessons = [
-    {
-      id: 1,
-      title: "Apologies and Excuse Me",
-      subtitle: "Essential Courtesy Phrases",
-      date: "17/08/2024",
-      score: "90%",
-      status: "completed"
-    },
-    {
-      id: 2,
-      title: "Mi dispiace",
-      subtitle: "I'm sorry",
-      date: "17/08/2024",
-      questions: [
-        { text: "What does 'Mi dispiace' mean?", answer: "I'm sorry" }
-      ],
-      status: "completed"
-    },
-    {
-      id: 3,
-      title: "Yes, No, Please, Thank You",
-      subtitle: "Essential Courtesy Phrases",
-      date: "16/08/2024",
-      score: "100%",
-      status: "completed"
-    },
-    {
-      id: 4,
-      title: "Origin and Nationality",
-      subtitle: "Introducing Yourself",
-      date: "15/08/2024",
-      score: "80%",
-      status: "completed"
-    },
-    {
-      id: 5,
-      title: "Di dove sei?",
-      subtitle: "Where are you from?",
-      date: "15/08/2024",
-      questions: [
-        { text: "What does 'Di dove sei?' mean?", answer: "Where are you from?" }
-      ],
-      status: "completed"
-    },
-    {
-      id: 6,
-      title: "Buonasera",
-      subtitle: "Good evening",
-      date: "14/08/2024",
-      score: "90%",
-      status: "completed"
-    }
-  ];
+  // Use actual recent lessons data from progress
+  const recentLessons = recentProgress.map((progress, index) => ({
+    id: index + 1,
+    title: progress.lessonId,
+    subtitle: progress.courseId,
+    date: progress.completedAt ? new Date(progress.completedAt).toLocaleDateString('en-GB') : 'In Progress',
+    score: progress.score ? `${progress.score}%` : 'N/A',
+    status: progress.completed ? 'completed' : 'in_progress'
+  }));
 
-  // Mock learning path data
-  const learningPath = [
-    { name: "Greetings", progress: "8/8", completion: 100, status: "completed" },
-    { name: "Introducing Yourself", progress: "5/8", completion: 62.5, status: "current" },
-    { name: "Essential Courtesy Phrases", progress: "4/8", completion: 50, status: "current" },
-    { name: "Numbers", progress: "0/8", completion: 0, status: "locked" },
-    { name: "Days and Dates", progress: "0/10", completion: 0, status: "locked" },
-    { name: "Family and Friends", progress: "0/12", completion: 0, status: "locked" },
-    { name: "At the Restaurant", progress: "0/15", completion: 0, status: "locked" },
-    { name: "Weather and Seasons", progress: "0/10", completion: 0, status: "locked" },
-    { name: "Time and Schedule", progress: "0/12", completion: 0, status: "locked" },
-    { name: "Directions and Places", progress: "0/14", completion: 0, status: "locked" },
-    { name: "Shopping", progress: "0/16", completion: 0, status: "locked" },
-    { name: "Likes and Dislikes", progress: "0/10", completion: 0, status: "locked" }
-  ];
+  // Generate learning path based on actual progress
+  const courseNames = ['Greetings', 'Introducing Yourself', 'Essential Courtesy Phrases', 'Numbers', 'Days and Dates'];
+  const learningPath = courseNames.map((name, index) => {
+    const courseProgress = recentProgress.filter(p => p.courseId === `course${index + 1}`);
+    const completed = courseProgress.filter(p => p.completed).length;
+    const total = 8; // Assume 8 lessons per course
+    const completion = total > 0 ? (completed / total) * 100 : 0;
+    
+    return {
+      name,
+      progress: `${completed}/${total}`,
+      completion,
+      status: completion === 100 ? 'completed' : 
+             completion > 0 ? 'current' : 
+             index === 0 || (index > 0 && courseNames.slice(0, index).some((_, i) => {
+               const prevProgress = recentProgress.filter(p => p.courseId === `course${i + 1}`);
+               return prevProgress.filter(p => p.completed).length === 8;
+             })) ? 'available' : 'locked'
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -187,7 +146,7 @@ export default function Dashboard() {
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <BookOpen className="text-white text-sm" />
                 </div>
-                <h1 className="text-xl font-bold text-gray-900">DeepLingo</h1>
+                <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
               </div>
               
               <nav className="flex space-x-8 ml-8">
@@ -211,7 +170,7 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{user.firstName || 'Marcus'}</span>
+              <span className="text-sm text-gray-600">{user.firstName || 'User'}</span>
               <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
                 Logout
               </Button>
@@ -227,10 +186,10 @@ export default function Dashboard() {
             {/* Welcome Section */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                Welcome back, {user.firstName || 'Marcus'}!
+                Welcome back, {user.firstName || 'User'}!
               </h1>
               <p className="text-gray-600 mb-4">
-                Continue your Italian learning journey
+                {user.selectedLanguage ? `Continue your ${user.selectedLanguage} learning journey` : 'Continue your learning journey'}
               </p>
               <div className="flex items-center space-x-4">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
@@ -246,29 +205,36 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-4">
               <Card className="text-center">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">1</div>
+                  <div className="text-2xl font-bold text-gray-900">{stats?.lessonsCompleted || 0}</div>
                   <div className="text-sm text-gray-600">Days</div>
                 </CardContent>
               </Card>
               <Card className="text-center">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">{stats?.streak || 4}</div>
+                  <div className="text-2xl font-bold text-gray-900">{stats?.streak || 0}</div>
                   <div className="text-sm text-gray-600">Streak</div>
                 </CardContent>
               </Card>
               <Card className="text-center">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">0</div>
+                  <div className="text-2xl font-bold text-gray-900">{stats?.wordsLearned || 0}</div>
                   <div className="text-sm text-gray-600">XP</div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Daily Session Active */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-2">
-              <CheckCircle2 className="w-5 h-5 text-green-600" />
-              <span className="text-green-800 font-medium">Daily session active • notifications every 15 minutes</span>
-            </div>
+            {/* Learning Status */}
+            {stats?.lessonsCompleted === 0 ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center space-x-2">
+                <Circle className="w-5 h-5 text-blue-600" />
+                <span className="text-blue-800 font-medium">Ready to start your Italian learning journey</span>
+              </div>
+            ) : (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-2">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span className="text-green-800 font-medium">Learning in progress • {stats?.lessonsCompleted} lessons completed</span>
+              </div>
+            )}
 
             {/* Coming Up Next */}
             <Card>
@@ -455,74 +421,40 @@ export default function Dashboard() {
                 </div>
 
                 <div className="pt-4 border-t space-y-2 text-xs text-gray-600">
-                  <div>Debug Info</div>
-                  <div>Permission: granted</div>
-                  <div>Frequency: 15 min</div>
-                  <div>Language: italian</div>
-                  <div>Notifications: 15 done</div>
-                  <div>Focus Schedule (Deferred)</div>
-                  <div>Deep Timing Module</div>
-                  <div>Google Notification API</div>
+                  <div>Settings</div>
+                  <div>Language: {user.selectedLanguage || 'Not selected'}</div>
+                  <div>Level: {user.selectedLevel || 'Not selected'}</div>
+                  <div>Notifications: {settings?.notificationsEnabled ? 'Enabled' : 'Disabled'}</div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* This Week's Progress */}
+            {/* Learning Progress */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">This Week's Progress</CardTitle>
+                <CardTitle className="text-lg">Learning Progress</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center space-x-2 mb-4">
-                  <span className="text-sm font-medium">Week 2 Progress</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{width: '60%'}}></div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Lessons Completed</span>
+                    <span className="font-medium">{stats?.lessonsCompleted || 0}</span>
                   </div>
-                  <span className="text-sm text-gray-600">3/5 days</span>
-                </div>
-                
-                <div className="flex justify-between mb-4">
-                  {['M', 'T', 'W', 'T', 'F'].map((day, index) => (
-                    <div key={`${day}-${index}`} className="text-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs mb-1 ${
-                        index < 3 ? 'bg-green-600 text-white' :
-                        index === 3 ? 'bg-blue-600 text-white' :
-                        'bg-gray-200 text-gray-400'
-                      }`}>
-                        {index < 3 ? <CheckCircle2 className="w-4 h-4" /> : index + 1}
-                      </div>
-                      <div className="text-xs text-gray-500">{day}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Days studied</span>
-                    <span className="font-medium">3 of 5 days</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Current Streak</span>
+                    <span className="font-medium">{stats?.streak || 0} days</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Current streak</span>
-                    <span className="font-medium text-green-600">4 days</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Words Learned</span>
+                    <span className="font-medium">{stats?.wordsLearned || 0}</span>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Learning Goals */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Learning Goals</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="text-sm">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-600">Days studied</span>
-                    <span className="font-medium text-green-600">On the streak</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Learning Language</span>
+                    <span className="font-medium capitalize">{user.selectedLanguage || 'Not selected'}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Current streak</span>
-                    <span className="font-medium">4 days</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Level</span>
+                    <span className="font-medium">{user.selectedLevel || 'Not selected'}</span>
                   </div>
                 </div>
               </CardContent>
