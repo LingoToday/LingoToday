@@ -114,24 +114,45 @@ export default function Dashboard() {
     status: progress.completed ? 'completed' : 'in_progress'
   }));
 
-  // Generate learning path based on actual progress
-  const courseNames = ['Greetings', 'Introducing Yourself', 'Essential Courtesy Phrases', 'Numbers', 'Days and Dates'];
-  const learningPath = courseNames.map((name, index) => {
+  // Generate learning path with accurate lesson counts for Italian
+  const courseData = [
+    { name: 'Greetings', totalLessons: 13 },
+    { name: 'Introducing Yourself', totalLessons: 3 },
+    { name: 'Essential Courtesy Phrases', totalLessons: 3 },
+    { name: 'Numbers', totalLessons: 4 },
+    { name: 'Days and Dates', totalLessons: 10 }
+  ];
+  
+  const learningPath = courseData.map((course, index) => {
     const courseProgress = recentProgress.filter(p => p.courseId === `course${index + 1}`);
     const completed = courseProgress.filter(p => p.completed).length;
-    const total = 8; // Assume 8 lessons per course
+    const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
     
+    // Determine status based on progress and availability rules
+    let status = 'locked';
+    if (completion === 100) {
+      status = 'completed';
+    } else if (completion > 0) {
+      status = 'current';
+    } else if (index === 0) {
+      // First course is always available for new users
+      status = 'available';
+    } else {
+      // Check if previous course is completed
+      const prevCourse = courseData[index - 1];
+      const prevProgress = recentProgress.filter(p => p.courseId === `course${index}`);
+      const prevCompleted = prevProgress.filter(p => p.completed).length;
+      if (prevCompleted === prevCourse.totalLessons) {
+        status = 'available';
+      }
+    }
+    
     return {
-      name,
+      name: course.name,
       progress: `${completed}/${total}`,
       completion,
-      status: completion === 100 ? 'completed' : 
-             completion > 0 ? 'current' : 
-             index === 0 || (index > 0 && courseNames.slice(0, index).some((_, i) => {
-               const prevProgress = recentProgress.filter(p => p.courseId === `course${i + 1}`);
-               return prevProgress.filter(p => p.completed).length === 8;
-             })) ? 'available' : 'locked'
+      status
     };
   });
 
@@ -342,6 +363,7 @@ export default function Dashboard() {
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                       item.status === 'completed' ? 'bg-green-600 text-white' :
                       item.status === 'current' ? 'bg-blue-600 text-white' :
+                      item.status === 'available' ? 'bg-blue-100 text-blue-600' :
                       'bg-gray-200 text-gray-400'
                     }`}>
                       {item.status === 'completed' ? <CheckCircle2 className="w-4 h-4" /> : index + 1}
@@ -353,6 +375,7 @@ export default function Dashboard() {
                     <div className="text-xs text-gray-500">
                       {item.completion === 100 ? 'DONE' : 
                        item.status === 'current' ? `${Math.round(item.completion)}%` :
+                       item.status === 'available' ? 'START' :
                        'LOCKED'}
                     </div>
                   </div>
@@ -384,7 +407,7 @@ export default function Dashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Language</span>
-                    <span className="text-sm text-gray-600">Italian</span>
+                    <span className="text-sm text-gray-600 capitalize">{user.selectedLanguage || 'Not selected'}</span>
                   </div>
                   
                   <div className="flex items-center justify-between">

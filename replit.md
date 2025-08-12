@@ -10,6 +10,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### August 12, 2025 - Dashboard Personalization & Accurate Learning Path
+- Fixed dashboard to display actual user data instead of hardcoded mock data
+- Removed all fake progress information - new users now see their real starting state (0 streak, 0 lessons, 0 words)
+- Updated learning path with accurate Italian course lesson counts from database:
+  * Greetings: 0/13 lessons (was showing incorrect 0/8)
+  * Introducing Yourself: 0/3 lessons  
+  * Essential Courtesy Phrases: 0/3 lessons
+  * Numbers: 0/4 lessons
+  * Days and Dates: 0/10 lessons
+- First course (Greetings) now shows as "START" status for new users instead of "LOCKED"
+- Dashboard now pulls all statistics, progress, and settings directly from database API
+- Language and level preferences now display user's actual selections from registration
+
 ### August 12, 2025 - Brand Name Change
 - Changed all text references from 'DeskLingo' to 'LingoToday' throughout the application
 - Updated all UI components, notifications, localStorage keys, and documentation
