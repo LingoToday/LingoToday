@@ -242,7 +242,7 @@ export default function Lesson() {
           </Link>
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">{currentLesson.title}</h1>
-            <p className="text-gray-600">Week {week}, Day {day}</p>
+            <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ')}</p>
           </div>
         </div>
 
