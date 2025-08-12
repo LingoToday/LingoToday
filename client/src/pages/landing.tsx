@@ -65,10 +65,7 @@ export default function Landing() {
             <span className="text-primary">Leaving Your Desk</span>
           </h1>
           
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            LingoToday is a smarter way to learn languages — built for people who spend their day on a laptop. 
-            No long lessons. No phone apps. Just short, well-timed language prompts that show up on your desktop while you work. Backed by science. Built for real life.
-          </p>
+          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">LingoToday is a smarter way to learn languages — built for people who spend their day on a laptop. No long lessons. No phone apps. Just short, frequent lesson prompts that show up as desktop notifications whilst you work. </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
