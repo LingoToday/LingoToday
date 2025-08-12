@@ -13,6 +13,8 @@ import SignIn from "@/pages/sign-in";
 import Dashboard from "@/pages/dashboard";
 import Lesson from "@/pages/lesson";
 import Courses from "@/pages/courses";
+import CourseManager from "@/pages/course-manager";
+import CourseTest from "@/pages/course-test";
 import LessonExample from "@/pages/lesson-example";
 
 function Router() {
@@ -36,6 +38,7 @@ function Router() {
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
           <Route path="/sign-in" component={SignIn} />
+          <Route path="/course-test" component={CourseTest} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>
       ) : (
@@ -43,6 +46,7 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/courses" component={Courses} />
+          <Route path="/course-manager" component={CourseManager} />
           <Route path="/lesson-example" component={LessonExample} />
           <Route path="/lesson/:language/:week/:day" component={Lesson} />
         </>

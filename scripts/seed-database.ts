@@ -1,0 +1,131 @@
+import { db } from '../server/db';
+import { storage } from '../server/storage';
+import * as fs from 'fs';
+import * as path from 'path';
+
+async function seedDatabase() {
+  console.log('🌱 Starting database seeding...');
+
+  // Create Italian language
+  console.log('📝 Creating languages...');
+  let italianLanguage;
+  try {
+    italianLanguage = await storage.getLanguageByCode('it');
+    if (!italianLanguage) {
+      italianLanguage = await storage.createLanguage({
+        code: 'it',
+        name: 'Italian'
+      });
+    }
+    console.log('✅ Italian language ready');
+  } catch (error) {
+    console.error('❌ Error creating language:', error);
+    return;
+  }
+
+  // Create beginner skill level
+  console.log('📚 Creating skill levels...');
+  let beginnerLevel;
+  try {
+    beginnerLevel = await storage.getSkillLevelByCode('beginner');
+    if (!beginnerLevel) {
+      beginnerLevel = await storage.createSkillLevel({
+        code: 'beginner',
+        name: 'Beginner',
+        description: 'For learners starting their language journey',
+        sortOrder: 1
+      });
+    }
+    console.log('✅ Beginner skill level ready');
+  } catch (error) {
+    console.error('❌ Error creating skill level:', error);
+    return;
+  }
+
+  // Import Italian courses
+  console.log('📖 Importing Italian courses...');
+  const courseFiles = [
+    'italian_course1_greetings_steps_corrected_1755005294493.json',
+    'italian_course2_introducing_yourself_steps_full_1755005294493.json',
+    'italian_course3_essential_courtesy_steps_full_1755005294493.json',
+    'italian_course4_numbers_steps_full_29_lessons_1755005294493.json',
+    'italian_course5_time_date_steps_split_lessons_1755005294492.json',
+    'italian_course6_travel_basics_steps_full_regenerated_1755005294492.json',
+    'course7_describing_things_split_1755005294489.json',
+    'course8_weather_and_seasons_full (1)_1755005294491.json'
+  ];
+
+  for (const courseFile of courseFiles) {
+    try {
+      const filePath = path.join(process.cwd(), 'attached_assets', courseFile);
+      if (fs.existsSync(filePath)) {
+        console.log(`📥 Importing ${courseFile}...`);
+        const courseData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        await storage.importCourseFromJSON('it', 'beginner', courseData);
+        console.log(`✅ Imported ${courseFile}`);
+      } else {
+        console.log(`⚠️  File not found: ${courseFile}`);
+      }
+    } catch (error) {
+      console.error(`❌ Error importing ${courseFile}:`, error);
+    }
+  }
+
+  // Create Spanish language for future proofing
+  try {
+    let spanishLanguage = await storage.getLanguageByCode('es');
+    if (!spanishLanguage) {
+      spanishLanguage = await storage.createLanguage({
+        code: 'es',
+        name: 'Spanish'
+      });
+      console.log('✅ Spanish language created for future use');
+    }
+  } catch (error) {
+    console.error('❌ Error creating Spanish language:', error);
+  }
+
+  // Create intermediate and advanced levels for future use
+  try {
+    let intermediateLevel = await storage.getSkillLevelByCode('intermediate');
+    if (!intermediateLevel) {
+      intermediateLevel = await storage.createSkillLevel({
+        code: 'intermediate',
+        name: 'Intermediate',
+        description: 'For learners with basic knowledge',
+        sortOrder: 2
+      });
+      console.log('✅ Intermediate skill level created for future use');
+    }
+
+    let advancedLevel = await storage.getSkillLevelByCode('advanced');
+    if (!advancedLevel) {
+      advancedLevel = await storage.createSkillLevel({
+        code: 'advanced',
+        name: 'Advanced',
+        description: 'For experienced learners',
+        sortOrder: 3
+      });
+      console.log('✅ Advanced skill level created for future use');
+    }
+  } catch (error) {
+    console.error('❌ Error creating additional skill levels:', error);
+  }
+
+  console.log('🎉 Database seeding completed!');
+}
+
+// Run if called directly
+const runSeeding = async () => {
+  try {
+    await seedDatabase();
+    process.exit(0);
+  } catch (error) {
+    console.error('Fatal error during seeding:', error);
+    process.exit(1);
+  }
+};
+
+runSeeding();
+
+export { seedDatabase };

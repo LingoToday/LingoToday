@@ -2,7 +2,16 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupOAuthStrategies, setupOAuthRoutes } from './googleAuth';
-import { insertUserSettingsSchema, insertUserProgressSchema, insertWaitlistSchema } from "@shared/schema";
+import { 
+  insertUserSettingsSchema, 
+  insertUserProgressSchema, 
+  insertWaitlistSchema,
+  insertCourseSchema,
+  insertLessonSchema,
+  insertLessonStepSchema,
+  insertLanguageSchema,
+  insertSkillLevelSchema
+} from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
@@ -451,7 +460,236 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Italian courses routes
+  // Database-driven course management API
+  
+  // Language routes
+  app.get('/api/languages', async (req, res) => {
+    try {
+      const languages = await storage.getLanguages();
+      res.json(languages);
+    } catch (error) {
+      console.error("Error fetching languages:", error);
+      res.status(500).json({ message: "Failed to fetch languages" });
+    }
+  });
+
+  app.get('/api/languages/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const language = await storage.getLanguage(id);
+      if (!language) {
+        return res.status(404).json({ message: "Language not found" });
+      }
+      res.json(language);
+    } catch (error) {
+      console.error("Error fetching language:", error);
+      res.status(500).json({ message: "Failed to fetch language" });
+    }
+  });
+
+  // Skill level routes
+  app.get('/api/skill-levels', async (req, res) => {
+    try {
+      const skillLevels = await storage.getSkillLevels();
+      res.json(skillLevels);
+    } catch (error) {
+      console.error("Error fetching skill levels:", error);
+      res.status(500).json({ message: "Failed to fetch skill levels" });
+    }
+  });
+
+  // Database course routes
+  app.get('/api/db/courses', async (req, res) => {
+    try {
+      const languageId = req.query.languageId ? parseInt(req.query.languageId as string) : undefined;
+      const skillLevelId = req.query.skillLevelId ? parseInt(req.query.skillLevelId as string) : undefined;
+      const withRelations = req.query.withRelations === 'true';
+
+      let courses;
+      if (withRelations) {
+        courses = await storage.getCoursesWithRelations(languageId, skillLevelId);
+      } else {
+        courses = await storage.getCourses(languageId, skillLevelId);
+      }
+      
+      res.json(courses);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      res.status(500).json({ message: "Failed to fetch courses" });
+    }
+  });
+
+  app.get('/api/db/courses/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const withRelations = req.query.withRelations === 'true';
+
+      let course;
+      if (withRelations) {
+        course = await storage.getCourseWithRelations(id);
+      } else {
+        course = await storage.getCourse(id);
+      }
+
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+      res.json(course);
+    } catch (error) {
+      console.error("Error fetching course:", error);
+      res.status(500).json({ message: "Failed to fetch course" });
+    }
+  });
+
+  app.post('/api/db/courses', isAuthenticated, async (req, res) => {
+    try {
+      const courseData = insertCourseSchema.parse(req.body);
+      const course = await storage.createCourse(courseData);
+      res.status(201).json(course);
+    } catch (error) {
+      console.error("Error creating course:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create course" });
+    }
+  });
+
+  app.put('/api/db/courses/:id', isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const courseData = insertCourseSchema.partial().parse(req.body);
+      const course = await storage.updateCourse(id, courseData);
+      res.json(course);
+    } catch (error) {
+      console.error("Error updating course:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to update course" });
+    }
+  });
+
+  app.delete('/api/db/courses/:id', isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCourse(id);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      res.status(500).json({ message: "Failed to delete course" });
+    }
+  });
+
+  // Database lesson routes
+  app.get('/api/db/courses/:courseId/lessons', async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId);
+      const lessons = await storage.getLessons(courseId);
+      res.json(lessons);
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+      res.status(500).json({ message: "Failed to fetch lessons" });
+    }
+  });
+
+  app.get('/api/db/lessons/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const withSteps = req.query.withSteps === 'true';
+
+      let lesson;
+      if (withSteps) {
+        lesson = await storage.getLessonWithSteps(id);
+      } else {
+        lesson = await storage.getLesson(id);
+      }
+
+      if (!lesson) {
+        return res.status(404).json({ message: "Lesson not found" });
+      }
+      res.json(lesson);
+    } catch (error) {
+      console.error("Error fetching lesson:", error);
+      res.status(500).json({ message: "Failed to fetch lesson" });
+    }
+  });
+
+  app.post('/api/db/lessons', isAuthenticated, async (req, res) => {
+    try {
+      const lessonData = insertLessonSchema.parse(req.body);
+      const lesson = await storage.createLesson(lessonData);
+      res.status(201).json(lesson);
+    } catch (error) {
+      console.error("Error creating lesson:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create lesson" });
+    }
+  });
+
+  // Database lesson step routes
+  app.get('/api/db/lessons/:lessonId/steps', async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.lessonId);
+      const steps = await storage.getLessonSteps(lessonId);
+      res.json(steps);
+    } catch (error) {
+      console.error("Error fetching lesson steps:", error);
+      res.status(500).json({ message: "Failed to fetch lesson steps" });
+    }
+  });
+
+  app.post('/api/db/lesson-steps', isAuthenticated, async (req, res) => {
+    try {
+      const stepData = insertLessonStepSchema.parse(req.body);
+      const step = await storage.createLessonStep(stepData);
+      res.status(201).json(step);
+    } catch (error) {
+      console.error("Error creating lesson step:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create lesson step" });
+    }
+  });
+
+  // Import course from JSON
+  app.post('/api/import-course', isAuthenticated, async (req, res) => {
+    try {
+      const { languageCode, skillLevelCode, courseData } = req.body;
+      
+      if (!languageCode || !skillLevelCode || !courseData) {
+        return res.status(400).json({ 
+          message: "languageCode, skillLevelCode, and courseData are required" 
+        });
+      }
+
+      const course = await storage.importCourseFromJSON(languageCode, skillLevelCode, courseData);
+      res.status(201).json({ 
+        message: "Course imported successfully",
+        course 
+      });
+    } catch (error) {
+      console.error("Error importing course:", error);
+      res.status(500).json({ message: error.message || "Failed to import course" });
+    }
+  });
+
+  // Legacy Italian courses routes (for backward compatibility)
   app.get('/api/courses/:language', async (req, res) => {
     try {
       const { language } = req.params;
