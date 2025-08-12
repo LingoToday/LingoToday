@@ -478,33 +478,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Random Practice
-                </Button>
-                
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  <Trophy className="w-4 h-4 mr-2" />
-                  Review Words
-                </Button>
-                
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  <Eye className="w-4 h-4 mr-2" />
-                  View Statistics
-                </Button>
-                
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </Button>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
       </div>
