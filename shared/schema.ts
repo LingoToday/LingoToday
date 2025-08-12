@@ -8,7 +8,6 @@ import {
   serial,
   integer,
   boolean,
-  unique,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -79,9 +78,7 @@ export const userStats = pgTable("user_stats", {
   lastLessonDate: timestamp("last_lesson_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-}, (table) => ({
-  userLanguageUnique: unique("user_stats_user_language_unique").on(table.userId, table.language),
-}));
+});
 
 // Waitlist table for intermediate/advanced level signups
 export const waitlist = pgTable("waitlist", {

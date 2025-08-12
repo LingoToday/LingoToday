@@ -517,7 +517,7 @@ export default function Onboarding() {
                     <Button 
                       onClick={handleRegister}
                       disabled={isRegistering}
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+                      className="w-full bg-secondary hover:bg-secondary/90 text-white font-medium py-3"
                     >
                       {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
                     </Button>
