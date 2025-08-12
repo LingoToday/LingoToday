@@ -1,0 +1,822 @@
+{
+  "course7": {
+    "title": "Describing Things – Colors & Adjectives",
+    "description": "Common colors and basic adjectives to describe objects and people. Some adjectives change with gender (m./f.) or number (sing./pl.).",
+    "lessons": {
+      "lesson1": {
+        "title": "Black (m.)",
+        "step1": {
+          "italian": "nero",
+          "english": "Black (masculine)",
+          "audio": "nero",
+          "note": "NEH-ro – for masculine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Black (masculine)'?",
+            "options": [
+              "nero",
+              "nera",
+              "bianco",
+              "rossa"
+            ],
+            "answer": "nero"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__o  = Black (masculine)",
+          "expected_answer": "nero",
+          "alt_answers": [
+            "nero",
+            "Nero"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il gatto è nero.",
+          "options": [
+            "The cat is black.",
+            "The cat is white.",
+            "The cat is red.",
+            "The cat is yellow."
+          ],
+          "answer": "The cat is black."
+        }
+      },
+      "lesson2": {
+        "title": "Black (f.)",
+        "step1": {
+          "italian": "nera",
+          "english": "Black (feminine)",
+          "audio": "nera",
+          "note": "NEH-rah – for feminine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Black (feminine)'?",
+            "options": [
+              "nera",
+              "nero",
+              "bianca",
+              "rossa"
+            ],
+            "answer": "nera"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__a  = Black (feminine)",
+          "expected_answer": "nera",
+          "alt_answers": [
+            "Nera",
+            "nera"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La borsa è nera.",
+          "options": [
+            "The bag is black.",
+            "The bag is white.",
+            "The bag is red.",
+            "The bag is yellow."
+          ],
+          "answer": "The bag is black."
+        }
+      },
+      "lesson3": {
+        "title": "White (m.)",
+        "step1": {
+          "italian": "bianco",
+          "english": "White (masculine)",
+          "audio": "bianco",
+          "note": "BYAN-ko – for masculine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'White (masculine)'?",
+            "options": [
+              "bianco",
+              "bianca",
+              "nero",
+              "rosso"
+            ],
+            "answer": "bianco"
+          }
+        },
+        "step2": {
+          "type_prompt": "b____o  = White (masculine)",
+          "expected_answer": "bianco",
+          "alt_answers": [
+            "Bianco",
+            "bianco"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il cavallo è bianco.",
+          "options": [
+            "The horse is white.",
+            "The horse is black.",
+            "The horse is red.",
+            "The horse is green."
+          ],
+          "answer": "The horse is white."
+        }
+      },
+      "lesson4": {
+        "title": "White (f.)",
+        "step1": {
+          "italian": "bianca",
+          "english": "White (feminine)",
+          "audio": "bianca",
+          "note": "BYAN-kah – for feminine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'White (feminine)'?",
+            "options": [
+              "bianca",
+              "bianco",
+              "nera",
+              "rossa"
+            ],
+            "answer": "bianca"
+          }
+        },
+        "step2": {
+          "type_prompt": "b____a  = White (feminine)",
+          "expected_answer": "bianca",
+          "alt_answers": [
+            "Bianca",
+            "bianca"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La casa è bianca.",
+          "options": [
+            "The house is white.",
+            "The house is black.",
+            "The house is red.",
+            "The house is green."
+          ],
+          "answer": "The house is white."
+        }
+      },
+      "lesson5": {
+        "title": "Red (m.)",
+        "step1": {
+          "italian": "rosso",
+          "english": "Red (masculine)",
+          "audio": "rosso",
+          "note": "ROHS-so – for masculine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Red (masculine)'?",
+            "options": [
+              "rosso",
+              "rossa",
+              "giallo",
+              "verde"
+            ],
+            "answer": "rosso"
+          }
+        },
+        "step2": {
+          "type_prompt": "r___o  = Red (masculine)",
+          "expected_answer": "rosso",
+          "alt_answers": [
+            "rosso",
+            "Rosso"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il libro è rosso.",
+          "options": [
+            "The book is red.",
+            "The book is yellow.",
+            "The book is green.",
+            "The book is blue."
+          ],
+          "answer": "The book is red."
+        }
+      },
+      "lesson6": {
+        "title": "Red (f.)",
+        "step1": {
+          "italian": "rossa",
+          "english": "Red (feminine)",
+          "audio": "rossa",
+          "note": "ROHS-sah – for feminine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Red (feminine)'?",
+            "options": [
+              "rossa",
+              "rosso",
+              "gialla",
+              "verde"
+            ],
+            "answer": "rossa"
+          }
+        },
+        "step2": {
+          "type_prompt": "r___a  = Red (feminine)",
+          "expected_answer": "rossa",
+          "alt_answers": [
+            "rossa",
+            "Rossa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La mela è rossa.",
+          "options": [
+            "The apple is red.",
+            "The apple is yellow.",
+            "The apple is green.",
+            "The apple is blue."
+          ],
+          "answer": "The apple is red."
+        }
+      },
+      "lesson7": {
+        "title": "Yellow (m.)",
+        "step1": {
+          "italian": "giallo",
+          "english": "Yellow (masculine)",
+          "audio": "giallo",
+          "note": "JAHL-lo – for masculine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Yellow (masculine)'?",
+            "options": [
+              "giallo",
+              "gialla",
+              "rosso",
+              "blu"
+            ],
+            "answer": "giallo"
+          }
+        },
+        "step2": {
+          "type_prompt": "g____o  = Yellow (masculine)",
+          "expected_answer": "giallo",
+          "alt_answers": [
+            "Giallo",
+            "giallo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il fiore è giallo.",
+          "options": [
+            "The flower is yellow.",
+            "The flower is red.",
+            "The flower is blue.",
+            "The flower is green."
+          ],
+          "answer": "The flower is yellow."
+        }
+      },
+      "lesson8": {
+        "title": "Yellow (f.)",
+        "step1": {
+          "italian": "gialla",
+          "english": "Yellow (feminine)",
+          "audio": "gialla",
+          "note": "JAHL-lah – for feminine nouns.",
+          "mcq": {
+            "question": "Which phrase means 'Yellow (feminine)'?",
+            "options": [
+              "gialla",
+              "giallo",
+              "rossa",
+              "blu"
+            ],
+            "answer": "gialla"
+          }
+        },
+        "step2": {
+          "type_prompt": "g____a  = Yellow (feminine)",
+          "expected_answer": "gialla",
+          "alt_answers": [
+            "gialla",
+            "Gialla"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La maglia è gialla.",
+          "options": [
+            "The shirt is yellow.",
+            "The shirt is red.",
+            "The shirt is blue.",
+            "The shirt is green."
+          ],
+          "answer": "The shirt is yellow."
+        }
+      },
+      "lesson9": {
+        "title": "Green (sing.)",
+        "step1": {
+          "italian": "verde",
+          "english": "Green (singular)",
+          "audio": "verde",
+          "note": "VEHR-deh – singular form.",
+          "mcq": {
+            "question": "Which phrase means 'Green (singular)'?",
+            "options": [
+              "verde",
+              "verdi",
+              "blu",
+              "arancione"
+            ],
+            "answer": "verde"
+          }
+        },
+        "step2": {
+          "type_prompt": "v___e  = Green (singular)",
+          "expected_answer": "verde",
+          "alt_answers": [
+            "verde",
+            "Verde"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La mela è verde.",
+          "options": [
+            "The apple is green.",
+            "The apple is blue.",
+            "The apple is orange.",
+            "The apple is brown."
+          ],
+          "answer": "The apple is green."
+        }
+      },
+      "lesson10": {
+        "title": "Green (pl.)",
+        "step1": {
+          "italian": "verdi",
+          "english": "Green (plural)",
+          "audio": "verdi",
+          "note": "VEHR-dee – plural form.",
+          "mcq": {
+            "question": "Which phrase means 'Green (plural)'?",
+            "options": [
+              "verdi",
+              "verde",
+              "blu",
+              "arancione"
+            ],
+            "answer": "verdi"
+          }
+        },
+        "step2": {
+          "type_prompt": "v___i  = Green (plural)",
+          "expected_answer": "verdi",
+          "alt_answers": [
+            "verdi",
+            "Verdi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Le foglie sono verdi.",
+          "options": [
+            "The leaves are green.",
+            "The leaves are blue.",
+            "The leaves are orange.",
+            "The leaves are brown."
+          ],
+          "answer": "The leaves are green."
+        }
+      },
+      "lesson11": {
+        "title": "Blue",
+        "step1": {
+          "italian": "blu",
+          "english": "Blue",
+          "audio": "blu",
+          "note": "BLOO – invariable.",
+          "mcq": {
+            "question": "Which phrase means 'Blue'?",
+            "options": [
+              "blu",
+              "verde",
+              "rosso",
+              "giallo"
+            ],
+            "answer": "blu"
+          }
+        },
+        "step2": {
+          "type_prompt": "b_u  = Blue",
+          "expected_answer": "blu",
+          "alt_answers": [
+            "blu",
+            "Blu"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il vestito è blu.",
+          "options": [
+            "The dress is blue.",
+            "The dress is green.",
+            "The dress is red.",
+            "The dress is yellow."
+          ],
+          "answer": "The dress is blue."
+        }
+      },
+      "lesson12": {
+        "title": "Orange",
+        "step1": {
+          "italian": "arancione",
+          "english": "Orange",
+          "audio": "arancione",
+          "note": "ah-rahn-CHOH-neh – invariable.",
+          "mcq": {
+            "question": "Which phrase means 'Orange'?",
+            "options": [
+              "arancione",
+              "blu",
+              "giallo",
+              "rosso"
+            ],
+            "answer": "arancione"
+          }
+        },
+        "step2": {
+          "type_prompt": "a_______e  = Orange",
+          "expected_answer": "arancione",
+          "alt_answers": [
+            "arancione",
+            "Arancione"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il cappello è arancione.",
+          "options": [
+            "The hat is orange.",
+            "The hat is blue.",
+            "The hat is yellow.",
+            "The hat is red."
+          ],
+          "answer": "The hat is orange."
+        }
+      },
+      "lesson13": {
+        "title": "Brown (sing.)",
+        "step1": {
+          "italian": "marrone",
+          "english": "Brown (singular)",
+          "audio": "marrone",
+          "note": "mahr-ROH-neh – singular form.",
+          "mcq": {
+            "question": "Which phrase means 'Brown (singular)'?",
+            "options": [
+              "marrone",
+              "marroni",
+              "nero",
+              "bianco"
+            ],
+            "answer": "marrone"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_____e  = Brown (singular)",
+          "expected_answer": "marrone",
+          "alt_answers": [
+            "Marrone",
+            "marrone"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il tavolo è marrone.",
+          "options": [
+            "The table is brown.",
+            "The table is black.",
+            "The table is white.",
+            "The table is blue."
+          ],
+          "answer": "The table is brown."
+        }
+      },
+      "lesson14": {
+        "title": "Brown (pl.)",
+        "step1": {
+          "italian": "marroni",
+          "english": "Brown (plural)",
+          "audio": "marroni",
+          "note": "mahr-ROH-nee – plural form.",
+          "mcq": {
+            "question": "Which phrase means 'Brown (plural)'?",
+            "options": [
+              "marroni",
+              "marrone",
+              "neri",
+              "bianchi"
+            ],
+            "answer": "marroni"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_____i  = Brown (plural)",
+          "expected_answer": "marroni",
+          "alt_answers": [
+            "marroni",
+            "Marroni"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "I tavoli sono marroni.",
+          "options": [
+            "The tables are brown.",
+            "The tables are black.",
+            "The tables are white.",
+            "The tables are blue."
+          ],
+          "answer": "The tables are brown."
+        }
+      },
+      "lesson15": {
+        "title": "Big",
+        "step1": {
+          "italian": "grande",
+          "english": "Big",
+          "audio": "grande",
+          "note": "GRAHN-deh – big.",
+          "mcq": {
+            "question": "Which phrase means 'Big'?",
+            "options": [
+              "grande",
+              "piccolo",
+              "nuovo",
+              "vecchio"
+            ],
+            "answer": "grande"
+          }
+        },
+        "step2": {
+          "type_prompt": "g____e  = Big",
+          "expected_answer": "grande",
+          "alt_answers": [
+            "Grande",
+            "grande"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Roma è grande.",
+          "options": [
+            "Rome is big.",
+            "Rome is small.",
+            "Rome is new.",
+            "Rome is old."
+          ],
+          "answer": "Rome is big."
+        }
+      },
+      "lesson16": {
+        "title": "Small",
+        "step1": {
+          "italian": "piccolo",
+          "english": "Small",
+          "audio": "piccolo",
+          "note": "PEEK-koh-lo – small.",
+          "mcq": {
+            "question": "Which phrase means 'Small'?",
+            "options": [
+              "piccolo",
+              "grande",
+              "nuovo",
+              "vecchio"
+            ],
+            "answer": "piccolo"
+          }
+        },
+        "step2": {
+          "type_prompt": "p_____o  = Small",
+          "expected_answer": "piccolo",
+          "alt_answers": [
+            "Piccolo",
+            "piccolo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Roma è piccola.",
+          "options": [
+            "Rome is small.",
+            "Rome is big.",
+            "Rome is new.",
+            "Rome is old."
+          ],
+          "answer": "Rome is small."
+        }
+      },
+      "lesson17": {
+        "title": "Beautiful",
+        "step1": {
+          "italian": "bello",
+          "english": "Beautiful",
+          "audio": "bello",
+          "note": "BEL-lo – beautiful.",
+          "mcq": {
+            "question": "Which phrase means 'Beautiful'?",
+            "options": [
+              "bello",
+              "brutto",
+              "buono",
+              "cattivo"
+            ],
+            "answer": "bello"
+          }
+        },
+        "step2": {
+          "type_prompt": "b___o  = Beautiful",
+          "expected_answer": "bello",
+          "alt_answers": [
+            "Bello",
+            "bello"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il paesaggio è bello.",
+          "options": [
+            "The landscape is beautiful.",
+            "The landscape is ugly.",
+            "The landscape is good.",
+            "The landscape is bad."
+          ],
+          "answer": "The landscape is beautiful."
+        }
+      },
+      "lesson18": {
+        "title": "Ugly",
+        "step1": {
+          "italian": "brutto",
+          "english": "Ugly",
+          "audio": "brutto",
+          "note": "BROOT-to – ugly.",
+          "mcq": {
+            "question": "Which phrase means 'Ugly'?",
+            "options": [
+              "brutto",
+              "bello",
+              "buono",
+              "cattivo"
+            ],
+            "answer": "brutto"
+          }
+        },
+        "step2": {
+          "type_prompt": "b____o  = Ugly",
+          "expected_answer": "brutto",
+          "alt_answers": [
+            "Brutto",
+            "brutto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il quadro è brutto.",
+          "options": [
+            "The painting is ugly.",
+            "The painting is beautiful.",
+            "The painting is good.",
+            "The painting is bad."
+          ],
+          "answer": "The painting is ugly."
+        }
+      },
+      "lesson19": {
+        "title": "New (thing)",
+        "step1": {
+          "italian": "nuovo",
+          "english": "New (thing)",
+          "audio": "nuovo",
+          "note": "NWOH-vo – for things.",
+          "mcq": {
+            "question": "Which phrase means 'New (thing)'?",
+            "options": [
+              "nuovo",
+              "vecchio",
+              "bello",
+              "brutto"
+            ],
+            "answer": "nuovo"
+          }
+        },
+        "step2": {
+          "type_prompt": "n___o  = New (thing)",
+          "expected_answer": "nuovo",
+          "alt_answers": [
+            "Nuovo",
+            "nuovo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il telefono è nuovo.",
+          "options": [
+            "The phone is new.",
+            "The phone is old.",
+            "The phone is beautiful.",
+            "The phone is ugly."
+          ],
+          "answer": "The phone is new."
+        }
+      },
+      "lesson20": {
+        "title": "Old (thing)",
+        "step1": {
+          "italian": "vecchio",
+          "english": "Old (thing)",
+          "audio": "vecchio",
+          "note": "VEH-kyo – for things.",
+          "mcq": {
+            "question": "Which phrase means 'Old (thing)'?",
+            "options": [
+              "vecchio",
+              "nuovo",
+              "bello",
+              "brutto"
+            ],
+            "answer": "vecchio"
+          }
+        },
+        "step2": {
+          "type_prompt": "v_____o  = Old (thing)",
+          "expected_answer": "vecchio",
+          "alt_answers": [
+            "Vecchio",
+            "vecchio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il telefono è vecchio.",
+          "options": [
+            "The phone is old.",
+            "The phone is new.",
+            "The phone is beautiful.",
+            "The phone is ugly."
+          ],
+          "answer": "The phone is old."
+        }
+      },
+      "lesson21": {
+        "title": "Good",
+        "step1": {
+          "italian": "buono",
+          "english": "Good",
+          "audio": "buono",
+          "note": "BWOH-no – good.",
+          "mcq": {
+            "question": "Which phrase means 'Good'?",
+            "options": [
+              "buono",
+              "cattivo",
+              "bello",
+              "brutto"
+            ],
+            "answer": "buono"
+          }
+        },
+        "step2": {
+          "type_prompt": "b___o  = Good",
+          "expected_answer": "buono",
+          "alt_answers": [
+            "Buono",
+            "buono"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il libro è buono.",
+          "options": [
+            "The book is good.",
+            "The book is bad.",
+            "The book is beautiful.",
+            "The book is small."
+          ],
+          "answer": "The book is good."
+        }
+      },
+      "lesson22": {
+        "title": "Bad",
+        "step1": {
+          "italian": "cattivo",
+          "english": "Bad",
+          "audio": "cattivo",
+          "note": "cat-TEE-vo – bad.",
+          "mcq": {
+            "question": "Which phrase means 'Bad'?",
+            "options": [
+              "cattivo",
+              "buono",
+              "bello",
+              "brutto"
+            ],
+            "answer": "cattivo"
+          }
+        },
+        "step2": {
+          "type_prompt": "c_____o  = Bad",
+          "expected_answer": "cattivo",
+          "alt_answers": [
+            "cattivo",
+            "Cattivo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il libro è cattivo.",
+          "options": [
+            "The book is bad.",
+            "The book is good.",
+            "The book is beautiful.",
+            "The book is small."
+          ],
+          "answer": "The book is bad."
+        }
+      }
+    }
+  }
+}
