@@ -626,11 +626,6 @@ export default function Dashboard() {
                 </div>
 
                 <div className="pt-4 border-t space-y-2">
-                  <Button variant="outline" size="sm" className="w-full justify-start">
-                    <Volume2 className="w-4 h-4 mr-2" />
-                    Speak Test
-                  </Button>
-                  
                   <Button 
                     variant="outline" 
                     size="sm" 
