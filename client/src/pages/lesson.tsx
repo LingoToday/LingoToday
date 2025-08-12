@@ -112,7 +112,24 @@ export default function Lesson() {
   }, [notificationLessonId, lessonError, lesson, language, courseId, lessonId]);
 
   // Use fallback lesson if API lesson is not available, or notification lesson if coming from notification
-  const currentLesson = (notificationLessonId && fallbackLesson) ? fallbackLesson : (lesson || fallbackLesson);
+  const apiLessonData = lesson as any; // API returns different structure
+  const currentLesson = (notificationLessonId && fallbackLesson) ? fallbackLesson : 
+    apiLessonData ? {
+      title: apiLessonData.lesson?.title || 'Lesson',
+      emoji: '👋', // Default emoji
+      content: {
+        word: apiLessonData.lesson?.step1?.italian || '',
+        translation: apiLessonData.lesson?.step1?.english || '',
+        pronunciation: apiLessonData.lesson?.step1?.audio || '',
+        note: apiLessonData.lesson?.step1?.note || ''
+      },
+      quiz: {
+        question: apiLessonData.lesson?.step1?.mcq?.question || '',
+        options: apiLessonData.lesson?.step1?.mcq?.options || [],
+        correct: apiLessonData.lesson?.step1?.mcq?.options?.indexOf(apiLessonData.lesson?.step1?.mcq?.answer) || 0
+      },
+      id: apiLessonData.lessonId
+    } : fallbackLesson;
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -186,7 +203,7 @@ export default function Lesson() {
     }
   };
 
-  if (isLoading || (lessonLoading && !fallbackLesson)) {
+  if (isLoading || lessonLoading || (!currentLesson && !lessonError)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
