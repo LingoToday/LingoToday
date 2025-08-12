@@ -61,8 +61,8 @@ export default function Landing() {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Learn a Language Without<br />
-            <span className="text-primary">Whilst You Work</span>
+            Learn a Language<br />
+            <span className="text-primary">As You Work</span>
           </h1>
           
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">LingoToday is a smarter way to learn languages — built for people who spend their day on a laptop. No long lessons. No phone apps. Just short, frequent lesson prompts that show up as desktop notifications whilst you work. </p>
