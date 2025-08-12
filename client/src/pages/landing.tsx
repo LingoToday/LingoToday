@@ -367,11 +367,7 @@ export default function Landing() {
                     alt="Interactive scene in Tuscan countryside with tourists getting directions from a local"
                     className="w-full h-32 object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700">
-                      Example Scene
-                    </div>
-                  </div>
+                  
                 </div>
               </CardContent>
             </Card>
