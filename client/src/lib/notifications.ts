@@ -186,6 +186,23 @@ export function resetNotificationCooldown() {
   localStorage.setItem('lastNotificationTime', Date.now().toString());
 }
 
+// Refresh notification progress (call this when user completes a lesson)
+export function refreshNotificationProgress() {
+  console.log("🔄 Refreshing notification progress - clearing cached lesson data");
+  
+  // Clear the lesson store cache so next notification fetches fresh data
+  const STORAGE_KEY = 'lingotoday-lesson-store';
+  localStorage.removeItem(STORAGE_KEY);
+  
+  // Clear last shown lesson tracking
+  localStorage.removeItem('lastShownLessonId');
+  
+  // Reset cooldown to allow immediate notification if session is active
+  resetNotificationCooldown();
+  
+  console.log("✅ Notification progress refreshed - next notification will use current progress");
+}
+
 export async function showLearningNotification(language: string) {
   const now = new Date().toLocaleTimeString();
   const timestamp = Date.now();
@@ -237,16 +254,57 @@ export async function showLearningNotification(language: string) {
     let completedLessonIds: string[] = [];
     
     try {
-      // Fetch user progress to filter out completed lessons
+      // Fetch user progress to get ACTUAL current progress from database
       const progressResponse = await fetch(`/api/progress/${cleanLanguage}`, { credentials: 'same-origin' });
       
       if (progressResponse.ok) {
         const progressData = await progressResponse.json();
         completedLessonIds = progressData.map((p: any) => p.lessonId);
         console.log(`📊 Found ${completedLessonIds.length} completed lessons:`, completedLessonIds.slice(0, 3));
+        
+        // Also get the next lesson from the API for accurate selection
+        const nextLessonResponse = await fetch('/api/next-lesson', { credentials: 'same-origin' });
+        if (nextLessonResponse.ok) {
+          const nextLessonData = await nextLessonResponse.json();
+          console.log(`🎯 API suggests next lesson:`, nextLessonData);
+          
+          // If we have a next lesson from API, prefer it for notifications
+          if (nextLessonData && !nextLessonData.completed) {
+            console.log(`✅ Using API-suggested lesson: ${nextLessonData.lessonId}`);
+            
+            // Create notification for the API-suggested lesson
+            const notification = new Notification(`${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`, {
+              body: `Ready for your next lesson: ${nextLessonData.title}`,
+              icon: "/favicon.ico",
+              tag: "lingotoday-lesson-" + Date.now(),
+              requireInteraction: true,
+              silent: false
+            });
+
+            notification.onclick = function() {
+              console.log("Notification clicked, navigating to next lesson");
+              try {
+                if (window.focus) window.focus();
+                // Navigate to the lesson using the correct URL structure
+                const lessonUrl = `/lesson/${cleanLanguage}/${nextLessonData.courseId}/${nextLessonData.lessonId}?from=notification`;
+                console.log("Navigating to:", lessonUrl);
+                window.location.href = lessonUrl;
+                notification.close();
+              } catch (error) {
+                console.error("Navigation error:", error);
+                window.location.href = "/dashboard";
+                notification.close();
+              }
+            };
+
+            notification.onshow = () => console.log("✅ Notification displayed successfully");
+            notification.onerror = (error) => console.error("❌ Notification error:", error);
+            
+            return; // Exit early since we used the API lesson
+          }
+        }
       } else {
-        console.log("⚠️ Could not fetch progress (status " + progressResponse.status + "), showing all lessons");
-        // Don't filter out any lessons if we can't get progress data
+        console.log("⚠️ Could not fetch progress (status " + progressResponse.status + "), using fallback");
         completedLessonIds = [];
       }
     } catch (error) {
@@ -354,9 +412,12 @@ export async function showLearningNotification(language: string) {
         console.log("Current URL:", currentUrl);
         console.log("App domain:", appDomain);
         
-        // Navigate using lesson ID approach for guaranteed data availability
-        const urlParams = lessonData.isReview ? "?from=notification&mode=review&id=" + lessonData.lessonId : "?from=notification&id=" + lessonData.lessonId;
-        const fullUrl = lessonData.lessonPath + urlParams;
+        // Use the correct lesson URL structure based on the actual routing system
+        const courseId = lessonData.lessonId.split('-')[0] || 'course1';
+        const lessonId = lessonData.lessonId.split('-')[1] || lessonData.lessonId;
+        const correctLessonPath = `/lesson/${cleanLanguage}/${courseId}/${lessonId}`;
+        const urlParams = lessonData.isReview ? "?from=notification&mode=review" : "?from=notification";
+        const fullUrl = correctLessonPath + urlParams;
         
         // Always use same-window navigation to preserve session
         console.log("Navigating to:", fullUrl);

@@ -54,6 +54,11 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
       queryClient.invalidateQueries({ queryKey: ["/api/progress", language] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats", language] });
       
+      // Refresh notification progress so next notification shows correct lesson
+      import("@/lib/notifications").then(({ refreshNotificationProgress }) => {
+        refreshNotificationProgress();
+      });
+      
       toast({
         title: "Lesson completed!",
         description: "Great job! Keep up the learning streak.",

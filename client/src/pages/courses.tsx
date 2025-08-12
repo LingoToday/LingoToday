@@ -42,6 +42,11 @@ export default function Courses() {
       queryClient.invalidateQueries({ queryKey: ['/api/progress', selectedLanguage] });
       queryClient.invalidateQueries({ queryKey: ['/api/next-lesson', selectedLanguage] });
       queryClient.invalidateQueries({ queryKey: ['/api/stats', selectedLanguage] });
+      
+      // Refresh notification progress so next notification shows correct lesson
+      import("@/lib/notifications").then(({ refreshNotificationProgress }) => {
+        refreshNotificationProgress();
+      });
     },
   });
 
