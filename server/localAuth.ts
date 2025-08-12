@@ -9,7 +9,7 @@ export const registerSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  lastName: z.string().optional(),
 });
 
 export type RegisterRequest = z.infer<typeof registerSchema>;
@@ -81,7 +81,7 @@ export async function registerUser(userData: RegisterRequest) {
     id: userId,
     email,
     firstName,
-    lastName,
+    lastName: lastName || '', // Default to empty string if not provided
     password: hashedPassword,
     authProvider: 'local',
   });
@@ -104,7 +104,7 @@ export function setupLocalRoutes(app: Express, passport: any) {
           id: user.id,
           email: user.email,
           firstName: user.firstName,
-          lastName: user.lastName,
+          lastName: user.lastName || '',
         }
       });
     } catch (error) {

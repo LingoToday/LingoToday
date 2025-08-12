@@ -41,10 +41,8 @@ export default function Onboarding() {
   const [emailError, setEmailError] = useState('');
   
   // Email registration states
-  const [authMethod, setAuthMethod] = useState<'replit' | 'email'>('replit');
   const [registerData, setRegisterData] = useState({
     firstName: '',
-    lastName: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -128,7 +126,6 @@ export default function Onboarding() {
     // Validation
     const errors: Record<string, string> = {};
     if (!registerData.firstName.trim()) errors.firstName = 'First name is required';
-    if (!registerData.lastName.trim()) errors.lastName = 'Last name is required';
     if (!registerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
     if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
@@ -147,7 +144,6 @@ export default function Onboarding() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName: registerData.firstName.trim(),
-          lastName: registerData.lastName.trim(),
           email: registerData.email.trim(),
           password: registerData.password,
         }),
@@ -361,143 +357,122 @@ export default function Onboarding() {
                     </div>
                   </div>
 
-                  {/* Authentication Method Toggle */}
-                  <div className="flex items-center justify-center space-x-1 bg-gray-100 rounded-lg p-1">
-                    <button
-                      onClick={() => setAuthMethod('replit')}
-                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        authMethod === 'replit' 
-                          ? 'bg-white text-gray-900 shadow-sm' 
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
+                  {/* Replit Authentication Options */}
+                  <div className="space-y-3">
+                    <div className="text-center">
+                      <h4 className="font-medium text-gray-900 mb-3">Quick Sign In</h4>
+                    </div>
+                    
+                    <Button 
+                      onClick={handleStart}
+                      className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 flex items-center justify-center gap-2"
                     >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0L1.5 12L12 24L22.5 12L12 0Z"/>
+                      </svg>
                       Continue with Replit
-                    </button>
-                    <button
-                      onClick={() => setAuthMethod('email')}
-                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        authMethod === 'email' 
-                          ? 'bg-white text-gray-900 shadow-sm' 
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      Register with Email
-                    </button>
+                    </Button>
+                    
+                    <p className="text-xs text-gray-500 text-center">
+                      Sign in with your Replit account (Google, GitHub, etc.)
+                    </p>
                   </div>
 
-                  {/* Replit Authentication */}
-                  {authMethod === 'replit' && (
-                    <>
-                      <Button 
-                        onClick={handleStart}
-                        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-                      >
-                        Continue with Replit Authentication
-                      </Button>
-                      <p className="text-xs text-gray-500 text-center">
-                        You'll be redirected to Replit to sign in securely. Your preferences will be saved.
-                      </p>
-                    </>
-                  )}
+                  {/* Divider */}
+                  <div className="flex items-center gap-4">
+                    <hr className="flex-1 border-gray-200" />
+                    <span className="text-sm text-gray-500 font-medium">OR</span>
+                    <hr className="flex-1 border-gray-200" />
+                  </div>
 
                   {/* Email Registration Form */}
-                  {authMethod === 'email' && (
-                    <div className="space-y-4">
-                      {registerErrors.general && (
-                        <Alert className="border-red-200 bg-red-50">
-                          <AlertCircle className="h-4 w-4 text-red-600" />
-                          <AlertDescription className="text-red-700">
-                            {registerErrors.general}
-                          </AlertDescription>
-                        </Alert>
-                      )}
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="firstName">First Name</Label>
-                          <Input
-                            id="firstName"
-                            type="text"
-                            value={registerData.firstName}
-                            onChange={(e) => handleRegisterInputChange('firstName', e.target.value)}
-                            className={registerErrors.firstName ? 'border-red-500' : ''}
-                          />
-                          {registerErrors.firstName && <p className="text-red-500 text-sm mt-1">{registerErrors.firstName}</p>}
-                        </div>
-                        <div>
-                          <Label htmlFor="lastName">Last Name</Label>
-                          <Input
-                            id="lastName"
-                            type="text"
-                            value={registerData.lastName}
-                            onChange={(e) => handleRegisterInputChange('lastName', e.target.value)}
-                            className={registerErrors.lastName ? 'border-red-500' : ''}
-                          />
-                          {registerErrors.lastName && <p className="text-red-500 text-sm mt-1">{registerErrors.lastName}</p>}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="register-email">Email Address</Label>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="register-email"
-                            type="email"
-                            placeholder="Enter your email address"
-                            className={`pl-10 ${registerErrors.email ? 'border-red-500' : ''}`}
-                            value={registerData.email}
-                            onChange={(e) => handleRegisterInputChange('email', e.target.value)}
-                          />
-                        </div>
-                        {registerErrors.email && <p className="text-red-500 text-sm mt-1">{registerErrors.email}</p>}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="password">Password</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="password"
-                            type="password"
-                            placeholder="Choose a secure password"
-                            className={`pl-10 ${registerErrors.password ? 'border-red-500' : ''}`}
-                            value={registerData.password}
-                            onChange={(e) => handleRegisterInputChange('password', e.target.value)}
-                          />
-                        </div>
-                        {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="confirmPassword">Confirm Password</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Confirm your password"
-                            className={`pl-10 ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
-                            value={registerData.confirmPassword}
-                            onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
-                          />
-                        </div>
-                        {registerErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerErrors.confirmPassword}</p>}
-                      </div>
-
-                      <Button 
-                        onClick={handleRegister}
-                        disabled={isRegistering}
-                        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-                      >
-                        {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
-                      </Button>
-
-                      <p className="text-xs text-gray-500 text-center">
-                        By creating an account, you agree to our Terms of Service and Privacy Policy.
-                      </p>
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h4 className="font-medium text-gray-900 mb-3">Create New Account</h4>
                     </div>
-                  )}
+
+                    {registerErrors.general && (
+                      <Alert className="border-red-200 bg-red-50">
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                        <AlertDescription className="text-red-700">
+                          {registerErrors.general}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    <div>
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        type="text"
+                        placeholder="Enter your first name"
+                        value={registerData.firstName}
+                        onChange={(e) => handleRegisterInputChange('firstName', e.target.value)}
+                        className={registerErrors.firstName ? 'border-red-500' : ''}
+                      />
+                      {registerErrors.firstName && <p className="text-red-500 text-sm mt-1">{registerErrors.firstName}</p>}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="register-email">Email Address</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="register-email"
+                          type="email"
+                          placeholder="Enter your email address"
+                          className={`pl-10 ${registerErrors.email ? 'border-red-500' : ''}`}
+                          value={registerData.email}
+                          onChange={(e) => handleRegisterInputChange('email', e.target.value)}
+                        />
+                      </div>
+                      {registerErrors.email && <p className="text-red-500 text-sm mt-1">{registerErrors.email}</p>}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="password">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Choose a secure password"
+                          className={`pl-10 ${registerErrors.password ? 'border-red-500' : ''}`}
+                          value={registerData.password}
+                          onChange={(e) => handleRegisterInputChange('password', e.target.value)}
+                        />
+                      </div>
+                      {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          placeholder="Confirm your password"
+                          className={`pl-10 ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
+                          value={registerData.confirmPassword}
+                          onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
+                        />
+                      </div>
+                      {registerErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerErrors.confirmPassword}</p>}
+                    </div>
+
+                    <Button 
+                      onClick={handleRegister}
+                      disabled={isRegistering}
+                      className="w-full bg-secondary hover:bg-secondary/90 text-white font-medium py-3"
+                    >
+                      {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
+                    </Button>
+
+                    <p className="text-xs text-gray-500 text-center">
+                      By creating an account, you agree to our Terms of Service and Privacy Policy.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
