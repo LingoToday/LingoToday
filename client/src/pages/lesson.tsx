@@ -83,8 +83,8 @@ export default function Lesson() {
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
     queryKey: ["/api/courses", language, courseId, lessonId],
-    enabled: isAuthenticated && !!language && !!courseId && !!lessonId && !notificationLessonId, // Disable if we have a notification lesson
-    retry: false,
+    enabled: isAuthenticated && !!language && !!courseId && !!lessonId, // Always enable API query, we'll decide later which to use
+    retry: 2, // Allow retries for better reliability
   });
 
   // Fallback: try to get lesson from stored data if API fails or if we have a notification lesson
@@ -115,7 +115,17 @@ export default function Lesson() {
 
   // Use fallback lesson if API lesson is not available, or notification lesson if coming from notification
   const apiLessonData = lesson as any; // API returns different structure
-  const currentLesson = (notificationLessonId && fallbackLesson) ? fallbackLesson : apiLessonData;
+  
+  // Priority: 1. API lesson (if available), 2. Fallback lesson (from cached data)
+  const currentLesson = apiLessonData || fallbackLesson;
+  
+  console.log('🎯 Lesson selection:', {
+    hasApiLesson: !!apiLessonData,
+    hasFallbackLesson: !!fallbackLesson,
+    fromNotification,
+    selectedLesson: currentLesson ? 'found' : 'none',
+    apiLessonKeys: apiLessonData ? Object.keys(apiLessonData) : 'none'
+  });
 
   // Get current step data
   const getCurrentStepData = () => {
@@ -314,14 +324,50 @@ export default function Lesson() {
     );
   }
 
+  // Debug logging to understand why stepData is null
   if (!stepData) {
+    console.log('❌ Step data is null. Debugging info:', {
+      currentLesson: currentLesson ? 'present' : 'null',
+      currentStep,
+      lessonKeys: currentLesson ? Object.keys(currentLesson) : 'no lesson',
+      lessonLessonKeys: currentLesson?.lesson ? Object.keys(currentLesson.lesson) : 'no lesson.lesson',
+      fromNotification,
+      notificationLessonId,
+      lessonId,
+      courseId,
+      language
+    });
+
+    // Try to get the lesson directly from the API if notification fails
+    if (fromNotification && !fallbackLesson) {
+      console.log('🔄 Notification lesson failed, trying API lesson...');
+      // Re-enable the API query for notification scenarios
+      queryClient.invalidateQueries({ queryKey: ["/api/courses", language, courseId, lessonId] });
+      
+      return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <Card className="w-full max-w-md mx-4">
+            <CardContent className="pt-6 text-center">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Lesson...</h2>
+              <p className="text-gray-600 mb-4">
+                Fetching lesson content from server...
+              </p>
+              <Link href="/">
+                <Button>Back to Dashboard</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="pt-6 text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Lesson...</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Lesson Structure Issue</h2>
             <p className="text-gray-600 mb-4">
-              Please wait while we load the lesson content.
+              Unable to load lesson content. The lesson data may have an unexpected format.
             </p>
             <Link href="/">
               <Button>Back to Dashboard</Button>
