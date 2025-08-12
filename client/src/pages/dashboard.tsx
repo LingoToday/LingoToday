@@ -210,38 +210,41 @@ export default function Dashboard() {
                 Welcome back, {user.firstName || 'User'}!
               </h1>
               <p className="text-gray-600 mb-4">
-                {user.selectedLanguage ? `Continue your ${user.selectedLanguage} learning journey` : 'Continue your learning journey'}
+                Continue your <span className="text-blue-600 font-medium">{user.selectedLanguage || 'Italian'}</span> learning journey
               </p>
-              <div className="flex items-center space-x-4">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  Continue
-                </Button>
-                <div className="text-sm text-gray-500">
-                  Go Intermediate
+              
+              {/* Level and Progress */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <Badge className="bg-blue-600 text-white px-3 py-1">
+                    {user.selectedLevel || 'Beginner'}
+                  </Badge>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-gray-600">2% to Intermediate</div>
                 </div>
               </div>
-            </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-4">
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">{stats?.lessonsCompleted || 0}</div>
-                  <div className="text-sm text-gray-600">Days</div>
-                </CardContent>
-              </Card>
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">{stats?.streak || 0}</div>
-                  <div className="text-sm text-gray-600">Streak</div>
-                </CardContent>
-              </Card>
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="text-2xl font-bold text-gray-900">{stats?.wordsLearned || 0}</div>
-                  <div className="text-sm text-gray-600">XP</div>
-                </CardContent>
-              </Card>
+              {/* Stats Cards - Mobile/Desktop Responsive */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                {/* Day Streak */}
+                <div className="bg-blue-50 rounded-lg p-4 text-center border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">{stats?.streak || 0}</div>
+                  <div className="text-sm text-blue-800 font-medium">Day Streak</div>
+                </div>
+                
+                {/* Lessons Done */}
+                <div className="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+                  <div className="text-2xl font-bold text-green-600 mb-1">{stats?.lessonsCompleted || 0}</div>
+                  <div className="text-sm text-green-800 font-medium">Lessons Done</div>
+                </div>
+                
+                {/* Words Learned */}
+                <div className="bg-purple-50 rounded-lg p-4 text-center border border-purple-100">
+                  <div className="text-2xl font-bold text-purple-600 mb-1">{stats?.wordsLearned || 0}</div>
+                  <div className="text-sm text-purple-800 font-medium">Words Learned</div>
+                </div>
+              </div>
             </div>
 
             {/* Learning Status */}
