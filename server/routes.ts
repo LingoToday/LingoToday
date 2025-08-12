@@ -252,6 +252,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get next 5 lessons for "Coming Up Next" section
+  app.get('/api/upcoming-lessons', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
+      const user = await storage.getUser(userId);
+      const language = user?.selectedLanguage || 'italian';
+      
+      // Get user progress to determine current position
+      const userProgress = await storage.getUserProgress(userId, language);
+      
+      let upcomingLessons: any[] = [];
+
+      if (language === 'italian') {
+        // Use italian-courses.json for structured lessons
+        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        
+        if (fs.existsSync(coursesPath)) {
+          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+          
+          // Find all lessons in order
+          const allLessons: any[] = [];
+          Object.keys(coursesData).sort().forEach(courseId => {
+            const course = coursesData[courseId];
+            Object.keys(course.lessons).sort().forEach(lessonId => {
+              const lesson = course.lessons[lessonId];
+              allLessons.push({
+                courseId,
+                lessonId,
+                title: lesson.title,
+                description: course.title,
+                courseTitle: course.title,
+                category: course.title,
+                items: lesson.items
+              });
+            });
+          });
+
+          // Filter out completed lessons
+          const completedLessonIds = new Set(
+            userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
+          );
+
+          upcomingLessons = allLessons
+            .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
+            .slice(0, 5);
+        }
+      } else {
+        // Fallback to lessons.json structure
+        const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
+        
+        if (fs.existsSync(lessonsPath)) {
+          const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
+          const languageLessons = lessonsData[language];
+
+          if (languageLessons) {
+            const allLessons: any[] = [];
+            
+            Object.keys(languageLessons).sort().forEach(weekKey => {
+              const weekData = languageLessons[weekKey];
+              Object.keys(weekData).sort().forEach(dayKey => {
+                const lesson = weekData[dayKey];
+                allLessons.push({
+                  courseId: weekKey,
+                  lessonId: dayKey,
+                  title: lesson.title,
+                  description: `Week ${weekKey.replace('week_', '')}, Day ${dayKey.replace('day_', '')}`,
+                  courseTitle: lesson.title,
+                  category: 'General',
+                  vocabulary: lesson.vocabulary
+                });
+              });
+            });
+
+            // Filter completed lessons and get next 5
+            const completedLessonIds = new Set(
+              userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
+            );
+
+            upcomingLessons = allLessons
+              .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
+              .slice(0, 5);
+          }
+        }
+      }
+
+      res.json(upcomingLessons);
+    } catch (error) {
+      console.error("Error fetching upcoming lessons:", error);
+      res.status(500).json({ message: "Failed to fetch upcoming lessons" });
+    }
+  });
+
   app.post('/api/progress', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
