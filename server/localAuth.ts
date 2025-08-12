@@ -47,7 +47,7 @@ export function setupLocalAuth(passport: any) {
             email: user.email,
             first_name: user.firstName,
             last_name: user.lastName,
-            profile_image_url: user.profileImageUrl,
+            profile_image_url: user.avatarUrl,
           }
         };
 

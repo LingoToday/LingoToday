@@ -171,6 +171,11 @@ export const users = pgTable('users', {
   firstName: text('first_name'),
   lastName: text('last_name'),
   avatarUrl: text('avatar_url'),
+  password: text('password'), // For local auth users
+  authProvider: text('auth_provider').default('local').notNull(), // 'local', 'github', 'google', etc.
+  selectedLanguage: text('selected_language'), // User's chosen language to learn
+  selectedLevel: text('selected_level'), // User's chosen skill level
+  completedOnboarding: boolean('completed_onboarding').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

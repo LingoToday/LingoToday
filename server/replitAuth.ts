@@ -77,6 +77,9 @@ export async function setupAuth(app: Express) {
 
   // Setup local authentication strategies
   setupLocalAuth(passport);
+  
+  // Setup local authentication routes
+  setupLocalRoutes(app, passport);
 
   const config = await getOidcConfig();
 
