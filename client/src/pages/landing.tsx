@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
@@ -5,6 +6,21 @@ import Footer from "@/components/ui/footer";
 import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
 
 export default function Landing() {
+  const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
+  
+  const prices = {
+    GBP: {
+      monthly: '£3.99',
+      yearly: '£14.99',
+      savings: '£33'
+    },
+    USD: {
+      monthly: '$6.99',
+      yearly: '$20.99',
+      savings: '$46'
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -405,9 +421,37 @@ export default function Landing() {
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               Simple, Fair Pricing
             </h3>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
               Choose the plan that works for you. Both include all current features and a 5-day free trial.
             </p>
+            
+            {/* Currency Toggle */}
+            <div className="flex justify-center mb-8">
+              <div className="bg-gray-100 rounded-full p-1 flex">
+                <Button
+                  onClick={() => setCurrency('GBP')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                    currency === 'GBP'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'bg-transparent text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  }`}
+                  variant="ghost"
+                >
+                  £ GBP
+                </Button>
+                <Button
+                  onClick={() => setCurrency('USD')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                    currency === 'USD'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'bg-transparent text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  }`}
+                  variant="ghost"
+                >
+                  $ USD
+                </Button>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -420,7 +464,7 @@ export default function Landing() {
                   </div>
                   <h4 className="text-2xl font-bold text-gray-900 mb-2">Monthly</h4>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold text-gray-900">£3.99</span>
+                    <span className="text-4xl font-bold text-gray-900">{prices[currency].monthly}</span>
                     <span className="text-gray-600 text-lg">/month</span>
                   </div>
                   
@@ -472,10 +516,10 @@ export default function Landing() {
                   </div>
                   <h4 className="text-2xl font-bold text-gray-900 mb-2">Introduction Offer</h4>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold text-gray-900">£14.99</span>
+                    <span className="text-4xl font-bold text-gray-900">{prices[currency].yearly}</span>
                     <span className="text-gray-600 text-lg">/year</span>
                     <div className="text-sm text-green-600 font-medium mt-1">
-                      Save £33 per year
+                      Save {prices[currency].savings} per year
                     </div>
                   </div>
                   
