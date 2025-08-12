@@ -61,6 +61,8 @@ interface DashboardData {
   settings: {
     notificationsEnabled: boolean;
     notificationFrequency: number;
+    notificationStartTime: string;
+    notificationEndTime: string;
     selectedLanguage: string;
   };
   stats: {
@@ -84,7 +86,12 @@ export default function Dashboard() {
 
   // Update settings mutation
   const updateSettingsMutation = useMutation({
-    mutationFn: async (updatedSettings: { notificationsEnabled?: boolean; notificationFrequency?: number }) => {
+    mutationFn: async (updatedSettings: { 
+      notificationsEnabled?: boolean; 
+      notificationFrequency?: number;
+      notificationStartTime?: string;
+      notificationEndTime?: string;
+    }) => {
       await apiRequest("PUT", "/api/settings", updatedSettings);
     },
     onSuccess: () => {
@@ -173,7 +180,9 @@ export default function Dashboard() {
         setupNotifications({
           enabled: true,
           language: user.selectedLanguage,
-          frequency: dashboardData?.settings?.notificationFrequency || 15
+          frequency: dashboardData?.settings?.notificationFrequency || 15,
+          startTime: dashboardData?.settings?.notificationStartTime || "09:00",
+          endTime: dashboardData?.settings?.notificationEndTime || "18:00"
         });
       }
     } catch (error) {
@@ -189,6 +198,35 @@ export default function Dashboard() {
   const handleFrequencyChange = (frequency: string) => {
     updateSettingsMutation.mutate({ notificationFrequency: parseInt(frequency) });
   };
+
+  // Handle start time change
+  const handleStartTimeChange = (startTime: string) => {
+    updateSettingsMutation.mutate({ notificationStartTime: startTime });
+  };
+
+  // Handle end time change
+  const handleEndTimeChange = (endTime: string) => {
+    updateSettingsMutation.mutate({ notificationEndTime: endTime });
+  };
+
+  // Generate time options for dropdowns (24-hour format)
+  const generateTimeOptions = () => {
+    const options = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const displayTime = new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+        options.push({ value: time, label: displayTime });
+      }
+    }
+    return options;
+  };
+
+  const timeOptions = generateTimeOptions();
 
   const { data: nextLesson } = useQuery<NextLessonData | null>({
     queryKey: ["/api/next-lesson"],
@@ -540,6 +578,44 @@ export default function Dashboard() {
                       checked={dashboardData?.settings?.notificationsEnabled || false}
                       onCheckedChange={handleNotificationToggle}
                     />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Start Time</span>
+                    <Select 
+                      value={dashboardData?.settings?.notificationStartTime || "09:00"}
+                      onValueChange={handleStartTimeChange}
+                    >
+                      <SelectTrigger className="w-24 h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">End Time</span>
+                    <Select 
+                      value={dashboardData?.settings?.notificationEndTime || "18:00"}
+                      onValueChange={handleEndTimeChange}
+                    >
+                      <SelectTrigger className="w-24 h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {notificationPermission !== "granted" && (

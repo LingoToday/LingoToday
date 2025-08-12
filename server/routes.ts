@@ -90,6 +90,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId,
           language: user.selectedLanguage || "italian",
           notificationsEnabled: false,
+          notificationFrequency: 15,
+          notificationStartTime: "09:00",
+          notificationEndTime: "18:00",
           theme: "light",
           soundEnabled: true,
           difficultyLevel: "beginner",
@@ -116,7 +119,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user,
         settings: {
           notificationsEnabled: settings.notificationsEnabled,
-          notificationFrequency: 15, // Default frequency for now
+          notificationFrequency: settings.notificationFrequency || 15,
+          notificationStartTime: settings.notificationStartTime || "09:00",
+          notificationEndTime: settings.notificationEndTime || "18:00",
           selectedLanguage: settings.language,
         },
         stats: {
@@ -210,6 +215,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         theme: existingSettings?.theme || "light",
         soundEnabled: existingSettings?.soundEnabled ?? true,
         notificationsEnabled: req.body.notificationsEnabled ?? (existingSettings?.notificationsEnabled ?? false),
+        notificationFrequency: req.body.notificationFrequency ?? (existingSettings?.notificationFrequency ?? 15),
+        notificationStartTime: req.body.notificationStartTime ?? (existingSettings?.notificationStartTime ?? "09:00"),
+        notificationEndTime: req.body.notificationEndTime ?? (existingSettings?.notificationEndTime ?? "18:00"),
         difficultyLevel: existingSettings?.difficultyLevel || "beginner",
         ...req.body,
       };

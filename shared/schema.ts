@@ -186,6 +186,9 @@ export const userSettings = pgTable('user_settings', {
   theme: text('theme').default('light').notNull(),
   soundEnabled: boolean('sound_enabled').default(true).notNull(),
   notificationsEnabled: boolean('notifications_enabled').default(true).notNull(),
+  notificationFrequency: integer('notification_frequency').default(15).notNull(), // in minutes
+  notificationStartTime: text('notification_start_time').default('09:00').notNull(), // 24-hour format HH:MM
+  notificationEndTime: text('notification_end_time').default('18:00').notNull(), // 24-hour format HH:MM
   difficultyLevel: text('difficulty_level').default('beginner').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

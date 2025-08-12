@@ -5,6 +5,45 @@ let healthCheckInterval: NodeJS.Timeout | null = null;
 let isNotificationSystemActive = false; // Global flag to prevent duplicate systems
 let lastNotificationId: string | null = null; // Track last notification to prevent duplicates
 
+// Check if current time is within user's notification window
+function isWithinNotificationWindow(startTime: string = "09:00", endTime: string = "18:00"): boolean {
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes(); // minutes since midnight
+  
+  const [startHour, startMin] = startTime.split(':').map(Number);
+  const [endHour, endMin] = endTime.split(':').map(Number);
+  
+  const startTimeMinutes = startHour * 60 + startMin;
+  const endTimeMinutes = endHour * 60 + endMin;
+  
+  // Handle cases where end time is on the next day
+  if (endTimeMinutes <= startTimeMinutes) {
+    // Notification window spans midnight (e.g., 22:00 to 06:00)
+    return currentTime >= startTimeMinutes || currentTime <= endTimeMinutes;
+  } else {
+    // Normal case (e.g., 09:00 to 18:00)
+    return currentTime >= startTimeMinutes && currentTime <= endTimeMinutes;
+  }
+}
+
+// Get user's notification settings from the API
+async function getUserNotificationSettings(): Promise<{ startTime: string; endTime: string; frequency: number } | null> {
+  try {
+    const response = await fetch('/api/dashboard', { credentials: 'same-origin' });
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        startTime: data.settings?.notificationStartTime || "09:00",
+        endTime: data.settings?.notificationEndTime || "18:00",
+        frequency: data.settings?.notificationFrequency || 15
+      };
+    }
+  } catch (error) {
+    console.log("⚠️ Could not fetch notification settings, using defaults");
+  }
+  return null;
+}
+
 // Request notification permission
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
   if (!("Notification" in window)) {
@@ -22,7 +61,7 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 }
 
 // Start daily learning session 
-export function startDailySession(language: string, intervalMinutes: number = 15) {
+export async function startDailySession(language: string, intervalMinutes: number = 15) {
   console.log(`🌅 Starting daily learning session for ${language}`);
   
   // Prevent duplicate sessions
@@ -32,6 +71,14 @@ export function startDailySession(language: string, intervalMinutes: number = 15
   
   // Stop any existing notifications first
   stopNotifications();
+  
+  // Get user's notification settings to respect time window
+  const notificationSettings = await getUserNotificationSettings();
+  if (notificationSettings) {
+    intervalMinutes = notificationSettings.frequency;
+    console.log(`⚙️ Using user's notification frequency: ${intervalMinutes} minutes`);
+    console.log(`⏰ User's notification window: ${notificationSettings.startTime} - ${notificationSettings.endTime}`);
+  }
   
   const intervalMs = intervalMinutes * 60 * 1000;
   
@@ -208,6 +255,24 @@ export async function showLearningNotification(language: string) {
   const timestamp = Date.now();
   
   console.log(`📢 [${now}] showLearningNotification called with language:`, language, typeof language);
+  
+  // Get user's notification settings
+  const notificationSettings = await getUserNotificationSettings();
+  
+  // Check if we're within the user's notification window
+  if (notificationSettings) {
+    const isWithinWindow = isWithinNotificationWindow(
+      notificationSettings.startTime, 
+      notificationSettings.endTime
+    );
+    
+    if (!isWithinWindow) {
+      console.log(`⏰ Current time (${now}) is outside notification window (${notificationSettings.startTime} - ${notificationSettings.endTime})`);
+      return;
+    }
+    
+    console.log(`✅ Current time (${now}) is within notification window (${notificationSettings.startTime} - ${notificationSettings.endTime})`);
+  }
   
   // Prevent duplicate notifications within a short time frame (30 seconds)
   const currentNotificationId = `${language}_${Math.floor(timestamp / 30000)}`;
