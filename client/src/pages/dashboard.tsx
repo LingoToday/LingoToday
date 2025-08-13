@@ -50,8 +50,14 @@ interface User {
 interface ProgressData {
   courseId: string;
   lessonId: string;
+  stepNumber: number;
+  completed: boolean;
   score: number;
-  completedAt: string;
+  completedAt: string | null;
+  lessonTitle?: string;
+  italianPhrase?: string;
+  englishTranslation?: string;
+  courseTitle?: string;
 }
 
 interface NextLessonData {
@@ -376,6 +382,21 @@ export default function Dashboard() {
     const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
     const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
+    
+    // Debug logging for course1 to understand the data
+    if (index === 0) {
+      console.log('🔍 Course1 Debug:', {
+        courseName: course.name,
+        totalProgress: allProgress.length,
+        courseProgress: courseProgress.length,
+        completedCount: completed,
+        courseProgressData: courseProgress.map(p => ({
+          lessonId: p.lessonId,
+          completed: p.completed,
+          completedAt: p.completedAt
+        }))
+      });
+    }
     
     // Determine status based on progress and availability rules
     let status = 'locked';
