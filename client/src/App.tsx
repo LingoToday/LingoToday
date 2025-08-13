@@ -21,6 +21,7 @@ import { CheckpointPage } from "@/pages/checkpoint";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
+import Contact from "@/pages/contact";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -51,6 +52,7 @@ function Router() {
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
+          <Route path="/contact" component={Contact} />
         </>
       ) : (
         <>
@@ -66,6 +68,7 @@ function Router() {
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
+          <Route path="/contact" component={Contact} />
         </>
       )}
       <Route component={NotFound} />
