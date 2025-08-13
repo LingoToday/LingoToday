@@ -442,7 +442,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <Badge className="bg-blue-600 text-white px-3 py-1">
-                    {user.selectedLevel || 'Beginner'}
+                    {user.selectedLevel ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase() : 'Beginner'}
                   </Badge>
                 </div>
                 <div className="text-right">
@@ -759,7 +759,7 @@ export default function Dashboard() {
                 <div className="pt-4 border-t space-y-2 text-xs text-gray-600">
                   <div>Settings</div>
                   <div>Language: {user.selectedLanguage || 'Not selected'}</div>
-                  <div>Level: {user.selectedLevel || 'Not selected'}</div>
+                  <div>Level: {user.selectedLevel ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase() : 'Not selected'}</div>
                   <div>Notifications: {settings?.notificationsEnabled ? 'Enabled' : 'Disabled'}</div>
                 </div>
               </CardContent>
@@ -790,7 +790,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Level</span>
-                    <span className="font-medium">{user.selectedLevel || 'Not selected'}</span>
+                    <span className="font-medium">{user.selectedLevel ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase() : 'Not selected'}</span>
                   </div>
                 </div>
               </CardContent>
