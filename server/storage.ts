@@ -185,15 +185,58 @@ export class DatabaseStorage implements IStorage {
         eq(userProgress.completed, true)
       ));
 
-    // For Italian, we have courses 1-4, each with lessons 1-4 (some have 3)
-    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
-    const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
-
     // If no progress at all, start from course1/lesson1
     if (completedLessons.length === 0) {
       console.log('🆕 No progress found, starting from course1/lesson1');
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
+
+    // Load actual course structure from JSON to get real lesson counts
+    if (language === 'italian') {
+      try {
+        const path = require('path');
+        const fs = require('fs');
+        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        
+        if (fs.existsSync(coursesPath)) {
+          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+          
+          // Get course order and actual lessons per course
+          const courseOrder = Object.keys(coursesData).sort(); // ['course1', 'course2', 'course3', 'course4']
+          
+          for (const courseId of courseOrder) {
+            const course = coursesData[courseId];
+            if (course && course.lessons) {
+              // Get actual lesson IDs for this course, sorted numerically
+              const lessonIds = Object.keys(course.lessons).sort((a, b) => {
+                const numA = parseInt(a.replace('lesson', ''));
+                const numB = parseInt(b.replace('lesson', ''));
+                return numA - numB;
+              });
+              
+              // Check each lesson in order
+              for (const lessonId of lessonIds) {
+                const isCompleted = completedLessons.some(
+                  lesson => lesson.courseId === courseId && lesson.lessonId === lessonId
+                );
+                
+                if (!isCompleted) {
+                  console.log(`📚 Next lesson found: ${courseId}/${lessonId}`);
+                  return { courseId, lessonId };
+                }
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading course structure:', error);
+        // Fall back to hardcoded structure if file loading fails
+      }
+    }
+
+    // Fallback for other languages or if JSON loading fails
+    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
+    const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
 
     for (const courseId of courseOrder) {
       for (const lessonId of lessonOrder) {
@@ -207,6 +250,7 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
+    console.log('🎉 All lessons completed!');
     return null; // All lessons completed
   }
 
