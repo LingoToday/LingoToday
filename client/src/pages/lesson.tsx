@@ -249,43 +249,76 @@ export default function Lesson() {
       // If prompt contains underscores, validate just the missing letters
       if (stepData.prompt.includes('_')) {
         const getMissingLetters = (word: string, prompt: string) => {
-          // Find the position of the underscore in the prompt
-          const underscoreIndex = prompt.indexOf('_');
-          if (underscoreIndex === -1) return word;
-          
-          // Split prompt at underscore to get prefix and suffix
-          const promptPrefix = prompt.substring(0, underscoreIndex);
-          const promptSuffix = prompt.substring(underscoreIndex + 1);
-          
-          // Clean suffix (remove anything after '=' if present)
-          const cleanSuffix = promptSuffix.split('=')[0].trim();
-          
-          // Extract missing part from the expected word
           const normalizedWord = normalizeText(word);
-          const normalizedPrefix = normalizeText(promptPrefix);
-          const normalizedSuffix = normalizeText(cleanSuffix);
+          const normalizedPrompt = normalizeText(prompt.split('=')[0].trim());
           
+          // Find all underscore positions
+          const underscorePositions = [];
+          for (let i = 0; i < normalizedPrompt.length; i++) {
+            if (normalizedPrompt[i] === '_') {
+              underscorePositions.push(i);
+            }
+          }
+          
+          if (underscorePositions.length === 0) return normalizedWord;
+          
+          // Extract characters that correspond to underscore positions
+          let missingLetters = '';
+          
+          // For consecutive underscores, find the missing segment
+          const firstUnderscore = underscorePositions[0];
+          const lastUnderscore = underscorePositions[underscorePositions.length - 1];
+          
+          // Get prefix (everything before first underscore)
+          const prefix = normalizedPrompt.substring(0, firstUnderscore);
+          // Get suffix (everything after last underscore) 
+          const suffix = normalizedPrompt.substring(lastUnderscore + 1);
+          
+          // Find where prefix ends in word and suffix starts
           let startIndex = 0;
           let endIndex = normalizedWord.length;
           
-          // Find where the prefix ends in the word
-          if (normalizedPrefix && normalizedWord.startsWith(normalizedPrefix)) {
-            startIndex = normalizedPrefix.length;
+          if (prefix && normalizedWord.includes(prefix)) {
+            const prefixIndex = normalizedWord.indexOf(prefix);
+            startIndex = prefixIndex + prefix.length;
           }
           
-          // Find where the suffix starts in the word
-          if (normalizedSuffix && normalizedWord.endsWith(normalizedSuffix)) {
-            endIndex = normalizedWord.length - normalizedSuffix.length;
+          if (suffix && normalizedWord.includes(suffix)) {
+            const suffixIndex = normalizedWord.indexOf(suffix);
+            if (suffixIndex > startIndex) {
+              endIndex = suffixIndex;
+            }
           }
           
-          return normalizedWord.substring(startIndex, endIndex);
+          missingLetters = normalizedWord.substring(startIndex, endIndex);
+          
+          return missingLetters;
         };
         
         const expectedMissing = getMissingLetters(stepData.expected, stepData.prompt);
         const alternativesMissing = (stepData.alternatives || []).map((alt: string) => getMissingLetters(alt, stepData.prompt));
         
-        // Check if user answer matches any of the expected missing parts
-        correct = userAnswer === expectedMissing || alternativesMissing.includes(userAnswer);
+        // More flexible matching for missing letters
+        const isExactMatch = userAnswer === expectedMissing || alternativesMissing.includes(userAnswer);
+        
+        // Add fuzzy matching for fill-in-the-blank exercises
+        const isFuzzyMatch = !isExactMatch && (
+          // Check if user answer contains the expected missing letters (for partial credit)
+          expectedMissing.includes(userAnswer) || userAnswer.includes(expectedMissing) ||
+          // Check if any alternative missing parts match partially
+          alternativesMissing.some((altMissing: string) => 
+            altMissing.includes(userAnswer) || userAnswer.includes(altMissing)
+          ) ||
+          // Check for minor character differences (1-2 character difference)
+          alternativesMissing.some((altMissing: string) => 
+            Math.abs(userAnswer.length - altMissing.length) <= 2 && 
+            Array.from(userAnswer).filter((char, i) => char !== altMissing[i]).length <= 2
+          ) ||
+          (Math.abs(userAnswer.length - expectedMissing.length) <= 2 && 
+           Array.from(userAnswer).filter((char, i) => char !== expectedMissing[i]).length <= 2)
+        );
+        
+        correct = isExactMatch || isFuzzyMatch;
         
         // Debug logging to help troubleshoot
         console.log('🔍 Fill-in-blank validation:', {
@@ -295,6 +328,8 @@ export default function Lesson() {
           expectedMissing,
           alternatives: stepData.alternatives,
           alternativesMissing,
+          isExactMatch,
+          isFuzzyMatch,
           correct
         });
       } else {
