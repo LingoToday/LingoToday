@@ -336,11 +336,11 @@ export default function Dashboard() {
   const settings = dashboardData?.settings;
   const recentProgress = dashboardData?.progress?.slice(0, 8) || [];
 
-  // Use actual recent lessons data from progress
+  // Use actual recent lessons data from progress with enriched content
   const recentLessons = recentProgress.map((progress, index) => ({
     id: index + 1,
-    title: progress.lessonId,
-    subtitle: progress.courseId,
+    title: progress.italianPhrase || progress.lessonId,
+    subtitle: progress.englishTranslation || progress.courseTitle || progress.courseId,
     date: progress.completedAt ? new Date(progress.completedAt).toLocaleDateString('en-GB') : 'In Progress',
     score: progress.score ? `${progress.score}%` : 'N/A',
     status: progress.completedAt ? 'completed' : 'in_progress'

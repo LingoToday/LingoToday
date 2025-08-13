@@ -114,6 +114,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get recent progress
       const progress = await storage.getUserProgress(userId, language);
+      
+      // Enrich progress data with actual lesson content
+      const enrichedProgress = await Promise.all(
+        progress.slice(0, 10).map(async (progressItem) => {
+          if (language === 'italian') {
+            try {
+              const courseFileName = `${progressItem.courseId}.json`;
+              const coursePath = path.join(process.cwd(), 'server', courseFileName);
+              
+              if (fs.existsSync(coursePath)) {
+                const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+                const course = courseData[progressItem.courseId];
+                
+                if (course && course.lessons[progressItem.lessonId]) {
+                  const lesson = course.lessons[progressItem.lessonId];
+                  return {
+                    ...progressItem,
+                    lessonTitle: lesson.title,
+                    italianPhrase: lesson.step1.italian,
+                    englishTranslation: lesson.step1.english,
+                    courseTitle: course.title
+                  };
+                }
+              }
+            } catch (error) {
+              console.error(`Error loading lesson content for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
+            }
+          }
+          return progressItem;
+        })
+      );
 
       res.json({
         user,
@@ -128,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           ...stats,
           lessonsCompleted: stats.lessonsCompleted || 0,
         },
-        progress: progress.slice(0, 10) // Last 10 completed lessons
+        progress: enrichedProgress
       });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
