@@ -1,0 +1,1192 @@
+{
+  "course4": {
+    "title": "Numbers",
+    "description": "Learn Spanish numbers from 0 to 100, plus how to ask and say ages. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Zero",
+        "step1": {
+          "spanish": "cero",
+          "english": "Zero",
+          "audio": "cero",
+          "note": "The Spanish word for 'zero'.",
+          "mcq": {
+            "question": "Which Spanish word means 'zero'?",
+            "options": [
+              "cero",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cero"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Zero",
+          "expected_answer": "cero",
+          "alt_answers": [
+            "Cero",
+            "cero"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cero",
+          "options": [
+            "Zero",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Zero"
+        }
+      },
+      "lesson2": {
+        "title": "One",
+        "step1": {
+          "spanish": "uno",
+          "english": "One",
+          "audio": "uno",
+          "note": "The Spanish word for 'one'.",
+          "mcq": {
+            "question": "Which Spanish word means 'one'?",
+            "options": [
+              "uno",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "uno"
+          }
+        },
+        "step2": {
+          "type_prompt": "u__  = One",
+          "expected_answer": "uno",
+          "alt_answers": [
+            "Uno",
+            "uno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "uno",
+          "options": [
+            "One",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "One"
+        }
+      },
+      "lesson3": {
+        "title": "Two",
+        "step1": {
+          "spanish": "dos",
+          "english": "Two",
+          "audio": "dos",
+          "note": "The Spanish word for 'two'.",
+          "mcq": {
+            "question": "Which Spanish word means 'two'?",
+            "options": [
+              "dos",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "dos"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Two",
+          "expected_answer": "dos",
+          "alt_answers": [
+            "Dos",
+            "dos"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dos",
+          "options": [
+            "Two",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Two"
+        }
+      },
+      "lesson4": {
+        "title": "Three",
+        "step1": {
+          "spanish": "tres",
+          "english": "Three",
+          "audio": "tres",
+          "note": "The Spanish word for 'three'.",
+          "mcq": {
+            "question": "Which Spanish word means 'three'?",
+            "options": [
+              "tres",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "tres"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Three",
+          "expected_answer": "tres",
+          "alt_answers": [
+            "Tres",
+            "tres"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "tres",
+          "options": [
+            "Three",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Three"
+        }
+      },
+      "lesson5": {
+        "title": "Four",
+        "step1": {
+          "spanish": "cuatro",
+          "english": "Four",
+          "audio": "cuatro",
+          "note": "The Spanish word for 'four'.",
+          "mcq": {
+            "question": "Which Spanish word means 'four'?",
+            "options": [
+              "cuatro",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cuatro"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Four",
+          "expected_answer": "cuatro",
+          "alt_answers": [
+            "Cuatro",
+            "cuatro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cuatro",
+          "options": [
+            "Four",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Four"
+        }
+      },
+      "lesson6": {
+        "title": "Five",
+        "step1": {
+          "spanish": "cinco",
+          "english": "Five",
+          "audio": "cinco",
+          "note": "The Spanish word for 'five'.",
+          "mcq": {
+            "question": "Which Spanish word means 'five'?",
+            "options": [
+              "cinco",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cinco"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Five",
+          "expected_answer": "cinco",
+          "alt_answers": [
+            "Cinco",
+            "cinco"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cinco",
+          "options": [
+            "Five",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Five"
+        }
+      },
+      "lesson7": {
+        "title": "Six",
+        "step1": {
+          "spanish": "seis",
+          "english": "Six",
+          "audio": "seis",
+          "note": "The Spanish word for 'six'.",
+          "mcq": {
+            "question": "Which Spanish word means 'six'?",
+            "options": [
+              "seis",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "seis"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Six",
+          "expected_answer": "seis",
+          "alt_answers": [
+            "Seis",
+            "seis"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "seis",
+          "options": [
+            "Six",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Six"
+        }
+      },
+      "lesson8": {
+        "title": "Seven",
+        "step1": {
+          "spanish": "siete",
+          "english": "Seven",
+          "audio": "siete",
+          "note": "The Spanish word for 'seven'.",
+          "mcq": {
+            "question": "Which Spanish word means 'seven'?",
+            "options": [
+              "siete",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "siete"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Seven",
+          "expected_answer": "siete",
+          "alt_answers": [
+            "Siete",
+            "siete"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "siete",
+          "options": [
+            "Seven",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Seven"
+        }
+      },
+      "lesson9": {
+        "title": "Eight",
+        "step1": {
+          "spanish": "ocho",
+          "english": "Eight",
+          "audio": "ocho",
+          "note": "The Spanish word for 'eight'.",
+          "mcq": {
+            "question": "Which Spanish word means 'eight'?",
+            "options": [
+              "ocho",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "ocho"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__  = Eight",
+          "expected_answer": "ocho",
+          "alt_answers": [
+            "Ocho",
+            "ocho"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ocho",
+          "options": [
+            "Eight",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Eight"
+        }
+      },
+      "lesson10": {
+        "title": "Nine",
+        "step1": {
+          "spanish": "nueve",
+          "english": "Nine",
+          "audio": "nueve",
+          "note": "The Spanish word for 'nine'.",
+          "mcq": {
+            "question": "Which Spanish word means 'nine'?",
+            "options": [
+              "nueve",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "nueve"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Nine",
+          "expected_answer": "nueve",
+          "alt_answers": [
+            "Nueve",
+            "nueve"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "nueve",
+          "options": [
+            "Nine",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Nine"
+        }
+      },
+      "lesson11": {
+        "title": "Ten",
+        "step1": {
+          "spanish": "diez",
+          "english": "Ten",
+          "audio": "diez",
+          "note": "The Spanish word for 'ten'.",
+          "mcq": {
+            "question": "Which Spanish word means 'ten'?",
+            "options": [
+              "diez",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "diez"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Ten",
+          "expected_answer": "diez",
+          "alt_answers": [
+            "Diez",
+            "diez"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diez",
+          "options": [
+            "Ten",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Ten"
+        }
+      },
+      "lesson12": {
+        "title": "Eleven",
+        "step1": {
+          "spanish": "once",
+          "english": "Eleven",
+          "audio": "once",
+          "note": "The Spanish word for 'eleven'.",
+          "mcq": {
+            "question": "Which Spanish word means 'eleven'?",
+            "options": [
+              "once",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "once"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__  = Eleven",
+          "expected_answer": "once",
+          "alt_answers": [
+            "Once",
+            "once"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "once",
+          "options": [
+            "Eleven",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Eleven"
+        }
+      },
+      "lesson13": {
+        "title": "Twelve",
+        "step1": {
+          "spanish": "doce",
+          "english": "Twelve",
+          "audio": "doce",
+          "note": "The Spanish word for 'twelve'.",
+          "mcq": {
+            "question": "Which Spanish word means 'twelve'?",
+            "options": [
+              "doce",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "doce"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Twelve",
+          "expected_answer": "doce",
+          "alt_answers": [
+            "Doce",
+            "doce"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "doce",
+          "options": [
+            "Twelve",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Twelve"
+        }
+      },
+      "lesson14": {
+        "title": "Thirteen",
+        "step1": {
+          "spanish": "trece",
+          "english": "Thirteen",
+          "audio": "trece",
+          "note": "The Spanish word for 'thirteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'thirteen'?",
+            "options": [
+              "trece",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "trece"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Thirteen",
+          "expected_answer": "trece",
+          "alt_answers": [
+            "Trece",
+            "trece"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "trece",
+          "options": [
+            "Thirteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Thirteen"
+        }
+      },
+      "lesson15": {
+        "title": "Fourteen",
+        "step1": {
+          "spanish": "catorce",
+          "english": "Fourteen",
+          "audio": "catorce",
+          "note": "The Spanish word for 'fourteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'fourteen'?",
+            "options": [
+              "catorce",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "catorce"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Fourteen",
+          "expected_answer": "catorce",
+          "alt_answers": [
+            "Catorce",
+            "catorce"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "catorce",
+          "options": [
+            "Fourteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Fourteen"
+        }
+      },
+      "lesson16": {
+        "title": "Fifteen",
+        "step1": {
+          "spanish": "quince",
+          "english": "Fifteen",
+          "audio": "quince",
+          "note": "The Spanish word for 'fifteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'fifteen'?",
+            "options": [
+              "quince",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "quince"
+          }
+        },
+        "step2": {
+          "type_prompt": "q__  = Fifteen",
+          "expected_answer": "quince",
+          "alt_answers": [
+            "Quince",
+            "quince"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quince",
+          "options": [
+            "Fifteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Fifteen"
+        }
+      },
+      "lesson17": {
+        "title": "Sixteen",
+        "step1": {
+          "spanish": "dieciséis",
+          "english": "Sixteen",
+          "audio": "dieciséis",
+          "note": "The Spanish word for 'sixteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'sixteen'?",
+            "options": [
+              "dieciséis",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "dieciséis"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Sixteen",
+          "expected_answer": "dieciséis",
+          "alt_answers": [
+            "Dieciséis",
+            "dieciséis"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dieciséis",
+          "options": [
+            "Sixteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Sixteen"
+        }
+      },
+      "lesson18": {
+        "title": "Seventeen",
+        "step1": {
+          "spanish": "diecisiete",
+          "english": "Seventeen",
+          "audio": "diecisiete",
+          "note": "The Spanish word for 'seventeen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'seventeen'?",
+            "options": [
+              "diecisiete",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "diecisiete"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Seventeen",
+          "expected_answer": "diecisiete",
+          "alt_answers": [
+            "Diecisiete",
+            "diecisiete"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diecisiete",
+          "options": [
+            "Seventeen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Seventeen"
+        }
+      },
+      "lesson19": {
+        "title": "Eighteen",
+        "step1": {
+          "spanish": "dieciocho",
+          "english": "Eighteen",
+          "audio": "dieciocho",
+          "note": "The Spanish word for 'eighteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'eighteen'?",
+            "options": [
+              "dieciocho",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "dieciocho"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Eighteen",
+          "expected_answer": "dieciocho",
+          "alt_answers": [
+            "Dieciocho",
+            "dieciocho"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dieciocho",
+          "options": [
+            "Eighteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Eighteen"
+        }
+      },
+      "lesson20": {
+        "title": "Nineteen",
+        "step1": {
+          "spanish": "diecinueve",
+          "english": "Nineteen",
+          "audio": "diecinueve",
+          "note": "The Spanish word for 'nineteen'.",
+          "mcq": {
+            "question": "Which Spanish word means 'nineteen'?",
+            "options": [
+              "diecinueve",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "diecinueve"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Nineteen",
+          "expected_answer": "diecinueve",
+          "alt_answers": [
+            "Diecinueve",
+            "diecinueve"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diecinueve",
+          "options": [
+            "Nineteen",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Nineteen"
+        }
+      },
+      "lesson21": {
+        "title": "Twenty",
+        "step1": {
+          "spanish": "veinte",
+          "english": "Twenty",
+          "audio": "veinte",
+          "note": "The Spanish word for 'twenty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'twenty'?",
+            "options": [
+              "veinte",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "veinte"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Twenty",
+          "expected_answer": "veinte",
+          "alt_answers": [
+            "Veinte",
+            "veinte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "veinte",
+          "options": [
+            "Twenty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Twenty"
+        }
+      },
+      "lesson22": {
+        "title": "Thirty",
+        "step1": {
+          "spanish": "treinta",
+          "english": "Thirty",
+          "audio": "treinta",
+          "note": "The Spanish word for 'thirty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'thirty'?",
+            "options": [
+              "treinta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "treinta"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Thirty",
+          "expected_answer": "treinta",
+          "alt_answers": [
+            "Treinta",
+            "treinta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "treinta",
+          "options": [
+            "Thirty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Thirty"
+        }
+      },
+      "lesson23": {
+        "title": "Forty",
+        "step1": {
+          "spanish": "cuarenta",
+          "english": "Forty",
+          "audio": "cuarenta",
+          "note": "The Spanish word for 'forty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'forty'?",
+            "options": [
+              "cuarenta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cuarenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Forty",
+          "expected_answer": "cuarenta",
+          "alt_answers": [
+            "Cuarenta",
+            "cuarenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cuarenta",
+          "options": [
+            "Forty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Forty"
+        }
+      },
+      "lesson24": {
+        "title": "Fifty",
+        "step1": {
+          "spanish": "cincuenta",
+          "english": "Fifty",
+          "audio": "cincuenta",
+          "note": "The Spanish word for 'fifty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'fifty'?",
+            "options": [
+              "cincuenta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cincuenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Fifty",
+          "expected_answer": "cincuenta",
+          "alt_answers": [
+            "Cincuenta",
+            "cincuenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cincuenta",
+          "options": [
+            "Fifty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Fifty"
+        }
+      },
+      "lesson25": {
+        "title": "Sixty",
+        "step1": {
+          "spanish": "sesenta",
+          "english": "Sixty",
+          "audio": "sesenta",
+          "note": "The Spanish word for 'sixty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'sixty'?",
+            "options": [
+              "sesenta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "sesenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Sixty",
+          "expected_answer": "sesenta",
+          "alt_answers": [
+            "Sesenta",
+            "sesenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sesenta",
+          "options": [
+            "Sixty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Sixty"
+        }
+      },
+      "lesson26": {
+        "title": "Seventy",
+        "step1": {
+          "spanish": "setenta",
+          "english": "Seventy",
+          "audio": "setenta",
+          "note": "The Spanish word for 'seventy'.",
+          "mcq": {
+            "question": "Which Spanish word means 'seventy'?",
+            "options": [
+              "setenta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "setenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Seventy",
+          "expected_answer": "setenta",
+          "alt_answers": [
+            "Setenta",
+            "setenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "setenta",
+          "options": [
+            "Seventy",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Seventy"
+        }
+      },
+      "lesson27": {
+        "title": "Eighty",
+        "step1": {
+          "spanish": "ochenta",
+          "english": "Eighty",
+          "audio": "ochenta",
+          "note": "The Spanish word for 'eighty'.",
+          "mcq": {
+            "question": "Which Spanish word means 'eighty'?",
+            "options": [
+              "ochenta",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "ochenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__  = Eighty",
+          "expected_answer": "ochenta",
+          "alt_answers": [
+            "Ochenta",
+            "ochenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ochenta",
+          "options": [
+            "Eighty",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Eighty"
+        }
+      },
+      "lesson28": {
+        "title": "Ninety",
+        "step1": {
+          "spanish": "noventa",
+          "english": "Ninety",
+          "audio": "noventa",
+          "note": "The Spanish word for 'ninety'.",
+          "mcq": {
+            "question": "Which Spanish word means 'ninety'?",
+            "options": [
+              "noventa",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "noventa"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Ninety",
+          "expected_answer": "noventa",
+          "alt_answers": [
+            "Noventa",
+            "noventa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "noventa",
+          "options": [
+            "Ninety",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "Ninety"
+        }
+      },
+      "lesson29": {
+        "title": "One hundred",
+        "step1": {
+          "spanish": "cien",
+          "english": "One hundred",
+          "audio": "cien",
+          "note": "The Spanish word for 'one hundred'.",
+          "mcq": {
+            "question": "Which Spanish word means 'one hundred'?",
+            "options": [
+              "cien",
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "answer": "cien"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = One hundred",
+          "expected_answer": "cien",
+          "alt_answers": [
+            "Cien",
+            "cien"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cien",
+          "options": [
+            "One hundred",
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": "One hundred"
+        }
+      },
+      "lesson30": {
+        "title": "How old are you? (informal)",
+        "step1": {
+          "spanish": "¿Cuántos años tienes?",
+          "english": "How old are you? (informal)",
+          "audio": "¿Cuántos años tienes?",
+          "note": "Use with friends and peers (tú).",
+          "mcq": {
+            "question": "How do you say 'How old are you? (informal)' in Spanish?",
+            "options": [
+              "¿Cuántos años tienes?",
+              "¿Qué edad tienes?",
+              "¿Qué hora es?",
+              "Tengo años"
+            ],
+            "answer": "¿Cuántos años tienes?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Cuán__  = How old are you? (informal)",
+          "expected_answer": "¿Cuántos años tienes?",
+          "alt_answers": [
+            "¿Cuántos años tienes?",
+            "¿Cuántos años tienes?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Cuántos años tienes?",
+          "options": [
+            "How old are you? (informal)",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "How old are you? (informal)"
+        }
+      },
+      "lesson31": {
+        "title": "How old are you? (formal)",
+        "step1": {
+          "spanish": "¿Cuántos años tiene (usted)?",
+          "english": "How old are you? (formal)",
+          "audio": "¿Cuántos años tiene (usted)?",
+          "note": "Use in formal situations (usted).",
+          "mcq": {
+            "question": "How do you say 'How old are you? (formal)' in Spanish?",
+            "options": [
+              "¿Cuántos años tiene (usted)?",
+              "¿Qué edad tienes?",
+              "¿Qué hora es?",
+              "Tengo años"
+            ],
+            "answer": "¿Cuántos años tiene (usted)?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Cuán__  = How old are you? (formal)",
+          "expected_answer": "¿Cuántos años tiene (usted)?",
+          "alt_answers": [
+            "¿Cuántos años tiene?",
+            "¿Cuántos años tiene (usted)?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Cuántos años tiene (usted)?",
+          "options": [
+            "How old are you? (formal)",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "How old are you? (formal)"
+        }
+      },
+      "lesson32": {
+        "title": "I am __ years old",
+        "step1": {
+          "spanish": "Tengo __ años",
+          "english": "I am __ years old",
+          "audio": "Tengo __ años",
+          "note": "Fill in with your age.",
+          "mcq": {
+            "question": "How do you say 'I am __ years old' in Spanish?",
+            "options": [
+              "Tengo __ años",
+              "¿Qué edad tienes?",
+              "¿Qué hora es?",
+              "Tengo años"
+            ],
+            "answer": "Tengo __ años"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tengo__  = I am __ years old",
+          "expected_answer": "Tengo __ años",
+          "alt_answers": [
+            "Tengo __ años",
+            "Tengo __ años"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tengo __ años",
+          "options": [
+            "I am __ years old",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "I am __ years old"
+        }
+      }
+    }
+  }
+}

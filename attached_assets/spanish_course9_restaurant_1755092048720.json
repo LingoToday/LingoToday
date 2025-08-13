@@ -1,0 +1,748 @@
+{
+  "course9": {
+    "title": "At a Restaurant",
+    "description": "Learn essential Spanish vocabulary and phrases for ordering food, asking for the bill, and common restaurant interactions. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "I would like...",
+        "step1": {
+          "spanish": "Quisiera...",
+          "english": "I would like...",
+          "audio": "Quisiera...",
+          "note": "The Spanish phrase for 'I would like...'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'I would like...'?",
+            "options": [
+              "Quisiera...",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Quisiera..."
+          }
+        },
+        "step2": {
+          "type_prompt": "Quis__  = I would like...",
+          "expected_answer": "Quisiera...",
+          "alt_answers": [
+            "Quisiera...",
+            "Quisiera..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quisiera...",
+          "options": [
+            "I would like...",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "I would like..."
+        }
+      },
+      "lesson2": {
+        "title": "For me...",
+        "step1": {
+          "spanish": "Para mí...",
+          "english": "For me...",
+          "audio": "Para mí...",
+          "note": "The Spanish phrase for 'For me...'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'For me...'?",
+            "options": [
+              "Para mí...",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Para mí..."
+          }
+        },
+        "step2": {
+          "type_prompt": "Para__  = For me...",
+          "expected_answer": "Para mí...",
+          "alt_answers": [
+            "Para mí...",
+            "Para mí..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Para mí...",
+          "options": [
+            "For me...",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "For me..."
+        }
+      },
+      "lesson3": {
+        "title": "For him/her...",
+        "step1": {
+          "spanish": "Para él/ella...",
+          "english": "For him/her...",
+          "audio": "Para él/ella...",
+          "note": "The Spanish phrase for 'For him/her...'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'For him/her...'?",
+            "options": [
+              "Para él/ella...",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Para él/ella..."
+          }
+        },
+        "step2": {
+          "type_prompt": "Para__  = For him/her...",
+          "expected_answer": "Para él/ella...",
+          "alt_answers": [
+            "Para él/ella...",
+            "Para él/ella..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Para él/ella...",
+          "options": [
+            "For him/her...",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "For him/her..."
+        }
+      },
+      "lesson4": {
+        "title": "What do you recommend?",
+        "step1": {
+          "spanish": "¿Qué me recomienda?",
+          "english": "What do you recommend?",
+          "audio": "¿Qué me recomienda?",
+          "note": "The Spanish phrase for 'What do you recommend?'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'What do you recommend?'?",
+            "options": [
+              "¿Qué me recomienda?",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "¿Qué me recomienda?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Qué__  = What do you recommend?",
+          "expected_answer": "¿Qué me recomienda?",
+          "alt_answers": [
+            "¿qué me recomienda?",
+            "¿Qué me recomienda?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Qué me recomienda?",
+          "options": [
+            "What do you recommend?",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "What do you recommend?"
+        }
+      },
+      "lesson5": {
+        "title": "The bill, please",
+        "step1": {
+          "spanish": "La cuenta, por favor",
+          "english": "The bill, please",
+          "audio": "La cuenta, por favor",
+          "note": "The Spanish phrase for 'The bill, please'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'The bill, please'?",
+            "options": [
+              "La cuenta, por favor",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "La cuenta, por favor"
+          }
+        },
+        "step2": {
+          "type_prompt": "La c__  = The bill, please",
+          "expected_answer": "La cuenta, por favor",
+          "alt_answers": [
+            "La cuenta, por favor",
+            "La cuenta, por favor"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La cuenta, por favor",
+          "options": [
+            "The bill, please",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "The bill, please"
+        }
+      },
+      "lesson6": {
+        "title": "How much does it cost?",
+        "step1": {
+          "spanish": "¿Cuánto cuesta?",
+          "english": "How much does it cost?",
+          "audio": "¿Cuánto cuesta?",
+          "note": "The Spanish phrase for 'How much does it cost?'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'How much does it cost?'?",
+            "options": [
+              "¿Cuánto cuesta?",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "¿Cuánto cuesta?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Cuá__  = How much does it cost?",
+          "expected_answer": "¿Cuánto cuesta?",
+          "alt_answers": [
+            "¿cuánto cuesta?",
+            "¿Cuánto cuesta?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Cuánto cuesta?",
+          "options": [
+            "How much does it cost?",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "How much does it cost?"
+        }
+      },
+      "lesson7": {
+        "title": "Do you accept card?",
+        "step1": {
+          "spanish": "¿Aceptan tarjeta?",
+          "english": "Do you accept card?",
+          "audio": "¿Aceptan tarjeta?",
+          "note": "The Spanish phrase for 'Do you accept card?'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'Do you accept card?'?",
+            "options": [
+              "¿Aceptan tarjeta?",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "¿Aceptan tarjeta?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Ace__  = Do you accept card?",
+          "expected_answer": "¿Aceptan tarjeta?",
+          "alt_answers": [
+            "¿aceptan tarjeta?",
+            "¿Aceptan tarjeta?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Aceptan tarjeta?",
+          "options": [
+            "Do you accept card?",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "Do you accept card?"
+        }
+      },
+      "lesson8": {
+        "title": "It’s delicious",
+        "step1": {
+          "spanish": "Está delicioso",
+          "english": "It’s delicious",
+          "audio": "Está delicioso",
+          "note": "The Spanish phrase for 'It’s delicious'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'It’s delicious'?",
+            "options": [
+              "Está delicioso",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Está delicioso"
+          }
+        },
+        "step2": {
+          "type_prompt": "Está__  = It’s delicious",
+          "expected_answer": "Está delicioso",
+          "alt_answers": [
+            "Está delicioso",
+            "Está delicioso"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Está delicioso",
+          "options": [
+            "It’s delicious",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "It’s delicious"
+        }
+      },
+      "lesson9": {
+        "title": "It’s very tasty",
+        "step1": {
+          "spanish": "Está muy rico",
+          "english": "It’s very tasty",
+          "audio": "Está muy rico",
+          "note": "The Spanish phrase for 'It’s very tasty'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'It’s very tasty'?",
+            "options": [
+              "Está muy rico",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Está muy rico"
+          }
+        },
+        "step2": {
+          "type_prompt": "Está__  = It’s very tasty",
+          "expected_answer": "Está muy rico",
+          "alt_answers": [
+            "Está muy rico",
+            "Está muy rico"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Está muy rico",
+          "options": [
+            "It’s very tasty",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "It’s very tasty"
+        }
+      },
+      "lesson10": {
+        "title": "Still water",
+        "step1": {
+          "spanish": "Agua sin gas",
+          "english": "Still water",
+          "audio": "Agua sin gas",
+          "note": "The Spanish phrase for 'Still water'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'Still water'?",
+            "options": [
+              "Agua sin gas",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Agua sin gas"
+          }
+        },
+        "step2": {
+          "type_prompt": "Agua__  = Still water",
+          "expected_answer": "Agua sin gas",
+          "alt_answers": [
+            "Agua sin gas",
+            "Agua sin gas"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Agua sin gas",
+          "options": [
+            "Still water",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "Still water"
+        }
+      },
+      "lesson11": {
+        "title": "Sparkling water",
+        "step1": {
+          "spanish": "Agua con gas",
+          "english": "Sparkling water",
+          "audio": "Agua con gas",
+          "note": "The Spanish phrase for 'Sparkling water'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'Sparkling water'?",
+            "options": [
+              "Agua con gas",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Agua con gas"
+          }
+        },
+        "step2": {
+          "type_prompt": "Agua__  = Sparkling water",
+          "expected_answer": "Agua con gas",
+          "alt_answers": [
+            "Agua con gas",
+            "Agua con gas"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Agua con gas",
+          "options": [
+            "Sparkling water",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "Sparkling water"
+        }
+      },
+      "lesson12": {
+        "title": "A coffee, please",
+        "step1": {
+          "spanish": "Un café, por favor",
+          "english": "A coffee, please",
+          "audio": "Un café, por favor",
+          "note": "The Spanish phrase for 'A coffee, please'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'A coffee, please'?",
+            "options": [
+              "Un café, por favor",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Un café, por favor"
+          }
+        },
+        "step2": {
+          "type_prompt": "Un c__  = A coffee, please",
+          "expected_answer": "Un café, por favor",
+          "alt_answers": [
+            "Un café, por favor",
+            "Un café, por favor"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Un café, por favor",
+          "options": [
+            "A coffee, please",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "A coffee, please"
+        }
+      },
+      "lesson13": {
+        "title": "A beer, please",
+        "step1": {
+          "spanish": "Una cerveza, por favor",
+          "english": "A beer, please",
+          "audio": "Una cerveza, por favor",
+          "note": "The Spanish phrase for 'A beer, please'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'A beer, please'?",
+            "options": [
+              "Una cerveza, por favor",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Una cerveza, por favor"
+          }
+        },
+        "step2": {
+          "type_prompt": "Una __  = A beer, please",
+          "expected_answer": "Una cerveza, por favor",
+          "alt_answers": [
+            "Una cerveza, por favor",
+            "Una cerveza, por favor"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Una cerveza, por favor",
+          "options": [
+            "A beer, please",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "A beer, please"
+        }
+      },
+      "lesson14": {
+        "title": "A glass of red wine",
+        "step1": {
+          "spanish": "Una copa de vino tinto",
+          "english": "A glass of red wine",
+          "audio": "Una copa de vino tinto",
+          "note": "The Spanish phrase for 'A glass of red wine'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'A glass of red wine'?",
+            "options": [
+              "Una copa de vino tinto",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Una copa de vino tinto"
+          }
+        },
+        "step2": {
+          "type_prompt": "Una __  = A glass of red wine",
+          "expected_answer": "Una copa de vino tinto",
+          "alt_answers": [
+            "Una copa de vino tinto",
+            "Una copa de vino tinto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Una copa de vino tinto",
+          "options": [
+            "A glass of red wine",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "A glass of red wine"
+        }
+      },
+      "lesson15": {
+        "title": "A glass of white wine",
+        "step1": {
+          "spanish": "Una copa de vino blanco",
+          "english": "A glass of white wine",
+          "audio": "Una copa de vino blanco",
+          "note": "The Spanish phrase for 'A glass of white wine'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'A glass of white wine'?",
+            "options": [
+              "Una copa de vino blanco",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Una copa de vino blanco"
+          }
+        },
+        "step2": {
+          "type_prompt": "Una __  = A glass of white wine",
+          "expected_answer": "Una copa de vino blanco",
+          "alt_answers": [
+            "Una copa de vino blanco",
+            "Una copa de vino blanco"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Una copa de vino blanco",
+          "options": [
+            "A glass of white wine",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "A glass of white wine"
+        }
+      },
+      "lesson16": {
+        "title": "Without sugar",
+        "step1": {
+          "spanish": "Sin azúcar",
+          "english": "Without sugar",
+          "audio": "Sin azúcar",
+          "note": "The Spanish phrase for 'Without sugar'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'Without sugar'?",
+            "options": [
+              "Sin azúcar",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Sin azúcar"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sin __  = Without sugar",
+          "expected_answer": "Sin azúcar",
+          "alt_answers": [
+            "Sin azúcar",
+            "Sin azúcar"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sin azúcar",
+          "options": [
+            "Without sugar",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "Without sugar"
+        }
+      },
+      "lesson17": {
+        "title": "With sugar",
+        "step1": {
+          "spanish": "Con azúcar",
+          "english": "With sugar",
+          "audio": "Con azúcar",
+          "note": "The Spanish phrase for 'With sugar'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'With sugar'?",
+            "options": [
+              "Con azúcar",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Con azúcar"
+          }
+        },
+        "step2": {
+          "type_prompt": "Con __  = With sugar",
+          "expected_answer": "Con azúcar",
+          "alt_answers": [
+            "Con azúcar",
+            "Con azúcar"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Con azúcar",
+          "options": [
+            "With sugar",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "With sugar"
+        }
+      },
+      "lesson18": {
+        "title": "Without ice",
+        "step1": {
+          "spanish": "Sin hielo",
+          "english": "Without ice",
+          "audio": "Sin hielo",
+          "note": "The Spanish phrase for 'Without ice'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'Without ice'?",
+            "options": [
+              "Sin hielo",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Sin hielo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sin __  = Without ice",
+          "expected_answer": "Sin hielo",
+          "alt_answers": [
+            "Sin hielo",
+            "Sin hielo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sin hielo",
+          "options": [
+            "Without ice",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "Without ice"
+        }
+      },
+      "lesson19": {
+        "title": "With ice",
+        "step1": {
+          "spanish": "Con hielo",
+          "english": "With ice",
+          "audio": "Con hielo",
+          "note": "The Spanish phrase for 'With ice'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'With ice'?",
+            "options": [
+              "Con hielo",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "Con hielo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Con __  = With ice",
+          "expected_answer": "Con hielo",
+          "alt_answers": [
+            "Con hielo",
+            "Con hielo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Con hielo",
+          "options": [
+            "With ice",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "With ice"
+        }
+      },
+      "lesson20": {
+        "title": "The soup of the day",
+        "step1": {
+          "spanish": "La sopa del día",
+          "english": "The soup of the day",
+          "audio": "La sopa del día",
+          "note": "The Spanish phrase for 'The soup of the day'.",
+          "mcq": {
+            "question": "Which Spanish phrase means 'The soup of the day'?",
+            "options": [
+              "La sopa del día",
+              "La cuenta, por favor",
+              "Un café, por favor",
+              "Está delicioso"
+            ],
+            "answer": "La sopa del día"
+          }
+        },
+        "step2": {
+          "type_prompt": "La s__  = The soup of the day",
+          "expected_answer": "La sopa del día",
+          "alt_answers": [
+            "La sopa del día",
+            "La sopa del día"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La sopa del día",
+          "options": [
+            "The soup of the day",
+            "The bill, please",
+            "A coffee, please",
+            "It’s delicious"
+          ],
+          "answer": "The soup of the day"
+        }
+      }
+    }
+  }
+}
