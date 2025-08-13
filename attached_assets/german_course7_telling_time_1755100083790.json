@@ -1,0 +1,405 @@
+{
+  "course7": {
+    "title": "Telling Time",
+    "description": "Learn to ask for and tell the time in German, including hours, minutes, half/quarter hours, and arranging meeting times.",
+    "lessons": {
+      "lesson1": {
+        "title": "Asking the time",
+        "step1": {
+          "german": "Wie spät ist es? / Wie viel Uhr ist es?",
+          "english": "What time is it?",
+          "audio": "Wie spät ist es? / Wie viel Uhr ist es?",
+          "note": "'Wie spät ist es?' is common in conversation. 'Wie viel Uhr ist es?' is more formal or precise.",
+          "mcq": {
+            "question": "Which phrase means 'What time is it?' in German?",
+            "options": [
+              "Wie spät ist es?",
+              "Wie viele Stunden?",
+              "Wann Uhr?",
+              "Welche Zeit?"
+            ],
+            "answer": "Wie spät ist es?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie ___ ist es? = What time is it?",
+          "expected_answer": "spät",
+          "alt_answers": [
+            "Spät"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie viel Uhr ist es?",
+          "options": [
+            "What time is it?",
+            "How many hours?",
+            "When is it?",
+            "What day is it?"
+          ],
+          "answer": "What time is it?"
+        }
+      },
+      "lesson2": {
+        "title": "It is one o'clock.",
+        "step1": {
+          "german": "Es ist ein Uhr.",
+          "english": "It is one o'clock.",
+          "audio": "Es ist ein Uhr.",
+          "note": "Use 'Es ist' + hour + 'Uhr' for full hours.",
+          "mcq": {
+            "question": "How do you say 'It is one o'clock.' in German?",
+            "options": [
+              "Es ist ein Uhr.",
+              "Es ist vier Uhr.",
+              "Es ist zwei Uhr.",
+              "Es ist fünf Uhr."
+            ],
+            "answer": "Es ist ein Uhr."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ Uhr. = It is one o'clock.",
+          "expected_answer": "ein",
+          "alt_answers": [
+            "Ein"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist ein Uhr.",
+          "options": [
+            "It is one o'clock.",
+            "It is four o'clock.",
+            "It is two o'clock.",
+            "It is five o'clock."
+          ],
+          "answer": "It is one o'clock."
+        }
+      },
+      "lesson3": {
+        "title": "It is two o'clock.",
+        "step1": {
+          "german": "Es ist zwei Uhr.",
+          "english": "It is two o'clock.",
+          "audio": "Es ist zwei Uhr.",
+          "note": "Use 'Es ist' + hour + 'Uhr' for full hours.",
+          "mcq": {
+            "question": "How do you say 'It is two o'clock.' in German?",
+            "options": [
+              "Es ist zwei Uhr.",
+              "Es ist vier Uhr.",
+              "Es ist zwei Uhr.",
+              "Es ist fünf Uhr."
+            ],
+            "answer": "Es ist zwei Uhr."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ Uhr. = It is two o'clock.",
+          "expected_answer": "zwei",
+          "alt_answers": [
+            "Zwei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist zwei Uhr.",
+          "options": [
+            "It is two o'clock.",
+            "It is four o'clock.",
+            "It is two o'clock.",
+            "It is five o'clock."
+          ],
+          "answer": "It is two o'clock."
+        }
+      },
+      "lesson4": {
+        "title": "It is three o'clock.",
+        "step1": {
+          "german": "Es ist drei Uhr.",
+          "english": "It is three o'clock.",
+          "audio": "Es ist drei Uhr.",
+          "note": "Use 'Es ist' + hour + 'Uhr' for full hours.",
+          "mcq": {
+            "question": "How do you say 'It is three o'clock.' in German?",
+            "options": [
+              "Es ist drei Uhr.",
+              "Es ist vier Uhr.",
+              "Es ist zwei Uhr.",
+              "Es ist fünf Uhr."
+            ],
+            "answer": "Es ist drei Uhr."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ Uhr. = It is three o'clock.",
+          "expected_answer": "drei",
+          "alt_answers": [
+            "Drei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist drei Uhr.",
+          "options": [
+            "It is three o'clock.",
+            "It is four o'clock.",
+            "It is two o'clock.",
+            "It is five o'clock."
+          ],
+          "answer": "It is three o'clock."
+        }
+      },
+      "lesson5": {
+        "title": "It is four o'clock.",
+        "step1": {
+          "german": "Es ist vier Uhr.",
+          "english": "It is four o'clock.",
+          "audio": "Es ist vier Uhr.",
+          "note": "Use 'Es ist' + hour + 'Uhr' for full hours.",
+          "mcq": {
+            "question": "How do you say 'It is four o'clock.' in German?",
+            "options": [
+              "Es ist vier Uhr.",
+              "Es ist vier Uhr.",
+              "Es ist zwei Uhr.",
+              "Es ist fünf Uhr."
+            ],
+            "answer": "Es ist vier Uhr."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ Uhr. = It is four o'clock.",
+          "expected_answer": "vier",
+          "alt_answers": [
+            "Vier"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist vier Uhr.",
+          "options": [
+            "It is four o'clock.",
+            "It is four o'clock.",
+            "It is two o'clock.",
+            "It is five o'clock."
+          ],
+          "answer": "It is four o'clock."
+        }
+      },
+      "lesson6": {
+        "title": "Half past (German style)",
+        "step1": {
+          "german": "Es ist halb vier.",
+          "english": "It is half past three.",
+          "audio": "Es ist halb vier.",
+          "note": "In German, 'halb vier' means halfway to four, i.e., 3:30.",
+          "mcq": {
+            "question": "What does 'Es ist halb vier' mean?",
+            "options": [
+              "It is 3:30.",
+              "It is 4:30.",
+              "It is 3:00.",
+              "It is 4:00."
+            ],
+            "answer": "It is 3:30."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ vier. = It is half past three.",
+          "expected_answer": "halb",
+          "alt_answers": [
+            "Halb"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist halb vier.",
+          "options": [
+            "It is 3:30.",
+            "It is 4:30.",
+            "It is 3:00.",
+            "It is 4:00."
+          ],
+          "answer": "It is 3:30."
+        }
+      },
+      "lesson7": {
+        "title": "Quarter past",
+        "step1": {
+          "german": "Es ist Viertel nach drei.",
+          "english": "It is quarter past three.",
+          "audio": "Es ist Viertel nach drei.",
+          "note": "'Viertel nach' + hour = quarter past.",
+          "mcq": {
+            "question": "What does 'Es ist Viertel nach drei' mean?",
+            "options": [
+              "It is 3:15.",
+              "It is 3:45.",
+              "It is 4:15.",
+              "It is 2:45."
+            ],
+            "answer": "It is 3:15."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ nach drei. = It is quarter past three.",
+          "expected_answer": "Viertel",
+          "alt_answers": [
+            "viertel"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist Viertel nach drei.",
+          "options": [
+            "It is 3:15.",
+            "It is 3:45.",
+            "It is 4:15.",
+            "It is 2:45."
+          ],
+          "answer": "It is 3:15."
+        }
+      },
+      "lesson8": {
+        "title": "Quarter to",
+        "step1": {
+          "german": "Es ist Viertel vor vier.",
+          "english": "It is quarter to four.",
+          "audio": "Es ist Viertel vor vier.",
+          "note": "'Viertel vor' + next hour = quarter to.",
+          "mcq": {
+            "question": "What does 'Es ist Viertel vor vier' mean?",
+            "options": [
+              "It is 3:45.",
+              "It is 4:15.",
+              "It is 2:45.",
+              "It is 3:15."
+            ],
+            "answer": "It is 3:45."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ vor vier. = It is quarter to four.",
+          "expected_answer": "Viertel",
+          "alt_answers": [
+            "viertel"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist Viertel vor vier.",
+          "options": [
+            "It is 3:45.",
+            "It is 4:15.",
+            "It is 2:45.",
+            "It is 3:15."
+          ],
+          "answer": "It is 3:45."
+        }
+      },
+      "lesson9": {
+        "title": "Minutes past/to",
+        "step1": {
+          "german": "Es ist fünf nach drei. / Es ist zehn vor vier.",
+          "english": "It is five past three. / It is ten to four.",
+          "audio": "Es ist fünf nach drei. / Es ist zehn vor vier.",
+          "note": "'nach' = past, 'vor' = to.",
+          "mcq": {
+            "question": "What does 'Es ist zehn vor vier' mean?",
+            "options": [
+              "It is 3:50.",
+              "It is 4:10.",
+              "It is 3:10.",
+              "It is 2:50."
+            ],
+            "answer": "It is 3:50."
+          }
+        },
+        "step2": {
+          "type_prompt": "Es ist ___ vor vier. = It is ten to four.",
+          "expected_answer": "zehn",
+          "alt_answers": [
+            "Zehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Es ist fünf nach drei.",
+          "options": [
+            "It is 3:05.",
+            "It is 3:50.",
+            "It is 4:10.",
+            "It is 2:50."
+          ],
+          "answer": "It is 3:05."
+        }
+      },
+      "lesson10": {
+        "title": "24-hour clock",
+        "step1": {
+          "german": "Der Zug kommt um 16 Uhr an.",
+          "english": "The train arrives at 4 p.m.",
+          "audio": "Der Zug kommt um sechzehn Uhr an.",
+          "note": "German timetables use the 24-hour clock for clarity.",
+          "mcq": {
+            "question": "What does '16 Uhr' mean in 12-hour format?",
+            "options": [
+              "4 p.m.",
+              "4 a.m.",
+              "6 p.m.",
+              "6 a.m."
+            ],
+            "answer": "4 p.m."
+          }
+        },
+        "step2": {
+          "type_prompt": "Der Zug kommt um ___ Uhr an. = The train arrives at 4 p.m.",
+          "expected_answer": "16",
+          "alt_answers": [
+            "sechzehn",
+            "Sechzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Der Zug kommt um sechzehn Uhr an.",
+          "options": [
+            "The train arrives at 4 p.m.",
+            "The train arrives at 6 p.m.",
+            "The train arrives at 4 a.m.",
+            "The train arrives at 6 a.m."
+          ],
+          "answer": "The train arrives at 4 p.m."
+        }
+      },
+      "lesson11": {
+        "title": "Arranging meeting times",
+        "step1": {
+          "german": "Um wie viel Uhr treffen wir uns?",
+          "english": "At what time shall we meet?",
+          "audio": "Um wie viel Uhr treffen wir uns?",
+          "note": "Use 'um' + time for specifying meeting times.",
+          "mcq": {
+            "question": "What does 'Um wie viel Uhr treffen wir uns?' mean?",
+            "options": [
+              "At what time shall we meet?",
+              "What day shall we meet?",
+              "How long will we meet?",
+              "Where shall we meet?"
+            ],
+            "answer": "At what time shall we meet?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Um wie viel Uhr ___ wir uns? = At what time shall we meet?",
+          "expected_answer": "treffen",
+          "alt_answers": [
+            "Treffen"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Um wie viel Uhr treffen wir uns?",
+          "options": [
+            "At what time shall we meet?",
+            "What day shall we meet?",
+            "How long will we meet?",
+            "Where shall we meet?"
+          ],
+          "answer": "At what time shall we meet?"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "course3": {
+    "title": "Noun Gender & Articles",
+    "description": "Learn the three grammatical genders in German (masculine, feminine, neuter) and their definite and indefinite articles in the nominative case. Understand patterns and common endings that signal gender.",
+    "lessons": {
+      "lesson1": {
+        "title": "Masculine definite article",
+        "step1": {
+          "german": "der Mann",
+          "english": "the man",
+          "audio": "der Mann",
+          "note": "Masculine nouns in nominative use 'der'. Many male persons/professions are masculine.",
+          "mcq": {
+            "question": "Which is the masculine definite article?",
+            "options": [
+              "der",
+              "die",
+              "das",
+              "ein"
+            ],
+            "answer": "der"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Mann = the man (masculine)",
+          "expected_answer": "der Mann",
+          "alt_answers": [
+            "Der Mann",
+            "der mann"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der Mann",
+          "options": [
+            "the man",
+            "the woman",
+            "the child",
+            "a man"
+          ],
+          "answer": "the man"
+        }
+      },
+      "lesson2": {
+        "title": "Feminine definite article",
+        "step1": {
+          "german": "die Frau",
+          "english": "the woman",
+          "audio": "die Frau",
+          "note": "Feminine nouns in nominative use 'die'. Many female persons/professions are feminine.",
+          "mcq": {
+            "question": "Which is the feminine definite article?",
+            "options": [
+              "die",
+              "der",
+              "das",
+              "eine"
+            ],
+            "answer": "die"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Frau = the woman (feminine)",
+          "expected_answer": "die Frau",
+          "alt_answers": [
+            "Die Frau",
+            "die frau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "die Frau",
+          "options": [
+            "the woman",
+            "the man",
+            "the child",
+            "a woman"
+          ],
+          "answer": "the woman"
+        }
+      },
+      "lesson3": {
+        "title": "Neuter definite article",
+        "step1": {
+          "german": "das Kind",
+          "english": "the child",
+          "audio": "das Kind",
+          "note": "Neuter nouns in nominative use 'das'. Many nouns ending in -chen/-lein are neuter.",
+          "mcq": {
+            "question": "Which is the neuter definite article?",
+            "options": [
+              "das",
+              "der",
+              "die",
+              "ein"
+            ],
+            "answer": "das"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Kind = the child (neuter)",
+          "expected_answer": "das Kind",
+          "alt_answers": [
+            "Das Kind",
+            "das kind"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "das Kind",
+          "options": [
+            "the child",
+            "the man",
+            "the woman",
+            "a child"
+          ],
+          "answer": "the child"
+        }
+      },
+      "lesson4": {
+        "title": "Masculine indefinite article",
+        "step1": {
+          "german": "ein Mann",
+          "english": "a man",
+          "audio": "ein Mann",
+          "note": "Masculine indefinite article in nominative is 'ein'.",
+          "mcq": {
+            "question": "What is 'a man' in German?",
+            "options": [
+              "ein Mann",
+              "eine Mann",
+              "ein Frau",
+              "der Mann"
+            ],
+            "answer": "ein Mann"
+          }
+        },
+        "step2": {
+          "type_prompt": "__ Mann = a man (masculine)",
+          "expected_answer": "ein Mann",
+          "alt_answers": [
+            "Ein Mann",
+            "ein mann"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ein Mann",
+          "options": [
+            "a man",
+            "the man",
+            "a woman",
+            "a child"
+          ],
+          "answer": "a man"
+        }
+      },
+      "lesson5": {
+        "title": "Feminine indefinite article",
+        "step1": {
+          "german": "eine Frau",
+          "english": "a woman",
+          "audio": "eine Frau",
+          "note": "Feminine indefinite article in nominative is 'eine'.",
+          "mcq": {
+            "question": "What is 'a woman' in German?",
+            "options": [
+              "eine Frau",
+              "ein Frau",
+              "eine Mann",
+              "die Frau"
+            ],
+            "answer": "eine Frau"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Frau = a woman (feminine)",
+          "expected_answer": "eine Frau",
+          "alt_answers": [
+            "Eine Frau",
+            "eine frau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "eine Frau",
+          "options": [
+            "a woman",
+            "the woman",
+            "a man",
+            "a child"
+          ],
+          "answer": "a woman"
+        }
+      },
+      "lesson6": {
+        "title": "Neuter indefinite article",
+        "step1": {
+          "german": "ein Kind",
+          "english": "a child",
+          "audio": "ein Kind",
+          "note": "Neuter indefinite article in nominative is also 'ein'.",
+          "mcq": {
+            "question": "What is 'a child' in German?",
+            "options": [
+              "ein Kind",
+              "eine Kind",
+              "ein Mann",
+              "das Kind"
+            ],
+            "answer": "ein Kind"
+          }
+        },
+        "step2": {
+          "type_prompt": "__ Kind = a child (neuter)",
+          "expected_answer": "ein Kind",
+          "alt_answers": [
+            "Ein Kind",
+            "ein kind"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ein Kind",
+          "options": [
+            "a child",
+            "the child",
+            "a man",
+            "a woman"
+          ],
+          "answer": "a child"
+        }
+      },
+      "lesson7": {
+        "title": "Gender patterns",
+        "step1": {
+          "german": "der Sommer, die Blume, das Mädchen",
+          "english": "the summer, the flower, the girl",
+          "audio": "der Sommer, die Blume, das Mädchen",
+          "note": "Common patterns: -er (often masculine), -e (often feminine), diminutives (-chen/-lein) are neuter.",
+          "mcq": {
+            "question": "Which ending often signals a feminine noun?",
+            "options": [
+              "-er",
+              "-e",
+              "-chen",
+              "-lein"
+            ],
+            "answer": "-e"
+          }
+        },
+        "step2": {
+          "type_prompt": "Common feminine ending: -_",
+          "expected_answer": "-e",
+          "alt_answers": [
+            "e"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "die Blume",
+          "options": [
+            "the flower",
+            "the man",
+            "the girl",
+            "the summer"
+          ],
+          "answer": "the flower"
+        }
+      },
+      "lesson8": {
+        "title": "Memorising article + noun together",
+        "step1": {
+          "german": "der Tisch, die Tür, das Buch",
+          "english": "the table, the door, the book",
+          "audio": "der Tisch, die Tür, das Buch",
+          "note": "Always learn the article with the noun to remember gender.",
+          "mcq": {
+            "question": "Which is correct for 'the door'?",
+            "options": [
+              "die Tür",
+              "der Tür",
+              "das Tür",
+              "die Tor"
+            ],
+            "answer": "die Tür"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Buch = the book (neuter)",
+          "expected_answer": "das Buch",
+          "alt_answers": [
+            "Das Buch",
+            "das buch"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "das Buch",
+          "options": [
+            "the book",
+            "the door",
+            "the table",
+            "the girl"
+          ],
+          "answer": "the book"
+        }
+      }
+    }
+  }
+}

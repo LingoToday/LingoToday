@@ -1,0 +1,488 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Learn the most common ways to say hello and goodbye in German. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall. Note: Unlike Italian 'Ciao' (hi/bye), German typically uses separate words for greeting ('Hallo') and farewell ('Tschüss').",
+    "lessons": {
+      "lesson1": {
+        "title": "Hi / Bye",
+        "step1": {
+          "german": "Hallo!",
+          "english": "Hi!",
+          "audio": "Hallo!",
+          "note": "Use 'Hallo!' as an informal, friendly greeting. For 'Bye!' use 'Tschüss!' (introduced later).",
+          "mcq": {
+            "question": "Which phrase means 'Hi!' (informal)?",
+            "options": [
+              "Auf Wiedersehen",
+              "Hallo",
+              "Guten Abend",
+              "Tschüss"
+            ],
+            "answer": "Hallo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ha__o!  = Hi!",
+          "expected_answer": "Hallo!",
+          "alt_answers": [
+            "Hallo",
+            "hallo!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Hallo!",
+          "options": [
+            "Hi!",
+            "Good evening!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "Hi!"
+        }
+      },
+      "lesson2": {
+        "title": "Hello",
+        "step1": {
+          "german": "Guten Tag!",
+          "english": "Hello / Good day",
+          "audio": "Guten Tag!",
+          "note": "Polite daytime greeting. Suitable with strangers or in shops/offices.",
+          "mcq": {
+            "question": "Which phrase is a polite daytime 'Hello'?",
+            "options": [
+              "Guten Tag",
+              "Gute Nacht",
+              "Tschüss",
+              "Hallo"
+            ],
+            "answer": "Guten Tag"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gu__n Ta_!  = Hello / Good day",
+          "expected_answer": "Guten Tag!",
+          "alt_answers": [
+            "Guten Tag",
+            "guten tag!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Guten Tag!",
+          "options": [
+            "Hello!",
+            "Good night!",
+            "Goodbye!",
+            "Hi!"
+          ],
+          "answer": "Hello!"
+        }
+      },
+      "lesson3": {
+        "title": "Good morning / Good day",
+        "step1": {
+          "german": "Guten Morgen",
+          "english": "Good morning",
+          "audio": "Guten Morgen",
+          "note": "Used in the morning. Later in the day use 'Guten Tag'.",
+          "mcq": {
+            "question": "Which phrase means 'Good morning'?",
+            "options": [
+              "Guten Abend",
+              "Guten Morgen",
+              "Gute Nacht",
+              "Tschüss"
+            ],
+            "answer": "Guten Morgen"
+          }
+        },
+        "step2": {
+          "type_prompt": "Guten Mo__en  = Good morning",
+          "expected_answer": "Guten Morgen",
+          "alt_answers": [
+            "guten morgen"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Guten Morgen!",
+          "options": [
+            "Good morning!",
+            "Good evening!",
+            "Good night!",
+            "Goodbye!"
+          ],
+          "answer": "Good morning!"
+        }
+      },
+      "lesson4": {
+        "title": "Good evening",
+        "step1": {
+          "german": "Guten Abend",
+          "english": "Good evening",
+          "audio": "Guten Abend",
+          "note": "Switch to this in the late afternoon/evening — polite and friendly.",
+          "mcq": {
+            "question": "Which phrase means 'Good evening'?",
+            "options": [
+              "Guten Abend",
+              "Guten Morgen",
+              "Guten Tag",
+              "Tschüss"
+            ],
+            "answer": "Guten Abend"
+          }
+        },
+        "step2": {
+          "type_prompt": "Guten Ab__d  = Good evening",
+          "expected_answer": "Guten Abend",
+          "alt_answers": [
+            "guten abend"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Guten Abend!",
+          "options": [
+            "Good evening!",
+            "Good night!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Good evening!"
+        }
+      },
+      "lesson5": {
+        "title": "Good afternoon",
+        "step1": {
+          "german": "Guten Nachmittag",
+          "english": "Good afternoon",
+          "audio": "Guten Nachmittag",
+          "note": "Rare in everyday German; people usually say 'Guten Tag' until evening.",
+          "mcq": {
+            "question": "Which phrase is the (rare) direct equivalent of 'Good afternoon'?",
+            "options": [
+              "Guten Abend",
+              "Guten Nachmittag",
+              "Gute Nacht",
+              "Guten Morgen"
+            ],
+            "answer": "Guten Nachmittag"
+          }
+        },
+        "step2": {
+          "type_prompt": "Guten Nachmi__ag  = Good afternoon",
+          "expected_answer": "Guten Nachmittag",
+          "alt_answers": [
+            "guten nachmittag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Guten Nachmittag!",
+          "options": [
+            "Good afternoon!",
+            "Good evening!",
+            "Good morning!",
+            "Good night!"
+          ],
+          "answer": "Good afternoon!"
+        }
+      },
+      "lesson6": {
+        "title": "Good night",
+        "step1": {
+          "german": "Gute Nacht",
+          "english": "Good night",
+          "audio": "Gute Nacht",
+          "note": "Say when parting late at night or before going to bed — not as a greeting.",
+          "mcq": {
+            "question": "Which phrase means 'Good night'?",
+            "options": [
+              "Guten Abend",
+              "Gute Nacht",
+              "Guten Morgen",
+              "Auf Wiedersehen"
+            ],
+            "answer": "Gute Nacht"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gu__ Na__t  = Good night",
+          "expected_answer": "Gute Nacht",
+          "alt_answers": [
+            "gute nacht"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Gute Nacht!",
+          "options": [
+            "Good night!",
+            "Good evening!",
+            "Good morning!",
+            "Goodbye!"
+          ],
+          "answer": "Good night!"
+        }
+      },
+      "lesson7": {
+        "title": "Have a nice day",
+        "step1": {
+          "german": "Schönen Tag noch!",
+          "english": "Have a nice day",
+          "audio": "Schönen Tag noch!",
+          "note": "Common farewell during the day. Alternative: 'Einen schönen Tag noch!'.",
+          "mcq": {
+            "question": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Schönen Tag noch",
+              "Guten Tag",
+              "Guten Abend",
+              "Tschüss"
+            ],
+            "answer": "Schönen Tag noch"
+          }
+        },
+        "step2": {
+          "type_prompt": "Schönen Ta_ no__!  = Have a nice day",
+          "expected_answer": "Schönen Tag noch!",
+          "alt_answers": [
+            "Schönen Tag noch",
+            "Einen schönen Tag noch!",
+            "einen schönen tag noch!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Schönen Tag noch!",
+          "options": [
+            "Have a nice day!",
+            "Good evening!",
+            "Good morning!",
+            "Goodbye!"
+          ],
+          "answer": "Have a nice day!"
+        }
+      },
+      "lesson8": {
+        "title": "Have a good evening",
+        "step1": {
+          "german": "Schönen Abend!",
+          "english": "Have a good evening",
+          "audio": "Schönen Abend!",
+          "note": "Farewell in the evening. Also common: 'Einen schönen Abend noch!'.",
+          "mcq": {
+            "question": "Which phrase means 'Have a good evening'?",
+            "options": [
+              "Schönen Abend",
+              "Guten Abend",
+              "Gute Nacht",
+              "Auf Wiedersehen"
+            ],
+            "answer": "Schönen Abend"
+          }
+        },
+        "step2": {
+          "type_prompt": "Schönen Ab__d!  = Have a good evening",
+          "expected_answer": "Schönen Abend!",
+          "alt_answers": [
+            "Schönen Abend",
+            "Einen schönen Abend noch!",
+            "schönen abend!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Schönen Abend!",
+          "options": [
+            "Have a good evening!",
+            "Good morning!",
+            "Good night!",
+            "Hello!"
+          ],
+          "answer": "Have a good evening!"
+        }
+      },
+      "lesson9": {
+        "title": "Goodbye",
+        "step1": {
+          "german": "Auf Wiedersehen",
+          "english": "Goodbye",
+          "audio": "Auf Wiedersehen",
+          "note": "Standard, polite farewell in most situations.",
+          "mcq": {
+            "question": "Which phrase means 'Goodbye' (polite)?",
+            "options": [
+              "Tschüss",
+              "Auf Wiedersehen",
+              "Hallo",
+              "Guten Tag"
+            ],
+            "answer": "Auf Wiedersehen"
+          }
+        },
+        "step2": {
+          "type_prompt": "Auf Wiede__ehen  = Goodbye",
+          "expected_answer": "Auf Wiedersehen",
+          "alt_answers": [
+            "auf wiedersehen"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Auf Wiedersehen!",
+          "options": [
+            "Goodbye!",
+            "Hello!",
+            "Good evening!",
+            "Good night!"
+          ],
+          "answer": "Goodbye!"
+        }
+      },
+      "lesson10": {
+        "title": "Bye! (farewell)",
+        "step1": {
+          "german": "Tschüss!",
+          "english": "Bye!",
+          "audio": "Tschüss!",
+          "note": "Informal farewell. In southern Germany/Austria you’ll also hear 'Servus!' (informal).",
+          "mcq": {
+            "question": "Which phrase means 'Bye!' (informal)?",
+            "options": [
+              "Tschüss",
+              "Auf Wiedersehen",
+              "Guten Abend",
+              "Hallo"
+            ],
+            "answer": "Tschüss"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tsc__ß!  = Bye!",
+          "expected_answer": "Tschüss!",
+          "alt_answers": [
+            "Tschüss",
+            "tschuess!",
+            "tschuess",
+            "tschüss!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tschüss!",
+          "options": [
+            "Bye!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Bye!"
+        }
+      },
+      "lesson11": {
+        "title": "See you soon",
+        "step1": {
+          "german": "Bis bald",
+          "english": "See you soon",
+          "audio": "Bis bald",
+          "note": "Friendly promise/expectation to meet again soon.",
+          "mcq": {
+            "question": "Which phrase means 'See you soon'?",
+            "options": [
+              "Bis bald",
+              "Auf Wiedersehen",
+              "Guten Abend",
+              "Gute Nacht"
+            ],
+            "answer": "Bis bald"
+          }
+        },
+        "step2": {
+          "type_prompt": "Bis b__d  = See you soon",
+          "expected_answer": "Bis bald",
+          "alt_answers": [
+            "bis bald"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Bis bald!",
+          "options": [
+            "See you soon!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "See you soon!"
+        }
+      },
+      "lesson12": {
+        "title": "See you (later)",
+        "step1": {
+          "german": "Bis später",
+          "english": "See you later",
+          "audio": "Bis später",
+          "note": "Casual; literally 'until later'. Alternative: 'Wir sehen uns (später)!'",
+          "mcq": {
+            "question": "Which phrase means 'See you later'?",
+            "options": [
+              "Bis später",
+              "Guten Tag",
+              "Auf Wiedersehen",
+              "Tschüss"
+            ],
+            "answer": "Bis später"
+          }
+        },
+        "step2": {
+          "type_prompt": "Bis sp__er  = See you later",
+          "expected_answer": "Bis später",
+          "alt_answers": [
+            "Bis spaeter",
+            "bis später",
+            "bis spaeter"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Bis später!",
+          "options": [
+            "See you later!",
+            "Goodbye!",
+            "Good night!",
+            "Hello!"
+          ],
+          "answer": "See you later!"
+        }
+      },
+      "lesson13": {
+        "title": "Pleased to meet you",
+        "step1": {
+          "german": "Freut mich!",
+          "english": "Pleased to meet you!",
+          "audio": "Freut mich!",
+          "note": "Short and natural. Alternatives: 'Schön, dich kennenzulernen' (informal) / 'Schön, Sie kennenzulernen' (formal).",
+          "mcq": {
+            "question": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Freut mich",
+              "Guten Abend",
+              "Tschüss",
+              "Auf Wiedersehen"
+            ],
+            "answer": "Freut mich"
+          }
+        },
+        "step2": {
+          "type_prompt": "Fr__t mich!  = Pleased to meet you!",
+          "expected_answer": "Freut mich!",
+          "alt_answers": [
+            "Freut mich",
+            "freut mich!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Freut mich!",
+          "options": [
+            "Pleased to meet you!",
+            "Good evening!",
+            "Hello!",
+            "Good morning!"
+          ],
+          "answer": "Pleased to meet you!"
+        }
+      }
+    }
+  }
+}

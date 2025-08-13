@@ -1,0 +1,1701 @@
+{
+  "course6": {
+    "title": "Days, Months, Seasons",
+    "description": "Learn days of the week, months of the year, seasons, and how to say dates in German, including ordinal numbers.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "german": "Montag",
+          "english": "Monday",
+          "audio": "Montag",
+          "note": "Days of the week are capitalized in German. 'Montag' = 'Monday'.",
+          "mcq": {
+            "question": "What is 'Monday' in German?",
+            "options": [
+              "Montag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Montag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Monday",
+          "expected_answer": "Montag",
+          "alt_answers": [
+            "montag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Montag",
+          "options": [
+            "Monday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Monday"
+        }
+      },
+      "lesson2": {
+        "title": "Tuesday",
+        "step1": {
+          "german": "Dienstag",
+          "english": "Tuesday",
+          "audio": "Dienstag",
+          "note": "Days of the week are capitalized in German. 'Dienstag' = 'Tuesday'.",
+          "mcq": {
+            "question": "What is 'Tuesday' in German?",
+            "options": [
+              "Dienstag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Dienstag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Tuesday",
+          "expected_answer": "Dienstag",
+          "alt_answers": [
+            "dienstag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dienstag",
+          "options": [
+            "Tuesday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Tuesday"
+        }
+      },
+      "lesson3": {
+        "title": "Wednesday",
+        "step1": {
+          "german": "Mittwoch",
+          "english": "Wednesday",
+          "audio": "Mittwoch",
+          "note": "Days of the week are capitalized in German. 'Mittwoch' = 'Wednesday'.",
+          "mcq": {
+            "question": "What is 'Wednesday' in German?",
+            "options": [
+              "Mittwoch",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Mittwoch"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Wednesday",
+          "expected_answer": "Mittwoch",
+          "alt_answers": [
+            "mittwoch"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mittwoch",
+          "options": [
+            "Wednesday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Wednesday"
+        }
+      },
+      "lesson4": {
+        "title": "Thursday",
+        "step1": {
+          "german": "Donnerstag",
+          "english": "Thursday",
+          "audio": "Donnerstag",
+          "note": "Days of the week are capitalized in German. 'Donnerstag' = 'Thursday'.",
+          "mcq": {
+            "question": "What is 'Thursday' in German?",
+            "options": [
+              "Donnerstag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Donnerstag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Thursday",
+          "expected_answer": "Donnerstag",
+          "alt_answers": [
+            "donnerstag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Donnerstag",
+          "options": [
+            "Thursday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Thursday"
+        }
+      },
+      "lesson5": {
+        "title": "Friday",
+        "step1": {
+          "german": "Freitag",
+          "english": "Friday",
+          "audio": "Freitag",
+          "note": "Days of the week are capitalized in German. 'Freitag' = 'Friday'.",
+          "mcq": {
+            "question": "What is 'Friday' in German?",
+            "options": [
+              "Freitag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Freitag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Friday",
+          "expected_answer": "Freitag",
+          "alt_answers": [
+            "freitag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Freitag",
+          "options": [
+            "Friday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Friday"
+        }
+      },
+      "lesson6": {
+        "title": "Saturday",
+        "step1": {
+          "german": "Samstag",
+          "english": "Saturday",
+          "audio": "Samstag",
+          "note": "Days of the week are capitalized in German. 'Samstag' = 'Saturday'.",
+          "mcq": {
+            "question": "What is 'Saturday' in German?",
+            "options": [
+              "Samstag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Samstag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Saturday",
+          "expected_answer": "Samstag",
+          "alt_answers": [
+            "samstag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Samstag",
+          "options": [
+            "Saturday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Saturday"
+        }
+      },
+      "lesson7": {
+        "title": "Sunday",
+        "step1": {
+          "german": "Sonntag",
+          "english": "Sunday",
+          "audio": "Sonntag",
+          "note": "Days of the week are capitalized in German. 'Sonntag' = 'Sunday'.",
+          "mcq": {
+            "question": "What is 'Sunday' in German?",
+            "options": [
+              "Sonntag",
+              "Montag",
+              "Dienstag",
+              "Sonntag"
+            ],
+            "answer": "Sonntag"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = Sunday",
+          "expected_answer": "Sonntag",
+          "alt_answers": [
+            "sonntag"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sonntag",
+          "options": [
+            "Sunday",
+            "Tuesday",
+            "Friday",
+            "Sunday"
+          ],
+          "answer": "Sunday"
+        }
+      },
+      "lesson8": {
+        "title": "January",
+        "step1": {
+          "german": "Januar",
+          "english": "January",
+          "audio": "Januar",
+          "note": "Months are capitalized in German. 'Januar' = 'January'.",
+          "mcq": {
+            "question": "What is 'January' in German?",
+            "options": [
+              "Januar",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Januar"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = January",
+          "expected_answer": "Januar",
+          "alt_answers": [
+            "januar",
+            "Januar"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Januar",
+          "options": [
+            "January",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "January"
+        }
+      },
+      "lesson9": {
+        "title": "February",
+        "step1": {
+          "german": "Februar",
+          "english": "February",
+          "audio": "Februar",
+          "note": "Months are capitalized in German. 'Februar' = 'February'.",
+          "mcq": {
+            "question": "What is 'February' in German?",
+            "options": [
+              "Februar",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Februar"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = February",
+          "expected_answer": "Februar",
+          "alt_answers": [
+            "februar",
+            "Februar"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Februar",
+          "options": [
+            "February",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "February"
+        }
+      },
+      "lesson10": {
+        "title": "March",
+        "step1": {
+          "german": "März",
+          "english": "March",
+          "audio": "März",
+          "note": "Months are capitalized in German. 'März' = 'March'.",
+          "mcq": {
+            "question": "What is 'March' in German?",
+            "options": [
+              "März",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "März"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = March",
+          "expected_answer": "März",
+          "alt_answers": [
+            "märz",
+            "Maerz"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "März",
+          "options": [
+            "March",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "March"
+        }
+      },
+      "lesson11": {
+        "title": "April",
+        "step1": {
+          "german": "April",
+          "english": "April",
+          "audio": "April",
+          "note": "Months are capitalized in German. 'April' = 'April'.",
+          "mcq": {
+            "question": "What is 'April' in German?",
+            "options": [
+              "April",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "April"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = April",
+          "expected_answer": "April",
+          "alt_answers": [
+            "april",
+            "April"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "April",
+          "options": [
+            "April",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "April"
+        }
+      },
+      "lesson12": {
+        "title": "May",
+        "step1": {
+          "german": "Mai",
+          "english": "May",
+          "audio": "Mai",
+          "note": "Months are capitalized in German. 'Mai' = 'May'.",
+          "mcq": {
+            "question": "What is 'May' in German?",
+            "options": [
+              "Mai",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Mai"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = May",
+          "expected_answer": "Mai",
+          "alt_answers": [
+            "mai",
+            "Mai"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mai",
+          "options": [
+            "May",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "May"
+        }
+      },
+      "lesson13": {
+        "title": "June",
+        "step1": {
+          "german": "Juni",
+          "english": "June",
+          "audio": "Juni",
+          "note": "Months are capitalized in German. 'Juni' = 'June'.",
+          "mcq": {
+            "question": "What is 'June' in German?",
+            "options": [
+              "Juni",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Juni"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = June",
+          "expected_answer": "Juni",
+          "alt_answers": [
+            "juni",
+            "Juni"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Juni",
+          "options": [
+            "June",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "June"
+        }
+      },
+      "lesson14": {
+        "title": "July",
+        "step1": {
+          "german": "Juli",
+          "english": "July",
+          "audio": "Juli",
+          "note": "Months are capitalized in German. 'Juli' = 'July'.",
+          "mcq": {
+            "question": "What is 'July' in German?",
+            "options": [
+              "Juli",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Juli"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = July",
+          "expected_answer": "Juli",
+          "alt_answers": [
+            "juli",
+            "Juli"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Juli",
+          "options": [
+            "July",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "July"
+        }
+      },
+      "lesson15": {
+        "title": "August",
+        "step1": {
+          "german": "August",
+          "english": "August",
+          "audio": "August",
+          "note": "Months are capitalized in German. 'August' = 'August'.",
+          "mcq": {
+            "question": "What is 'August' in German?",
+            "options": [
+              "August",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "August"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = August",
+          "expected_answer": "August",
+          "alt_answers": [
+            "august",
+            "August"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "August",
+          "options": [
+            "August",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "August"
+        }
+      },
+      "lesson16": {
+        "title": "September",
+        "step1": {
+          "german": "September",
+          "english": "September",
+          "audio": "September",
+          "note": "Months are capitalized in German. 'September' = 'September'.",
+          "mcq": {
+            "question": "What is 'September' in German?",
+            "options": [
+              "September",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "September"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = September",
+          "expected_answer": "September",
+          "alt_answers": [
+            "september",
+            "September"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "September",
+          "options": [
+            "September",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "September"
+        }
+      },
+      "lesson17": {
+        "title": "October",
+        "step1": {
+          "german": "Oktober",
+          "english": "October",
+          "audio": "Oktober",
+          "note": "Months are capitalized in German. 'Oktober' = 'October'.",
+          "mcq": {
+            "question": "What is 'October' in German?",
+            "options": [
+              "Oktober",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Oktober"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = October",
+          "expected_answer": "Oktober",
+          "alt_answers": [
+            "oktober",
+            "Oktober"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oktober",
+          "options": [
+            "October",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "October"
+        }
+      },
+      "lesson18": {
+        "title": "November",
+        "step1": {
+          "german": "November",
+          "english": "November",
+          "audio": "November",
+          "note": "Months are capitalized in German. 'November' = 'November'.",
+          "mcq": {
+            "question": "What is 'November' in German?",
+            "options": [
+              "November",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "November"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = November",
+          "expected_answer": "November",
+          "alt_answers": [
+            "november",
+            "November"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "November",
+          "options": [
+            "November",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "November"
+        }
+      },
+      "lesson19": {
+        "title": "December",
+        "step1": {
+          "german": "Dezember",
+          "english": "December",
+          "audio": "Dezember",
+          "note": "Months are capitalized in German. 'Dezember' = 'December'.",
+          "mcq": {
+            "question": "What is 'December' in German?",
+            "options": [
+              "Dezember",
+              "März",
+              "Mai",
+              "Juni"
+            ],
+            "answer": "Dezember"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = December",
+          "expected_answer": "Dezember",
+          "alt_answers": [
+            "dezember",
+            "Dezember"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dezember",
+          "options": [
+            "December",
+            "February",
+            "March",
+            "December"
+          ],
+          "answer": "December"
+        }
+      },
+      "lesson20": {
+        "title": "Spring",
+        "step1": {
+          "german": "Frühling",
+          "english": "spring",
+          "audio": "Frühling",
+          "note": "'Frühling' = 'spring'.",
+          "mcq": {
+            "question": "What is 'spring' in German?",
+            "options": [
+              "Frühling",
+              "Sommer",
+              "Winter",
+              "Frühling"
+            ],
+            "answer": "Frühling"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = spring",
+          "expected_answer": "Frühling",
+          "alt_answers": [
+            "frühling",
+            "Fruehling"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Frühling",
+          "options": [
+            "spring",
+            "summer",
+            "autumn/fall",
+            "winter"
+          ],
+          "answer": "spring"
+        }
+      },
+      "lesson21": {
+        "title": "Summer",
+        "step1": {
+          "german": "Sommer",
+          "english": "summer",
+          "audio": "Sommer",
+          "note": "'Sommer' = 'summer'.",
+          "mcq": {
+            "question": "What is 'summer' in German?",
+            "options": [
+              "Sommer",
+              "Sommer",
+              "Winter",
+              "Frühling"
+            ],
+            "answer": "Sommer"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = summer",
+          "expected_answer": "Sommer",
+          "alt_answers": [
+            "sommer",
+            "Sommer"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sommer",
+          "options": [
+            "summer",
+            "summer",
+            "autumn/fall",
+            "winter"
+          ],
+          "answer": "summer"
+        }
+      },
+      "lesson22": {
+        "title": "Autumn/fall",
+        "step1": {
+          "german": "Herbst",
+          "english": "autumn/fall",
+          "audio": "Herbst",
+          "note": "'Herbst' = 'autumn/fall'.",
+          "mcq": {
+            "question": "What is 'autumn/fall' in German?",
+            "options": [
+              "Herbst",
+              "Sommer",
+              "Winter",
+              "Frühling"
+            ],
+            "answer": "Herbst"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = autumn/fall",
+          "expected_answer": "Herbst",
+          "alt_answers": [
+            "herbst",
+            "Herbst"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Herbst",
+          "options": [
+            "autumn/fall",
+            "summer",
+            "autumn/fall",
+            "winter"
+          ],
+          "answer": "autumn/fall"
+        }
+      },
+      "lesson23": {
+        "title": "Winter",
+        "step1": {
+          "german": "Winter",
+          "english": "winter",
+          "audio": "Winter",
+          "note": "'Winter' = 'winter'.",
+          "mcq": {
+            "question": "What is 'winter' in German?",
+            "options": [
+              "Winter",
+              "Sommer",
+              "Winter",
+              "Frühling"
+            ],
+            "answer": "Winter"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = winter",
+          "expected_answer": "Winter",
+          "alt_answers": [
+            "winter",
+            "Winter"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Winter",
+          "options": [
+            "winter",
+            "summer",
+            "autumn/fall",
+            "winter"
+          ],
+          "answer": "winter"
+        }
+      },
+      "lesson24": {
+        "title": "The first",
+        "step1": {
+          "german": "der erste",
+          "english": "the first",
+          "audio": "der erste",
+          "note": "Use 'der' with masculine dates: 'der erste' = 'the first'.",
+          "mcq": {
+            "question": "What is 'the first' in German?",
+            "options": [
+              "der erste",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der erste"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the first",
+          "expected_answer": "der erste",
+          "alt_answers": [
+            "der erste",
+            "der erste"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der erste",
+          "options": [
+            "the first",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the first"
+        }
+      },
+      "lesson25": {
+        "title": "The second",
+        "step1": {
+          "german": "der zweite",
+          "english": "the second",
+          "audio": "der zweite",
+          "note": "Use 'der' with masculine dates: 'der zweite' = 'the second'.",
+          "mcq": {
+            "question": "What is 'the second' in German?",
+            "options": [
+              "der zweite",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der zweite"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the second",
+          "expected_answer": "der zweite",
+          "alt_answers": [
+            "der zweite",
+            "der zweite"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der zweite",
+          "options": [
+            "the second",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the second"
+        }
+      },
+      "lesson26": {
+        "title": "The third",
+        "step1": {
+          "german": "der dritte",
+          "english": "the third",
+          "audio": "der dritte",
+          "note": "Use 'der' with masculine dates: 'der dritte' = 'the third'.",
+          "mcq": {
+            "question": "What is 'the third' in German?",
+            "options": [
+              "der dritte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der dritte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the third",
+          "expected_answer": "der dritte",
+          "alt_answers": [
+            "der dritte",
+            "der dritte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der dritte",
+          "options": [
+            "the third",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the third"
+        }
+      },
+      "lesson27": {
+        "title": "The fourth",
+        "step1": {
+          "german": "der vierte",
+          "english": "the fourth",
+          "audio": "der vierte",
+          "note": "Use 'der' with masculine dates: 'der vierte' = 'the fourth'.",
+          "mcq": {
+            "question": "What is 'the fourth' in German?",
+            "options": [
+              "der vierte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der vierte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the fourth",
+          "expected_answer": "der vierte",
+          "alt_answers": [
+            "der vierte",
+            "der vierte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der vierte",
+          "options": [
+            "the fourth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the fourth"
+        }
+      },
+      "lesson28": {
+        "title": "The fifth",
+        "step1": {
+          "german": "der fünfte",
+          "english": "the fifth",
+          "audio": "der fünfte",
+          "note": "Use 'der' with masculine dates: 'der fünfte' = 'the fifth'.",
+          "mcq": {
+            "question": "What is 'the fifth' in German?",
+            "options": [
+              "der fünfte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der fünfte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the fifth",
+          "expected_answer": "der fünfte",
+          "alt_answers": [
+            "der fünfte",
+            "der fuenfte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der fünfte",
+          "options": [
+            "the fifth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the fifth"
+        }
+      },
+      "lesson29": {
+        "title": "The sixth",
+        "step1": {
+          "german": "der sechste",
+          "english": "the sixth",
+          "audio": "der sechste",
+          "note": "Use 'der' with masculine dates: 'der sechste' = 'the sixth'.",
+          "mcq": {
+            "question": "What is 'the sixth' in German?",
+            "options": [
+              "der sechste",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der sechste"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the sixth",
+          "expected_answer": "der sechste",
+          "alt_answers": [
+            "der sechste",
+            "der sechste"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der sechste",
+          "options": [
+            "the sixth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the sixth"
+        }
+      },
+      "lesson30": {
+        "title": "The seventh",
+        "step1": {
+          "german": "der siebte",
+          "english": "the seventh",
+          "audio": "der siebte",
+          "note": "Use 'der' with masculine dates: 'der siebte' = 'the seventh'.",
+          "mcq": {
+            "question": "What is 'the seventh' in German?",
+            "options": [
+              "der siebte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der siebte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the seventh",
+          "expected_answer": "der siebte",
+          "alt_answers": [
+            "der siebte",
+            "der siebte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der siebte",
+          "options": [
+            "the seventh",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the seventh"
+        }
+      },
+      "lesson31": {
+        "title": "The eighth",
+        "step1": {
+          "german": "der achte",
+          "english": "the eighth",
+          "audio": "der achte",
+          "note": "Use 'der' with masculine dates: 'der achte' = 'the eighth'.",
+          "mcq": {
+            "question": "What is 'the eighth' in German?",
+            "options": [
+              "der achte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der achte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the eighth",
+          "expected_answer": "der achte",
+          "alt_answers": [
+            "der achte",
+            "der achte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der achte",
+          "options": [
+            "the eighth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the eighth"
+        }
+      },
+      "lesson32": {
+        "title": "The ninth",
+        "step1": {
+          "german": "der neunte",
+          "english": "the ninth",
+          "audio": "der neunte",
+          "note": "Use 'der' with masculine dates: 'der neunte' = 'the ninth'.",
+          "mcq": {
+            "question": "What is 'the ninth' in German?",
+            "options": [
+              "der neunte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der neunte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the ninth",
+          "expected_answer": "der neunte",
+          "alt_answers": [
+            "der neunte",
+            "der neunte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der neunte",
+          "options": [
+            "the ninth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the ninth"
+        }
+      },
+      "lesson33": {
+        "title": "The tenth",
+        "step1": {
+          "german": "der zehnte",
+          "english": "the tenth",
+          "audio": "der zehnte",
+          "note": "Use 'der' with masculine dates: 'der zehnte' = 'the tenth'.",
+          "mcq": {
+            "question": "What is 'the tenth' in German?",
+            "options": [
+              "der zehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der zehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the tenth",
+          "expected_answer": "der zehnte",
+          "alt_answers": [
+            "der zehnte",
+            "der zehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der zehnte",
+          "options": [
+            "the tenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the tenth"
+        }
+      },
+      "lesson34": {
+        "title": "The eleventh",
+        "step1": {
+          "german": "der elfte",
+          "english": "the eleventh",
+          "audio": "der elfte",
+          "note": "Use 'der' with masculine dates: 'der elfte' = 'the eleventh'.",
+          "mcq": {
+            "question": "What is 'the eleventh' in German?",
+            "options": [
+              "der elfte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der elfte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the eleventh",
+          "expected_answer": "der elfte",
+          "alt_answers": [
+            "der elfte",
+            "der elfte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der elfte",
+          "options": [
+            "the eleventh",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the eleventh"
+        }
+      },
+      "lesson35": {
+        "title": "The twelfth",
+        "step1": {
+          "german": "der zwölfte",
+          "english": "the twelfth",
+          "audio": "der zwölfte",
+          "note": "Use 'der' with masculine dates: 'der zwölfte' = 'the twelfth'.",
+          "mcq": {
+            "question": "What is 'the twelfth' in German?",
+            "options": [
+              "der zwölfte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der zwölfte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the twelfth",
+          "expected_answer": "der zwölfte",
+          "alt_answers": [
+            "der zwölfte",
+            "der zwölfte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der zwölfte",
+          "options": [
+            "the twelfth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the twelfth"
+        }
+      },
+      "lesson36": {
+        "title": "The thirteenth",
+        "step1": {
+          "german": "der dreizehnte",
+          "english": "the thirteenth",
+          "audio": "der dreizehnte",
+          "note": "Use 'der' with masculine dates: 'der dreizehnte' = 'the thirteenth'.",
+          "mcq": {
+            "question": "What is 'the thirteenth' in German?",
+            "options": [
+              "der dreizehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der dreizehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the thirteenth",
+          "expected_answer": "der dreizehnte",
+          "alt_answers": [
+            "der dreizehnte",
+            "der dreizehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der dreizehnte",
+          "options": [
+            "the thirteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the thirteenth"
+        }
+      },
+      "lesson37": {
+        "title": "The fourteenth",
+        "step1": {
+          "german": "der vierzehnte",
+          "english": "the fourteenth",
+          "audio": "der vierzehnte",
+          "note": "Use 'der' with masculine dates: 'der vierzehnte' = 'the fourteenth'.",
+          "mcq": {
+            "question": "What is 'the fourteenth' in German?",
+            "options": [
+              "der vierzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der vierzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the fourteenth",
+          "expected_answer": "der vierzehnte",
+          "alt_answers": [
+            "der vierzehnte",
+            "der vierzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der vierzehnte",
+          "options": [
+            "the fourteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the fourteenth"
+        }
+      },
+      "lesson38": {
+        "title": "The fifteenth",
+        "step1": {
+          "german": "der fünfzehnte",
+          "english": "the fifteenth",
+          "audio": "der fünfzehnte",
+          "note": "Use 'der' with masculine dates: 'der fünfzehnte' = 'the fifteenth'.",
+          "mcq": {
+            "question": "What is 'the fifteenth' in German?",
+            "options": [
+              "der fünfzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der fünfzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the fifteenth",
+          "expected_answer": "der fünfzehnte",
+          "alt_answers": [
+            "der fünfzehnte",
+            "der fuenfzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der fünfzehnte",
+          "options": [
+            "the fifteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the fifteenth"
+        }
+      },
+      "lesson39": {
+        "title": "The sixteenth",
+        "step1": {
+          "german": "der sechzehnte",
+          "english": "the sixteenth",
+          "audio": "der sechzehnte",
+          "note": "Use 'der' with masculine dates: 'der sechzehnte' = 'the sixteenth'.",
+          "mcq": {
+            "question": "What is 'the sixteenth' in German?",
+            "options": [
+              "der sechzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der sechzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the sixteenth",
+          "expected_answer": "der sechzehnte",
+          "alt_answers": [
+            "der sechzehnte",
+            "der sechzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der sechzehnte",
+          "options": [
+            "the sixteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the sixteenth"
+        }
+      },
+      "lesson40": {
+        "title": "The seventeenth",
+        "step1": {
+          "german": "der siebzehnte",
+          "english": "the seventeenth",
+          "audio": "der siebzehnte",
+          "note": "Use 'der' with masculine dates: 'der siebzehnte' = 'the seventeenth'.",
+          "mcq": {
+            "question": "What is 'the seventeenth' in German?",
+            "options": [
+              "der siebzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der siebzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the seventeenth",
+          "expected_answer": "der siebzehnte",
+          "alt_answers": [
+            "der siebzehnte",
+            "der siebzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der siebzehnte",
+          "options": [
+            "the seventeenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the seventeenth"
+        }
+      },
+      "lesson41": {
+        "title": "The eighteenth",
+        "step1": {
+          "german": "der achtzehnte",
+          "english": "the eighteenth",
+          "audio": "der achtzehnte",
+          "note": "Use 'der' with masculine dates: 'der achtzehnte' = 'the eighteenth'.",
+          "mcq": {
+            "question": "What is 'the eighteenth' in German?",
+            "options": [
+              "der achtzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der achtzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the eighteenth",
+          "expected_answer": "der achtzehnte",
+          "alt_answers": [
+            "der achtzehnte",
+            "der achtzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der achtzehnte",
+          "options": [
+            "the eighteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the eighteenth"
+        }
+      },
+      "lesson42": {
+        "title": "The nineteenth",
+        "step1": {
+          "german": "der neunzehnte",
+          "english": "the nineteenth",
+          "audio": "der neunzehnte",
+          "note": "Use 'der' with masculine dates: 'der neunzehnte' = 'the nineteenth'.",
+          "mcq": {
+            "question": "What is 'the nineteenth' in German?",
+            "options": [
+              "der neunzehnte",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der neunzehnte"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the nineteenth",
+          "expected_answer": "der neunzehnte",
+          "alt_answers": [
+            "der neunzehnte",
+            "der neunzehnte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der neunzehnte",
+          "options": [
+            "the nineteenth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the nineteenth"
+        }
+      },
+      "lesson43": {
+        "title": "The twentieth",
+        "step1": {
+          "german": "der zwanzigste",
+          "english": "the twentieth",
+          "audio": "der zwanzigste",
+          "note": "Use 'der' with masculine dates: 'der zwanzigste' = 'the twentieth'.",
+          "mcq": {
+            "question": "What is 'the twentieth' in German?",
+            "options": [
+              "der zwanzigste",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der zwanzigste"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the twentieth",
+          "expected_answer": "der zwanzigste",
+          "alt_answers": [
+            "der zwanzigste",
+            "der zwanzigste"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der zwanzigste",
+          "options": [
+            "the twentieth",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the twentieth"
+        }
+      },
+      "lesson44": {
+        "title": "The twenty-first",
+        "step1": {
+          "german": "der einundzwanzigste",
+          "english": "the twenty-first",
+          "audio": "der einundzwanzigste",
+          "note": "Use 'der' with masculine dates: 'der einundzwanzigste' = 'the twenty-first'.",
+          "mcq": {
+            "question": "What is 'the twenty-first' in German?",
+            "options": [
+              "der einundzwanzigste",
+              "der zweite",
+              "der dritte",
+              "der vierte"
+            ],
+            "answer": "der einundzwanzigste"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = the twenty-first",
+          "expected_answer": "der einundzwanzigste",
+          "alt_answers": [
+            "der einundzwanzigste",
+            "der einundzwanzigste"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "der einundzwanzigste",
+          "options": [
+            "the twenty-first",
+            "the second",
+            "the third",
+            "the fourth"
+          ],
+          "answer": "the twenty-first"
+        }
+      },
+      "lesson45": {
+        "title": "Asking the date",
+        "step1": {
+          "german": "Welches Datum haben wir heute?",
+          "english": "What is today's date?",
+          "audio": "Welches Datum haben wir heute?",
+          "note": "Literally: 'Which date do we have today?'",
+          "mcq": {
+            "question": "How do you ask 'What is today's date?' in German?",
+            "options": [
+              "Welches Datum haben wir heute?",
+              "Was ist das Datum heute?",
+              "Wann ist heute?",
+              "Welches Datum heute?"
+            ],
+            "answer": "Welches Datum haben wir heute?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Welches Datum haben wir ____? = What is today's date?",
+          "expected_answer": "heute",
+          "alt_answers": [
+            "Heute"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Welches Datum haben wir heute?",
+          "options": [
+            "What is today's date?",
+            "What day is it?",
+            "When is your birthday?",
+            "Where are we?"
+          ],
+          "answer": "What is today's date?"
+        }
+      },
+      "lesson46": {
+        "title": "Saying the date",
+        "step1": {
+          "german": "Heute ist der dritte Mai.",
+          "english": "Today is the third of May.",
+          "audio": "Heute ist der dritte Mai.",
+          "note": "Use 'der' + ordinal + month.",
+          "mcq": {
+            "question": "How do you say 'Today is the third of May' in German?",
+            "options": [
+              "Heute ist der dritte Mai.",
+              "Heute ist drei Mai.",
+              "Heute Mai drei.",
+              "Es ist Mai der dritte."
+            ],
+            "answer": "Heute ist der dritte Mai."
+          }
+        },
+        "step2": {
+          "type_prompt": "Heute ist der ___ Mai. = Today is the third of May",
+          "expected_answer": "dritte",
+          "alt_answers": [
+            "Dritte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Heute ist der dritte Mai.",
+          "options": [
+            "Today is the third of May.",
+            "Today is May third.",
+            "It is the third month.",
+            "It is May the second."
+          ],
+          "answer": "Today is the third of May."
+        }
+      }
+    }
+  }
+}
