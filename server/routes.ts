@@ -536,6 +536,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get course statistics
+  app.get('/api/course-stats', async (req, res) => {
+    try {
+      const languageId = req.query.languageId ? parseInt(req.query.languageId as string) : undefined;
+      const skillLevelId = req.query.skillLevelId ? parseInt(req.query.skillLevelId as string) : undefined;
+      
+      // Get all courses for the specified language/skill level
+      const courses = await storage.getCourses(languageId, skillLevelId);
+      
+      let totalLessons = 0;
+      
+      // Count lessons across all courses
+      for (const course of courses) {
+        const lessons = await storage.getLessons(course.id);
+        totalLessons += lessons.length;
+      }
+      
+      res.json({
+        totalCourses: courses.length,
+        totalLessons: totalLessons
+      });
+    } catch (error) {
+      console.error("Error fetching course statistics:", error);
+      res.status(500).json({ message: "Failed to fetch course statistics" });
+    }
+  });
+
   // Database course routes
   app.get('/api/db/courses', async (req, res) => {
     try {

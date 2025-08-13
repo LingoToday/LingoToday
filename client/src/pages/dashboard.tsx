@@ -89,6 +89,12 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  // Fetch course statistics
+  const { data: courseStats } = useQuery<{ totalCourses: number; totalLessons: number }>({
+    queryKey: ["/api/course-stats"],
+    enabled: !!user,
+  });
+
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (updatedSettings: { 
@@ -647,7 +653,9 @@ export default function Dashboard() {
                 <div className="pt-4 border-t">
                   <div className="text-center">
                     <div className="text-sm font-medium text-blue-600 mb-1">Complete Italian Course</div>
-                    <div className="text-xs text-gray-500 mb-2">78 lessons • 5 courses</div>
+                    <div className="text-xs text-gray-500 mb-2">
+                      {courseStats ? `${courseStats.totalLessons} lessons • ${courseStats.totalCourses} courses` : 'Loading course data...'}
+                    </div>
                     <Link href="/courses">
                       <Button variant="outline" size="sm" className="text-blue-600">
                         View
