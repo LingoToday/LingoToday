@@ -250,6 +250,56 @@ export function refreshNotificationProgress() {
   console.log("✅ Notification progress refreshed - next notification will use current progress");
 }
 
+// Check for available checkpoint reviews
+async function getAvailableCheckpoints(): Promise<any[]> {
+  try {
+    const response = await fetch('/api/available-checkpoints', { credentials: 'same-origin' });
+    if (response.ok) {
+      const data = await response.json();
+      return data.availableCheckpoints.filter((checkpoint: any) => !checkpoint.isCompleted);
+    }
+  } catch (error) {
+    console.log("⚠️ Could not fetch checkpoint data for notifications");
+  }
+  return [];
+}
+
+// Show checkpoint review notification
+async function showCheckpointNotification(checkpoint: any): Promise<boolean> {
+  try {
+    const notification = new Notification("Checkpoint Review Available!", {
+      body: `Test your knowledge: ${checkpoint.title}`,
+      icon: "/favicon.ico",
+      tag: "lingotoday-checkpoint-" + checkpoint.id,
+      requireInteraction: true,
+      silent: false
+    });
+
+    notification.onclick = function() {
+      console.log("Checkpoint notification clicked, navigating to checkpoint");
+      try {
+        if (window.focus) window.focus();
+        const checkpointUrl = `/checkpoint/${checkpoint.id}?from=notification`;
+        console.log("Navigating to:", checkpointUrl);
+        window.location.href = checkpointUrl;
+        notification.close();
+      } catch (error) {
+        console.error("Navigation error:", error);
+        window.location.href = "/dashboard";
+        notification.close();
+      }
+    };
+
+    notification.onshow = () => console.log("✅ Checkpoint notification displayed successfully");
+    notification.onerror = (error) => console.error("❌ Checkpoint notification error:", error);
+    
+    return true;
+  } catch (error) {
+    console.error("Error showing checkpoint notification:", error);
+    return false;
+  }
+}
+
 export async function showLearningNotification(language: string) {
   const now = new Date().toLocaleTimeString();
   const timestamp = Date.now();
@@ -311,6 +361,28 @@ export async function showLearningNotification(language: string) {
   // Clean the language parameter to ensure it's just the language name
   const cleanLanguage = String(language).trim().toLowerCase().split(':')[0];
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
+
+  // Check for available checkpoints - show checkpoint notifications 30% of the time when available
+  try {
+    const availableCheckpoints = await getAvailableCheckpoints();
+    if (availableCheckpoints.length > 0) {
+      const shouldShowCheckpoint = Math.random() < 0.3; // 30% chance
+      console.log(`📊 Found ${availableCheckpoints.length} available checkpoints, showing checkpoint notification: ${shouldShowCheckpoint}`);
+      
+      if (shouldShowCheckpoint) {
+        // Pick a random checkpoint
+        const randomCheckpoint = availableCheckpoints[Math.floor(Math.random() * availableCheckpoints.length)];
+        const checkpointShown = await showCheckpointNotification(randomCheckpoint);
+        
+        if (checkpointShown) {
+          console.log(`✅ Checkpoint notification shown: ${randomCheckpoint.title}`);
+          return; // Exit early, don't show lesson notification
+        }
+      }
+    }
+  } catch (error) {
+    console.log("⚠️ Error checking checkpoints for notifications:", error);
+  }
 
   try {
     console.log(`📚 Using stored lesson data (offline-first approach)`);

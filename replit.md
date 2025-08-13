@@ -16,6 +16,12 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
   - Course 13: Basic Grammar Essentials (29 lessons)
 - Total Italian Beginner content now: 13 courses with 282 lessons
 - Updated seed-database.ts to include new course files
+- **Implemented Checkpoint Review System**:
+  - Added checkpoint reviews that appear after every 4 lessons completed
+  - New API endpoint `/api/available-checkpoints` tracks user eligibility 
+  - Dashboard displays checkpoint availability prominently
+  - Integrated checkpoint notifications into existing notification system (30% of notifications when available)
+  - Checkpoint notifications are clickable and direct users to review quizzes
 
 ## System Architecture
 
@@ -42,8 +48,9 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
 ### Key Components
 - **Authentication System**: Supports Google, GitHub, and email/password login, with PostgreSQL-backed sessions.
 - **Learning System**: JSON-based lesson structure, tracks user progress (per language, week, day), streaks, and words learned.
-- **Notifications**: Browser notifications for learning reminders, with controlled daily sessions and robust deduplication.
-- **Data Models**: Users, User Settings, User Progress, User Stats, Sessions.
+- **Checkpoint Review System**: Automatic checkpoint reviews after every 4 lessons completed, with progress tracking and quiz functionality.
+- **Notifications**: Browser notifications for learning reminders and checkpoint reviews, with controlled daily sessions and robust deduplication.
+- **Data Models**: Users, User Settings, User Progress, User Stats, Sessions, Checkpoints, Checkpoint Progress.
 
 ### UI/UX Design
 - **Design System**: Material-inspired with custom color palette.
