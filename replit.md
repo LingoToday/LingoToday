@@ -16,6 +16,17 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
   - Course 13: Basic Grammar Essentials (29 lessons)
 - Total Italian Beginner content now: 13 courses with 282 lessons
 - Updated seed-database.ts to include new course files
+- **Added Complete German Beginner Course Collection**:
+  - Added German language to database (code: 'de')
+  - Imported 7 complete German beginner courses with 110 total lessons:
+    - Course 1: Greetings (13 lessons)
+    - Course 2: Introducing Yourself (13 lessons)
+    - Course 3: Noun Gender & Articles (8 lessons)
+    - Course 4: Essential Courtesy Phrases (13 lessons)
+    - Course 5: Numbers (6 lessons)
+    - Course 6: Days, Months, Seasons (46 lessons)
+    - Course 7: Telling Time (11 lessons)
+  - Users who sign up for German Beginner will now access this complete curriculum
 - **Implemented Checkpoint Review System**:
   - Added checkpoint reviews that appear after every 4 lessons completed
   - New API endpoint `/api/available-checkpoints` tracks user eligibility 
