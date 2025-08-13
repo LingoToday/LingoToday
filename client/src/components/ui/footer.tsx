@@ -51,9 +51,9 @@ export default function Footer() {
             <h4 className="font-semibold text-gray-900 mb-4">Help and Support</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-primary transition-colors text-sm">
+                <Link href="/faq" className="text-gray-600 hover:text-primary transition-colors text-sm">
                   FAQs
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

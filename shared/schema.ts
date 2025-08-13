@@ -176,6 +176,7 @@ export const users = pgTable('users', {
   selectedLanguage: text('selected_language'), // User's chosen language to learn
   selectedLevel: text('selected_level'), // User's chosen skill level
   completedOnboarding: boolean('completed_onboarding').default(false).notNull(),
+  hasSeenNotificationSetup: boolean('has_seen_notification_setup').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

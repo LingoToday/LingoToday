@@ -18,6 +18,7 @@ import CourseTest from "@/pages/course-test";
 import LessonExample from "@/pages/lesson-example";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
+import FAQPage from "@/pages/faq";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -44,6 +45,7 @@ function Router() {
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
+          <Route path="/faq" component={FAQPage} />
         </>
       ) : (
         <>
@@ -55,6 +57,7 @@ function Router() {
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
+          <Route path="/faq" component={FAQPage} />
         </>
       )}
       <Route component={NotFound} />

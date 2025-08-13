@@ -30,6 +30,7 @@ import {
 import { Link } from "wouter";
 import { requestNotificationPermission, setupNotifications } from "@/lib/notifications";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import NotificationSetupOverlay from "@/components/notification-setup-overlay";
 
 interface User {
   id: string;
@@ -57,7 +58,9 @@ interface NextLessonData {
 }
 
 interface DashboardData {
-  user: User;
+  user: User & {
+    hasSeenNotificationSetup?: boolean;
+  };
   settings: {
     notificationsEnabled: boolean;
     notificationFrequency: number;
@@ -78,6 +81,7 @@ export default function Dashboard() {
   const { user } = useAuth() as { user: User | null };
   const { toast } = useToast();
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
+  const [showNotificationSetup, setShowNotificationSetup] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
@@ -109,6 +113,30 @@ export default function Dashboard() {
       });
     },
   });
+
+  // Mark notification setup as seen mutation
+  const markNotificationSetupSeenMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("PUT", "/api/notification-setup-status", { hasSeenNotificationSetup: true });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      setShowNotificationSetup(false);
+    },
+    onError: (error) => {
+      console.error("Failed to update notification setup status:", error);
+    },
+  });
+
+  // Show notification setup overlay for first-time users
+  useEffect(() => {
+    if (dashboardData?.user && !dashboardData.user.hasSeenNotificationSetup) {
+      // Small delay to ensure dashboard is fully loaded
+      setTimeout(() => {
+        setShowNotificationSetup(true);
+      }, 1000);
+    }
+  }, [dashboardData]);
 
   // Check notification permission on mount
   useEffect(() => {
@@ -540,7 +568,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Notifications */}
-            <Card>
+            <Card data-testid="notification-settings-card">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
@@ -681,6 +709,12 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      
+      {/* Notification Setup Overlay for First-time Users */}
+      <NotificationSetupOverlay 
+        isVisible={showNotificationSetup} 
+        onClose={() => markNotificationSetupSeenMutation.mutate()} 
+      />
     </div>
   );
 }
