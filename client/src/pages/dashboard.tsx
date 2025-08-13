@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { 
   BookOpen, 
@@ -25,7 +26,9 @@ import {
   Volume2,
   RotateCcw,
   Eye,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  LogOut
 } from "lucide-react";
 import { Link } from "wouter";
 import { requestNotificationPermission, setupNotifications, startDailySession, isSessionStartedToday } from "@/lib/notifications";
@@ -413,10 +416,37 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{user.firstName || 'User'}</span>
-              <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
-                Logout
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2" data-testid="account-dropdown">
+                    <User className="w-4 h-4" />
+                    <span className="text-sm">{user.firstName || 'Account'}</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-3 py-2">
+                    <p className="text-sm font-medium">{user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName || 'User'}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <Link href="/account">
+                    <DropdownMenuItem data-testid="account-menu-item">
+                      <User className="w-4 h-4 mr-2" />
+                      Account Settings
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => window.location.href = "/api/logout"}
+                    className="text-red-600 focus:text-red-600"
+                    data-testid="logout-menu-item"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
