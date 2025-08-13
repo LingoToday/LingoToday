@@ -42,6 +42,8 @@ function Router() {
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
           <Route path="/sign-in" component={SignIn} />
+          <Route path="/courses" component={Courses} />
+          <Route path="/courses/:language" component={Courses} />
           <Route path="/course-test" component={CourseTest} />
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
           <Route path="/terms" component={Terms} />
