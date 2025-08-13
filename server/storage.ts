@@ -220,8 +220,10 @@ export class DatabaseStorage implements IStorage {
         if (fs.default.existsSync(coursesPath)) {
           const coursesData = JSON.parse(fs.default.readFileSync(coursesPath, 'utf-8'));
           
-          // Get course order and actual lessons per course
-          const courseOrder = Object.keys(coursesData).sort(); // ['course1', 'course2', 'course3', 'course4']
+          // Get course order and filter to only existing course files
+          const allCourseIds = Object.keys(coursesData).sort(); // ['course1', 'course2', 'course3', 'course4']
+          const existingCourseFiles = ['course1', 'course2', 'course4']; // Only these JSON files exist
+          const courseOrder = allCourseIds.filter(courseId => existingCourseFiles.includes(courseId));
           
           for (const courseId of courseOrder) {
             const course = coursesData[courseId];
@@ -253,8 +255,8 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // Fallback for other languages or if JSON loading fails
-    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
+    // Fallback for other languages or if JSON loading fails - use only existing courses
+    const courseOrder = ['course1', 'course2', 'course4'];
     const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
 
     for (const courseId of courseOrder) {

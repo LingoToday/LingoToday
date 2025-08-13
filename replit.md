@@ -22,6 +22,12 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
   - Dashboard displays checkpoint availability prominently
   - Integrated checkpoint notifications into existing notification system (30% of notifications when available)
   - Checkpoint notifications are clickable and direct users to review quizzes
+- **Fixed Notification Loading Issue**:
+  - Identified root cause: notifications were creating URLs for non-existent courses (course3)
+  - Fixed client-side URL mapping to use actual existing course files (course1, course2, course4)
+  - Fixed server-side getNextLesson logic to only return existing course numbers
+  - Improved error handling in lesson component for failed notification scenarios
+  - Added debugging logs for better notification tracking
 
 ## System Architecture
 
