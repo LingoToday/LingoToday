@@ -52,7 +52,12 @@ async function seedDatabase() {
     'italian_course5_time_date_steps_split_lessons_1755005294492.json',
     'italian_course6_travel_basics_steps_full_regenerated_1755005294492.json',
     'course7_describing_things_split_1755005294489.json',
-    'course8_weather_and_seasons_full (1)_1755005294491.json'
+    'course8_weather_and_seasons_full (1)_1755005294491.json',
+    'Italian_beginner_course9_food_and_drinks_full (1)_1755080022537.json',
+    'Italian_beginner_course10_directions_and_places_full_1755080022546.json',
+    'Italian_beginner_course11_shopping_full_1755080022546.json',
+    'Italian_beginner_course12_expressing_likes_dislikes_full_1755080022546.json',
+    'Italian_beginner_course13_basic_grammar_essentials_full_1755080022546.json'
   ];
 
   for (const courseFile of courseFiles) {

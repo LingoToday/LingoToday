@@ -7,6 +7,16 @@ LingoToday is a full-stack language learning application designed to deliver mic
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
+## Recent Changes (August 13, 2025)
+- Added Italian Beginner Courses 9-13 to the database:
+  - Course 9: Food and Drinks (22 lessons)
+  - Course 10: Directions and Places (21 lessons) 
+  - Course 11: Shopping (13 lessons)
+  - Course 12: Expressing Likes and Dislikes (14 lessons)
+  - Course 13: Basic Grammar Essentials (29 lessons)
+- Total Italian Beginner content now: 13 courses with 282 lessons
+- Updated seed-database.ts to include new course files
+
 ## System Architecture
 
 ### Frontend Architecture
