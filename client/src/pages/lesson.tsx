@@ -223,6 +223,16 @@ export default function Lesson() {
     },
   });
 
+  // Helper function to normalize text for comparison (remove accents, extra spaces, etc.)
+  const normalizeText = (text: string): string => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .normalize('NFD') // Decompose accented characters
+      .replace(/[\u0300-\u036f]/g, ''); // Remove accent marks
+  };
+
   const handleStepSubmit = () => {
     if (!stepData) return;
 
@@ -230,35 +240,89 @@ export default function Lesson() {
     
     if (currentStep === 1 && stepData.type === 'learn') {
       const answerIndex = parseInt(selectedAnswer);
-      correct = stepData.quiz.options[answerIndex] === stepData.quiz.answer;
+      correct = stepData.quiz?.options[answerIndex] === stepData.quiz?.answer;
     } else if (currentStep === 2 && stepData.type === 'type') {
-      const userAnswer = selectedAnswer.toLowerCase().trim();
-      const expected = stepData.expected.toLowerCase();
-      const alternatives = stepData.alternatives.map(alt => alt.toLowerCase());
+      const userAnswer = normalizeText(selectedAnswer);
+      const expected = normalizeText(stepData.expected || '');
+      const alternatives = (stepData.alternatives || []).map((alt: string) => normalizeText(alt));
       
       // If prompt contains underscores, validate just the missing letters
       if (stepData.prompt.includes('_')) {
-        const getMissingLetters = (word: string) => {
-          // Extract the missing part from the word based on the prompt pattern
-          const promptParts = stepData.prompt.split('_');
-          if (promptParts.length >= 2) {
-            const prefix = promptParts[0];
-            const suffix = promptParts[promptParts.length - 1].split('=')[0].trim();
-            // Remove prefix and suffix from the expected word to get missing letters
-            let missingPart = expected;
-            if (prefix) missingPart = missingPart.replace(prefix.toLowerCase(), '');
-            if (suffix) missingPart = missingPart.replace(suffix.toLowerCase(), '');
-            return missingPart;
+        const getMissingLetters = (word: string, prompt: string) => {
+          // Find the position of the underscore in the prompt
+          const underscoreIndex = prompt.indexOf('_');
+          if (underscoreIndex === -1) return word;
+          
+          // Split prompt at underscore to get prefix and suffix
+          const promptPrefix = prompt.substring(0, underscoreIndex);
+          const promptSuffix = prompt.substring(underscoreIndex + 1);
+          
+          // Clean suffix (remove anything after '=' if present)
+          const cleanSuffix = promptSuffix.split('=')[0].trim();
+          
+          // Extract missing part from the expected word
+          const normalizedWord = normalizeText(word);
+          const normalizedPrefix = normalizeText(promptPrefix);
+          const normalizedSuffix = normalizeText(cleanSuffix);
+          
+          let startIndex = 0;
+          let endIndex = normalizedWord.length;
+          
+          // Find where the prefix ends in the word
+          if (normalizedPrefix && normalizedWord.startsWith(normalizedPrefix)) {
+            startIndex = normalizedPrefix.length;
           }
-          return expected;
+          
+          // Find where the suffix starts in the word
+          if (normalizedSuffix && normalizedWord.endsWith(normalizedSuffix)) {
+            endIndex = normalizedWord.length - normalizedSuffix.length;
+          }
+          
+          return normalizedWord.substring(startIndex, endIndex);
         };
         
-        const expectedMissing = getMissingLetters(expected);
-        const alternativesMissing = alternatives.map(alt => getMissingLetters(alt));
+        const expectedMissing = getMissingLetters(stepData.expected, stepData.prompt);
+        const alternativesMissing = (stepData.alternatives || []).map((alt: string) => getMissingLetters(alt, stepData.prompt));
+        
+        // Check if user answer matches any of the expected missing parts
         correct = userAnswer === expectedMissing || alternativesMissing.includes(userAnswer);
+        
+        // Debug logging to help troubleshoot
+        console.log('🔍 Fill-in-blank validation:', {
+          prompt: stepData.prompt,
+          userAnswer,
+          expected: stepData.expected,
+          expectedMissing,
+          alternatives: stepData.alternatives,
+          alternativesMissing,
+          correct
+        });
       } else {
-        // For complete word/phrase exercises
-        correct = userAnswer === expected || alternatives.includes(userAnswer);
+        // For complete word/phrase exercises - also check for partial matches and common variations
+        const isExactMatch = userAnswer === expected || alternatives.includes(userAnswer);
+        
+        // Additional fuzzy matching for common typos and variations
+        const isFuzzyMatch = !isExactMatch && (
+          // Check if the user's answer is contained within the expected answer
+          expected.includes(userAnswer) ||
+          // Check if any alternative contains the user's answer
+          alternatives.some((alt: string) => alt.includes(userAnswer)) ||
+          // Check for minor character differences (1-2 character difference)
+          (Math.abs(userAnswer.length - expected.length) <= 2 && 
+           Array.from(userAnswer).filter((char, i) => char !== expected[i]).length <= 2)
+        );
+        
+        correct = isExactMatch || isFuzzyMatch;
+        
+        // Debug logging
+        console.log('🔍 Complete word validation:', {
+          userAnswer,
+          expected,
+          alternatives,
+          isExactMatch,
+          isFuzzyMatch,
+          correct
+        });
       }
     } else if (currentStep === 3 && stepData.type === 'audio') {
       correct = selectedAnswer === stepData.answer;
@@ -499,7 +563,7 @@ export default function Lesson() {
                    'Listen and Choose'}
                 </h3>
                 
-                {stepData.type === 'learn' && (
+                {stepData.type === 'learn' && stepData.quiz && (
                   <>
                     <p className="text-gray-700 mb-4">{stepData.quiz.question}</p>
                     
@@ -509,7 +573,7 @@ export default function Lesson() {
                       disabled={showResult}
                       className="space-y-2 mb-4"
                     >
-                      {stepData.quiz.options.map((option: string, index: number) => (
+                      {stepData.quiz.options?.map((option: string, index: number) => (
                         <div key={index} className="flex items-center space-x-2">
                           <RadioGroupItem 
                             value={index.toString()} 
@@ -519,7 +583,7 @@ export default function Lesson() {
                             htmlFor={`option-${index}`}
                             className={`flex-1 p-3 rounded-lg cursor-pointer transition-colors ${
                               showResult ? (
-                                option === stepData.quiz.answer ? 'bg-green-50 text-green-700 border border-green-200' :
+                                option === stepData.quiz?.answer ? 'bg-green-50 text-green-700 border border-green-200' :
                                 index.toString() === selectedAnswer ? 'bg-red-50 text-red-700 border border-red-200' :
                                 'bg-gray-50'
                               ) : 'bg-gray-50 hover:bg-gray-100'
