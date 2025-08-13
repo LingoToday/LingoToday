@@ -163,19 +163,20 @@ export default function Courses() {
       courses: {
         beginner: {
           title: "French for Beginners",
-          description: "Begin your French adventure with proper pronunciation, essential grammar, and practical vocabulary.",
-          duration: "10 weeks",
-          lessons: 30,
+          description: "Master essential French through practical micro-lessons covering everyday vocabulary, proper pronunciation, and basic conversation skills.",
+          duration: "9 weeks",
+          lessons: 186,
           level: "Beginner",
           outline: [
-            "French pronunciation and accent rules",
-            "Articles and gender (le, la, les)",
-            "Present tense être and avoir",
-            "Regular -er, -ir, -re verbs",
-            "Adjective agreement and placement",
-            "Question formation and negation",
-            "Shopping, food, and café culture",
-            "Past tense introduction (passé composé)"
+            "Greetings and farewells (Salut, Bonjour, Au revoir)",
+            "Introducing yourself (Je m'appelle, Je viens de...)",
+            "Essential courtesy phrases (S'il vous plaît, Merci, Pardon)",
+            "Numbers from 0 to 100 and asking age",
+            "Days, months, telling time, and dates",
+            "Family members and relationships",
+            "Colors and descriptive adjectives",
+            "Weather expressions and conditions",
+            "Food, drinks, and dining vocabulary"
           ]
         }
       }
