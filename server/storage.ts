@@ -194,12 +194,12 @@ export class DatabaseStorage implements IStorage {
     // Load actual course structure from JSON to get real lesson counts
     if (language === 'italian') {
       try {
-        const path = require('path');
-        const fs = require('fs');
-        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
+        const path = await import('path');
+        const fs = await import('fs');
+        const coursesPath = path.default.join(process.cwd(), 'server', 'italian-courses.json');
         
-        if (fs.existsSync(coursesPath)) {
-          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+        if (fs.default.existsSync(coursesPath)) {
+          const coursesData = JSON.parse(fs.default.readFileSync(coursesPath, 'utf-8'));
           
           // Get course order and actual lessons per course
           const courseOrder = Object.keys(coursesData).sort(); // ['course1', 'course2', 'course3', 'course4']
