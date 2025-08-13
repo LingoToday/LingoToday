@@ -594,8 +594,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get course statistics
   app.get('/api/course-stats', async (req, res) => {
     try {
-      const languageId = req.query.languageId ? parseInt(req.query.languageId as string) : undefined;
-      const skillLevelId = req.query.skillLevelId ? parseInt(req.query.skillLevelId as string) : undefined;
+      let languageId: number | undefined;
+      let skillLevelId: number | undefined;
+      
+      // Handle both ID and code parameters for backward compatibility
+      if (req.query.languageId) {
+        languageId = parseInt(req.query.languageId as string);
+      } else if (req.query.languageCode) {
+        const languageCode = req.query.languageCode as string;
+        // First try by code
+        let language = await storage.getLanguageByCode(languageCode);
+        
+        // If not found, try mapping common language names to codes
+        if (!language) {
+          const languageCodeMap: { [key: string]: string } = {
+            'italian': 'it',
+            'spanish': 'es',
+            'french': 'fr',
+            'german': 'de'
+          };
+          
+          const mappedCode = languageCodeMap[languageCode.toLowerCase()];
+          if (mappedCode) {
+            language = await storage.getLanguageByCode(mappedCode);
+          }
+        }
+        
+        languageId = language?.id;
+      }
+      
+      if (req.query.skillLevelId) {
+        skillLevelId = parseInt(req.query.skillLevelId as string);
+      } else if (req.query.skillLevelCode) {
+        const skillLevel = await storage.getSkillLevelByCode(req.query.skillLevelCode as string);
+        skillLevelId = skillLevel?.id;
+      }
       
       // Get all courses for the specified language/skill level
       const courses = await storage.getCourses(languageId, skillLevelId);

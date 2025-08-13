@@ -100,10 +100,23 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
-  // Fetch course statistics
+  // Fetch course statistics - only for the user's selected language
   const { data: courseStats } = useQuery<{ totalCourses: number; totalLessons: number }>({
-    queryKey: ["/api/course-stats"],
-    enabled: !!user,
+    queryKey: ["/api/course-stats", user?.selectedLanguage],
+    queryFn: async () => {
+      if (!user?.selectedLanguage) return { totalCourses: 0, totalLessons: 0 };
+      
+      const url = new URL('/api/course-stats', window.location.origin);
+      url.searchParams.append('languageCode', user.selectedLanguage);
+      if (user.selectedLevel) {
+        url.searchParams.append('skillLevelCode', user.selectedLevel);
+      }
+      
+      const response = await fetch(url.toString());
+      if (!response.ok) throw new Error('Failed to fetch course stats');
+      return response.json();
+    },
+    enabled: !!user?.selectedLanguage,
   });
 
   // Fetch available checkpoints
