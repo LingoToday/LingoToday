@@ -22,69 +22,113 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
 
   useEffect(() => {
-    // Define the complete course structure with correct lesson counts from the course outline
-    const courseStructure = [
-      { name: "Greetings", emoji: "👋", level: "A1", totalLessons: 13, order: 1 },
-      { name: "Introducing Yourself", emoji: "🙋", level: "A1", totalLessons: 13, order: 2 },
-      { name: "Essential Courtesy Phrases", emoji: "🙏", level: "A1", totalLessons: 14, order: 3 },
-      { name: "Numbers", emoji: "🔢", level: "A1", totalLessons: 6, order: 4 },
-      { name: "Time and Date", emoji: "⏰", level: "A1", totalLessons: 13, order: 5 },
-      { name: "Family and People", emoji: "👨‍👩‍👧‍👦", level: "A1", totalLessons: 11, order: 6 },
-      { name: "Colors & Adjectives", emoji: "🎨", level: "A1", totalLessons: 12, order: 7 },
-      { name: "Weather and Seasons", emoji: "🌤️", level: "A1", totalLessons: 13, order: 8 },
-      { name: "Food and Drinks", emoji: "🍝", level: "A1", totalLessons: 14, order: 9 },
-      { name: "Directions and Places", emoji: "📍", level: "A1", totalLessons: 12, order: 10 },
-      { name: "Shopping", emoji: "🛒", level: "A1", totalLessons: 12, order: 11 },
-      { name: "Likes and Dislikes", emoji: "❤️", level: "A1", totalLessons: 11, order: 12 },
-      { name: "Basic Grammar", emoji: "📚", level: "A1", totalLessons: 22, order: 13 }
+    // Define the course structure mapping course IDs to category names and totals
+    const courseMapping = [
+      { courseId: "course1", name: "Greetings", emoji: "👋", level: "A1", totalLessons: 13, order: 1 },
+      { courseId: "course2", name: "Introducing Yourself", emoji: "🙋", level: "A1", totalLessons: 13, order: 2 },
+      { courseId: "course3", name: "Essential Courtesy Phrases", emoji: "🙏", level: "A1", totalLessons: 14, order: 3 },
+      { courseId: "course4", name: "Numbers", emoji: "🔢", level: "A1", totalLessons: 6, order: 4 },
+      { courseId: "course5", name: "Time and Date", emoji: "⏰", level: "A1", totalLessons: 13, order: 5 },
+      { courseId: "course6", name: "Family and People", emoji: "👨‍👩‍👧‍👦", level: "A1", totalLessons: 11, order: 6 },
+      { courseId: "course7", name: "Colors & Adjectives", emoji: "🎨", level: "A1", totalLessons: 12, order: 7 },
+      { courseId: "course8", name: "Weather and Seasons", emoji: "🌤️", level: "A1", totalLessons: 13, order: 8 },
+      { courseId: "course9", name: "Food and Drinks", emoji: "🍝", level: "A1", totalLessons: 14, order: 9 },
+      { courseId: "course10", name: "Directions and Places", emoji: "📍", level: "A1", totalLessons: 12, order: 10 },
+      { courseId: "course11", name: "Shopping", emoji: "🛒", level: "A1", totalLessons: 12, order: 11 },
+      { courseId: "course12", name: "Likes and Dislikes", emoji: "❤️", level: "A1", totalLessons: 11, order: 12 },
+      { courseId: "course13", name: "Basic Grammar", emoji: "📚", level: "A1", totalLessons: 22, order: 13 }
     ];
 
-    const lessons = getLessonsInOrder();
-    
-    // Group lessons by category to get actual progress
-    const categoryMap = new Map<string, any>();
-    lessons.forEach(lesson => {
-      const categoryName = lesson.category || 'Unknown';
-      if (!categoryMap.has(categoryName)) {
-        categoryMap.set(categoryName, {
-          lessons: []
+    // Get user progress data and calculate actual progress based on database records
+    const getProgressFromAPI = async () => {
+      try {
+        const response = await fetch('/api/progress/italian', { credentials: 'same-origin' });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const progressData = await response.json();
+        
+        // Calculate progress for each course based on actual database progress
+        const progress: CategoryProgress[] = [];
+        let hasUncompletedCategory = false;
+
+        courseMapping.forEach(course => {
+          // Count completed lessons in this course from the database progress
+          const completedInCategory = progressData.filter((p: any) => 
+            p.courseId === course.courseId && p.completed === true
+          ).length;
+          
+          const isUnlocked = !hasUncompletedCategory || completedInCategory > 0;
+          
+          progress.push({
+            name: course.name,
+            emoji: course.emoji,
+            level: course.level,
+            totalLessons: course.totalLessons,
+            completedLessons: completedInCategory,
+            isUnlocked,
+            order: course.order
+          });
+
+          // If this category is not completed, next categories are locked
+          if (completedInCategory < course.totalLessons) {
+            hasUncompletedCategory = true;
+          }
         });
+
+        setCategoryProgress(progress);
+      } catch (error) {
+        console.error('Error fetching progress:', error);
+        // Fallback to old method if API fails
+        const lessons = getLessonsInOrder();
+        
+        // Group lessons by category to get actual progress
+        const categoryMap = new Map<string, any>();
+        lessons.forEach(lesson => {
+          const categoryName = lesson.category || 'Unknown';
+          if (!categoryMap.has(categoryName)) {
+            categoryMap.set(categoryName, {
+              lessons: []
+            });
+          }
+          categoryMap.get(categoryName)!.lessons.push(lesson);
+        });
+
+        // Calculate progress for each course (fallback method)
+        const progress: CategoryProgress[] = [];
+        let hasUncompletedCategory = false;
+
+        courseMapping.forEach(course => {
+          const categoryData = categoryMap.get(course.name);
+          const actualLessons = categoryData ? categoryData.lessons : [];
+          
+          const completedInCategory = actualLessons.filter((lesson: any) => 
+            completedLessonIds.includes(lesson.id)
+          ).length;
+          
+          const isUnlocked = !hasUncompletedCategory || completedInCategory > 0;
+          
+          progress.push({
+            name: course.name,
+            emoji: course.emoji,
+            level: course.level,
+            totalLessons: course.totalLessons,
+            completedLessons: completedInCategory,
+            isUnlocked,
+            order: course.order
+          });
+
+          // If this category is not completed, next categories are locked
+          if (actualLessons.length > 0 && completedInCategory < actualLessons.length) {
+            hasUncompletedCategory = true;
+          }
+        });
+
+        setCategoryProgress(progress);
       }
-      categoryMap.get(categoryName)!.lessons.push(lesson);
-    });
+    };
 
-    // Calculate progress for each course
-    const progress: CategoryProgress[] = [];
-    let hasUncompletedCategory = false;
-
-    courseStructure.forEach(course => {
-      const categoryData = categoryMap.get(course.name);
-      const actualLessons = categoryData ? categoryData.lessons : [];
-      
-      const completedInCategory = actualLessons.filter((lesson: any) => 
-        completedLessonIds.includes(lesson.id)
-      ).length;
-      
-      const isUnlocked = !hasUncompletedCategory || completedInCategory > 0;
-      
-      progress.push({
-        name: course.name,
-        emoji: course.emoji,
-        level: course.level,
-        totalLessons: course.totalLessons,
-        completedLessons: completedInCategory,
-        isUnlocked,
-        order: course.order
-      });
-
-      // If this category is not completed, next categories are locked
-      // For now, only check courses that have actual lessons loaded
-      if (actualLessons.length > 0 && completedInCategory < actualLessons.length) {
-        hasUncompletedCategory = true;
-      }
-    });
-
-    setCategoryProgress(progress);
+    getProgressFromAPI();
   }, [completedLessonIds]);
 
   return (
