@@ -28,7 +28,7 @@ import {
   MessageSquare
 } from "lucide-react";
 import { Link } from "wouter";
-import { requestNotificationPermission, setupNotifications } from "@/lib/notifications";
+import { requestNotificationPermission, setupNotifications, startDailySession, isSessionStartedToday } from "@/lib/notifications";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import NotificationSetupOverlay from "@/components/notification-setup-overlay";
 
@@ -82,6 +82,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
+  const [isDailySessionActive, setIsDailySessionActive] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
@@ -138,12 +139,46 @@ export default function Dashboard() {
     }
   }, [dashboardData]);
 
-  // Check notification permission on mount
+  // Check notification permission and daily session status on mount
   useEffect(() => {
     if ("Notification" in window) {
       setNotificationPermission(Notification.permission);
     }
+    
+    // Check if daily session is already active
+    setIsDailySessionActive(isSessionStartedToday());
   }, []);
+
+  // Handle starting daily notification session
+  const handleStartDailySession = async () => {
+    try {
+      const permission = await requestNotificationPermission();
+      setNotificationPermission(permission);
+      
+      if (permission === "granted" && user?.selectedLanguage) {
+        const frequency = dashboardData?.settings?.notificationFrequency || 15;
+        await startDailySession(user.selectedLanguage, frequency);
+        setIsDailySessionActive(true);
+        
+        toast({
+          title: "Daily session started!",
+          description: `You'll receive ${user.selectedLanguage} lesson reminders every ${frequency} minutes.`,
+        });
+      } else if (permission !== "granted") {
+        toast({
+          title: "Permission required",
+          description: "Please allow notifications to start your daily learning session.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to start daily session. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Test notification function
   const handleTestNotification = async () => {
@@ -212,6 +247,15 @@ export default function Dashboard() {
           startTime: dashboardData?.settings?.notificationStartTime || "09:00",
           endTime: dashboardData?.settings?.notificationEndTime || "18:00"
         });
+        
+        // Also start the daily session if not already active
+        if (!isSessionStartedToday()) {
+          await startDailySession(user.selectedLanguage, dashboardData?.settings?.notificationFrequency || 15);
+          setIsDailySessionActive(true);
+        }
+      } else if (!enabled) {
+        // If notifications are disabled, reset the daily session status
+        setIsDailySessionActive(false);
       }
     } catch (error) {
       toast({
@@ -439,6 +483,53 @@ export default function Dashboard() {
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
                 <span className="text-green-800 font-medium">Learning in progress • {stats?.lessonsCompleted} lessons completed</span>
               </div>
+            )}
+
+            {/* Daily Session Start Button */}
+            {!isDailySessionActive && dashboardData?.settings?.notificationsEnabled && (
+              <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                        Start Today's Learning Session
+                      </h3>
+                      <p className="text-sm text-blue-700">
+                        Get personalized {user.selectedLanguage || 'Italian'} lesson reminders throughout the day
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={handleStartDailySession}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3"
+                      data-testid="start-daily-session-button"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Start Today's Lessons
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Daily Session Status */}
+            {isDailySessionActive && (
+              <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-green-900">
+                        Daily learning session is active
+                      </div>
+                      <div className="text-xs text-green-700">
+                        You'll receive lesson reminders every {dashboardData?.settings?.notificationFrequency || 15} minutes
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* Coming Up Next */}
