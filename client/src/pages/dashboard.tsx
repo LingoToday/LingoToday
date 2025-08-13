@@ -348,7 +348,8 @@ export default function Dashboard() {
 
   const stats = dashboardData?.stats;
   const settings = dashboardData?.settings;
-  const recentProgress = dashboardData?.progress?.slice(0, 8) || [];
+  const allProgress = dashboardData?.progress || [];
+  const recentProgress = allProgress.slice(0, 8);
 
   // Use actual recent lessons data from progress with enriched content
   const recentLessons = recentProgress.map((progress, index) => ({
@@ -370,8 +371,9 @@ export default function Dashboard() {
   ];
   
   const learningPath = courseData.map((course, index) => {
-    const courseProgress = recentProgress.filter(p => p.courseId === `course${index + 1}`);
-    const completed = courseProgress.filter(p => p.completedAt).length;
+    // Use ALL progress data to count completed lessons, not just recent 8
+    const courseProgress = allProgress.filter(p => p.courseId === `course${index + 1}`);
+    const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
     const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
     
@@ -387,8 +389,8 @@ export default function Dashboard() {
     } else {
       // Check if previous course is completed
       const prevCourse = courseData[index - 1];
-      const prevProgress = recentProgress.filter(p => p.courseId === `course${index}`);
-      const prevCompleted = prevProgress.filter(p => p.completedAt).length;
+      const prevProgress = allProgress.filter(p => p.courseId === `course${index}`);
+      const prevCompleted = prevProgress.filter(p => p.completedAt && p.completed).length;
       if (prevCompleted === prevCourse.totalLessons) {
         status = 'available';
       }
