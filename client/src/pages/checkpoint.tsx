@@ -134,9 +134,9 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               The checkpoint you're looking for doesn't exist.
             </p>
-            <Button onClick={() => navigate('/courses')} variant="outline">
+            <Button onClick={() => navigate('/dashboard')} variant="outline">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Courses
+              Back to Dashboard
             </Button>
           </CardContent>
         </Card>
@@ -223,9 +223,9 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
               </div>
 
               <div className="flex gap-3 justify-center">
-                <Button onClick={() => navigate('/courses')} variant="outline">
+                <Button onClick={() => navigate('/dashboard')} variant="outline">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Courses
+                  Back to Dashboard
                 </Button>
                 {!passed && (
                   <Button onClick={() => window.location.reload()}>
@@ -246,14 +246,14 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
         {/* Header */}
         <div className="mb-6">
           <Button 
-            onClick={() => navigate('/courses')} 
+            onClick={() => navigate('/dashboard')} 
             variant="ghost" 
             size="sm" 
             className="mb-4"
-            data-testid="button-back-courses"
+            data-testid="button-back-dashboard"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Courses
+            Back to Dashboard
           </Button>
           
           <Card>
