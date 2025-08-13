@@ -202,8 +202,8 @@ export default function Onboarding() {
   const canProceed = selectedLanguage && selectedLevel && !showUnavailable;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         {/* Back Button */}
         <div className="mb-6">
           <Link 
@@ -228,10 +228,10 @@ export default function Onboarding() {
             </div>
             <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Start Your Learning Journey
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm sm:text-base">
             Quick setup - takes less than 2 minutes
           </p>
         </div>
@@ -257,7 +257,7 @@ export default function Onboarding() {
                 )}
               </div>
               
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {languages.map((language) => (
                   <button
                     key={language.code}
@@ -267,6 +267,7 @@ export default function Onboarding() {
                         ? 'border-primary bg-primary/5'
                         : 'border-gray-200 hover:border-primary hover:bg-primary/5'
                     }`}
+                    data-testid={`button-language-${language.code}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{language.flag}</span>
@@ -313,9 +314,10 @@ export default function Onboarding() {
                         ? 'border-gray-200 hover:border-primary hover:bg-primary/5'
                         : 'border-gray-100 cursor-not-allowed'
                     }`}
+                    data-testid={`button-level-${level.value}`}
                   >
-                    <div className="font-medium text-gray-900 mb-1">{level.title}</div>
-                    <div className="text-sm text-gray-600">{level.description}</div>
+                    <div className="font-medium text-gray-900 mb-1 text-sm sm:text-base">{level.title}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{level.description}</div>
                   </button>
                 ))}
               </div>
@@ -372,89 +374,97 @@ export default function Onboarding() {
                   {/* Email Registration Form */}
                   <div className="space-y-4">
                     <div className="text-center">
-                      <h4 className="font-medium text-gray-900 mb-3">Sign up with Email</h4>
+                      <h4 className="font-medium text-gray-900 mb-3 text-sm sm:text-base">Sign up with Email</h4>
                     </div>
 
                     {registerErrors.general && (
                       <Alert className="border-red-200 bg-red-50">
                         <AlertCircle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-700">
+                        <AlertDescription className="text-red-700 text-sm">
                           {registerErrors.general}
                         </AlertDescription>
                       </Alert>
                     )}
 
                     <div>
-                      <Label htmlFor="firstName">First Name</Label>
+                      <Label htmlFor="firstName" className="text-sm sm:text-base">First Name</Label>
                       <Input
                         id="firstName"
                         type="text"
                         placeholder="Enter your first name"
                         value={registerData.firstName}
                         onChange={(e) => handleRegisterInputChange('firstName', e.target.value)}
-                        className={registerErrors.firstName ? 'border-red-500' : ''}
+                        className={`text-sm sm:text-base ${registerErrors.firstName ? 'border-red-500' : ''}`}
+                        data-testid="input-firstName"
                       />
-                      {registerErrors.firstName && <p className="text-red-500 text-sm mt-1">{registerErrors.firstName}</p>}
+                      {registerErrors.firstName && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.firstName}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="register-email">Email Address</Label>
+                      <Label htmlFor="register-email" className="text-sm sm:text-base">Email Address</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
                           id="register-email"
                           type="email"
                           placeholder="Enter your email address"
-                          className={`pl-10 ${registerErrors.email ? 'border-red-500' : ''}`}
+                          className={`pl-10 text-sm sm:text-base ${registerErrors.email ? 'border-red-500' : ''}`}
                           value={registerData.email}
                           onChange={(e) => handleRegisterInputChange('email', e.target.value)}
+                          data-testid="input-register-email"
                         />
                       </div>
-                      {registerErrors.email && <p className="text-red-500 text-sm mt-1">{registerErrors.email}</p>}
+                      {registerErrors.email && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.email}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
                           id="password"
                           type="password"
                           placeholder="Choose a secure password"
-                          className={`pl-10 ${registerErrors.password ? 'border-red-500' : ''}`}
+                          className={`pl-10 text-sm sm:text-base ${registerErrors.password ? 'border-red-500' : ''}`}
                           value={registerData.password}
                           onChange={(e) => handleRegisterInputChange('password', e.target.value)}
+                          data-testid="input-password"
                         />
                       </div>
-                      {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
+                      {registerErrors.password && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.password}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
                           id="confirmPassword"
                           type="password"
                           placeholder="Confirm your password"
-                          className={`pl-10 ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
+                          className={`pl-10 text-sm sm:text-base ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
                           value={registerData.confirmPassword}
                           onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
+                          data-testid="input-confirmPassword"
                         />
                       </div>
-                      {registerErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerErrors.confirmPassword}</p>}
+                      {registerErrors.confirmPassword && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.confirmPassword}</p>}
                     </div>
 
                     <Button 
                       onClick={handleRegister}
                       disabled={isRegistering}
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+                      className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 text-sm sm:text-base"
+                      data-testid="button-register"
                     >
                       {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
                     </Button>
 
-                    <p className="text-xs text-gray-500 text-center">
-                      By creating an account, you agree to our Terms of Service and Privacy Policy.
+                    <p className="text-xs text-gray-500 text-center leading-relaxed">
+                      By creating an account, you agree to our{' '}
+                      <Link href="/terms" className="text-primary underline">Terms of Service</Link>{' '}
+                      and{' '}
+                      <Link href="/privacy" className="text-primary underline">Privacy Policy</Link>.
                     </p>
                   </div>
                 </div>
@@ -467,50 +477,53 @@ export default function Onboarding() {
             <Card className="bg-white shadow-lg border-0">
               <CardContent className="p-6">
                 <div className="text-center mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                     Get Notified When Ready
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     We'll email you as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course launches.
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="waitlist-email">Email Address</Label>
+                    <Label htmlFor="waitlist-email" className="text-sm sm:text-base">Email Address</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         id="waitlist-email"
                         type="email"
                         placeholder="Enter your email address"
-                        className="pl-10"
+                        className="pl-10 text-sm sm:text-base"
                         value={email}
                         onChange={(e) => {
                           setEmail(e.target.value);
                           setEmailError(''); // Clear error on input
                         }}
+                        data-testid="input-waitlist-email"
                       />
                     </div>
-                    {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                    {emailError && <p className="text-red-500 text-xs sm:text-sm mt-1">{emailError}</p>}
                   </div>
 
                   <Button
                     onClick={handleEmailSubmit}
                     disabled={isSubmitting}
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base"
+                    data-testid="button-waitlist"
                   >
                     {isSubmitting ? 'Adding to Waitlist...' : 'Notify Me When Ready'}
                   </Button>
 
                   <div className="space-y-3 pt-4 border-t">
-                    <p className="text-sm text-gray-600 text-center">
+                    <p className="text-xs sm:text-sm text-gray-600 text-center">
                       Or start with a different level:
                     </p>
                     <Button
                       onClick={() => handleLevelSelect('beginner')}
                       variant="outline"
-                      className="w-full"
+                      className="w-full text-sm sm:text-base"
+                      data-testid="button-beginner-alternative"
                     >
                       Try Beginner Level Instead
                     </Button>
@@ -518,7 +531,8 @@ export default function Onboarding() {
                     <Button
                       variant="outline"
                       onClick={() => window.location.href = '/'}
-                      className="w-full"
+                      className="w-full text-sm sm:text-base"
+                      data-testid="button-back-homepage"
                     >
                       Back to Homepage
                     </Button>
@@ -537,21 +551,22 @@ export default function Onboarding() {
                     <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                       You're on the list!
                     </h3>
-                    <p className="text-gray-600 mb-4">
-                      We'll email you at <strong>{email}</strong> as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course is ready.
+                    <p className="text-gray-600 text-sm sm:text-base mb-4 break-words">
+                      We'll email you at <strong className="break-all">{email}</strong> as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course is ready.
                     </p>
                   </div>
 
                   <div className="space-y-3 pt-4 border-t">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       Want to start learning now?
                     </p>
                     <Button
                       onClick={() => handleLevelSelect('beginner')}
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base"
+                      data-testid="button-try-beginner"
                     >
                       Try Beginner Level
                     </Button>
@@ -559,7 +574,8 @@ export default function Onboarding() {
                     <Button
                       variant="outline"
                       onClick={() => window.location.href = '/'}
-                      className="w-full"
+                      className="w-full text-sm sm:text-base"
+                      data-testid="button-back-home-success"
                     >
                       Back to Homepage
                     </Button>
