@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, BookOpen, Users, Globe, ChevronRight, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import Footer from "@/components/ui/footer";
 
 interface Language {
   id: number;
@@ -388,6 +389,8 @@ export default function CourseManager() {
           </div>
         </TabsContent>
       </Tabs>
+      
+      <Footer />
     </div>
   );
 }

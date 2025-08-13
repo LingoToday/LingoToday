@@ -1,5 +1,6 @@
 import { Globe } from "lucide-react";
 import { Link } from "wouter";
+import Footer from "@/components/ui/footer";
 
 export default function Terms() {
   return (
@@ -102,6 +103,8 @@ export default function Terms() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

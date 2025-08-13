@@ -14,6 +14,7 @@ import { Link } from "wouter";
 import { getLessonById } from "@/lib/lessonStore";
 import { resetNotificationCooldown } from "@/lib/notifications";
 import type { Lesson } from "@shared/schema";
+import Footer from "@/components/ui/footer";
 
 export default function Lesson() {
   const { language, courseId, lessonId } = useParams();
@@ -626,6 +627,8 @@ export default function Lesson() {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 }

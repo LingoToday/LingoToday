@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, Bell, Settings, Clock, Volume2 } from "lucid
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/ui/footer";
 
 export default function FAQPage() {
   const [openItems, setOpenItems] = useState<number[]>([]);
@@ -159,6 +160,8 @@ export default function FAQPage() {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 }

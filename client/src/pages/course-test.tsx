@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, BookOpen, Globe, Users } from "lucide-react";
+import Footer from "@/components/ui/footer";
 
 interface Language {
   id: number;
@@ -200,6 +201,8 @@ export default function CourseTest() {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 }

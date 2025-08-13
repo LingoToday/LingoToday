@@ -1,5 +1,6 @@
 import { Globe } from "lucide-react";
 import { Link } from "wouter";
+import Footer from "@/components/ui/footer";
 
 export default function Privacy() {
   return (
@@ -140,6 +141,8 @@ export default function Privacy() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

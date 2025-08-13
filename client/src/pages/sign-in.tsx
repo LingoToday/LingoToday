@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Globe, Mail, Lock, AlertCircle } from "lucide-react";
 import { Link } from "wouter";
+import Footer from "@/components/ui/footer";
 
 export default function SignIn() {
   const [loginData, setLoginData] = useState({
@@ -176,6 +177,8 @@ export default function SignIn() {
           </p>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

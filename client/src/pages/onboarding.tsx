@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "wouter";
+import Footer from "@/components/ui/footer";
 
 const languages = [
   { code: 'italian', name: 'Italian', flag: '🇮🇹' },
@@ -569,6 +570,8 @@ export default function Onboarding() {
           )}
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

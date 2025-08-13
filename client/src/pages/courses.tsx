@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import type { UserProgress } from "@shared/schema";
+import Footer from "@/components/ui/footer";
 
 export default function Courses() {
   const { user, isAuthenticated } = useAuth();
@@ -250,6 +251,8 @@ export default function Courses() {
           </Card>
         )}
       </div>
+      
+      <Footer />
     </div>
   );
 }

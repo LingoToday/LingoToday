@@ -31,6 +31,7 @@ import { Link } from "wouter";
 import { requestNotificationPermission, setupNotifications, startDailySession, isSessionStartedToday } from "@/lib/notifications";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import NotificationSetupOverlay from "@/components/notification-setup-overlay";
+import Footer from "@/components/ui/footer";
 
 interface User {
   id: string;
@@ -814,6 +815,8 @@ export default function Dashboard() {
         isVisible={showNotificationSetup} 
         onClose={() => markNotificationSetupSeenMutation.mutate()} 
       />
+      
+      <Footer />
     </div>
   );
 }
