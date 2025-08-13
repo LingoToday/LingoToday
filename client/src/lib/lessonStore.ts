@@ -143,6 +143,67 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
         lessons.push(lesson);
       });
     });
+  } else if (language === 'spanish' && apiData.course1) {
+    console.log('🆕 Processing new Spanish course structure');
+    
+    // Course order for proper progression
+    const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9'];
+    
+    courseOrder.forEach((courseId, courseIndex) => {
+      const courseData = apiData[courseId];
+      if (!courseData || !courseData.lessons) {
+        console.log(`⚠️ No course data for ${courseId}`);
+        return;
+      }
+      
+      console.log(`📚 Processing ${courseId}: ${courseData.title}`);
+      
+      // Get lesson keys and sort them naturally (lesson1, lesson2, etc.)
+      const lessonKeys = Object.keys(courseData.lessons).sort((a, b) => {
+        const numA = parseInt(a.replace('lesson', ''));
+        const numB = parseInt(b.replace('lesson', ''));
+        return numA - numB;
+      });
+      
+      lessonKeys.forEach((lessonId, lessonIndex) => {
+        const lessonData = courseData.lessons[lessonId];
+        if (!lessonData) return; // Skip if lesson doesn't exist
+        
+        // Create a standardized lesson object for Spanish 3-step structure
+        const lesson: LessonData = {
+          id: `${courseId}_${lessonId}`,
+          title: lessonData.title,
+          emoji: '🇪🇸',
+          description: `${courseData.title}: ${lessonData.title}`,
+          content: {
+            word: lessonData.step1?.spanish || '',
+            translation: lessonData.step1?.english || '',
+            pronunciation: lessonData.step1?.audio || lessonData.step1?.spanish || '',
+            example: lessonData.step3?.audio_sentence || lessonData.step1?.spanish || '',
+            exampleTranslation: lessonData.step1?.english || '',
+            note: lessonData.step1?.note || ''
+          },
+          quiz: {
+            question: lessonData.step1?.mcq?.question || `What does "${lessonData.step1?.spanish || ''}" mean?`,
+            options: lessonData.step1?.mcq?.options || [
+              lessonData.step1?.english || '',
+              'Option 2',
+              'Option 3',
+              'Option 4'
+            ],
+            correct: lessonData.step1?.mcq?.options?.indexOf(lessonData.step1?.mcq?.answer) || 0
+          },
+          words: [lessonData.step1?.spanish].filter(Boolean),
+          week: courseIndex + 1,
+          day: lessonIndex + 1,
+          category: courseData.title,
+          categoryOrder: (courseIndex * 100) + lessonIndex // More spacing for more lessons per course
+        };
+        
+        console.log(`📚 Adding lesson: ${lesson.id} (${courseData.title}: ${lessonData.title})`);
+        lessons.push(lesson);
+      });
+    });
   } else {
     // Handle old lesson structures for other languages
     console.log('📜 Processing legacy lesson structure');

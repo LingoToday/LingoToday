@@ -6,10 +6,11 @@ import * as path from 'path';
 async function seedDatabase() {
   console.log('🌱 Starting database seeding...');
 
-  // Create Italian language
+  // Create languages
   console.log('📝 Creating languages...');
-  let italianLanguage;
+  let italianLanguage, spanishLanguage;
   try {
+    // Create Italian language
     italianLanguage = await storage.getLanguageByCode('it');
     if (!italianLanguage) {
       italianLanguage = await storage.createLanguage({
@@ -18,8 +19,18 @@ async function seedDatabase() {
       });
     }
     console.log('✅ Italian language ready');
+
+    // Create Spanish language
+    spanishLanguage = await storage.getLanguageByCode('es');
+    if (!spanishLanguage) {
+      spanishLanguage = await storage.createLanguage({
+        code: 'es',
+        name: 'Spanish'
+      });
+    }
+    console.log('✅ Spanish language ready');
   } catch (error) {
-    console.error('❌ Error creating language:', error);
+    console.error('❌ Error creating languages:', error);
     return;
   }
 
@@ -76,18 +87,34 @@ async function seedDatabase() {
     }
   }
 
-  // Create Spanish language for future proofing
-  try {
-    let spanishLanguage = await storage.getLanguageByCode('es');
-    if (!spanishLanguage) {
-      spanishLanguage = await storage.createLanguage({
-        code: 'es',
-        name: 'Spanish'
-      });
-      console.log('✅ Spanish language created for future use');
+  // Import Spanish courses
+  console.log('📖 Importing Spanish courses...');
+  const spanishCourseFiles = [
+    'spanish_course1_greetings_1755092048714.json',
+    'spanish_course2_introductions_1755092048718.json',
+    'spanish_course3_courtesy_1755092048719.json',
+    'spanish_course4_numbers_1755092048719.json',
+    'spanish_course5_days_months_dates (1)_1755092048719.json',
+    'spanish_course6_family_people_1755092048719.json',
+    'spanish_course7_colors_adjectives_1755092048720.json',
+    'spanish_course8_food_drink_1755092048720.json',
+    'spanish_course9_restaurant_1755092048720.json'
+  ];
+
+  for (const courseFile of spanishCourseFiles) {
+    try {
+      const filePath = path.join(process.cwd(), 'attached_assets', courseFile);
+      if (fs.existsSync(filePath)) {
+        console.log(`📥 Importing ${courseFile}...`);
+        const courseData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        await storage.importCourseFromJSON('es', 'beginner', courseData);
+        console.log(`✅ Imported ${courseFile}`);
+      } else {
+        console.log(`⚠️  File not found: ${courseFile}`);
+      }
+    } catch (error) {
+      console.error(`❌ Error importing ${courseFile}:`, error);
     }
-  } catch (error) {
-    console.error('❌ Error creating Spanish language:', error);
   }
 
   // Create intermediate and advanced levels for future use

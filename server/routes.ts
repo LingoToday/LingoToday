@@ -290,22 +290,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get the actual lesson data
-      if (language === 'italian') {
-        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
-        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-        const course = coursesData[nextLesson.courseId];
+      if (language === 'italian' || language === 'spanish') {
+        const languageCode = language === 'italian' ? 'it' : 'es';
+        const dbLanguage = await storage.getLanguageByCode(languageCode);
+        const beginnerLevel = await storage.getSkillLevelByCode('beginner');
         
-        if (course && course.lessons[nextLesson.lessonId]) {
-          res.json({
-            courseId: nextLesson.courseId,
-            courseTitle: course.title,
-            courseDescription: course.description,
-            lessonId: nextLesson.lessonId,
-            lesson: course.lessons[nextLesson.lessonId]
-          });
-        } else {
-          res.status(404).json({ message: "Lesson data not found" });
+        if (!dbLanguage || !beginnerLevel) {
+          return res.status(404).json({ message: `Language ${language} not found in database` });
         }
+        
+        const courses = await storage.getCoursesWithRelations(dbLanguage.id, beginnerLevel.id);
+        const course = courses.find(c => `course${c.courseNumber}` === nextLesson.courseId);
+        
+        if (!course) {
+          return res.status(404).json({ message: "Course not found" });
+        }
+        
+        const lesson = course.lessons.find(l => `lesson${l.lessonNumber}` === nextLesson.lessonId);
+        
+        if (!lesson) {
+          return res.status(404).json({ message: "Lesson not found" });
+        }
+        
+        // Convert to expected format
+        const lessonData: any = {
+          title: lesson.title
+        };
+        
+        lesson.steps.forEach(step => {
+          lessonData[`step${step.stepNumber}`] = step.content;
+        });
+        
+        res.json({
+          courseId: nextLesson.courseId,
+          courseTitle: course.title,
+          courseDescription: course.description,
+          lessonId: nextLesson.lessonId,
+          lesson: lessonData
+        });
       } else {
         res.status(404).json({ message: "Language not supported for course structure" });
       }
@@ -791,25 +813,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/courses/:language', async (req, res) => {
     try {
       const { language } = req.params;
-      let coursesPath;
       
-      if (language === 'italian') {
-        coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
-      } else {
-        // Fallback to old lessons structure for other languages
-        coursesPath = path.join(process.cwd(), 'server', 'lessons.json');
-      }
-      
-      if (!fs.existsSync(coursesPath)) {
-        return res.status(404).json({ message: "Courses file not found" });
-      }
-      
-      const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-      
-      if (language === 'italian') {
+      // For Italian and Spanish, use database
+      if (language === 'italian' || language === 'spanish') {
+        const languageCode = language === 'italian' ? 'it' : 'es';
+        const dbLanguage = await storage.getLanguageByCode(languageCode);
+        const beginnerLevel = await storage.getSkillLevelByCode('beginner');
+        
+        if (!dbLanguage || !beginnerLevel) {
+          return res.status(404).json({ message: `Language ${language} not found in database` });
+        }
+        
+        const courses = await storage.getCoursesWithRelations(dbLanguage.id, beginnerLevel.id);
+        
+        if (courses.length === 0) {
+          return res.status(404).json({ message: `No courses found for ${language}` });
+        }
+        
+        // Convert database structure to the expected format
+        const coursesData: Record<string, any> = {};
+        
+        courses.forEach(course => {
+          const courseKey = `course${course.courseNumber}`;
+          coursesData[courseKey] = {
+            title: course.title,
+            description: course.description,
+            lessons: {}
+          };
+          
+          course.lessons.forEach(lesson => {
+            const lessonKey = `lesson${lesson.lessonNumber}`;
+            const lessonData: any = {
+              title: lesson.title
+            };
+            
+            // Add step data if available
+            lesson.steps.forEach(step => {
+              lessonData[`step${step.stepNumber}`] = step.content;
+            });
+            
+            coursesData[courseKey].lessons[lessonKey] = lessonData;
+          });
+        });
+        
         res.json(coursesData);
       } else {
+        // Fallback to old lessons structure for other languages
+        const coursesPath = path.join(process.cwd(), 'server', 'lessons.json');
+        
+        if (!fs.existsSync(coursesPath)) {
+          return res.status(404).json({ message: "Courses file not found" });
+        }
+        
+        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
         const languageLessons = coursesData[language];
+        
         if (!languageLessons) {
           return res.status(404).json({ message: `Courses not found for language: ${language}` });
         }
@@ -954,75 +1012,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/notification-lesson/:language', async (req, res) => {
     try {
       const { language } = req.params;
-      const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
       
-      console.log(`🔍 Looking for lessons at: ${lessonsPath}`);
-      
-      if (!fs.existsSync(lessonsPath)) {
-        console.error(`❌ Lessons file not found at: ${lessonsPath}`);
-        return res.status(404).json({ message: "Lessons file not found" });
-      }
-      
-      const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
-      const languageLessons = lessonsData[language];
-      
-      console.log(`🔍 Available languages: ${Object.keys(lessonsData)}`);
-      console.log(`🔍 Looking for language: ${language}`);
-      console.log(`🔍 Language lessons found: ${!!languageLessons}`);
-      
-      if (!languageLessons) {
-        return res.status(404).json({ message: `Lessons not found for language: ${language}` });
-      }
-      
-      // Get all available lessons (handle both old week-based and new category-based structure)
-      const allLessons: Array<{
-        lesson: any;
-        week?: number;
-        day?: number;
-        category?: string;
-      }> = [];
-      
-      Object.keys(languageLessons).forEach(categoryKey => {
-        const categoryData = languageLessons[categoryKey];
+      // For Italian and Spanish, use database
+      if (language === 'italian' || language === 'spanish') {
+        const languageCode = language === 'italian' ? 'it' : 'es';
+        const dbLanguage = await storage.getLanguageByCode(languageCode);
+        const beginnerLevel = await storage.getSkillLevelByCode('beginner');
         
-        if (categoryKey.startsWith('week_')) {
-          // Handle old week-based structure
-          const week = parseInt(categoryKey.replace('week_', ''));
-          Object.keys(categoryData).forEach(dayKey => {
-            const day = parseInt(dayKey.replace('day_', ''));
-            const lesson = categoryData[dayKey];
-            allLessons.push({ lesson, week, day });
-          });
-        } else {
-          // Handle new category-based structure
-          Object.keys(categoryData).forEach(lessonKey => {
-            const lesson = categoryData[lessonKey];
-            allLessons.push({ 
-              lesson, 
-              category: lesson.category || categoryKey,
-              week: lesson.week || 1,
-              day: lesson.day || allLessons.length + 1
+        if (!dbLanguage || !beginnerLevel) {
+          return res.status(404).json({ message: `Language ${language} not found in database` });
+        }
+        
+        const courses = await storage.getCoursesWithRelations(dbLanguage.id, beginnerLevel.id);
+        
+        if (courses.length === 0) {
+          return res.status(404).json({ message: `No courses found for ${language}` });
+        }
+        
+        // Collect all lessons
+        const allLessons: Array<{
+          lesson: any;
+          courseId: string;
+          lessonId: string;
+          courseTitle: string;
+        }> = [];
+        
+        courses.forEach(course => {
+          course.lessons.forEach(lesson => {
+            // Create lesson data in expected format
+            const lessonData: any = {
+              title: lesson.title
+            };
+            
+            lesson.steps.forEach(step => {
+              lessonData[`step${step.stepNumber}`] = step.content;
+            });
+            
+            // Create a basic quiz question from first step
+            const firstStep = lesson.steps[0]?.content;
+            let question = `What does "${firstStep?.spanish || firstStep?.italian || ''}" mean?`;
+            if (firstStep?.mcq?.question) {
+              question = firstStep.mcq.question;
+            }
+            
+            allLessons.push({
+              lesson: {
+                ...lessonData,
+                quiz: {
+                  question
+                }
+              },
+              courseId: `course${course.courseNumber}`,
+              lessonId: `lesson${lesson.lessonNumber}`,
+              courseTitle: course.title
             });
           });
+        });
+        
+        if (allLessons.length === 0) {
+          return res.status(404).json({ message: `No lessons found for ${language}` });
         }
-      });
-      
-      if (allLessons.length === 0) {
-        return res.status(404).json({ message: `No lessons found for ${language}` });
+        
+        // Pick a random lesson
+        const randomIndex = Math.floor(Math.random() * allLessons.length);
+        const { lesson, courseId, lessonId, courseTitle } = allLessons[randomIndex];
+        
+        res.json({
+          question: lesson.quiz.question,
+          lessonPath: `/lesson/${language}/course/${courseId}/${lessonId}`,
+          courseId,
+          lessonId,
+          category: courseTitle,
+          title: lesson.title
+        });
+      } else {
+        // Fallback to file-based system for other languages
+        const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
+        
+        console.log(`🔍 Looking for lessons at: ${lessonsPath}`);
+        
+        if (!fs.existsSync(lessonsPath)) {
+          console.error(`❌ Lessons file not found at: ${lessonsPath}`);
+          return res.status(404).json({ message: "Lessons file not found" });
+        }
+        
+        const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
+        const languageLessons = lessonsData[language];
+        
+        console.log(`🔍 Available languages: ${Object.keys(lessonsData)}`);
+        console.log(`🔍 Looking for language: ${language}`);
+        console.log(`🔍 Language lessons found: ${!!languageLessons}`);
+        
+        if (!languageLessons) {
+          return res.status(404).json({ message: `Lessons not found for language: ${language}` });
+        }
+        
+        // Get all available lessons (handle both old week-based and new category-based structure)
+        const allLessons: Array<{
+          lesson: any;
+          week?: number;
+          day?: number;
+          category?: string;
+        }> = [];
+        
+        Object.keys(languageLessons).forEach(categoryKey => {
+          const categoryData = languageLessons[categoryKey];
+          
+          if (categoryKey.startsWith('week_')) {
+            // Handle old week-based structure
+            const week = parseInt(categoryKey.replace('week_', ''));
+            Object.keys(categoryData).forEach(dayKey => {
+              const day = parseInt(dayKey.replace('day_', ''));
+              const lesson = categoryData[dayKey];
+              allLessons.push({ lesson, week, day });
+            });
+          } else {
+            // Handle new category-based structure
+            Object.keys(categoryData).forEach(lessonKey => {
+              const lesson = categoryData[lessonKey];
+              allLessons.push({ 
+                lesson, 
+                category: lesson.category || categoryKey,
+                week: lesson.week || 1,
+                day: lesson.day || allLessons.length + 1
+              });
+            });
+          }
+        });
+        
+        if (allLessons.length === 0) {
+          return res.status(404).json({ message: `No lessons found for ${language}` });
+        }
+        
+        // Pick a random lesson
+        const randomIndex = Math.floor(Math.random() * allLessons.length);
+        const { lesson, week, day, category } = allLessons[randomIndex];
+        
+        res.json({
+          question: lesson.quiz.question,
+          lessonPath: `/lesson/${language}/${week}/${day}`,
+          week,
+          day,
+          category,
+          title: lesson.title
+        });
       }
-      
-      // Pick a random lesson
-      const randomIndex = Math.floor(Math.random() * allLessons.length);
-      const { lesson, week, day, category } = allLessons[randomIndex];
-      
-      res.json({
-        question: lesson.quiz.question,
-        lessonPath: `/lesson/${language}/${week}/${day}`,
-        week,
-        day,
-        category,
-        title: lesson.title
-      });
     } catch (error) {
       console.error("Error fetching notification lesson:", error);
       res.status(500).json({ message: "Failed to fetch notification lesson" });

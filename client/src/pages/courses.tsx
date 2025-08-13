@@ -110,19 +110,20 @@ export default function Courses() {
       courses: {
         beginner: {
           title: "Spanish for Beginners",
-          description: "Start your Spanish journey with essential vocabulary, pronunciation, and basic grammar structures.",
-          duration: "10 weeks",
-          lessons: 30,
+          description: "Start your Spanish journey with essential vocabulary, pronunciation, and basic conversations through structured micro-lessons.",
+          duration: "9 weeks",
+          lessons: 150,
           level: "Beginner",
           outline: [
-            "Spanish alphabet and pronunciation",
-            "Greetings and basic conversations",
-            "Articles, nouns, and adjectives",
-            "Ser vs. Estar (to be verbs)",
-            "Present tense regular verbs",
-            "Family, home, and daily routine vocabulary",
-            "Numbers, time, and dates",
-            "Food, restaurants, and shopping"
+            "Greetings and farewells (¡Hola!, Buenos días, Adiós)",
+            "Introducing yourself (Me llamo, Soy de...)",
+            "Essential courtesy phrases (Por favor, Gracias, Lo siento)",
+            "Numbers from 0 to 100",
+            "Days, months, and dates",
+            "Family and people vocabulary",
+            "Colors and descriptive adjectives",
+            "Food and drink vocabulary",
+            "Restaurant phrases and ordering"
           ]
         }
       }
