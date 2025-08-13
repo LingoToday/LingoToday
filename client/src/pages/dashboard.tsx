@@ -100,6 +100,16 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  // Fetch available checkpoints
+  const { data: checkpointData } = useQuery<{
+    availableCheckpoints: any[];
+    totalCompletedLessons: number;
+    nextCheckpointAt: number | null;
+  }>({
+    queryKey: ["/api/available-checkpoints"],
+    enabled: !!user,
+  });
+
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (updatedSettings: { 
@@ -510,6 +520,55 @@ export default function Dashboard() {
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
                 <span className="text-green-800 font-medium">Learning in progress • {stats?.lessonsCompleted} lessons completed</span>
               </div>
+            )}
+
+            {/* Checkpoint Reviews Available */}
+            {checkpointData?.availableCheckpoints && checkpointData.availableCheckpoints.length > 0 && (
+              <Card className="border-2 border-yellow-200 bg-gradient-to-r from-yellow-50 to-amber-50">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Trophy className="w-5 h-5 text-yellow-600" />
+                    <span className="text-yellow-900">Checkpoint Reviews Available</span>
+                  </CardTitle>
+                  <CardDescription className="text-yellow-700">
+                    Test your knowledge with review quizzes based on your completed lessons
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {checkpointData.availableCheckpoints.map((checkpoint, index) => (
+                    <div key={checkpoint.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-yellow-200">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                          <CheckCircle2 className="w-4 h-4 text-yellow-600" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">{checkpoint.title}</div>
+                          <div className="text-sm text-gray-600">
+                            Available after {checkpoint.requiredLessons} lessons 
+                            {checkpoint.isCompleted ? " • Completed" : ""}
+                          </div>
+                        </div>
+                      </div>
+                      <Link href={`/checkpoint/${checkpoint.id}`}>
+                        <Button 
+                          size="sm" 
+                          variant={checkpoint.isCompleted ? "outline" : "default"}
+                          className={checkpoint.isCompleted ? "border-yellow-600 text-yellow-600" : "bg-yellow-600 hover:bg-yellow-700 text-white"}
+                          data-testid={`button-checkpoint-${checkpoint.id}`}
+                        >
+                          {checkpoint.isCompleted ? "Review Again" : "Start Review"}
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
+                  {checkpointData.nextCheckpointAt && (
+                    <div className="text-sm text-yellow-700 text-center">
+                      Next checkpoint available after {checkpointData.nextCheckpointAt} lessons 
+                      ({checkpointData.nextCheckpointAt - checkpointData.totalCompletedLessons} more to go)
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             )}
 
             {/* Daily Session Start Button */}

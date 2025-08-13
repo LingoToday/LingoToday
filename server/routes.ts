@@ -1123,6 +1123,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check if user should see checkpoint reviews based on completed lessons
+  app.get('/api/available-checkpoints', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
+      const user = await storage.getUser(userId);
+      const language = user?.selectedLanguage || 'italian';
+      
+      // Get user progress
+      const userProgress = await storage.getUserProgress(userId, language);
+      const completedLessons = userProgress.filter((p: any) => p.completed).length;
+      
+      // Get all checkpoints
+      const allCheckpoints = await storage.getAllCheckpoints();
+      
+      // Determine which checkpoints should be available
+      const availableCheckpoints = [];
+      
+      // Show checkpoint after every 4 lessons completed
+      const checkpointIntervals = [4, 8, 12, 16, 20]; // Add more as needed
+      
+      for (const interval of checkpointIntervals) {
+        if (completedLessons >= interval) {
+          // Find the appropriate checkpoint for this interval
+          const checkpointNumber = Math.ceil(interval / 4);
+          const checkpoint = allCheckpoints.find(c => c.checkpointNumber === checkpointNumber);
+          
+          if (checkpoint) {
+            // Check if user has already completed this checkpoint
+            const checkpointProgressList = await storage.getCheckpointProgress(userId, checkpoint.id);
+            const isCompleted = checkpointProgressList.length > 0 && checkpointProgressList[0].completed;
+            
+            availableCheckpoints.push({
+              ...checkpoint,
+              isAvailable: true,
+              isCompleted,
+              requiredLessons: interval,
+              userCompletedLessons: completedLessons
+            });
+          }
+        }
+      }
+      
+      res.json({
+        availableCheckpoints,
+        totalCompletedLessons: completedLessons,
+        nextCheckpointAt: checkpointIntervals.find(interval => completedLessons < interval) || null
+      });
+    } catch (error) {
+      console.error("Error fetching available checkpoints:", error);
+      res.status(500).json({ message: "Failed to fetch available checkpoints" });
+    }
+  });
+
   app.get('/api/checkpoint/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);

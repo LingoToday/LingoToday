@@ -108,6 +108,7 @@ export interface IStorage {
   
   // Checkpoint operations
   getCheckpoints(courseId: number): Promise<Checkpoint[]>;
+  getAllCheckpoints(): Promise<Checkpoint[]>;
   getCheckpoint(id: number): Promise<Checkpoint | undefined>;
   createCheckpoint(checkpoint: InsertCheckpoint): Promise<Checkpoint>;
   updateCheckpoint(id: number, checkpoint: Partial<InsertCheckpoint>): Promise<Checkpoint>;
@@ -687,6 +688,10 @@ export class DatabaseStorage implements IStorage {
   // Checkpoint operations
   async getCheckpoints(courseId: number): Promise<Checkpoint[]> {
     return await db.select().from(checkpoints).where(eq(checkpoints.courseId, courseId)).orderBy(checkpoints.checkpointNumber);
+  }
+
+  async getAllCheckpoints(): Promise<Checkpoint[]> {
+    return await db.select().from(checkpoints).orderBy(checkpoints.checkpointNumber);
   }
 
   async getCheckpoint(id: number): Promise<Checkpoint | undefined> {
