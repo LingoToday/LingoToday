@@ -1,0 +1,521 @@
+{
+  "course3": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Master basic polite expressions like yes, no, please, thank you, and apologies in French. Each lesson follows a three-step micro-lesson approach.",
+    "lessons": {
+      "lesson1": {
+        "title": "Yes",
+        "step1": {
+          "italian": "Oui",
+          "english": "Yes",
+          "audio": "Oui",
+          "note": "Simple affirmative word used in all contexts.",
+          "mcq": {
+            "question": "Which word means 'Yes'?",
+            "options": [
+              "Non",
+              "Oui",
+              "S'il vous plaît",
+              "Merci"
+            ],
+            "answer": "Oui"
+          }
+        },
+        "step2": {
+          "type_prompt": "O__  = Yes",
+          "expected_answer": "Oui",
+          "alt_answers": [
+            "oui"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oui.",
+          "options": [
+            "Yes",
+            "No",
+            "Please",
+            "Thank you"
+          ],
+          "answer": "Yes"
+        }
+      },
+      "lesson2": {
+        "title": "No",
+        "step1": {
+          "italian": "Non",
+          "english": "No",
+          "audio": "Non",
+          "note": "Simple negative word used in all contexts.",
+          "mcq": {
+            "question": "Which word means 'No'?",
+            "options": [
+              "Oui",
+              "Non",
+              "Merci",
+              "Pardon"
+            ],
+            "answer": "Non"
+          }
+        },
+        "step2": {
+          "type_prompt": "N__  = No",
+          "expected_answer": "Non",
+          "alt_answers": [
+            "non"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Non.",
+          "options": [
+            "No",
+            "Yes",
+            "Please",
+            "Sorry"
+          ],
+          "answer": "No"
+        }
+      },
+      "lesson3": {
+        "title": "Please (formal)",
+        "step1": {
+          "italian": "S'il vous plaît",
+          "english": "Please (formal)",
+          "audio": "S'il vous plaît",
+          "note": "Polite; used in formal situations or with strangers.",
+          "mcq": {
+            "question": "Which phrase means 'Please' (formal)?",
+            "options": [
+              "S'il te plaît",
+              "S'il vous plaît",
+              "Merci",
+              "Pardon"
+            ],
+            "answer": "S'il vous plaît"
+          }
+        },
+        "step2": {
+          "type_prompt": "S'il v__s plaît  = Please (formal)",
+          "expected_answer": "S'il vous plaît",
+          "alt_answers": [
+            "s'il vous plaît",
+            "S'il vous plait",
+            "s'il vous plait"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "S'il vous plaît.",
+          "options": [
+            "Please",
+            "Thank you",
+            "Excuse me",
+            "You're welcome"
+          ],
+          "answer": "Please"
+        }
+      },
+      "lesson4": {
+        "title": "Please (informal)",
+        "step1": {
+          "italian": "S'il te plaît",
+          "english": "Please (informal)",
+          "audio": "S'il te plaît",
+          "note": "Use with friends, family, or children.",
+          "mcq": {
+            "question": "Which phrase means 'Please' (informal)?",
+            "options": [
+              "S'il te plaît",
+              "S'il vous plaît",
+              "Merci",
+              "Pardon"
+            ],
+            "answer": "S'il te plaît"
+          }
+        },
+        "step2": {
+          "type_prompt": "S'il t_ plaît  = Please (informal)",
+          "expected_answer": "S'il te plaît",
+          "alt_answers": [
+            "s'il te plaît",
+            "S'il te plait",
+            "s'il te plait"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "S'il te plaît.",
+          "options": [
+            "Please",
+            "Thank you",
+            "Excuse me",
+            "You're welcome"
+          ],
+          "answer": "Please"
+        }
+      },
+      "lesson5": {
+        "title": "Thank you",
+        "step1": {
+          "italian": "Merci",
+          "english": "Thank you",
+          "audio": "Merci",
+          "note": "Standard way to express gratitude.",
+          "mcq": {
+            "question": "Which word means 'Thank you'?",
+            "options": [
+              "S'il vous plaît",
+              "Merci",
+              "De rien",
+              "Pardon"
+            ],
+            "answer": "Merci"
+          }
+        },
+        "step2": {
+          "type_prompt": "Me__i  = Thank you",
+          "expected_answer": "Merci",
+          "alt_answers": [
+            "merci"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Merci !",
+          "options": [
+            "Thank you",
+            "Please",
+            "Sorry",
+            "Hello"
+          ],
+          "answer": "Thank you"
+        }
+      },
+      "lesson6": {
+        "title": "You're welcome",
+        "step1": {
+          "italian": "De rien",
+          "english": "You're welcome",
+          "audio": "De rien",
+          "note": "Common reply to 'Merci'.",
+          "mcq": {
+            "question": "Which phrase means 'You're welcome'?",
+            "options": [
+              "De rien",
+              "Merci",
+              "Pardon",
+              "Oui"
+            ],
+            "answer": "De rien"
+          }
+        },
+        "step2": {
+          "type_prompt": "De r__n  = You're welcome",
+          "expected_answer": "De rien",
+          "alt_answers": [
+            "de rien"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "De rien.",
+          "options": [
+            "You're welcome",
+            "Thank you",
+            "Please",
+            "No"
+          ],
+          "answer": "You're welcome"
+        }
+      },
+      "lesson7": {
+        "title": "I'm sorry",
+        "step1": {
+          "italian": "Je suis désolé(e)",
+          "english": "I'm sorry",
+          "audio": "Je suis désolé",
+          "note": "Add -e if you are female.",
+          "mcq": {
+            "question": "Which phrase means 'I'm sorry'?",
+            "options": [
+              "Pardon",
+              "Je suis désolé(e)",
+              "Excusez-moi",
+              "De rien"
+            ],
+            "answer": "Je suis désolé(e)"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je suis dés__é(e)  = I'm sorry",
+          "expected_answer": "Je suis désolé(e)",
+          "alt_answers": [
+            "je suis désolé",
+            "je suis désolée"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je suis désolée.",
+          "options": [
+            "I'm sorry",
+            "Please",
+            "Thank you",
+            "Goodbye"
+          ],
+          "answer": "I'm sorry"
+        }
+      },
+      "lesson8": {
+        "title": "Excuse me (informal)",
+        "step1": {
+          "italian": "Pardon",
+          "english": "Excuse me / Sorry (informal)",
+          "audio": "Pardon",
+          "note": "Use to get attention or say sorry casually.",
+          "mcq": {
+            "question": "Which word means 'Excuse me' (informal)?",
+            "options": [
+              "Pardon",
+              "Excusez-moi",
+              "Désolé",
+              "Merci"
+            ],
+            "answer": "Pardon"
+          }
+        },
+        "step2": {
+          "type_prompt": "Par__n  = Excuse me (informal)",
+          "expected_answer": "Pardon",
+          "alt_answers": [
+            "pardon"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Pardon.",
+          "options": [
+            "Excuse me",
+            "Sorry",
+            "Hello",
+            "Please"
+          ],
+          "answer": "Excuse me"
+        }
+      },
+      "lesson9": {
+        "title": "Excuse me (formal)",
+        "step1": {
+          "italian": "Excusez-moi",
+          "english": "Excuse me (formal)",
+          "audio": "Excusez-moi",
+          "note": "Polite and formal.",
+          "mcq": {
+            "question": "Which phrase means 'Excuse me' (formal)?",
+            "options": [
+              "Pardon",
+              "Excusez-moi",
+              "Désolé",
+              "Merci"
+            ],
+            "answer": "Excusez-moi"
+          }
+        },
+        "step2": {
+          "type_prompt": "Excu__z-moi  = Excuse me (formal)",
+          "expected_answer": "Excusez-moi",
+          "alt_answers": [
+            "excusez-moi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Excusez-moi.",
+          "options": [
+            "Excuse me",
+            "Sorry",
+            "Hello",
+            "Please"
+          ],
+          "answer": "Excuse me"
+        }
+      },
+      "lesson10": {
+        "title": "Do you speak English? (formal)",
+        "step1": {
+          "italian": "Parlez-vous anglais ?",
+          "english": "Do you speak English? (formal)",
+          "audio": "Parlez-vous anglais ?",
+          "note": "Useful when travelling; polite form.",
+          "mcq": {
+            "question": "Which phrase means 'Do you speak English?' (formal)?",
+            "options": [
+              "Parlez-vous anglais ?",
+              "Tu parles anglais ?",
+              "Parlez-vous français ?",
+              "Vous parlez anglais ?"
+            ],
+            "answer": "Parlez-vous anglais ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Par__-vous anglais ?  = Do you speak English?",
+          "expected_answer": "Parlez-vous anglais ?",
+          "alt_answers": [
+            "parlez-vous anglais ?",
+            "Parlez vous anglais ?",
+            "parlez vous anglais ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Parlez-vous anglais ?",
+          "options": [
+            "Do you speak English?",
+            "Do you speak French?",
+            "Can you help me?",
+            "Where are you from?"
+          ],
+          "answer": "Do you speak English?"
+        }
+      },
+      "lesson11": {
+        "title": "I don’t understand",
+        "step1": {
+          "italian": "Je ne comprends pas",
+          "english": "I don’t understand",
+          "audio": "Je ne comprends pas",
+          "note": "Say this if you need clarification.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t understand'?",
+            "options": [
+              "Je ne comprends pas",
+              "Je ne sais pas",
+              "Je ne parle pas",
+              "Je ne peux pas"
+            ],
+            "answer": "Je ne comprends pas"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je ne comp__nds pas  = I don’t understand",
+          "expected_answer": "Je ne comprends pas",
+          "alt_answers": [
+            "je ne comprends pas"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je ne comprends pas.",
+          "options": [
+            "I don’t understand",
+            "I don’t know",
+            "I can’t hear",
+            "I don’t speak"
+          ],
+          "answer": "I don’t understand"
+        }
+      },
+      "lesson12": {
+        "title": "I don’t know",
+        "step1": {
+          "italian": "Je ne sais pas",
+          "english": "I don’t know",
+          "audio": "Je ne sais pas",
+          "note": "Used in all contexts when you don’t know something.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t know'?",
+            "options": [
+              "Je ne sais pas",
+              "Je ne comprends pas",
+              "Je ne connais pas",
+              "Je ne parle pas"
+            ],
+            "answer": "Je ne sais pas"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je ne s__s pas  = I don’t know",
+          "expected_answer": "Je ne sais pas",
+          "alt_answers": [
+            "je ne sais pas"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je ne sais pas.",
+          "options": [
+            "I don’t know",
+            "I don’t understand",
+            "I can’t",
+            "I don’t speak"
+          ],
+          "answer": "I don’t know"
+        }
+      },
+      "lesson13": {
+        "title": "I speak a little French",
+        "step1": {
+          "italian": "Je parle un peu français",
+          "english": "I speak a little French",
+          "audio": "Je parle un peu français",
+          "note": "Good for modestly stating your skill level.",
+          "mcq": {
+            "question": "Which phrase means 'I speak a little French'?",
+            "options": [
+              "Je parle un peu français",
+              "Je parle français",
+              "Je parle anglais",
+              "Je ne parle pas français"
+            ],
+            "answer": "Je parle un peu français"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je parle un p__ français  = I speak a little French",
+          "expected_answer": "Je parle un peu français",
+          "alt_answers": [
+            "je parle un peu français"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je parle un peu français.",
+          "options": [
+            "I speak a little French",
+            "I speak French",
+            "I speak English",
+            "I don’t speak French"
+          ],
+          "answer": "I speak a little French"
+        }
+      },
+      "lesson14": {
+        "title": "Can you repeat, please? (formal)",
+        "step1": {
+          "italian": "Pouvez-vous répéter, s’il vous plaît ?",
+          "english": "Can you repeat, please? (formal)",
+          "audio": "Pouvez-vous répéter, s’il vous plaît ?",
+          "note": "Polite request to ask someone to repeat.",
+          "mcq": {
+            "question": "Which phrase means 'Can you repeat, please?' (formal)?",
+            "options": [
+              "Pouvez-vous répéter, s’il vous plaît ?",
+              "Répétez, s’il vous plaît",
+              "Peux-tu répéter ?",
+              "Vous pouvez répéter ?"
+            ],
+            "answer": "Pouvez-vous répéter, s’il vous plaît ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Pouvez-vous rép__er, s’il vous plaît ?  = Can you repeat, please?",
+          "expected_answer": "Pouvez-vous répéter, s’il vous plaît ?",
+          "alt_answers": [
+            "pouvez-vous répéter, s’il vous plaît ?",
+            "Pouvez vous répéter, s’il vous plaît ?",
+            "pouvez vous répéter, s’il vous plaît ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Pouvez-vous répéter, s’il vous plaît ?",
+          "options": [
+            "Can you repeat, please?",
+            "Can you help me?",
+            "Do you understand?",
+            "Do you speak French?"
+          ],
+          "answer": "Can you repeat, please?"
+        }
+      }
+    }
+  }
+}

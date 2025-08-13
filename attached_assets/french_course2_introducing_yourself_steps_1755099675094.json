@@ -1,0 +1,498 @@
+{
+  "course2": {
+    "title": "Introducing Yourself",
+    "description": "Learn to introduce yourself, ask names, say where you’re from, and exchange basic social phrases in French. Each lesson follows a three-step micro-lesson approach.",
+    "lessons": {
+      "lesson1": {
+        "title": "What’s your name? (informal)",
+        "step1": {
+          "italian": "Comment tu t’appelles ?",
+          "english": "What’s your name? (informal)",
+          "audio": "Comment tu t’appelles ?",
+          "note": "Use with friends, family, or people your age in casual settings.",
+          "mcq": {
+            "question": "Which phrase means 'What’s your name?' (informal)?",
+            "options": [
+              "Comment vous appelez-vous ?",
+              "Comment tu t’appelles ?",
+              "Tu es d’où ?",
+              "Qui es-tu ?"
+            ],
+            "answer": "Comment tu t’appelles ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Com___ tu t’app____ ?  = What’s your name? (informal)",
+          "expected_answer": "Comment tu t’appelles ?",
+          "alt_answers": [
+            "comment tu t’appelles ?",
+            "Comment tu t'appelles ?",
+            "comment tu t'appelles ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Comment tu t’appelles ?",
+          "options": [
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?",
+            "Who are you?"
+          ],
+          "answer": "What’s your name?"
+        }
+      },
+      "lesson2": {
+        "title": "What is your name? (formal)",
+        "step1": {
+          "italian": "Comment vous appelez-vous ?",
+          "english": "What is your name? (formal)",
+          "audio": "Comment vous appelez-vous ?",
+          "note": "Use with strangers, in business, or when showing respect.",
+          "mcq": {
+            "question": "Which phrase means 'What is your name?' (formal)?",
+            "options": [
+              "Comment vous appelez-vous ?",
+              "Comment tu t’appelles ?",
+              "Tu es d’où ?",
+              "Vous êtes qui ?"
+            ],
+            "answer": "Comment vous appelez-vous ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Comment vous ap____-vous ?  = What is your name? (formal)",
+          "expected_answer": "Comment vous appelez-vous ?",
+          "alt_answers": [
+            "comment vous appelez-vous ?",
+            "Comment vous appelez vous ?",
+            "comment vous appelez vous ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Comment vous appelez-vous ?",
+          "options": [
+            "What is your name?",
+            "Where are you from?",
+            "How are you?",
+            "Who are you?"
+          ],
+          "answer": "What is your name?"
+        }
+      },
+      "lesson3": {
+        "title": "My name is…",
+        "step1": {
+          "italian": "Je m’appelle …",
+          "english": "My name is …",
+          "audio": "Je m’appelle …",
+          "note": "Standard way to introduce yourself.",
+          "mcq": {
+            "question": "Which phrase means 'My name is…'?",
+            "options": [
+              "Je m’appelle …",
+              "Je suis …",
+              "Mon nom est …",
+              "Moi, c’est …"
+            ],
+            "answer": "Je m’appelle …"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je m’app____ …  = My name is …",
+          "expected_answer": "Je m’appelle …",
+          "alt_answers": [
+            "je m’appelle …",
+            "Je m'appelle …",
+            "je m'appelle …"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je m’appelle Marie.",
+          "options": [
+            "My name is Marie.",
+            "I am Marie.",
+            "Call me Marie.",
+            "This is Marie."
+          ],
+          "answer": "My name is Marie."
+        }
+      },
+      "lesson4": {
+        "title": "I am…",
+        "step1": {
+          "italian": "Je suis …",
+          "english": "I am …",
+          "audio": "Je suis …",
+          "note": "Alternative way to give your name or describe yourself.",
+          "mcq": {
+            "question": "Which phrase means 'I am …'?",
+            "options": [
+              "Je suis …",
+              "Je m’appelle …",
+              "Moi, c’est …",
+              "C’est …"
+            ],
+            "answer": "Je suis …"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je s__s …  = I am …",
+          "expected_answer": "Je suis …",
+          "alt_answers": [
+            "je suis …"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je suis Paul.",
+          "options": [
+            "I am Paul.",
+            "My name is Paul.",
+            "It’s Paul.",
+            "Call me Paul."
+          ],
+          "answer": "I am Paul."
+        }
+      },
+      "lesson5": {
+        "title": "Where are you from? (informal)",
+        "step1": {
+          "italian": "Tu es d’où ?",
+          "english": "Where are you from? (informal)",
+          "audio": "Tu es d’où ?",
+          "note": "Casual way to ask origin; used with peers.",
+          "mcq": {
+            "question": "Which phrase means 'Where are you from?' (informal)?",
+            "options": [
+              "Tu es d’où ?",
+              "Vous venez d’où ?",
+              "D’où viens-tu ?",
+              "Où habites-tu ?"
+            ],
+            "answer": "Tu es d’où ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tu es d’__ ?  = Where are you from? (informal)",
+          "expected_answer": "Tu es d’où ?",
+          "alt_answers": [
+            "tu es d’où ?",
+            "Tu es d'ou ?",
+            "tu es d'ou ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu es d’où ?",
+          "options": [
+            "Where are you from?",
+            "Where do you live?",
+            "How are you?",
+            "Who are you?"
+          ],
+          "answer": "Where are you from?"
+        }
+      },
+      "lesson6": {
+        "title": "Where are you from? (formal)",
+        "step1": {
+          "italian": "D’où venez-vous ?",
+          "english": "Where are you from? (formal)",
+          "audio": "D’où venez-vous ?",
+          "note": "Polite or formal way to ask someone's origin.",
+          "mcq": {
+            "question": "Which phrase means 'Where are you from?' (formal)?",
+            "options": [
+              "D’où venez-vous ?",
+              "Tu es d’où ?",
+              "Vous êtes où ?",
+              "Où habitez-vous ?"
+            ],
+            "answer": "D’où venez-vous ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D’__ venez-vous ?  = Where are you from? (formal)",
+          "expected_answer": "D’où venez-vous ?",
+          "alt_answers": [
+            "d’où venez-vous ?",
+            "D'ou venez-vous ?",
+            "d'ou venez-vous ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "D’où venez-vous ?",
+          "options": [
+            "Where are you from?",
+            "Where do you live?",
+            "How are you?",
+            "Who are you?"
+          ],
+          "answer": "Where are you from?"
+        }
+      },
+      "lesson7": {
+        "title": "I am from…",
+        "step1": {
+          "italian": "Je viens de …",
+          "english": "I am from …",
+          "audio": "Je viens de …",
+          "note": "Use with a country, city, or region.",
+          "mcq": {
+            "question": "Which phrase means 'I am from…'?",
+            "options": [
+              "Je viens de …",
+              "Je suis de …",
+              "Je pars de …",
+              "Je vais à …"
+            ],
+            "answer": "Je viens de …"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je v__ns de …  = I am from …",
+          "expected_answer": "Je viens de …",
+          "alt_answers": [
+            "je viens de …"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je viens de Paris.",
+          "options": [
+            "I am from Paris.",
+            "I live in Paris.",
+            "I go to Paris.",
+            "I’m visiting Paris."
+          ],
+          "answer": "I am from Paris."
+        }
+      },
+      "lesson8": {
+        "title": "I am French (male/female)",
+        "step1": {
+          "italian": "Je suis français(e).",
+          "english": "I am French (male/female)",
+          "audio": "Je suis français.",
+          "note": "Add -e for feminine: française.",
+          "mcq": {
+            "question": "Which phrase means 'I am French'?",
+            "options": [
+              "Je suis français(e).",
+              "Je suis France.",
+              "Je suis parisien(ne).",
+              "Je suis de France."
+            ],
+            "answer": "Je suis français(e)."
+          }
+        },
+        "step2": {
+          "type_prompt": "Je s__s français(e).  = I am French",
+          "expected_answer": "Je suis français(e).",
+          "alt_answers": [
+            "je suis français(e).",
+            "je suis français",
+            "je suis française"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je suis française.",
+          "options": [
+            "I am French.",
+            "I am from France.",
+            "I am Parisian.",
+            "I am Francophone."
+          ],
+          "answer": "I am French."
+        }
+      },
+      "lesson9": {
+        "title": "Pleased to meet you (informal)",
+        "step1": {
+          "italian": "Enchanté(e) !",
+          "english": "Pleased to meet you!",
+          "audio": "Enchanté !",
+          "note": "Use after meeting someone; add -e if you are female.",
+          "mcq": {
+            "question": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Enchanté(e) !",
+              "Au revoir",
+              "Bonjour",
+              "Salut"
+            ],
+            "answer": "Enchanté(e) !"
+          }
+        },
+        "step2": {
+          "type_prompt": "Enchan__ !  = Pleased to meet you!",
+          "expected_answer": "Enchanté !",
+          "alt_answers": [
+            "Enchantée !",
+            "enchanté !",
+            "enchantée !"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Enchanté !",
+          "options": [
+            "Pleased to meet you!",
+            "Good evening!",
+            "Hello!",
+            "Good morning!"
+          ],
+          "answer": "Pleased to meet you!"
+        }
+      },
+      "lesson10": {
+        "title": "How are you? (informal)",
+        "step1": {
+          "italian": "Comment ça va ?",
+          "english": "How are you? (informal)",
+          "audio": "Comment ça va ?",
+          "note": "Casual; often shortened to 'Ça va ?'.",
+          "mcq": {
+            "question": "Which phrase means 'How are you?' (informal)?",
+            "options": [
+              "Comment ça va ?",
+              "Comment allez-vous ?",
+              "Ça roule ?",
+              "Tu vas bien ?"
+            ],
+            "answer": "Comment ça va ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Com___ ça va ?  = How are you?",
+          "expected_answer": "Comment ça va ?",
+          "alt_answers": [
+            "comment ça va ?",
+            "Comment ca va ?",
+            "comment ca va ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Comment ça va ?",
+          "options": [
+            "How are you?",
+            "Where are you from?",
+            "What’s your name?",
+            "What’s new?"
+          ],
+          "answer": "How are you?"
+        }
+      },
+      "lesson11": {
+        "title": "How are you? (formal)",
+        "step1": {
+          "italian": "Comment allez-vous ?",
+          "english": "How are you? (formal)",
+          "audio": "Comment allez-vous ?",
+          "note": "Polite form; used in formal situations.",
+          "mcq": {
+            "question": "Which phrase means 'How are you?' (formal)?",
+            "options": [
+              "Comment allez-vous ?",
+              "Comment ça va ?",
+              "Vous allez bien ?",
+              "Ça va ?"
+            ],
+            "answer": "Comment allez-vous ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Comment all__-vous ?  = How are you? (formal)",
+          "expected_answer": "Comment allez-vous ?",
+          "alt_answers": [
+            "comment allez-vous ?",
+            "Comment allez vous ?",
+            "comment allez vous ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Comment allez-vous ?",
+          "options": [
+            "How are you?",
+            "Where are you from?",
+            "What’s your name?",
+            "What’s up?"
+          ],
+          "answer": "How are you?"
+        }
+      },
+      "lesson12": {
+        "title": "I’m fine, thank you",
+        "step1": {
+          "italian": "Ça va bien, merci.",
+          "english": "I’m fine, thank you.",
+          "audio": "Ça va bien, merci.",
+          "note": "Common reply to 'How are you?'.",
+          "mcq": {
+            "question": "Which phrase means 'I’m fine, thank you'?",
+            "options": [
+              "Ça va bien, merci.",
+              "Je vais bien.",
+              "Tout va bien.",
+              "Ça marche."
+            ],
+            "answer": "Ça va bien, merci."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ça va b__n, merci.  = I’m fine, thank you.",
+          "expected_answer": "Ça va bien, merci.",
+          "alt_answers": [
+            "ça va bien, merci.",
+            "Ca va bien, merci.",
+            "ca va bien, merci."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ça va bien, merci.",
+          "options": [
+            "I’m fine, thank you.",
+            "I’m doing okay.",
+            "It’s going well.",
+            "Not bad."
+          ],
+          "answer": "I’m fine, thank you."
+        }
+      },
+      "lesson13": {
+        "title": "And you? (informal/formal)",
+        "step1": {
+          "italian": "Et toi ? / Et vous ?",
+          "english": "And you? (informal/formal)",
+          "audio": "Et toi ? / Et vous ?",
+          "note": "Use 'Et toi ?' informally, 'Et vous ?' formally.",
+          "mcq": {
+            "question": "Which phrase means 'And you?' (informal/formal)?",
+            "options": [
+              "Et toi ? / Et vous ?",
+              "Toi aussi ?",
+              "Et alors ?",
+              "Et de ton côté ?"
+            ],
+            "answer": "Et toi ? / Et vous ?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Et t__ ? / Et v__s ?  = And you?",
+          "expected_answer": "Et toi ? / Et vous ?",
+          "alt_answers": [
+            "et toi ? / et vous ?",
+            "Et toi ? Et vous ?",
+            "et toi ? et vous ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Et toi ?",
+          "options": [
+            "And you?",
+            "And me?",
+            "And them?",
+            "And so?"
+          ],
+          "answer": "And you?"
+        }
+      }
+    }
+  }
+}

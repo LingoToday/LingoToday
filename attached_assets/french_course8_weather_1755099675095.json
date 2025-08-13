@@ -1,0 +1,502 @@
+{
+  "course8": {
+    "title": "Weather",
+    "description": "Learn French phrases to talk about weather conditions. Each item is a separate micro-lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "What’s the weather like?",
+        "step1": {
+          "italian": "Quel temps fait-il ?",
+          "english": "What’s the weather like?",
+          "audio": "Quel temps fait-il ?",
+          "note": "Common way to ask about the weather.",
+          "mcq": {
+            "question": "What does 'Quel temps fait-il ?' mean?",
+            "options": [
+              "What’s the weather like?",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "What’s the weather like?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q__l  = What’s the weather like?",
+          "expected_answer": "Quel temps fait-il ?",
+          "alt_answers": [
+            "Quel temps fait-il ?",
+            "quel temps fait-il ?",
+            "Quel temps fait-il ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quel temps fait-il ?",
+          "options": [
+            "What’s the weather like?",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "What’s the weather like?"
+        }
+      },
+      "lesson2": {
+        "title": "It’s nice",
+        "step1": {
+          "italian": "Il fait beau",
+          "english": "It’s nice",
+          "audio": "Il fait beau",
+          "note": "Literally: It makes nice.",
+          "mcq": {
+            "question": "What does 'Il fait beau' mean?",
+            "options": [
+              "It’s nice",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s nice"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s nice",
+          "expected_answer": "Il fait beau",
+          "alt_answers": [
+            "Il fait beau",
+            "il fait beau",
+            "Il fait beau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il fait beau",
+          "options": [
+            "It’s nice",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s nice"
+        }
+      },
+      "lesson3": {
+        "title": "It’s bad weather",
+        "step1": {
+          "italian": "Il fait mauvais",
+          "english": "It’s bad weather",
+          "audio": "Il fait mauvais",
+          "note": "Literally: It makes bad.",
+          "mcq": {
+            "question": "What does 'Il fait mauvais' mean?",
+            "options": [
+              "It’s bad weather",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s bad weather"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s bad weather",
+          "expected_answer": "Il fait mauvais",
+          "alt_answers": [
+            "Il fait mauvais",
+            "il fait mauvais",
+            "Il fait mauvais"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il fait mauvais",
+          "options": [
+            "It’s bad weather",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s bad weather"
+        }
+      },
+      "lesson4": {
+        "title": "It’s hot",
+        "step1": {
+          "italian": "Il fait chaud",
+          "english": "It’s hot",
+          "audio": "Il fait chaud",
+          "note": "Used for weather temperature.",
+          "mcq": {
+            "question": "What does 'Il fait chaud' mean?",
+            "options": [
+              "It’s hot",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s hot"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s hot",
+          "expected_answer": "Il fait chaud",
+          "alt_answers": [
+            "Il fait chaud",
+            "il fait chaud",
+            "Il fait chaud"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il fait chaud",
+          "options": [
+            "It’s hot",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s hot"
+        }
+      },
+      "lesson5": {
+        "title": "It’s cold",
+        "step1": {
+          "italian": "Il fait froid",
+          "english": "It’s cold",
+          "audio": "Il fait froid",
+          "note": "Used for weather temperature.",
+          "mcq": {
+            "question": "What does 'Il fait froid' mean?",
+            "options": [
+              "It’s cold",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s cold"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s cold",
+          "expected_answer": "Il fait froid",
+          "alt_answers": [
+            "Il fait froid",
+            "il fait froid",
+            "Il fait froid"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il fait froid",
+          "options": [
+            "It’s cold",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s cold"
+        }
+      },
+      "lesson6": {
+        "title": "It’s sunny",
+        "step1": {
+          "italian": "Il y a du soleil",
+          "english": "It’s sunny",
+          "audio": "Il y a du soleil",
+          "note": "Literally: There is sun.",
+          "mcq": {
+            "question": "What does 'Il y a du soleil' mean?",
+            "options": [
+              "It’s sunny",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s sunny"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s sunny",
+          "expected_answer": "Il y a du soleil",
+          "alt_answers": [
+            "Il y a du soleil",
+            "il y a du soleil",
+            "Il y a du soleil"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il y a du soleil",
+          "options": [
+            "It’s sunny",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s sunny"
+        }
+      },
+      "lesson7": {
+        "title": "It’s cloudy",
+        "step1": {
+          "italian": "Il y a des nuages",
+          "english": "It’s cloudy",
+          "audio": "Il y a des nuages",
+          "note": "Literally: There are clouds.",
+          "mcq": {
+            "question": "What does 'Il y a des nuages' mean?",
+            "options": [
+              "It’s cloudy",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s cloudy"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s cloudy",
+          "expected_answer": "Il y a des nuages",
+          "alt_answers": [
+            "Il y a des nuages",
+            "il y a des nuages",
+            "Il y a des nuages"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il y a des nuages",
+          "options": [
+            "It’s cloudy",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s cloudy"
+        }
+      },
+      "lesson8": {
+        "title": "It’s raining",
+        "step1": {
+          "italian": "Il pleut",
+          "english": "It’s raining",
+          "audio": "Il pleut",
+          "note": "Simple present tense form.",
+          "mcq": {
+            "question": "What does 'Il pleut' mean?",
+            "options": [
+              "It’s raining",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s raining"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s raining",
+          "expected_answer": "Il pleut",
+          "alt_answers": [
+            "Il pleut",
+            "il pleut",
+            "Il pleut"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il pleut",
+          "options": [
+            "It’s raining",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s raining"
+        }
+      },
+      "lesson9": {
+        "title": "It’s snowing",
+        "step1": {
+          "italian": "Il neige",
+          "english": "It’s snowing",
+          "audio": "Il neige",
+          "note": "Simple present tense form.",
+          "mcq": {
+            "question": "What does 'Il neige' mean?",
+            "options": [
+              "It’s snowing",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s snowing"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s snowing",
+          "expected_answer": "Il neige",
+          "alt_answers": [
+            "Il neige",
+            "il neige",
+            "Il neige"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il neige",
+          "options": [
+            "It’s snowing",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s snowing"
+        }
+      },
+      "lesson10": {
+        "title": "It’s windy",
+        "step1": {
+          "italian": "Il y a du vent",
+          "english": "It’s windy",
+          "audio": "Il y a du vent",
+          "note": "Literally: There is wind.",
+          "mcq": {
+            "question": "What does 'Il y a du vent' mean?",
+            "options": [
+              "It’s windy",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s windy"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s windy",
+          "expected_answer": "Il y a du vent",
+          "alt_answers": [
+            "Il y a du vent",
+            "il y a du vent",
+            "Il y a du vent"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il y a du vent",
+          "options": [
+            "It’s windy",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s windy"
+        }
+      },
+      "lesson11": {
+        "title": "There’s a storm",
+        "step1": {
+          "italian": "Il y a un orage",
+          "english": "There’s a storm",
+          "audio": "Il y a un orage",
+          "note": "Literally: There is a storm.",
+          "mcq": {
+            "question": "What does 'Il y a un orage' mean?",
+            "options": [
+              "There’s a storm",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "There’s a storm"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = There’s a storm",
+          "expected_answer": "Il y a un orage",
+          "alt_answers": [
+            "Il y a un orage",
+            "il y a un orage",
+            "Il y a un orage"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il y a un orage",
+          "options": [
+            "There’s a storm",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "There’s a storm"
+        }
+      },
+      "lesson12": {
+        "title": "It’s foggy",
+        "step1": {
+          "italian": "Il y a du brouillard",
+          "english": "It’s foggy",
+          "audio": "Il y a du brouillard",
+          "note": "Literally: There is fog.",
+          "mcq": {
+            "question": "What does 'Il y a du brouillard' mean?",
+            "options": [
+              "It’s foggy",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "It’s foggy"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il  = It’s foggy",
+          "expected_answer": "Il y a du brouillard",
+          "alt_answers": [
+            "Il y a du brouillard",
+            "il y a du brouillard",
+            "Il y a du brouillard"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il y a du brouillard",
+          "options": [
+            "It’s foggy",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "It’s foggy"
+        }
+      },
+      "lesson13": {
+        "title": "The temperature is 20 degrees",
+        "step1": {
+          "italian": "La température est de vingt degrés",
+          "english": "The temperature is 20 degrees",
+          "audio": "La température est de vingt degrés",
+          "note": "Use 'de' before the number of degrees.",
+          "mcq": {
+            "question": "What does 'La température est de vingt degrés' mean?",
+            "options": [
+              "The temperature is 20 degrees",
+              "sunny",
+              "cloudy",
+              "rainy"
+            ],
+            "answer": "The temperature is 20 degrees"
+          }
+        },
+        "step2": {
+          "type_prompt": "La  = The temperature is 20 degrees",
+          "expected_answer": "La température est de vingt degrés",
+          "alt_answers": [
+            "La température est de vingt degrés",
+            "la température est de vingt degrés",
+            "La température est de vingt degrés"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La température est de vingt degrés",
+          "options": [
+            "The temperature is 20 degrees",
+            "sunny",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": "The temperature is 20 degrees"
+        }
+      }
+    }
+  }
+}

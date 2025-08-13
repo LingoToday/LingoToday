@@ -1,0 +1,730 @@
+{
+  "course6": {
+    "title": "Family and People",
+    "description": "Learn French vocabulary for family members and related phrases. Each item is a separate micro-lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Father",
+        "step1": {
+          "italian": "le père",
+          "english": "father",
+          "audio": "le père",
+          "note": "Colloquial: papa.",
+          "mcq": {
+            "question": "What does 'le père' mean?",
+            "options": [
+              "father",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "father"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____e  = father",
+          "expected_answer": "le père",
+          "alt_answers": [
+            "le père",
+            "le père",
+            "Le père"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le père",
+          "options": [
+            "father",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "father"
+        }
+      },
+      "lesson2": {
+        "title": "Mother",
+        "step1": {
+          "italian": "la mère",
+          "english": "mother",
+          "audio": "la mère",
+          "note": "Colloquial: maman.",
+          "mcq": {
+            "question": "What does 'la mère' mean?",
+            "options": [
+              "mother",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "mother"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____e  = mother",
+          "expected_answer": "la mère",
+          "alt_answers": [
+            "la mère",
+            "la mère",
+            "La mère"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la mère",
+          "options": [
+            "mother",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "mother"
+        }
+      },
+      "lesson3": {
+        "title": "Parents",
+        "step1": {
+          "italian": "les parents",
+          "english": "parents",
+          "audio": "les parents",
+          "note": "Note: 'parents' in French means mother and father, not relatives.",
+          "mcq": {
+            "question": "What does 'les parents' mean?",
+            "options": [
+              "parents",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "parents"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_________s  = parents",
+          "expected_answer": "les parents",
+          "alt_answers": [
+            "les parents",
+            "les parents",
+            "Les parents"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "les parents",
+          "options": [
+            "parents",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "parents"
+        }
+      },
+      "lesson4": {
+        "title": "Brother",
+        "step1": {
+          "italian": "le frère",
+          "english": "brother",
+          "audio": "le frère",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le frère' mean?",
+            "options": [
+              "brother",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "brother"
+          }
+        },
+        "step2": {
+          "type_prompt": "l______e  = brother",
+          "expected_answer": "le frère",
+          "alt_answers": [
+            "le frère",
+            "le frère",
+            "Le frère"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le frère",
+          "options": [
+            "brother",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "brother"
+        }
+      },
+      "lesson5": {
+        "title": "Sister",
+        "step1": {
+          "italian": "la sœur",
+          "english": "sister",
+          "audio": "la sœur",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la sœur' mean?",
+            "options": [
+              "sister",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "sister"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____r  = sister",
+          "expected_answer": "la sœur",
+          "alt_answers": [
+            "la sœur",
+            "la sœur",
+            "La sœur"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la sœur",
+          "options": [
+            "sister",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "sister"
+        }
+      },
+      "lesson6": {
+        "title": "Grandfather",
+        "step1": {
+          "italian": "le grand-père",
+          "english": "grandfather",
+          "audio": "le grand-père",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le grand-père' mean?",
+            "options": [
+              "grandfather",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "grandfather"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___________e  = grandfather",
+          "expected_answer": "le grand-père",
+          "alt_answers": [
+            "le grand-père",
+            "le grand-père",
+            "Le grand-père"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le grand-père",
+          "options": [
+            "grandfather",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "grandfather"
+        }
+      },
+      "lesson7": {
+        "title": "Grandmother",
+        "step1": {
+          "italian": "la grand-mère",
+          "english": "grandmother",
+          "audio": "la grand-mère",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la grand-mère' mean?",
+            "options": [
+              "grandmother",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "grandmother"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___________e  = grandmother",
+          "expected_answer": "la grand-mère",
+          "alt_answers": [
+            "la grand-mère",
+            "la grand-mère",
+            "La grand-mère"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la grand-mère",
+          "options": [
+            "grandmother",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "grandmother"
+        }
+      },
+      "lesson8": {
+        "title": "Husband",
+        "step1": {
+          "italian": "le mari",
+          "english": "husband",
+          "audio": "le mari",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le mari' mean?",
+            "options": [
+              "husband",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "husband"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____i  = husband",
+          "expected_answer": "le mari",
+          "alt_answers": [
+            "le mari",
+            "le mari",
+            "Le mari"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le mari",
+          "options": [
+            "husband",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "husband"
+        }
+      },
+      "lesson9": {
+        "title": "Wife",
+        "step1": {
+          "italian": "la femme",
+          "english": "wife",
+          "audio": "la femme",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la femme' mean?",
+            "options": [
+              "wife",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "wife"
+          }
+        },
+        "step2": {
+          "type_prompt": "l______e  = wife",
+          "expected_answer": "la femme",
+          "alt_answers": [
+            "la femme",
+            "la femme",
+            "La femme"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la femme",
+          "options": [
+            "wife",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "wife"
+        }
+      },
+      "lesson10": {
+        "title": "Son",
+        "step1": {
+          "italian": "le fils",
+          "english": "son",
+          "audio": "le fils",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le fils' mean?",
+            "options": [
+              "son",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "son"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____s  = son",
+          "expected_answer": "le fils",
+          "alt_answers": [
+            "le fils",
+            "le fils",
+            "Le fils"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le fils",
+          "options": [
+            "son",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "son"
+        }
+      },
+      "lesson11": {
+        "title": "Daughter",
+        "step1": {
+          "italian": "la fille",
+          "english": "daughter",
+          "audio": "la fille",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la fille' mean?",
+            "options": [
+              "daughter",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "daughter"
+          }
+        },
+        "step2": {
+          "type_prompt": "l______e  = daughter",
+          "expected_answer": "la fille",
+          "alt_answers": [
+            "la fille",
+            "la fille",
+            "La fille"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la fille",
+          "options": [
+            "daughter",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "daughter"
+        }
+      },
+      "lesson12": {
+        "title": "Uncle",
+        "step1": {
+          "italian": "l’oncle",
+          "english": "uncle",
+          "audio": "l’oncle",
+          "note": "",
+          "mcq": {
+            "question": "What does 'l’oncle' mean?",
+            "options": [
+              "uncle",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "uncle"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____e  = uncle",
+          "expected_answer": "l’oncle",
+          "alt_answers": [
+            "l’oncle",
+            "l’oncle",
+            "L’oncle"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "l’oncle",
+          "options": [
+            "uncle",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "uncle"
+        }
+      },
+      "lesson13": {
+        "title": "Aunt",
+        "step1": {
+          "italian": "la tante",
+          "english": "aunt",
+          "audio": "la tante",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la tante' mean?",
+            "options": [
+              "aunt",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "aunt"
+          }
+        },
+        "step2": {
+          "type_prompt": "l______e  = aunt",
+          "expected_answer": "la tante",
+          "alt_answers": [
+            "la tante",
+            "la tante",
+            "La tante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la tante",
+          "options": [
+            "aunt",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "aunt"
+        }
+      },
+      "lesson14": {
+        "title": "Male cousin",
+        "step1": {
+          "italian": "le cousin",
+          "english": "male cousin",
+          "audio": "le cousin",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le cousin' mean?",
+            "options": [
+              "male cousin",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "male cousin"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_______n  = male cousin",
+          "expected_answer": "le cousin",
+          "alt_answers": [
+            "le cousin",
+            "le cousin",
+            "Le cousin"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le cousin",
+          "options": [
+            "male cousin",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "male cousin"
+        }
+      },
+      "lesson15": {
+        "title": "Female cousin",
+        "step1": {
+          "italian": "la cousine",
+          "english": "female cousin",
+          "audio": "la cousine",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la cousine' mean?",
+            "options": [
+              "female cousin",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "female cousin"
+          }
+        },
+        "step2": {
+          "type_prompt": "l________e  = female cousin",
+          "expected_answer": "la cousine",
+          "alt_answers": [
+            "la cousine",
+            "la cousine",
+            "La cousine"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la cousine",
+          "options": [
+            "female cousin",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "female cousin"
+        }
+      },
+      "lesson16": {
+        "title": "I have a brother and a sister",
+        "step1": {
+          "italian": "J’ai un frère et une sœur",
+          "english": "I have a brother and a sister",
+          "audio": "J’ai un frère et une sœur",
+          "note": "",
+          "mcq": {
+            "question": "What does 'J’ai un frère et une sœur' mean?",
+            "options": [
+              "I have a brother and a sister",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "I have a brother and a sister"
+          }
+        },
+        "step2": {
+          "type_prompt": "J_______________________r  = I have a brother and a sister",
+          "expected_answer": "J’ai un frère et une sœur",
+          "alt_answers": [
+            "J’ai un frère et une sœur",
+            "j’ai un frère et une sœur",
+            "J’ai un frère et une sœur"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "J’ai un frère et une sœur",
+          "options": [
+            "I have a brother and a sister",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "I have a brother and a sister"
+        }
+      },
+      "lesson17": {
+        "title": "How many children do you have? (informal)",
+        "step1": {
+          "italian": "Tu as combien d’enfants ?",
+          "english": "How many children do you have? (informal)",
+          "audio": "Tu as combien d’enfants ?",
+          "note": "",
+          "mcq": {
+            "question": "What does 'Tu as combien d’enfants ?' mean?",
+            "options": [
+              "How many children do you have? (informal)",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "How many children do you have? (informal)"
+          }
+        },
+        "step2": {
+          "type_prompt": "T_______________________?  = How many children do you have? (informal)",
+          "expected_answer": "Tu as combien d’enfants ?",
+          "alt_answers": [
+            "Tu as combien d’enfants ?",
+            "tu as combien d’enfants ?",
+            "Tu as combien d’enfants ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu as combien d’enfants ?",
+          "options": [
+            "How many children do you have? (informal)",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "How many children do you have? (informal)"
+        }
+      },
+      "lesson18": {
+        "title": "She is my mother",
+        "step1": {
+          "italian": "C’est ma mère",
+          "english": "She is my mother",
+          "audio": "C’est ma mère",
+          "note": "",
+          "mcq": {
+            "question": "What does 'C’est ma mère' mean?",
+            "options": [
+              "She is my mother",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "She is my mother"
+          }
+        },
+        "step2": {
+          "type_prompt": "C___________e  = She is my mother",
+          "expected_answer": "C’est ma mère",
+          "alt_answers": [
+            "C’est ma mère",
+            "c’est ma mère",
+            "C’est ma mère"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "C’est ma mère",
+          "options": [
+            "She is my mother",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "She is my mother"
+        }
+      },
+      "lesson19": {
+        "title": "He is my father",
+        "step1": {
+          "italian": "C’est mon père",
+          "english": "He is my father",
+          "audio": "C’est mon père",
+          "note": "",
+          "mcq": {
+            "question": "What does 'C’est mon père' mean?",
+            "options": [
+              "He is my father",
+              "mother",
+              "father",
+              "brother"
+            ],
+            "answer": "He is my father"
+          }
+        },
+        "step2": {
+          "type_prompt": "C____________e  = He is my father",
+          "expected_answer": "C’est mon père",
+          "alt_answers": [
+            "C’est mon père",
+            "c’est mon père",
+            "C’est mon père"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "C’est mon père",
+          "options": [
+            "He is my father",
+            "mother",
+            "father",
+            "brother"
+          ],
+          "answer": "He is my father"
+        }
+      }
+    }
+  }
+}
