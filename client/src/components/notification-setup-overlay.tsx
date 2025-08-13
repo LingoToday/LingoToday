@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { X, Bell, Clock, Settings, ArrowDown, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
+import { requestNotificationPermission } from "@/lib/notifications";
 
 interface NotificationSetupOverlayProps {
   isVisible: boolean;
@@ -14,6 +17,8 @@ export default function NotificationSetupOverlay({
   onClose 
 }: NotificationSetupOverlayProps) {
   const [step, setStep] = useState(0);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,6 +27,11 @@ export default function NotificationSetupOverlay({
       document.body.style.overflow = 'hidden';
       // Focus overlay for accessibility
       overlayRef.current?.focus();
+      // Check current notification permission
+      if ("Notification" in window) {
+        setNotificationPermission(Notification.permission);
+        setNotificationsEnabled(Notification.permission === "granted");
+      }
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -33,14 +43,9 @@ export default function NotificationSetupOverlay({
 
   const steps = [
     {
-      title: "Welcome to LingoToday!",
-      content: "Let's set up your learning notifications to help you stay consistent with your language learning journey.",
-      icon: <Bell className="w-8 h-8 text-blue-600" />
-    },
-    {
       title: "Enable Notifications",
       content: "Turn on browser notifications to receive gentle reminders for your language lessons throughout the day.",
-      icon: <Settings className="w-8 h-8 text-green-600" />
+      icon: <Bell className="w-8 h-8 text-green-600" />
     },
     {
       title: "Set Your Schedule",
@@ -48,6 +53,25 @@ export default function NotificationSetupOverlay({
       icon: <Clock className="w-8 h-8 text-purple-600" />
     }
   ];
+
+  const handleNotificationToggle = async (enabled: boolean) => {
+    setNotificationsEnabled(enabled);
+    
+    if (enabled) {
+      try {
+        const permission = await requestNotificationPermission();
+        setNotificationPermission(permission);
+        if (permission === "granted") {
+          setNotificationsEnabled(true);
+        } else {
+          setNotificationsEnabled(false);
+        }
+      } catch (error) {
+        console.error("Error requesting notification permission:", error);
+        setNotificationsEnabled(false);
+      }
+    }
+  };
 
   const handleNext = () => {
     if (step < steps.length - 1) {
@@ -122,6 +146,33 @@ export default function NotificationSetupOverlay({
             <p id="overlay-description" className="text-gray-600 leading-relaxed">
               {steps[step].content}
             </p>
+
+            {/* Enable Notifications Toggle - Show only on first step */}
+            {step === 0 && (
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between mb-3">
+                  <Label htmlFor="notification-toggle" className="text-sm font-medium text-blue-800">
+                    Enable Notifications
+                  </Label>
+                  <Switch
+                    id="notification-toggle"
+                    checked={notificationsEnabled}
+                    onCheckedChange={handleNotificationToggle}
+                    data-testid="notification-toggle-switch"
+                  />
+                </div>
+                
+                <div className="text-xs text-blue-700">
+                  {notificationPermission === "granted" ? (
+                    <span className="text-green-700">✓ Browser notifications are enabled</span>
+                  ) : notificationPermission === "denied" ? (
+                    <span className="text-red-700">⚠ Browser notifications are blocked. Check your browser settings.</span>
+                  ) : (
+                    <span>Toggle to request browser notification permission</span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Step indicator */}
             <div className="flex justify-center space-x-2">
