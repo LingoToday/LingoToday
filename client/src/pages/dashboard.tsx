@@ -404,7 +404,7 @@ export default function Dashboard() {
               
               <nav className="flex space-x-8 ml-8">
                 <Link href="/dashboard">
-                  <Button variant="ghost" className="text-blue-600 border-b-2 border-blue-600">
+                  <Button variant="ghost" className="text-blue-600">
                     Dashboard
                   </Button>
                 </Link>
