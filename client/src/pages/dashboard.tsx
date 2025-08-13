@@ -32,6 +32,7 @@ import { requestNotificationPermission, setupNotifications, startDailySession, i
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import NotificationSetupOverlay from "@/components/notification-setup-overlay";
 import Footer from "@/components/ui/footer";
+import { getLanguageDisplayName } from "@/lib/lessons";
 
 interface User {
   id: string;
@@ -431,7 +432,7 @@ export default function Dashboard() {
                 Welcome back, {user.firstName || 'User'}!
               </h1>
               <p className="text-gray-600 mb-4">
-                Continue your <span className="text-blue-600 font-medium">{user.selectedLanguage || 'Italian'}</span> learning journey
+                Continue your <span className="text-blue-600 font-medium">{getLanguageDisplayName(user.selectedLanguage || 'italian')}</span> learning journey
               </p>
               
               {/* Level and Progress */}
@@ -472,7 +473,7 @@ export default function Dashboard() {
             {stats?.lessonsCompleted === 0 ? (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center space-x-2">
                 <Circle className="w-5 h-5 text-blue-600" />
-                <span className="text-blue-800 font-medium">Ready to start your Italian learning journey</span>
+                <span className="text-blue-800 font-medium">Ready to start your {getLanguageDisplayName(user.selectedLanguage || 'italian')} learning journey</span>
               </div>
             ) : (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-2">
@@ -491,7 +492,7 @@ export default function Dashboard() {
                         Start Today's Learning Session
                       </h3>
                       <p className="text-sm text-blue-700">
-                        Get personalized {user.selectedLanguage || 'Italian'} lesson reminders throughout the day
+                        Get personalized {getLanguageDisplayName(user.selectedLanguage || 'italian')} lesson reminders throughout the day
                       </p>
                     </div>
                     <Button 
@@ -642,7 +643,7 @@ export default function Dashboard() {
                 
                 <div className="pt-4 border-t">
                   <div className="text-center">
-                    <div className="text-sm font-medium text-blue-600 mb-1">Complete Italian Course</div>
+                    <div className="text-sm font-medium text-blue-600 mb-1">Complete {getLanguageDisplayName(user.selectedLanguage || 'italian')} Course</div>
                     <div className="text-xs text-gray-500 mb-2">
                       {courseStats ? `${courseStats.totalLessons} lessons • ${courseStats.totalCourses} courses` : 'Loading course data...'}
                     </div>
@@ -668,7 +669,7 @@ export default function Dashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Language</span>
-                    <span className="text-sm text-gray-600 capitalize">{user.selectedLanguage || 'Not selected'}</span>
+                    <span className="text-sm text-gray-600">{user.selectedLanguage ? getLanguageDisplayName(user.selectedLanguage) : 'Not selected'}</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -756,7 +757,7 @@ export default function Dashboard() {
 
                 <div className="pt-4 border-t space-y-2 text-xs text-gray-600">
                   <div>Settings</div>
-                  <div>Language: {user.selectedLanguage || 'Not selected'}</div>
+                  <div>Language: {user.selectedLanguage ? getLanguageDisplayName(user.selectedLanguage) : 'Not selected'}</div>
                   <div>Level: {user.selectedLevel ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase() : 'Not selected'}</div>
                   <div>Notifications: {settings?.notificationsEnabled ? 'Enabled' : 'Disabled'}</div>
                 </div>
@@ -784,7 +785,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Learning Language</span>
-                    <span className="font-medium capitalize">{user.selectedLanguage || 'Not selected'}</span>
+                    <span className="font-medium">{user.selectedLanguage ? getLanguageDisplayName(user.selectedLanguage) : 'Not selected'}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Level</span>
