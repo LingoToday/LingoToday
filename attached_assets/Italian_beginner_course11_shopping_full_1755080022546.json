@@ -1,0 +1,491 @@
+{
+  "course11": {
+    "title": "Shopping",
+    "description": "Interact in shops and markets; ask prices and pay. Each distinct word/phrase is its own lesson. Step 3 uses only earlier/same‑course vocab. Where relevant, notes include gender (m./f.) and number (sing./pl.).",
+    "lessons": {
+      "lesson1": {
+        "title": "How much does it cost? (singular)",
+        "step1": {
+          "italian": "Quanto costa?",
+          "english": "How much does it cost? (singular)",
+          "audio": "Quanto costa?",
+          "note": "Use for one item. For plural items use 'Quanto costano?'.",
+          "mcq": {
+            "question": "Which phrase means 'How much does it cost? (singular)'?",
+            "options": [
+              "Quanto costa?",
+              "Quanto costano?",
+              "È troppo caro.",
+              "Ne prendo due."
+            ],
+            "answer": "Quanto costa?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q____o c___a?  = How much does it cost? (singular)",
+          "expected_answer": "Quanto costa?",
+          "alt_answers": [
+            "Quanto costa?",
+            "quanto costa?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quanto costa?",
+          "options": [
+            "How much does it cost?",
+            "It’s too expensive.",
+            "I’ll take two.",
+            "Can I pay by card?"
+          ],
+          "answer": "How much does it cost?"
+        }
+      },
+      "lesson2": {
+        "title": "How much do they cost? (plural)",
+        "step1": {
+          "italian": "Quanto costano?",
+          "english": "How much do they cost? (plural)",
+          "audio": "Quanto costano?",
+          "note": "Use for multiple items (pl.).",
+          "mcq": {
+            "question": "Which phrase means 'How much do they cost? (plural)'?",
+            "options": [
+              "Quanto costano?",
+              "Quanto costa?",
+              "È troppo caro.",
+              "Ne prendo due."
+            ],
+            "answer": "Quanto costano?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q____o c_____o?  = How much do they cost? (plural)",
+          "expected_answer": "Quanto costano?",
+          "alt_answers": [
+            "Quanto costano?",
+            "quanto costano?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quanto costano?",
+          "options": [
+            "How much do they cost?",
+            "How much does it cost?",
+            "It’s too expensive.",
+            "I’ll take two."
+          ],
+          "answer": "How much do they cost?"
+        }
+      },
+      "lesson3": {
+        "title": "I’m just looking, thanks",
+        "step1": {
+          "italian": "Sto solo guardando, grazie.",
+          "english": "I’m just looking, thanks",
+          "audio": "Sto solo guardando, grazie.",
+          "note": "You can also say: 'Sto solo dando un’occhiata'.",
+          "mcq": {
+            "question": "Which phrase means 'I’m just looking, thanks'?",
+            "options": [
+              "Sto solo guardando, grazie.",
+              "Vorrei comprare questo.",
+              "Va bene, lo prendo.",
+              "Posso pagare con la carta?"
+            ],
+            "answer": "Sto solo guardando, grazie."
+          }
+        },
+        "step2": {
+          "type_prompt": "S_o s__o g_______o, g____e.  = I’m just looking, thanks",
+          "expected_answer": "Sto solo guardando, grazie.",
+          "alt_answers": [
+            "Sto solo guardando, grazie.",
+            "Sto solo guardando grazie.",
+            "Sto solo dando un'occhiata, grazie."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sto solo guardando, grazie.",
+          "options": [
+            "I’m just looking, thanks.",
+            "I’d like to buy this.",
+            "Okay, I’ll take it.",
+            "It’s too expensive."
+          ],
+          "answer": "I’m just looking, thanks."
+        }
+      },
+      "lesson4": {
+        "title": "I’d like to buy this",
+        "step1": {
+          "italian": "Vorrei comprare questo, per favore",
+          "english": "I’d like to buy this",
+          "audio": "Vorrei comprare questo, per favore",
+          "note": "If the item is feminine: 'questa'.",
+          "mcq": {
+            "question": "Which phrase means 'I’d like to buy this'?",
+            "options": [
+              "Vorrei comprare questo, per favore",
+              "Sto solo guardando, grazie.",
+              "Va bene, lo prendo.",
+              "Non lo voglio."
+            ],
+            "answer": "Vorrei comprare questo, per favore"
+          }
+        },
+        "step2": {
+          "type_prompt": "V___ei c______e q____o, p_r f____e  = I’d like to buy this",
+          "expected_answer": "Vorrei comprare questo, per favore",
+          "alt_answers": [
+            "Vorrei comprare questo, per favore",
+            "Vorrei comprare questa, per favore"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Vorrei comprare questo, per favore.",
+          "options": [
+            "I’d like to buy this, please.",
+            "I’m just looking, thanks.",
+            "Okay, I’ll take it.",
+            "I don’t want it."
+          ],
+          "answer": "I’d like to buy this, please."
+        }
+      },
+      "lesson5": {
+        "title": "Okay, I’ll take it",
+        "step1": {
+          "italian": "Va bene, lo prendo.",
+          "english": "Okay, I’ll take it",
+          "audio": "Va bene, lo prendo.",
+          "note": "For a feminine item: 'la prendo'.",
+          "mcq": {
+            "question": "Which phrase means 'Okay, I’ll take it'?",
+            "options": [
+              "Va bene, lo prendo.",
+              "Vorrei comprare questo, per favore",
+              "Non lo voglio.",
+              "È troppo caro."
+            ],
+            "answer": "Va bene, lo prendo."
+          }
+        },
+        "step2": {
+          "type_prompt": "V_ b__e, lo p____o.  = Okay, I’ll take it",
+          "expected_answer": "Va bene, lo prendo.",
+          "alt_answers": [
+            "Va bene, lo prendo.",
+            "Va bene, la prendo."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Va bene, lo prendo.",
+          "options": [
+            "Okay, I’ll take it.",
+            "I’d like to buy this.",
+            "I don’t want it.",
+            "It’s too expensive."
+          ],
+          "answer": "Okay, I’ll take it."
+        }
+      },
+      "lesson6": {
+        "title": "I don’t want it",
+        "step1": {
+          "italian": "Non lo voglio.",
+          "english": "I don’t want it",
+          "audio": "Non lo voglio.",
+          "note": "For a feminine item: 'Non la voglio'.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t want it'?",
+            "options": [
+              "Non lo voglio.",
+              "Va bene, lo prendo.",
+              "È troppo caro.",
+              "Ne prendo due."
+            ],
+            "answer": "Non lo voglio."
+          }
+        },
+        "step2": {
+          "type_prompt": "N_n lo v____o.  = I don’t want it",
+          "expected_answer": "Non lo voglio.",
+          "alt_answers": [
+            "Non lo voglio.",
+            "Non la voglio."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Non lo voglio.",
+          "options": [
+            "I don’t want it.",
+            "Okay, I’ll take it.",
+            "I’d like to buy this.",
+            "It’s too expensive."
+          ],
+          "answer": "I don’t want it."
+        }
+      },
+      "lesson7": {
+        "title": "It’s too expensive",
+        "step1": {
+          "italian": "È troppo caro.",
+          "english": "It’s too expensive",
+          "audio": "È troppo caro.",
+          "note": "For a feminine item: 'cara'.",
+          "mcq": {
+            "question": "Which phrase means 'It’s too expensive'?",
+            "options": [
+              "È troppo caro.",
+              "È economico.",
+              "Va bene, lo prendo.",
+              "Ne prendo due."
+            ],
+            "answer": "È troppo caro."
+          }
+        },
+        "step2": {
+          "type_prompt": "È t_____o c__o.  = It’s too expensive",
+          "expected_answer": "È troppo caro.",
+          "alt_answers": [
+            "È troppo caro.",
+            "È troppo cara."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È troppo caro.",
+          "options": [
+            "It’s too expensive.",
+            "It’s cheap.",
+            "Okay, I’ll take it.",
+            "I’ll take two."
+          ],
+          "answer": "It’s too expensive."
+        }
+      },
+      "lesson8": {
+        "title": "Can you give me a discount? (informal/formal)",
+        "step1": {
+          "italian": "Mi fa uno sconto?",
+          "english": "Can you give me a discount?",
+          "audio": "Mi fa uno sconto?",
+          "note": "Informal: 'Mi fai uno sconto?'. More formal: 'Può farmi uno sconto?'.",
+          "mcq": {
+            "question": "Which phrase means 'Can you give me a discount?'?",
+            "options": [
+              "Mi fa uno sconto?",
+              "Posso pagare con la carta?",
+              "Quanto costa?",
+              "Solo contanti."
+            ],
+            "answer": "Mi fa uno sconto?"
+          }
+        },
+        "step2": {
+          "type_prompt": "M_ f_ u_o s____o?  = Can you give me a discount?",
+          "expected_answer": "Mi fa uno sconto?",
+          "alt_answers": [
+            "Mi fa uno sconto?",
+            "Mi fai uno sconto?",
+            "Può farmi uno sconto?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi fa uno sconto, per favore?",
+          "options": [
+            "Can you give me a discount, please?",
+            "Can I pay by card?",
+            "How much does it cost?",
+            "Cash only."
+          ],
+          "answer": "Can you give me a discount, please?"
+        }
+      },
+      "lesson9": {
+        "title": "Can I pay by card?",
+        "step1": {
+          "italian": "Posso pagare con la carta?",
+          "english": "Can I pay by card?",
+          "audio": "Posso pagare con la carta?",
+          "note": "You can also say: 'con la carta di credito'.",
+          "mcq": {
+            "question": "Which phrase means 'Can I pay by card?'?",
+            "options": [
+              "Posso pagare con la carta?",
+              "Posso pagare in contanti?",
+              "Mi fa uno sconto?",
+              "Ne prendo due."
+            ],
+            "answer": "Posso pagare con la carta?"
+          }
+        },
+        "step2": {
+          "type_prompt": "P___o p____e c_n la c___a?  = Can I pay by card?",
+          "expected_answer": "Posso pagare con la carta?",
+          "alt_answers": [
+            "Posso pagare con la carta?",
+            "Posso pagare con la carta di credito?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Posso pagare con la carta?",
+          "options": [
+            "Can I pay by card?",
+            "Cash only.",
+            "It’s too expensive.",
+            "I’ll take two."
+          ],
+          "answer": "Can I pay by card?"
+        }
+      },
+      "lesson10": {
+        "title": "A larger size",
+        "step1": {
+          "italian": "Una taglia più grande",
+          "english": "A larger size",
+          "audio": "Una taglia più grande",
+          "note": "To ask: 'Avete una taglia più grande?'",
+          "mcq": {
+            "question": "Which phrase means 'A larger size'?",
+            "options": [
+              "Una taglia più grande",
+              "Una taglia più piccola",
+              "È troppo caro.",
+              "Va bene, lo prendo."
+            ],
+            "answer": "Una taglia più grande"
+          }
+        },
+        "step2": {
+          "type_prompt": "U_a t____a p_ù g____e  = A larger size",
+          "expected_answer": "Una taglia più grande",
+          "alt_answers": [
+            "Una taglia più grande",
+            "Una taglia piu grande"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Avete una taglia più grande?",
+          "options": [
+            "Do you have a larger size?",
+            "Do you have a smaller size?",
+            "It’s too expensive.",
+            "Cash only."
+          ],
+          "answer": "Do you have a larger size?"
+        }
+      },
+      "lesson11": {
+        "title": "A smaller size",
+        "step1": {
+          "italian": "Una taglia più piccola",
+          "english": "A smaller size",
+          "audio": "Una taglia più piccola",
+          "note": "To ask: 'Avete una taglia più piccola?'",
+          "mcq": {
+            "question": "Which phrase means 'A smaller size'?",
+            "options": [
+              "Una taglia più piccola",
+              "Una taglia più grande",
+              "È troppo caro.",
+              "Va bene, lo prendo."
+            ],
+            "answer": "Una taglia più piccola"
+          }
+        },
+        "step2": {
+          "type_prompt": "U_a t____a p_ù p_____a  = A smaller size",
+          "expected_answer": "Una taglia più piccola",
+          "alt_answers": [
+            "Una taglia più piccola",
+            "Una taglia piu piccola"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Avete una taglia più piccola?",
+          "options": [
+            "Do you have a smaller size?",
+            "Do you have a larger size?",
+            "It’s too expensive.",
+            "Cash only."
+          ],
+          "answer": "Do you have a smaller size?"
+        }
+      },
+      "lesson12": {
+        "title": "I’ll take two (of them)",
+        "step1": {
+          "italian": "Ne prendo due.",
+          "english": "I’ll take two (of them)",
+          "audio": "Ne prendo due.",
+          "note": "'Ne' = of them/of it.",
+          "mcq": {
+            "question": "Which phrase means 'I’ll take two (of them)'?",
+            "options": [
+              "Ne prendo due.",
+              "Va bene, lo prendo.",
+              "Non lo voglio.",
+              "Quanto costano?"
+            ],
+            "answer": "Ne prendo due."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ne p____o d_e.  = I’ll take two (of them)",
+          "expected_answer": "Ne prendo due.",
+          "alt_answers": [
+            "Ne prendo due.",
+            "ne prendo due."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ne prendo due.",
+          "options": [
+            "I’ll take two.",
+            "I’ll take one.",
+            "I don’t want it.",
+            "It’s too expensive."
+          ],
+          "answer": "I’ll take two."
+        }
+      },
+      "lesson13": {
+        "title": "Cash only",
+        "step1": {
+          "italian": "Solo contanti.",
+          "english": "Cash only",
+          "audio": "Solo contanti.",
+          "note": "Seen on signs: only cash accepted.",
+          "mcq": {
+            "question": "Which phrase means 'Cash only'?",
+            "options": [
+              "Solo contanti.",
+              "Posso pagare con la carta?",
+              "Mi fa uno sconto?",
+              "Quanto costa?"
+            ],
+            "answer": "Solo contanti."
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o c______i.  = Cash only",
+          "expected_answer": "Solo contanti.",
+          "alt_answers": [
+            "Solo contanti.",
+            "solo contanti."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Solo contanti.",
+          "options": [
+            "Cash only.",
+            "Card only.",
+            "It’s too expensive.",
+            "Okay, I’ll take it."
+          ],
+          "answer": "Cash only."
+        }
+      }
+    }
+  }
+}
