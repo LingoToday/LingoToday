@@ -549,12 +549,23 @@ export async function showLearningNotification(language: string) {
         console.log("Current URL:", currentUrl);
         console.log("App domain:", appDomain);
         
-        // Use the correct lesson URL structure based on the actual routing system
-        const courseId = lessonData.lessonId.split('-')[0] || 'course1';
-        const lessonId = lessonData.lessonId.split('-')[1] || lessonData.lessonId;
-        const correctLessonPath = `/lesson/${cleanLanguage}/${courseId}/${lessonId}`;
-        const urlParams = lessonData.isReview ? "?from=notification&mode=review" : "?from=notification";
+        // Use the correct lesson URL structure based on actual existing courses
+        // Map week numbers to existing course files (course1, course2, course4)
+        const availableCourses = [1, 2, 4]; // These are the actual course files that exist
+        const courseIndex = ((lessonData.week - 1) % availableCourses.length);
+        const actualCourseNumber = availableCourses[courseIndex];
+        
+        const correctLessonPath = `/lesson/${cleanLanguage}/course${actualCourseNumber}/lesson${lessonData.day}`;
+        const urlParams = lessonData.isReview ? `?from=notification&mode=review&id=${lessonData.lessonId}` : `?from=notification&id=${lessonData.lessonId}`;
         const fullUrl = correctLessonPath + urlParams;
+        
+        console.log("🔗 Notification URL mapping:", {
+          originalWeek: lessonData.week,
+          originalDay: lessonData.day,
+          mappedCourseNumber: actualCourseNumber,
+          finalPath: correctLessonPath,
+          fullUrl: fullUrl
+        });
         
         // Always use same-window navigation to preserve session
         console.log("Navigating to:", fullUrl);

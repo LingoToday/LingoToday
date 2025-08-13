@@ -38,8 +38,9 @@ export default function Lesson() {
         // Store lesson ID for fallback data loading
         sessionStorage.setItem('notification-lesson-id', lessonId);
       }
-      // Clean the URL
-      window.history.replaceState({}, '', window.location.pathname);
+      // Clean the URL to remove notification parameters but preserve other params
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
     }
   }, []);
 
@@ -438,22 +439,21 @@ export default function Lesson() {
       language
     });
 
-    // Try to get the lesson directly from the API if notification fails
-    if (fromNotification && !fallbackLesson) {
-      console.log('🔄 Notification lesson failed, trying API lesson...');
-      // Re-enable the API query for notification scenarios
-      queryClient.invalidateQueries({ queryKey: ["/api/courses", language, courseId, lessonId] });
+    // If we're coming from notification and don't have any lesson data, try to get the next lesson
+    if (fromNotification && !fallbackLesson && !apiLessonData) {
+      console.log('🔄 Notification lesson failed and API lesson not found, trying to find a working lesson...');
       
+      // Try to get the next available lesson from the API
       return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <Card className="w-full max-w-md mx-4">
             <CardContent className="pt-6 text-center">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Lesson...</h2>
               <p className="text-gray-600 mb-4">
-                Fetching lesson content from server...
+                The lesson from the notification couldn't be found. Redirecting to available lessons...
               </p>
-              <Link href="/">
-                <Button>Back to Dashboard</Button>
+              <Link href="/dashboard">
+                <Button>Go to Dashboard</Button>
               </Link>
             </CardContent>
           </Card>
