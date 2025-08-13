@@ -408,17 +408,6 @@ export default function Dashboard() {
                     Dashboard
                   </Button>
                 </Link>
-                <Link href="/courses">
-                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-                    Courses
-                  </Button>
-                </Link>
-                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-                  Progress
-                </Button>
-                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-                  Settings
-                </Button>
               </nav>
             </div>
             
