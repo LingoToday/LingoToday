@@ -452,7 +452,10 @@ export async function showLearningNotification(language: string) {
     // Get lesson from stored data using new lesson store
     const { getNextLessonToLearn, initializeLessonStore } = await import("@/lib/lessonStore");
     
-    // Initialize lesson store for this language (uses cache if available)
+    // Clear any cached lesson data to ensure fresh mapping
+    localStorage.removeItem('lingotoday-lesson-store');
+    
+    // Initialize lesson store for this language (force refresh without cache)
     await initializeLessonStore(cleanLanguage, completedLessonIds);
     
     // Get the next lesson that should be learned
@@ -473,11 +476,16 @@ export async function showLearningNotification(language: string) {
     const isReview = completedLessonIds.includes(selectedLesson.id);
     const lessonType = isReview ? "review" : "new";
     
-    // Create a week/day mapping based on lesson properties
+    // Create a week/day mapping based on lesson properties, but ensure we use valid course numbers
     const week = selectedLesson.week || 1;
     const day = selectedLesson.day || 1;
     
-    console.log(`🗺️ Mapping lesson to URL: week=${week}, day=${day}`);
+    // Map to valid course numbers immediately to prevent invalid URLs
+    const availableCourses = [1, 2, 4]; // These are the actual course files that exist
+    const courseIndex = ((week - 1) % availableCourses.length);
+    const validCourseNumber = availableCourses[courseIndex];
+    
+    console.log(`🗺️ Mapping lesson to URL: week=${week}, day=${day}, validCourse=${validCourseNumber}`);
     
     // Modify the question based on lesson type
     let questionText = selectedLesson.quiz.question;
@@ -490,9 +498,9 @@ export async function showLearningNotification(language: string) {
     
     const lessonData = {
       question: questionText,
-      lessonPath: `/lesson/${cleanLanguage}/${week}/${day}`,
+      lessonPath: `/lesson/${cleanLanguage}/course${validCourseNumber}/lesson${day}`,
       lessonId: selectedLesson.id,
-      week: week,
+      week: validCourseNumber, // Use the valid course number instead of original week
       day: day,
       category: selectedLesson.category,
       title: selectedLesson.title,
@@ -549,22 +557,12 @@ export async function showLearningNotification(language: string) {
         console.log("Current URL:", currentUrl);
         console.log("App domain:", appDomain);
         
-        // Use the correct lesson URL structure based on actual existing courses
-        // Map week numbers to existing course files (course1, course2, course4)
-        const availableCourses = [1, 2, 4]; // These are the actual course files that exist
-        const courseIndex = ((lessonData.week - 1) % availableCourses.length);
-        const actualCourseNumber = availableCourses[courseIndex];
+        // Use the lessonPath that was already constructed with valid course numbers
+        const fullUrl = lessonData.lessonPath + (lessonData.isReview ? `?from=notification&mode=review&id=${lessonData.lessonId}` : `?from=notification&id=${lessonData.lessonId}`);
         
-        const correctLessonPath = `/lesson/${cleanLanguage}/course${actualCourseNumber}/lesson${lessonData.day}`;
-        const urlParams = lessonData.isReview ? `?from=notification&mode=review&id=${lessonData.lessonId}` : `?from=notification&id=${lessonData.lessonId}`;
-        const fullUrl = correctLessonPath + urlParams;
-        
-        console.log("🔗 Notification URL mapping:", {
-          originalWeek: lessonData.week,
-          originalDay: lessonData.day,
-          mappedCourseNumber: actualCourseNumber,
-          finalPath: correctLessonPath,
-          fullUrl: fullUrl
+        console.log("🔗 Notification URL:", {
+          lessonPath: lessonData.lessonPath,
+          finalUrl: fullUrl
         });
         
         // Always use same-window navigation to preserve session
