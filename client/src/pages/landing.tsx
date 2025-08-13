@@ -559,9 +559,7 @@ export default function Landing() {
           </div>
           
           <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">
-              Both plans include a 5-day free trial. Cancel anytime, no questions asked.
-            </p>
+            <p className="text-sm text-gray-500">Both plans include a 5-day free trial. No Credit Card Required.</p>
           </div>
         </div>
 
