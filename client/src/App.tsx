@@ -54,6 +54,7 @@ function Router() {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
           <Route path="/courses" component={Courses} />
+          <Route path="/courses/:language" component={Courses} />
           <Route path="/course-manager" component={CourseManager} />
           <Route path="/lesson-example" component={LessonExample} />
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
