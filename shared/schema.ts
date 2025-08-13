@@ -56,6 +56,33 @@ export const lessonSteps = pgTable('lesson_steps', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Checkpoint reviews table - appears after every 4 lessons
+export const checkpoints = pgTable('checkpoints', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  checkpointNumber: integer('checkpoint_number').notNull(), // 1, 2, 3, etc. (after lessons 4, 8, 12, etc.)
+  title: text('title').notNull(),
+  description: text('description'),
+  questions: jsonb('questions').notNull(), // Array of checkpoint questions
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Checkpoint progress table - tracks user's checkpoint completion
+export const checkpointProgress = pgTable('checkpoint_progress', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  checkpointId: integer('checkpoint_id').notNull().references(() => checkpoints.id, { onDelete: 'cascade' }),
+  completed: boolean('completed').default(false).notNull(),
+  score: integer('score'), // Out of total questions
+  answers: jsonb('answers'), // User's answers to checkpoint questions
+  timeSpent: integer('time_spent'), // in seconds
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Define relations
 export const languagesRelations = relations(languages, ({ many }) => ({
   courses: many(courses),
@@ -75,6 +102,7 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
     references: [skillLevels.id],
   }),
   lessons: many(lessons),
+  checkpoints: many(checkpoints),
 }));
 
 export const lessonsRelations = relations(lessons, ({ one, many }) => ({
@@ -92,12 +120,44 @@ export const lessonStepsRelations = relations(lessonSteps, ({ one }) => ({
   }),
 }));
 
+export const checkpointsRelations = relations(checkpoints, ({ one, many }) => ({
+  course: one(courses, {
+    fields: [checkpoints.courseId],
+    references: [courses.id],
+  }),
+  progress: many(checkpointProgress),
+}));
+
+export const checkpointProgressRelations = relations(checkpointProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [checkpointProgress.userId],
+    references: [users.id],
+  }),
+  checkpoint: one(checkpoints, {
+    fields: [checkpointProgress.checkpointId],
+    references: [checkpoints.id],
+  }),
+}));
+
 // Define content schemas for different step types
 export const mcqSchema = z.object({
   question: z.string(),
   options: z.array(z.string()),
   answer: z.string(),
 });
+
+// Checkpoint question schema
+export const checkpointQuestionSchema = z.object({
+  id: z.number(),
+  question: z.string(),
+  audioUrl: z.string().optional(), // Optional audio for listening questions
+  options: z.array(z.string()), // 4 multiple choice options
+  correctAnswer: z.string(),
+  explanation: z.string().optional(),
+});
+
+// Checkpoint questions array schema
+export const checkpointQuestionsSchema = z.array(checkpointQuestionSchema);
 
 export const step1ContentSchema = z.object({
   italian: z.string(),
@@ -148,6 +208,18 @@ export const insertLessonStepSchema = createInsertSchema(lessonSteps).omit({
   updatedAt: true,
 });
 
+export const insertCheckpointSchema = createInsertSchema(checkpoints).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCheckpointProgressSchema = createInsertSchema(checkpointProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type Language = typeof languages.$inferSelect;
 export type InsertLanguage = z.infer<typeof insertLanguageSchema>;
@@ -163,6 +235,14 @@ export type InsertLesson = z.infer<typeof insertLessonSchema>;
 
 export type LessonStep = typeof lessonSteps.$inferSelect;
 export type InsertLessonStep = z.infer<typeof insertLessonStepSchema>;
+
+export type Checkpoint = typeof checkpoints.$inferSelect;
+export type InsertCheckpoint = z.infer<typeof insertCheckpointSchema>;
+
+export type CheckpointProgress = typeof checkpointProgress.$inferSelect;
+export type InsertCheckpointProgress = z.infer<typeof insertCheckpointProgressSchema>;
+
+export type CheckpointQuestion = z.infer<typeof checkpointQuestionSchema>;
 
 // User management tables (existing)
 export const users = pgTable('users', {

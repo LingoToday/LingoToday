@@ -9,6 +9,8 @@ import {
   courses,
   lessons,
   lessonSteps,
+  checkpoints,
+  checkpointProgress,
   type User,
   type UpsertUser,
   type UserSettings,
@@ -29,6 +31,10 @@ import {
   type InsertLesson,
   type LessonStep,
   type InsertLessonStep,
+  type Checkpoint,
+  type InsertCheckpoint,
+  type CheckpointProgress,
+  type InsertCheckpointProgress,
   type CourseWithRelations,
   type LessonWithSteps,
 } from "@shared/schema";
@@ -99,6 +105,18 @@ export interface IStorage {
   createLessonStep(step: InsertLessonStep): Promise<LessonStep>;
   updateLessonStep(id: number, step: Partial<InsertLessonStep>): Promise<LessonStep>;
   deleteLessonStep(id: number): Promise<void>;
+  
+  // Checkpoint operations
+  getCheckpoints(courseId: number): Promise<Checkpoint[]>;
+  getCheckpoint(id: number): Promise<Checkpoint | undefined>;
+  createCheckpoint(checkpoint: InsertCheckpoint): Promise<Checkpoint>;
+  updateCheckpoint(id: number, checkpoint: Partial<InsertCheckpoint>): Promise<Checkpoint>;
+  deleteCheckpoint(id: number): Promise<void>;
+  
+  // Checkpoint progress operations
+  getCheckpointProgress(userId: string, checkpointId?: number): Promise<CheckpointProgress[]>;
+  getUserCheckpointProgress(userId: string, courseId: number): Promise<CheckpointProgress[]>;
+  upsertCheckpointProgress(progress: InsertCheckpointProgress): Promise<CheckpointProgress>;
   
   // Bulk import operations
   importCourseFromJSON(languageCode: string, skillLevelCode: string, courseData: any): Promise<Course>;
@@ -664,6 +682,93 @@ export class DatabaseStorage implements IStorage {
     }
 
     return createdCourse;
+  }
+
+  // Checkpoint operations
+  async getCheckpoints(courseId: number): Promise<Checkpoint[]> {
+    return await db.select().from(checkpoints).where(eq(checkpoints.courseId, courseId)).orderBy(checkpoints.checkpointNumber);
+  }
+
+  async getCheckpoint(id: number): Promise<Checkpoint | undefined> {
+    const [checkpoint] = await db.select().from(checkpoints).where(eq(checkpoints.id, id));
+    return checkpoint;
+  }
+
+  async createCheckpoint(checkpointData: InsertCheckpoint): Promise<Checkpoint> {
+    const [checkpoint] = await db.insert(checkpoints).values(checkpointData).returning();
+    return checkpoint;
+  }
+
+  async updateCheckpoint(id: number, checkpointData: Partial<InsertCheckpoint>): Promise<Checkpoint> {
+    const [checkpoint] = await db
+      .update(checkpoints)
+      .set({ ...checkpointData, updatedAt: new Date() })
+      .where(eq(checkpoints.id, id))
+      .returning();
+    return checkpoint;
+  }
+
+  async deleteCheckpoint(id: number): Promise<void> {
+    await db.delete(checkpoints).where(eq(checkpoints.id, id));
+  }
+
+  // Checkpoint progress operations
+  async getCheckpointProgress(userId: string, checkpointId?: number): Promise<CheckpointProgress[]> {
+    if (checkpointId) {
+      return await db.select().from(checkpointProgress)
+        .where(and(eq(checkpointProgress.userId, userId), eq(checkpointProgress.checkpointId, checkpointId)))
+        .orderBy(desc(checkpointProgress.createdAt));
+    } else {
+      return await db.select().from(checkpointProgress)
+        .where(eq(checkpointProgress.userId, userId))
+        .orderBy(desc(checkpointProgress.createdAt));
+    }
+  }
+
+  async getUserCheckpointProgress(userId: string, courseId: number): Promise<CheckpointProgress[]> {
+    const results = await db
+      .select({
+        id: checkpointProgress.id,
+        userId: checkpointProgress.userId,
+        checkpointId: checkpointProgress.checkpointId,
+        completed: checkpointProgress.completed,
+        score: checkpointProgress.score,
+        answers: checkpointProgress.answers,
+        timeSpent: checkpointProgress.timeSpent,
+        completedAt: checkpointProgress.completedAt,
+        createdAt: checkpointProgress.createdAt,
+        updatedAt: checkpointProgress.updatedAt,
+      })
+      .from(checkpointProgress)
+      .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
+      .where(and(eq(checkpointProgress.userId, userId), eq(checkpoints.courseId, courseId)))
+      .orderBy(checkpoints.checkpointNumber);
+    
+    return results;
+  }
+
+  async upsertCheckpointProgress(progressData: InsertCheckpointProgress): Promise<CheckpointProgress> {
+    const existing = await db
+      .select()
+      .from(checkpointProgress)
+      .where(
+        and(
+          eq(checkpointProgress.userId, progressData.userId),
+          eq(checkpointProgress.checkpointId, progressData.checkpointId)
+        )
+      );
+
+    if (existing.length > 0) {
+      const [updated] = await db
+        .update(checkpointProgress)
+        .set({ ...progressData, updatedAt: new Date() })
+        .where(eq(checkpointProgress.id, existing[0].id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(checkpointProgress).values(progressData).returning();
+      return created;
+    }
   }
 }
 

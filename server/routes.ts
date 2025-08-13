@@ -10,7 +10,9 @@ import {
   insertLessonSchema,
   insertLessonStepSchema,
   insertLanguageSchema,
-  insertSkillLevelSchema
+  insertSkillLevelSchema,
+  insertCheckpointSchema,
+  insertCheckpointProgressSchema
 } from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
@@ -1102,6 +1104,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating notification setup status:", error);
       res.status(500).json({ message: "Failed to update notification setup status" });
+    }
+  });
+
+  // Checkpoint routes
+  app.get('/api/checkpoints/:courseId', async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId);
+      if (isNaN(courseId)) {
+        return res.status(400).json({ message: "Invalid course ID" });
+      }
+      
+      const checkpoints = await storage.getCheckpoints(courseId);
+      res.json(checkpoints);
+    } catch (error) {
+      console.error("Error fetching checkpoints:", error);
+      res.status(500).json({ message: "Failed to fetch checkpoints" });
+    }
+  });
+
+  app.get('/api/checkpoint/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid checkpoint ID" });
+      }
+      
+      const checkpoint = await storage.getCheckpoint(id);
+      if (!checkpoint) {
+        return res.status(404).json({ message: "Checkpoint not found" });
+      }
+      
+      res.json(checkpoint);
+    } catch (error) {
+      console.error("Error fetching checkpoint:", error);
+      res.status(500).json({ message: "Failed to fetch checkpoint" });
+    }
+  });
+
+  app.post('/api/checkpoints', isAuthenticated, async (req: any, res) => {
+    try {
+      const checkpointData = insertCheckpointSchema.parse(req.body);
+      const checkpoint = await storage.createCheckpoint(checkpointData);
+      res.status(201).json(checkpoint);
+    } catch (error) {
+      console.error("Error creating checkpoint:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create checkpoint" });
+    }
+  });
+
+  // Checkpoint progress routes
+  app.get('/api/checkpoint-progress', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const checkpointId = req.query.checkpointId ? parseInt(req.query.checkpointId as string) : undefined;
+      
+      const progress = await storage.getCheckpointProgress(userId, checkpointId);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching checkpoint progress:", error);
+      res.status(500).json({ message: "Failed to fetch checkpoint progress" });
+    }
+  });
+
+  app.get('/api/checkpoint-progress/course/:courseId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const courseId = parseInt(req.params.courseId);
+      
+      if (isNaN(courseId)) {
+        return res.status(400).json({ message: "Invalid course ID" });
+      }
+      
+      const progress = await storage.getUserCheckpointProgress(userId, courseId);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching user checkpoint progress:", error);
+      res.status(500).json({ message: "Failed to fetch user checkpoint progress" });
+    }
+  });
+
+  app.post('/api/checkpoint-progress', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const progressData = insertCheckpointProgressSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const progress = await storage.upsertCheckpointProgress(progressData);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error saving checkpoint progress:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to save checkpoint progress" });
     }
   });
 

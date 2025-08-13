@@ -351,6 +351,32 @@ export default function Courses() {
                       );
                     })}
                   </div>
+                  
+                  {/* Checkpoint Access - Show after every 4 lessons */}
+                  {Object.keys(course.lessons).length >= 4 && (
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-900 dark:text-white">
+                              Checkpoint Review
+                            </h4>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              Test your progress with 4 quiz questions
+                            </p>
+                          </div>
+                        </div>
+                        <Link href="/checkpoint/1">
+                          <Button size="sm" variant="outline" data-testid="button-checkpoint">
+                            Start Review
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

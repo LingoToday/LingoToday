@@ -17,6 +17,7 @@ import Courses from "@/pages/courses";
 import CourseManager from "@/pages/course-manager";
 import CourseTest from "@/pages/course-test";
 import LessonExample from "@/pages/lesson-example";
+import { CheckpointPage } from "@/pages/checkpoint";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
@@ -46,6 +47,7 @@ function Router() {
           <Route path="/courses/:language" component={Courses} />
           <Route path="/course-test" component={CourseTest} />
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
+          <Route path="/checkpoint/:id" component={CheckpointPage} />
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
@@ -60,6 +62,7 @@ function Router() {
           <Route path="/course-manager" component={CourseManager} />
           <Route path="/lesson-example" component={LessonExample} />
           <Route path="/lesson/:language/:courseId/:lessonId" component={Lesson} />
+          <Route path="/checkpoint/:id" component={CheckpointPage} />
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
