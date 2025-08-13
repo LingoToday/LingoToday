@@ -17,6 +17,9 @@ export default function Footer() {
             <p className="text-gray-600 dark:text-gray-300 text-sm">
               Learn languages without leaving your desk. Short, well-timed prompts for busy professionals.
             </p>
+            <p className="text-gray-600 dark:text-gray-300 text-sm mt-3">
+              Contact us: <a href="mailto:hello@lingotoday.co" className="text-primary hover:underline">hello@lingotoday.co</a>
+            </p>
           </div>
 
           {/* About Us */}

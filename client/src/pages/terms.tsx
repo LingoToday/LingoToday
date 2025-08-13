@@ -91,7 +91,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">9. Contact Information</h2>
               <p className="text-gray-600 leading-relaxed">
-                If you have any questions about these Terms of Service, please contact us through our support channels.
+                If you have any questions about these Terms of Service, please contact us at <a href="mailto:hello@lingotoday.co" className="text-primary hover:underline font-medium">hello@lingotoday.co</a>.
               </p>
             </section>
           </div>

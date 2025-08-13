@@ -154,8 +154,11 @@ export default function FAQPage() {
             <p className="text-gray-600 mb-4">
               Can't find the answer you're looking for? Our support team is here to help.
             </p>
+            <p className="text-gray-600 mb-4">
+              Email us at: <a href="mailto:hello@lingotoday.co" className="text-primary hover:underline font-medium">hello@lingotoday.co</a>
+            </p>
             <Button variant="outline" asChild>
-              <a href="#" data-testid="contact-support-button">Contact Support</a>
+              <a href="mailto:hello@lingotoday.co" data-testid="contact-support-button">Contact Support</a>
             </Button>
           </CardContent>
         </Card>
