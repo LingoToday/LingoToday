@@ -168,42 +168,42 @@ export default function Landing() {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          <Card className="bg-white hover-lift group shadow-card">
-            <CardContent className="p-6 text-left">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
-                <Brain className="text-blue-600 w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-3">Spaced repetition</h3>
+        <div className="flex flex-col space-y-8 mb-16 max-w-md">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Brain className="text-blue-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Spaced repetition</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-white hover-lift group shadow-card">
-            <CardContent className="p-6 text-left">
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
-                <Zap className="text-green-600 w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-3">Microlearning</h3>
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Zap className="text-green-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Microlearning</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-white hover-lift group shadow-card">
-            <CardContent className="p-6 text-left">
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
-                <TrendingUp className="text-purple-600 w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-3">The science backs it</h3>
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="text-purple-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">The science backs it</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* How It Works Section */}
