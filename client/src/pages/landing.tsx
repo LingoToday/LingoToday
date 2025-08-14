@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
+import { SiSlack, SiMicrosoft, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
@@ -414,9 +415,20 @@ export default function Landing() {
                     <p className="text-sm text-gray-500">Learn Where You Already Work & Chat</p>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   LingoToday will soon connect directly to your favourite tools — Slack, Microsoft Teams, WhatsApp, and more — so language learning meets you where you are.
                 </p>
+                <div className="flex justify-center items-center gap-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <SiSlack className="w-6 h-6 text-[#4A154B]" />
+                  </div>
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <SiMicrosoft className="w-6 h-6 text-[#6264A7]" />
+                  </div>
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <SiWhatsapp className="w-6 h-6 text-[#25D366]" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
