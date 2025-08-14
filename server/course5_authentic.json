@@ -1,0 +1,45 @@
+{
+  "course5": {
+    "title": "Time and Date",
+    "description": "Each lesson is a short micro-burst using step1 (introduce), step2 (typing recall), and step3 (listening/comprehension). Days and months are separate lessons; time and date phrases are each their own lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "italian": "lunedì",
+          "english": "Monday",
+          "audio": "lunedì",
+          "note": "loo-neh-DEE; days aren't capitalized; week starts on Monday.",
+          "mcq": {
+            "question": "Which phrase means 'Monday'?",
+            "options": [
+              "lunedì",
+              "martedì",
+              "mercoledì",
+              "giovedì"
+            ],
+            "answer": "lunedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "l____ì  = Monday",
+          "expected_answer": "lunedì",
+          "alt_answers": [
+            "Lunedì",
+            "lunedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lunedì",
+          "options": [
+            "Monday.",
+            "Tuesday.",
+            "Wednesday.",
+            "Thursday."
+          ],
+          "answer": "Monday."
+        }
+      }
+    }
+  }
+}

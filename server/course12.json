@@ -1,0 +1,522 @@
+{
+  "course12": {
+    "title": "Expressing Likes and Dislikes",
+    "description": "Use ‘piacere’ and other verbs to talk about preferences. Paired items are split into separate lessons. Step 3 only uses vocabulary from earlier courses or this course.",
+    "lessons": {
+      "lesson1": {
+        "title": "I like pizza",
+        "step1": {
+          "italian": "Mi piace la pizza",
+          "english": "I like pizza",
+          "audio": "Mi piace la pizza",
+          "note": "mee PYAH-cheh — With singular things/verbs use ‘piace’. Article needed: la pizza.",
+          "mcq": {
+            "question": "Which phrase means 'I like pizza'?",
+            "options": [
+              "Mi piace la pizza",
+              "Non mi piace il pesce",
+              "Mi piacciono i gatti",
+              "Ti piace la pizza?"
+            ],
+            "answer": "Mi piace la pizza"
+          }
+        },
+        "step2": {
+          "type_prompt": "M_ p____e la p____  = I like pizza",
+          "expected_answer": "Mi piace la pizza",
+          "alt_answers": [
+            "Mi piace la pizza"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi piace la pizza.",
+          "options": [
+            "I like pizza.",
+            "I don’t like pizza.",
+            "I like cats.",
+            "I like dancing."
+          ],
+          "answer": "I like pizza."
+        }
+      },
+      "lesson2": {
+        "title": "I don’t like fish",
+        "step1": {
+          "italian": "Non mi piace il pesce",
+          "english": "I don’t like fish",
+          "audio": "Non mi piace il pesce",
+          "note": "Add ‘non’ before ‘mi piace’. Article: il pesce.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t like fish'?",
+            "options": [
+              "Non mi piace il pesce",
+              "Mi piace la pizza",
+              "Mi piacciono i gatti",
+              "Amo il pesce"
+            ],
+            "answer": "Non mi piace il pesce"
+          }
+        },
+        "step2": {
+          "type_prompt": "N__ m_ p____e il p____  = I don’t like fish",
+          "expected_answer": "Non mi piace il pesce",
+          "alt_answers": [
+            "Non mi piace il pesce"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Non mi piace il pesce.",
+          "options": [
+            "I don’t like fish.",
+            "I like fish.",
+            "I like pizza.",
+            "I like cats."
+          ],
+          "answer": "I don’t like fish."
+        }
+      },
+      "lesson3": {
+        "title": "I like cats",
+        "step1": {
+          "italian": "Mi piacciono i gatti",
+          "english": "I like cats",
+          "audio": "Mi piacciono i gatti",
+          "note": "With plural things use ‘piacciono’. Article: i gatti.",
+          "mcq": {
+            "question": "Which phrase means 'I like cats'?",
+            "options": [
+              "Mi piacciono i gatti",
+              "Mi piace il gatto",
+              "Non mi piace il pesce",
+              "Amo i gatti"
+            ],
+            "answer": "Mi piacciono i gatti"
+          }
+        },
+        "step2": {
+          "type_prompt": "M_ p_______o i g____  = I like cats",
+          "expected_answer": "Mi piacciono i gatti",
+          "alt_answers": [
+            "Mi piacciono i gatti"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi piacciono i gatti.",
+          "options": [
+            "I like cats.",
+            "I like a cat.",
+            "I don’t like cats.",
+            "I like fish."
+          ],
+          "answer": "I like cats."
+        }
+      },
+      "lesson4": {
+        "title": "I like dancing",
+        "step1": {
+          "italian": "Mi piace ballare",
+          "english": "I like dancing",
+          "audio": "Mi piace ballare",
+          "note": "With verbs (infinitive), use ‘piace’: Mi piace + verb.",
+          "mcq": {
+            "question": "Which phrase means 'I like dancing'?",
+            "options": [
+              "Mi piace ballare",
+              "Mi piacciono i gatti",
+              "Non mi piace il pesce",
+              "Amo ballare"
+            ],
+            "answer": "Mi piace ballare"
+          }
+        },
+        "step2": {
+          "type_prompt": "M_ p____e b_____e  = I like dancing",
+          "expected_answer": "Mi piace ballare",
+          "alt_answers": [
+            "Mi piace ballare"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi piace ballare.",
+          "options": [
+            "I like dancing.",
+            "I don’t like dancing.",
+            "I like cats.",
+            "I like pizza."
+          ],
+          "answer": "I like dancing."
+        }
+      },
+      "lesson5": {
+        "title": "Do you like…? (informal)",
+        "step1": {
+          "italian": "Ti piace…?",
+          "english": "Do you like…? (informal)",
+          "audio": "Ti piace…?",
+          "note": "Talking to friends/family: ‘Ti piace…?’ For plural things: ‘Ti piacciono…?’",
+          "mcq": {
+            "question": "Which phrase means 'Do you like…? (informal)'?",
+            "options": [
+              "Ti piace…?",
+              "Le piace…?",
+              "Vi piace…?",
+              "Ti piacciono…?"
+            ],
+            "answer": "Ti piace…?"
+          }
+        },
+        "step2": {
+          "type_prompt": "T_ p____…?  = Do you like…? (informal)",
+          "expected_answer": "Ti piace…?",
+          "alt_answers": [
+            "Ti piace…?",
+            "Ti piace?",
+            "ti piace…?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ti piace la pizza?",
+          "options": [
+            "Do you (informal) like pizza?",
+            "Do you (formal) like pizza?",
+            "Do you (plural) like pizza?",
+            "I like pizza."
+          ],
+          "answer": "Do you (informal) like pizza?"
+        }
+      },
+      "lesson6": {
+        "title": "Do you like…? (formal)",
+        "step1": {
+          "italian": "Le piace…?",
+          "english": "Do you like…? (formal)",
+          "audio": "Le piace…?",
+          "note": "Talking to strangers: formal ‘Le piace…?’ For plural things: ‘Le piacciono…?’",
+          "mcq": {
+            "question": "Which phrase means 'Do you like…? (formal)'?",
+            "options": [
+              "Le piace…?",
+              "Ti piace…?",
+              "Vi piace…?",
+              "Le piacciono…?"
+            ],
+            "answer": "Le piace…?"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_ p____…?  = Do you like…? (formal)",
+          "expected_answer": "Le piace…?",
+          "alt_answers": [
+            "Le piace…?",
+            "Le piace?",
+            "le piace…?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Le piace il vino?",
+          "options": [
+            "Do you (formal) like wine?",
+            "Do you (informal) like wine?",
+            "Do you (plural) like wine?",
+            "I like wine."
+          ],
+          "answer": "Do you (formal) like wine?"
+        }
+      },
+      "lesson7": {
+        "title": "Do you like…? (plural)",
+        "step1": {
+          "italian": "Vi piace…?",
+          "english": "Do you like…? (plural)",
+          "audio": "Vi piace…?",
+          "note": "Talking to more than one person: ‘Vi piace…?’ For plural things: ‘Vi piacciono…?’",
+          "mcq": {
+            "question": "Which phrase means 'Do you like…? (plural)'?",
+            "options": [
+              "Vi piace…?",
+              "Ti piace…?",
+              "Le piace…?",
+              "Vi piacciono…?"
+            ],
+            "answer": "Vi piace…?"
+          }
+        },
+        "step2": {
+          "type_prompt": "V_ p____…?  = Do you like…? (plural)",
+          "expected_answer": "Vi piace…?",
+          "alt_answers": [
+            "Vi piace…?",
+            "Vi piace?",
+            "vi piace…?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Vi piace il gelato?",
+          "options": [
+            "Do you (plural) like ice cream?",
+            "Do you (informal) like ice cream?",
+            "Do you (formal) like ice cream?",
+            "I like ice cream."
+          ],
+          "answer": "Do you (plural) like ice cream?"
+        }
+      },
+      "lesson8": {
+        "title": "Yes, I like it",
+        "step1": {
+          "italian": "Sì, mi piace",
+          "english": "Yes, I like it",
+          "audio": "Sì, mi piace",
+          "note": "Answer to yes/no questions with ‘Sì/No’ + ‘mi piace’.",
+          "mcq": {
+            "question": "Which phrase means 'Yes, I like it'?",
+            "options": [
+              "Sì, mi piace",
+              "No, non mi piace",
+              "Mi piace la pizza",
+              "Non mi piace il pesce"
+            ],
+            "answer": "Sì, mi piace"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sì, m_ p____e  = Yes, I like it",
+          "expected_answer": "Sì, mi piace",
+          "alt_answers": [
+            "Sì, mi piace"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sì, mi piace.",
+          "options": [
+            "Yes, I like it.",
+            "No, I don’t like it.",
+            "I like pizza.",
+            "I like cats."
+          ],
+          "answer": "Yes, I like it."
+        }
+      },
+      "lesson9": {
+        "title": "No, I don’t like it",
+        "step1": {
+          "italian": "No, non mi piace",
+          "english": "No, I don’t like it",
+          "audio": "No, non mi piace",
+          "note": "Negation with ‘non’: No, non mi piace.",
+          "mcq": {
+            "question": "Which phrase means 'No, I don’t like it'?",
+            "options": [
+              "No, non mi piace",
+              "Sì, mi piace",
+              "Mi piace ballare",
+              "Amo…"
+            ],
+            "answer": "No, non mi piace"
+          }
+        },
+        "step2": {
+          "type_prompt": "No, n_n m_ p____e  = No, I don’t like it",
+          "expected_answer": "No, non mi piace",
+          "alt_answers": [
+            "No, non mi piace"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "No, non mi piace.",
+          "options": [
+            "No, I don’t like it.",
+            "Yes, I like it.",
+            "I like dancing.",
+            "I love it."
+          ],
+          "answer": "No, I don’t like it."
+        }
+      },
+      "lesson10": {
+        "title": "I prefer tea to coffee",
+        "step1": {
+          "italian": "Preferisco il tè al caffè",
+          "english": "I prefer tea to coffee",
+          "audio": "Preferisco il tè al caffè",
+          "note": "pre-feh-REE-skoh — ‘Preferisco X a/al Y’.",
+          "mcq": {
+            "question": "Which phrase means 'I prefer tea to coffee'?",
+            "options": [
+              "Preferisco il tè al caffè",
+              "Mi piace il tè",
+              "Odio il caffè",
+              "Amo il tè"
+            ],
+            "answer": "Preferisco il tè al caffè"
+          }
+        },
+        "step2": {
+          "type_prompt": "P________o il t_ al c__fè  = I prefer tea to coffee",
+          "expected_answer": "Preferisco il tè al caffè",
+          "alt_answers": [
+            "Preferisco il tè al caffè"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Preferisco il tè al caffè.",
+          "options": [
+            "I prefer tea to coffee.",
+            "I like tea.",
+            "I hate coffee.",
+            "I love tea."
+          ],
+          "answer": "I prefer tea to coffee."
+        }
+      },
+      "lesson11": {
+        "title": "I love…",
+        "step1": {
+          "italian": "Amo…",
+          "english": "I love…",
+          "audio": "Amo…",
+          "note": "Simple and strong: ‘Amo…’. For people, Italians often use ‘ti voglio bene/ti amo’; here we use food/things.",
+          "mcq": {
+            "question": "Which phrase means 'I love…'?",
+            "options": [
+              "Amo…",
+              "Odio…",
+              "Mi piace…",
+              "Non mi piace…"
+            ],
+            "answer": "Amo…"
+          }
+        },
+        "step2": {
+          "type_prompt": "A__…  = I love…",
+          "expected_answer": "Amo…",
+          "alt_answers": [
+            "Amo…",
+            "Amo..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Amo la pasta.",
+          "options": [
+            "I love pasta.",
+            "I hate pasta.",
+            "I like pasta.",
+            "I don’t like pasta."
+          ],
+          "answer": "I love pasta."
+        }
+      },
+      "lesson12": {
+        "title": "I hate…",
+        "step1": {
+          "italian": "Odio…",
+          "english": "I hate…",
+          "audio": "Odio…",
+          "note": "Strong dislike: ‘Odio…’.",
+          "mcq": {
+            "question": "Which phrase means 'I hate…'?",
+            "options": [
+              "Odio…",
+              "Amo…",
+              "Non mi piace…",
+              "Mi piace…"
+            ],
+            "answer": "Odio…"
+          }
+        },
+        "step2": {
+          "type_prompt": "O__o…  = I hate…",
+          "expected_answer": "Odio…",
+          "alt_answers": [
+            "Odio…",
+            "Odio..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Odio il pesce.",
+          "options": [
+            "I hate fish.",
+            "I love fish.",
+            "I don’t like fish.",
+            "I like fish."
+          ],
+          "answer": "I hate fish."
+        }
+      },
+      "lesson13": {
+        "title": "My favorite __ is __",
+        "step1": {
+          "italian": "Il mio preferito è __ / La mia preferita è __",
+          "english": "My favorite __ is __",
+          "audio": "Il mio preferito è __ / La mia preferita è __",
+          "note": "Use ‘il mio preferito’ (m.) / ‘la mia preferita’ (f.). Example: Il mio gelato preferito è il pistacchio.",
+          "mcq": {
+            "question": "Which phrase means 'My favorite __ is __'?",
+            "options": [
+              "Il mio preferito è __ / La mia preferita è __",
+              "Mi piace…",
+              "Amo…",
+              "Sono interessato a…"
+            ],
+            "answer": "Il mio preferito è __ / La mia preferita è __"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il m_o p________ è __ / La m_a p________ è __  = My favorite __ is __",
+          "expected_answer": "Il mio preferito è __ / La mia preferita è __",
+          "alt_answers": [
+            "Il mio preferito è __ / La mia preferita è __",
+            "Il mio preferito è __ / la mia preferita è __"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il mio piatto preferito è la pizza.",
+          "options": [
+            "My favorite dish is pizza.",
+            "I like pizza.",
+            "I love pizza.",
+            "I’m interested in pizza."
+          ],
+          "answer": "My favorite dish is pizza."
+        }
+      },
+      "lesson14": {
+        "title": "I’m interested in…",
+        "step1": {
+          "italian": "Mi interessa…",
+          "english": "I’m interested in…",
+          "audio": "Mi interessa…",
+          "note": "Neutral form with ‘interessare’: Mi interessa + noun/verb.",
+          "mcq": {
+            "question": "Which phrase means 'I’m interested in…'?",
+            "options": [
+              "Mi interessa…",
+              "Sono interessato a…",
+              "Mi piace…",
+              "Preferisco…"
+            ],
+            "answer": "Mi interessa…"
+          }
+        },
+        "step2": {
+          "type_prompt": "M_ i_______a…  = I’m interested in…",
+          "expected_answer": "Mi interessa…",
+          "alt_answers": [
+            "Mi interessa",
+            "Mi interessa…"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi interessa il museo.",
+          "options": [
+            "I’m interested in the museum.",
+            "I like the museum.",
+            "I prefer the museum.",
+            "I hate the museum."
+          ],
+          "answer": "I’m interested in the museum."
+        }
+      }
+    }
+  }
+}
