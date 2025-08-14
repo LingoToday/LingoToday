@@ -165,10 +165,7 @@ export default function Landing() {
         {/* Features Cards */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why This Works?</h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
-            Traditional language learning expects you to block out 15–60 minutes a day, open an app, and grind through a course. Most people quit in a week. 
-            LingoToday flips that. You stay at your desk. We deliver focused micro-lessons — 2 to 3 minutes each — across your day.
-          </p>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
