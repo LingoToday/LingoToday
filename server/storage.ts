@@ -210,23 +210,22 @@ export class DatabaseStorage implements IStorage {
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
 
-    // Load actual course structure from JSON to get real lesson counts
+    // Load actual course structure from individual JSON files to get real lesson counts
     if (language === 'italian') {
       try {
         const path = await import('path');
         const fs = await import('fs');
-        const coursesPath = path.default.join(process.cwd(), 'server', 'italian-courses.json');
         
-        if (fs.default.existsSync(coursesPath)) {
-          const coursesData = JSON.parse(fs.default.readFileSync(coursesPath, 'utf-8'));
+        // Use individual course files instead of consolidated italian-courses.json
+        const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
+        
+        for (const courseId of courseOrder) {
+          const coursePath = path.default.join(process.cwd(), 'server', `${courseId}.json`);
           
-          // Get course order and filter to only existing course files
-          const allCourseIds = Object.keys(coursesData).sort(); // ['course1', 'course2', 'course3', 'course4']
-          const existingCourseFiles = ['course1', 'course2', 'course3', 'course4']; // All JSON files exist
-          const courseOrder = allCourseIds.filter(courseId => existingCourseFiles.includes(courseId));
-          
-          for (const courseId of courseOrder) {
-            const course = coursesData[courseId];
+          if (fs.default.existsSync(coursePath)) {
+            const courseData = JSON.parse(fs.default.readFileSync(coursePath, 'utf-8'));
+            const course = courseData[courseId];
+            
             if (course && course.lessons) {
               // Get actual lesson IDs for this course, sorted numerically
               const lessonIds = Object.keys(course.lessons).sort((a, b) => {

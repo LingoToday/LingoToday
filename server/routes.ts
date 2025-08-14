@@ -184,10 +184,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get the actual lesson data
       if (language === 'italian') {
-        const coursesPath = path.join(process.cwd(), 'server', 'italian-courses.json');
-        if (fs.existsSync(coursesPath)) {
-          const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-          const course = coursesData[nextLesson.courseId];
+        const coursePath = path.join(process.cwd(), 'server', `${nextLesson.courseId}.json`);
+        if (fs.existsSync(coursePath)) {
+          const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+          const course = courseData[nextLesson.courseId];
           
           if (course && course.lessons[nextLesson.lessonId]) {
             return res.json({
