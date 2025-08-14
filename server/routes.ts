@@ -1310,6 +1310,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Show checkpoint after every 4 lessons completed
       const checkpointIntervals = [4, 8, 12, 16, 20]; // Add more as needed
       
+      // Only show the NEXT checkpoint that the user is eligible for but hasn't completed yet
+      // This prevents showing all past checkpoints repeatedly
       for (const interval of checkpointIntervals) {
         if (completedLessons >= interval) {
           // Find the appropriate checkpoint for this interval
@@ -1321,13 +1323,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const checkpointProgressList = await storage.getCheckpointProgress(userId, checkpoint.id);
             const isCompleted = checkpointProgressList.length > 0 && checkpointProgressList[0].completed;
             
-            availableCheckpoints.push({
-              ...checkpoint,
-              isAvailable: true,
-              isCompleted,
-              requiredLessons: interval,
-              userCompletedLessons: completedLessons
-            });
+            // Only add this checkpoint if it's not completed
+            if (!isCompleted) {
+              availableCheckpoints.push({
+                ...checkpoint,
+                isAvailable: true,
+                isCompleted: false,
+                requiredLessons: interval,
+                userCompletedLessons: completedLessons
+              });
+              
+              // Only show ONE checkpoint at a time - the earliest incomplete one
+              break;
+            }
           }
         }
       }

@@ -45,6 +45,12 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/checkpoint-progress'] });
+      
+      // Clear checkpoint notification tracking so next checkpoint can be shown
+      import("@/lib/notifications").then(({ clearCheckpointNotificationTracking }) => {
+        clearCheckpointNotificationTracking();
+      });
+      
       toast({
         title: "Progress Saved",
         description: "Your checkpoint progress has been saved successfully.",

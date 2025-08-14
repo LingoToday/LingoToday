@@ -233,6 +233,14 @@ export function resetNotificationCooldown() {
   localStorage.setItem('lastNotificationTime', Date.now().toString());
 }
 
+// Clear checkpoint notification tracking (call this when user completes a checkpoint)
+export function clearCheckpointNotificationTracking() {
+  console.log("🔄 Clearing checkpoint notification tracking - user completed a checkpoint");
+  localStorage.removeItem('lastCheckpointNotificationDate');
+  localStorage.removeItem('lastShownCheckpointId');
+  console.log("✅ Checkpoint notification tracking cleared - next checkpoint can be shown");
+}
+
 // Refresh notification progress (call this when user completes a lesson)
 export function refreshNotificationProgress() {
   console.log("🔄 Refreshing notification progress - clearing cached lesson data");
@@ -246,6 +254,9 @@ export function refreshNotificationProgress() {
   
   // Reset cooldown to allow immediate notification if session is active
   resetNotificationCooldown();
+  
+  // NOTE: We do NOT clear checkpoint tracking here since that should persist
+  // across lesson completions to prevent the same review appearing repeatedly
   
   console.log("✅ Notification progress refreshed - next notification will use current progress");
 }
@@ -362,22 +373,46 @@ export async function showLearningNotification(language: string) {
   const cleanLanguage = String(language).trim().toLowerCase().split(':')[0];
   console.log(`🧹 Cleaned language from "${language}" to "${cleanLanguage}"`);
 
-  // Check for available checkpoints - show checkpoint notifications 30% of the time when available
+  // Check for available checkpoints - but only show once per day per checkpoint
   try {
     const availableCheckpoints = await getAvailableCheckpoints();
     if (availableCheckpoints.length > 0) {
-      const shouldShowCheckpoint = Math.random() < 0.3; // 30% chance
-      console.log(`📊 Found ${availableCheckpoints.length} available checkpoints, showing checkpoint notification: ${shouldShowCheckpoint}`);
+      console.log(`📊 Found ${availableCheckpoints.length} available checkpoints`);
+      
+      // Check if we've already shown a checkpoint notification today
+      const today = new Date().toDateString();
+      const lastCheckpointNotificationDate = localStorage.getItem('lastCheckpointNotificationDate');
+      const lastShownCheckpointId = localStorage.getItem('lastShownCheckpointId');
+      
+      // Get the first available checkpoint (they're now ordered by priority)
+      const checkpoint = availableCheckpoints[0];
+      
+      // Only show if we haven't shown THIS specific checkpoint today
+      const shouldShowCheckpoint = lastCheckpointNotificationDate !== today || 
+                                   lastShownCheckpointId !== checkpoint.id.toString();
+      
+      console.log(`📊 Checkpoint notification logic:`, {
+        today,
+        lastCheckpointNotificationDate,
+        lastShownCheckpointId,
+        currentCheckpointId: checkpoint.id,
+        shouldShow: shouldShowCheckpoint
+      });
       
       if (shouldShowCheckpoint) {
-        // Pick a random checkpoint
-        const randomCheckpoint = availableCheckpoints[Math.floor(Math.random() * availableCheckpoints.length)];
-        const checkpointShown = await showCheckpointNotification(randomCheckpoint);
+        const checkpointShown = await showCheckpointNotification(checkpoint);
         
         if (checkpointShown) {
-          console.log(`✅ Checkpoint notification shown: ${randomCheckpoint.title}`);
+          console.log(`✅ Checkpoint notification shown: ${checkpoint.title}`);
+          
+          // Record that we've shown this checkpoint today
+          localStorage.setItem('lastCheckpointNotificationDate', today);
+          localStorage.setItem('lastShownCheckpointId', checkpoint.id.toString());
+          
           return; // Exit early, don't show lesson notification
         }
+      } else {
+        console.log(`⏰ Checkpoint notification skipped - already shown today or same checkpoint`);
       }
     }
   } catch (error) {
