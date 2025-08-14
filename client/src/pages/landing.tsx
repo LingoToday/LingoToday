@@ -169,9 +169,9 @@ export default function Landing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
+          <Card className="bg-white hover-lift group shadow-card">
+            <CardContent className="p-6 text-left">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                 <Brain className="text-blue-600 w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-3">Spaced repetition</h3>
@@ -181,9 +181,9 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
+          <Card className="bg-white hover-lift group shadow-card">
+            <CardContent className="p-6 text-left">
+              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
                 <Zap className="text-green-600 w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-3">Microlearning</h3>
@@ -193,9 +193,9 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-gray-200 hover-lift group shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
+          <Card className="bg-white hover-lift group shadow-card">
+            <CardContent className="p-6 text-left">
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
                 <TrendingUp className="text-purple-600 w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-3">The science backs it</h3>
