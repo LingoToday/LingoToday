@@ -64,7 +64,7 @@ export default function Landing() {
             <div className="text-xl text-gray-600 space-y-4">
               <p>Learn languages on your desktop. Short, well-timed prompts for busy professionals.</p>
 
-              <p><strong>Receive desktop lesson prompts</strong> — quick, focused lessons that appear while you work.</p>
+
             </div>
           </div>
           
