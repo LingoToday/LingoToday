@@ -651,7 +651,11 @@ export default function Dashboard() {
                           <div className="text-lg font-bold">{upcomingLessons[0].title}</div>
                           <div className="text-purple-100 text-sm">{upcomingLessons[0].description}</div>
                         </div>
-                        <Link href={`/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`}>
+                        <Link href={
+                          upcomingLessons[0].courseId === 'checkpoint' 
+                            ? `/checkpoint/${upcomingLessons[0].lessonId.replace('checkpoint', '')}`
+                            : `/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`
+                        }>
                           <Button variant="secondary" size="sm" className="bg-white text-purple-600 hover:bg-gray-100 font-medium">
                             Start Now
                           </Button>
