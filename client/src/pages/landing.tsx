@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
 import Footer from "@/components/ui/footer";
 import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
+import desktopImage from "@assets/Group 76_1755207824120.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -168,41 +169,51 @@ export default function Landing() {
 
         </div>
 
-        <div className="flex flex-col space-y-8 mb-16 max-w-md">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Brain className="text-blue-600 w-6 h-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 items-center">
+          <div className="flex flex-col space-y-8">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Brain className="text-blue-600 w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Spaced repetition</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Spaced repetition</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
-              </p>
+
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Zap className="text-green-600 w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Microlearning</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="text-purple-600 w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">The science backs it</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Zap className="text-green-600 w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Microlearning</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
-              <TrendingUp className="text-purple-600 w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">The science backs it</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
-              </p>
-            </div>
+          <div className="relative">
+            <img 
+              src={desktopImage} 
+              alt="LingoToday desktop notification showing Italian lesson with analytics dashboard in background"
+              className="w-full h-auto rounded-lg"
+            />
           </div>
         </div>
 
