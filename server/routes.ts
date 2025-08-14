@@ -119,7 +119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Enrich progress data with actual lesson content
       const enrichedProgress = await Promise.all(
-        progress.slice(0, 10).map(async (progressItem) => {
+        progress.map(async (progressItem) => {
           if (language === 'italian') {
             try {
               const courseFileName = `${progressItem.courseId}.json`;
