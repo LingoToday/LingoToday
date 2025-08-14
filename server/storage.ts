@@ -212,11 +212,12 @@ export class DatabaseStorage implements IStorage {
 
     // Check if user needs a checkpoint review (every 4 lessons)
     const totalCompletedLessons = completedLessons.length;
-    const nextCheckpointThreshold = Math.floor(totalCompletedLessons / 4) * 4 + 4;
+    console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
     
     // If user has completed a multiple of 4 lessons, check if they need a checkpoint review
     if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
       const checkpointNumber = totalCompletedLessons / 4;
+      console.log(`🔍 Checking checkpoint ${checkpointNumber} for ${totalCompletedLessons} lessons`);
       
       // Check if this checkpoint has been completed
       const completedCheckpoints = await db
@@ -228,6 +229,8 @@ export class DatabaseStorage implements IStorage {
           eq(checkpoints.checkpointNumber, checkpointNumber),
           eq(checkpointProgress.completed, true)
         ));
+      
+      console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
       
       if (completedCheckpoints.length === 0) {
         console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
