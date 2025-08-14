@@ -62,7 +62,7 @@ export default function Landing() {
           
           <div className="mb-8 max-w-3xl mx-auto text-center">
             <div className="text-xl text-gray-600 space-y-4">
-              <p><strong>Select your language</strong> — choose from our growing library.</p>
+              <p>Learn languages on your desktop. Short, well-timed prompts for busy professionals.</p>
               <p><strong>Set your notification frequency</strong> — every 30 minutes, hourly, or custom.</p>
               <p><strong>Receive desktop lesson prompts</strong> — quick, focused lessons that appear while you work.</p>
             </div>
