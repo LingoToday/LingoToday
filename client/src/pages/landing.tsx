@@ -42,12 +42,7 @@ export default function Landing() {
                 <span className="hidden sm:inline">Try it Free for 7 Days</span>
                 <span className="sm:hidden">Free Trial</span>
               </Button>
-              <Button 
-                className="bg-gray-900 hover:bg-gray-800 text-white font-medium px-3 sm:px-6 py-2 rounded-full text-sm sm:text-base"
-                onClick={() => window.location.href = "/sign-in"}
-              >
-                Sign In
-              </Button>
+
             </div>
           </div>
         </div>
