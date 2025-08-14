@@ -1,0 +1,368 @@
+{
+  "course5": {
+    "title": "Days and Dates",
+    "description": "Learn days of the week, months, and essential date-related vocabulary in Italian. Each lesson follows a three-step micro-lesson approach.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "italian": "Lunedì",
+          "english": "Monday",
+          "audio": "Lunedì",
+          "note": "The first day of the work week in Italy.",
+          "mcq": {
+            "question": "Which word means 'Monday'?",
+            "options": [
+              "Lunedì",
+              "Martedì",
+              "Mercoledì",
+              "Giovedì"
+            ],
+            "answer": "Lunedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "Lun__ì  = Monday",
+          "expected_answer": "Lunedì",
+          "alt_answers": [
+            "lunedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lunedì",
+          "options": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday"
+          ],
+          "answer": "Monday"
+        }
+      },
+      "lesson2": {
+        "title": "Tuesday",
+        "step1": {
+          "italian": "Martedì",
+          "english": "Tuesday",
+          "audio": "Martedì",
+          "note": "Second day of the work week.",
+          "mcq": {
+            "question": "Which word means 'Tuesday'?",
+            "options": [
+              "Martedì",
+              "Lunedì",
+              "Mercoledì",
+              "Giovedì"
+            ],
+            "answer": "Martedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "Mar__dì  = Tuesday",
+          "expected_answer": "Martedì",
+          "alt_answers": [
+            "martedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Martedì",
+          "options": [
+            "Tuesday",
+            "Monday",
+            "Wednesday",
+            "Thursday"
+          ],
+          "answer": "Tuesday"
+        }
+      },
+      "lesson3": {
+        "title": "Wednesday",
+        "step1": {
+          "italian": "Mercoledì",
+          "english": "Wednesday",
+          "audio": "Mercoledì",
+          "note": "Middle of the work week.",
+          "mcq": {
+            "question": "Which word means 'Wednesday'?",
+            "options": [
+              "Mercoledì",
+              "Lunedì",
+              "Martedì",
+              "Giovedì"
+            ],
+            "answer": "Mercoledì"
+          }
+        },
+        "step2": {
+          "type_prompt": "Merco__dì  = Wednesday",
+          "expected_answer": "Mercoledì",
+          "alt_answers": [
+            "mercoledì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mercoledì",
+          "options": [
+            "Wednesday",
+            "Monday",
+            "Tuesday",
+            "Thursday"
+          ],
+          "answer": "Wednesday"
+        }
+      },
+      "lesson4": {
+        "title": "Thursday",
+        "step1": {
+          "italian": "Giovedì",
+          "english": "Thursday",
+          "audio": "Giovedì",
+          "note": "Fourth day of the work week.",
+          "mcq": {
+            "question": "Which word means 'Thursday'?",
+            "options": [
+              "Giovedì",
+              "Lunedì",
+              "Martedì",
+              "Mercoledì"
+            ],
+            "answer": "Giovedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gio__dì  = Thursday",
+          "expected_answer": "Giovedì",
+          "alt_answers": [
+            "giovedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Giovedì",
+          "options": [
+            "Thursday",
+            "Monday",
+            "Tuesday",
+            "Wednesday"
+          ],
+          "answer": "Thursday"
+        }
+      },
+      "lesson5": {
+        "title": "Friday",
+        "step1": {
+          "italian": "Venerdì",
+          "english": "Friday",
+          "audio": "Venerdì",
+          "note": "Last day of the work week.",
+          "mcq": {
+            "question": "Which word means 'Friday'?",
+            "options": [
+              "Venerdì",
+              "Sabato",
+              "Domenica",
+              "Giovedì"
+            ],
+            "answer": "Venerdì"
+          }
+        },
+        "step2": {
+          "type_prompt": "Vener__  = Friday",
+          "expected_answer": "Venerdì",
+          "alt_answers": [
+            "venerdì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Venerdì",
+          "options": [
+            "Friday",
+            "Saturday",
+            "Sunday",
+            "Thursday"
+          ],
+          "answer": "Friday"
+        }
+      },
+      "lesson6": {
+        "title": "Saturday",
+        "step1": {
+          "italian": "Sabato",
+          "english": "Saturday",
+          "audio": "Sabato",
+          "note": "First day of the weekend.",
+          "mcq": {
+            "question": "Which word means 'Saturday'?",
+            "options": [
+              "Sabato",
+              "Domenica",
+              "Venerdì",
+              "Giovedì"
+            ],
+            "answer": "Sabato"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sab__o  = Saturday",
+          "expected_answer": "Sabato",
+          "alt_answers": [
+            "sabato"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sabato",
+          "options": [
+            "Saturday",
+            "Sunday",
+            "Friday",
+            "Thursday"
+          ],
+          "answer": "Saturday"
+        }
+      },
+      "lesson7": {
+        "title": "Sunday",
+        "step1": {
+          "italian": "Domenica",
+          "english": "Sunday",
+          "audio": "Domenica",
+          "note": "Traditional day of rest.",
+          "mcq": {
+            "question": "Which word means 'Sunday'?",
+            "options": [
+              "Domenica",
+              "Sabato",
+              "Venerdì",
+              "Giovedì"
+            ],
+            "answer": "Domenica"
+          }
+        },
+        "step2": {
+          "type_prompt": "Dome__ca  = Sunday",
+          "expected_answer": "Domenica",
+          "alt_answers": [
+            "domenica"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Domenica",
+          "options": [
+            "Sunday",
+            "Saturday",
+            "Friday",
+            "Thursday"
+          ],
+          "answer": "Sunday"
+        }
+      },
+      "lesson8": {
+        "title": "Today",
+        "step1": {
+          "italian": "Oggi",
+          "english": "Today",
+          "audio": "Oggi",
+          "note": "Refers to the current day.",
+          "mcq": {
+            "question": "Which word means 'Today'?",
+            "options": [
+              "Oggi",
+              "Ieri",
+              "Domani",
+              "Ora"
+            ],
+            "answer": "Oggi"
+          }
+        },
+        "step2": {
+          "type_prompt": "Og__  = Today",
+          "expected_answer": "Oggi",
+          "alt_answers": [
+            "oggi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi",
+          "options": [
+            "Today",
+            "Yesterday",
+            "Tomorrow",
+            "Now"
+          ],
+          "answer": "Today"
+        }
+      },
+      "lesson9": {
+        "title": "Yesterday",
+        "step1": {
+          "italian": "Ieri",
+          "english": "Yesterday",
+          "audio": "Ieri",
+          "note": "Refers to the day before today.",
+          "mcq": {
+            "question": "Which word means 'Yesterday'?",
+            "options": [
+              "Ieri",
+              "Oggi",
+              "Domani",
+              "Ora"
+            ],
+            "answer": "Ieri"
+          }
+        },
+        "step2": {
+          "type_prompt": "I__i  = Yesterday",
+          "expected_answer": "Ieri",
+          "alt_answers": [
+            "ieri"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ieri",
+          "options": [
+            "Yesterday",
+            "Today",
+            "Tomorrow",
+            "Now"
+          ],
+          "answer": "Yesterday"
+        }
+      },
+      "lesson10": {
+        "title": "Tomorrow",
+        "step1": {
+          "italian": "Domani",
+          "english": "Tomorrow",
+          "audio": "Domani",
+          "note": "Refers to the day after today.",
+          "mcq": {
+            "question": "Which word means 'Tomorrow'?",
+            "options": [
+              "Domani",
+              "Oggi",
+              "Ieri",
+              "Ora"
+            ],
+            "answer": "Domani"
+          }
+        },
+        "step2": {
+          "type_prompt": "Dom__i  = Tomorrow",
+          "expected_answer": "Domani",
+          "alt_answers": [
+            "domani"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Domani",
+          "options": [
+            "Tomorrow",
+            "Today",
+            "Yesterday",
+            "Now"
+          ],
+          "answer": "Tomorrow"
+        }
+      }
+    }
+  }
+}
