@@ -1440,6 +1440,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin route - get all courses organized by language and skill level
+  app.get('/api/admin/courses', isAuthenticated, async (req: any, res) => {
+    try {
+      // Get all languages
+      const languages = await storage.getLanguages();
+      
+      // Get all skill levels
+      const skillLevels = await storage.getSkillLevels();
+      
+      // Get all courses with relations
+      const courses = await storage.getCoursesWithRelations();
+      
+      // Organize courses by language and skill level
+      const organizedData = languages.map(language => ({
+        language: language,
+        skillLevels: skillLevels.map(skillLevel => ({
+          skillLevel: skillLevel,
+          courses: courses.filter(course => 
+            course.languageId === language.id && 
+            course.skillLevelId === skillLevel.id
+          ).sort((a, b) => a.courseNumber - b.courseNumber)
+        })).filter(sl => sl.courses.length > 0) // Only include skill levels that have courses
+      })).filter(lang => lang.skillLevels.length > 0); // Only include languages that have courses
+      
+      res.json(organizedData);
+    } catch (error) {
+      console.error("Error fetching admin courses data:", error);
+      res.status(500).json({ message: "Failed to fetch admin courses data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -22,6 +22,7 @@ import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
 import Contact from "@/pages/contact";
+import Admin from "@/pages/admin";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -59,6 +60,7 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
+          <Route path="/admin" component={Admin} />
           <Route path="/courses" component={Courses} />
           <Route path="/courses/:language" component={Courses} />
           <Route path="/course-manager" component={CourseManager} />
