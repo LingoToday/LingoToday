@@ -5,6 +5,7 @@ import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, 
 import Footer from "@/components/ui/footer";
 import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
 import desktopImage from "@assets/Group 76_1755207824120.png";
+import mobileAppImage from "@assets/Group 77_1755208831106.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -357,9 +358,16 @@ export default function Landing() {
                     <p className="text-sm text-gray-500">Continuous Learning Anywhere</p>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   Take LingoToday beyond your desk. Our upcoming mobile app keeps your learning streak alive when you're away from your laptop, so your progress never pauses.
                 </p>
+                <div className="relative rounded-lg overflow-hidden">
+                  <img 
+                    src={mobileAppImage} 
+                    alt="Mobile phone showing LingoToday notification on lock screen for Italian lesson"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               </CardContent>
             </Card>
 
