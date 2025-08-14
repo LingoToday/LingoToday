@@ -182,6 +182,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ message: "All lessons completed!", completed: true });
       }
 
+      // Handle checkpoint reviews
+      if (nextLesson.courseId === 'checkpoint') {
+        const checkpointNumber = parseInt(nextLesson.lessonId.replace('checkpoint', ''));
+        
+        // Try to find existing checkpoint in database
+        const allCheckpoints = await storage.getAllCheckpoints();
+        const existingCheckpoint = allCheckpoints.find(cp => cp.checkpointNumber === checkpointNumber);
+        
+        if (existingCheckpoint) {
+          return res.json({
+            courseId: 'checkpoint',
+            lessonId: nextLesson.lessonId,
+            title: existingCheckpoint.title,
+            description: existingCheckpoint.description,
+            courseTitle: 'Checkpoint Review',
+            isCheckpoint: true,
+            checkpointNumber: checkpointNumber,
+            questions: existingCheckpoint.questions
+          });
+        } else {
+          // Create a generic checkpoint if none exists
+          return res.json({
+            courseId: 'checkpoint',
+            lessonId: nextLesson.lessonId,
+            title: `Checkpoint ${checkpointNumber}: Review`,
+            description: `Review your progress from the last 4 lessons`,
+            courseTitle: 'Checkpoint Review',
+            isCheckpoint: true,
+            checkpointNumber: checkpointNumber,
+            questions: [
+              {
+                id: 1,
+                question: "Review question will be generated based on your recent lessons",
+                options: ["Option A", "Option B", "Option C", "Option D"],
+                correctAnswer: "Option A",
+                explanation: "Checkpoint review in progress"
+              }
+            ]
+          });
+        }
+      }
+
       // Get the actual lesson data
       if (language === 'italian') {
         const coursePath = path.join(process.cwd(), 'server', `${nextLesson.courseId}.json`);

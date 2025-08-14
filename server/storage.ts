@@ -210,6 +210,31 @@ export class DatabaseStorage implements IStorage {
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
 
+    // Check if user needs a checkpoint review (every 4 lessons)
+    const totalCompletedLessons = completedLessons.length;
+    const nextCheckpointThreshold = Math.floor(totalCompletedLessons / 4) * 4 + 4;
+    
+    // If user has completed a multiple of 4 lessons, check if they need a checkpoint review
+    if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
+      const checkpointNumber = totalCompletedLessons / 4;
+      
+      // Check if this checkpoint has been completed
+      const completedCheckpoints = await db
+        .select()
+        .from(checkpointProgress)
+        .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
+        .where(and(
+          eq(checkpointProgress.userId, userId),
+          eq(checkpoints.checkpointNumber, checkpointNumber),
+          eq(checkpointProgress.completed, true)
+        ));
+      
+      if (completedCheckpoints.length === 0) {
+        console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
+        return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
+      }
+    }
+
     // Load actual course structure from individual JSON files to get real lesson counts
     if (language === 'italian') {
       try {
