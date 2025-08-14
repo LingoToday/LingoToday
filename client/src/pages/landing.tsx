@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
-import { SiSlack, SiMicrosoft, SiWhatsapp } from "react-icons/si";
+import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
@@ -423,7 +423,9 @@ export default function Landing() {
                     <SiSlack className="w-6 h-6 text-[#4A154B]" />
                   </div>
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <SiMicrosoft className="w-6 h-6 text-[#6264A7]" />
+                    <div className="w-6 h-6 bg-[#6264A7] rounded-sm flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">M</span>
+                    </div>
                   </div>
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                     <SiWhatsapp className="w-6 h-6 text-[#25D366]" />
