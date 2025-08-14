@@ -69,9 +69,7 @@ export default function Landing() {
             </div>
           </div>
           
-          <p className="text-lg text-gray-700 mb-10 max-w-2xl mx-auto font-medium">
-            No phone apps. No long study sessions. Just consistent, effective learning built into your day.
-          </p>
+          
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
