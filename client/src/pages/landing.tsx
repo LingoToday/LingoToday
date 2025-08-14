@@ -3,9 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
 import Footer from "@/components/ui/footer";
-import tuscanyImage from "@assets/ChatGPT Image Aug 11, 2025, 04_07_30 PM_1754921402519.png";
 import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
+import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -386,13 +386,18 @@ export default function Landing() {
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   Step into real-life situations with interactive "in-the-scene" video lessons. Practice language as if you were there — from ordering in a café to asking for directions in the Tuscan countryside.
                 </p>
-                <div className="relative rounded-lg overflow-hidden">
-                  <img 
-                    src={tuscanyImage} 
-                    alt="Interactive scene in Tuscan countryside with tourists getting directions from a local"
-                    className="w-full h-32 object-cover"
-                  />
-                  
+                <div className="relative rounded-lg overflow-hidden max-w-[200px] mx-auto">
+                  <video 
+                    src={immersionVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-auto object-cover"
+                    style={{ aspectRatio: '9/16' }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               </CardContent>
             </Card>
