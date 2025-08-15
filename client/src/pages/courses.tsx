@@ -38,6 +38,12 @@ export default function Courses() {
     enabled: isAuthenticated && isLanguageSpecific,
   }) as { data: any };
 
+  // Fetch course statistics
+  const { data: courseStats } = useQuery<{ totalCourses: number; totalLessons: number }>({
+    queryKey: ["/api/course-stats"],
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
   // Progress mutation
   const progressMutation = useMutation({
     mutationFn: async (progressData: any) => {
@@ -88,7 +94,7 @@ export default function Courses() {
           title: "Italian for Beginners",
           description: "Perfect for complete beginners. Learn essential vocabulary, basic grammar, and everyday conversations.",
           duration: "8 weeks",
-          lessons: 24,
+          lessons: courseStats?.totalLessons || 24,
           level: "Beginner",
           outline: [
             "Basic greetings and introductions",
@@ -112,7 +118,7 @@ export default function Courses() {
           title: "Spanish for Beginners",
           description: "Start your Spanish journey with essential vocabulary, pronunciation, and basic conversations through structured micro-lessons.",
           duration: "9 weeks",
-          lessons: 150,
+          lessons: courseStats?.totalLessons || 150,
           level: "Beginner",
           outline: [
             "Greetings and farewells (¡Hola!, Buenos días, Adiós)",
@@ -139,7 +145,7 @@ export default function Courses() {
           title: "German for Beginners",
           description: "Learn German fundamentals including der, die, das, basic grammar, and essential vocabulary.",
           duration: "12 weeks",
-          lessons: 36,
+          lessons: courseStats?.totalLessons || 36,
           level: "Beginner",
           outline: [
             "German pronunciation and sounds",
@@ -165,7 +171,7 @@ export default function Courses() {
           title: "French for Beginners",
           description: "Master essential French through practical micro-lessons covering everyday vocabulary, proper pronunciation, and basic conversation skills.",
           duration: "9 weeks",
-          lessons: 186,
+          lessons: courseStats?.totalLessons || 186,
           level: "Beginner",
           outline: [
             "Greetings and farewells (Salut, Bonjour, Au revoir)",
@@ -437,6 +443,11 @@ export default function Courses() {
             Choose from our selection of language courses designed for busy professionals. 
             Start with our beginner courses and build a strong foundation.
           </p>
+          {courseStats && (
+            <div className="mt-4 text-lg text-primary font-semibold">
+              {courseStats.totalCourses} courses • {courseStats.totalLessons} lessons available
+            </div>
+          )}
         </div>
 
         {/* Languages Grid */}
