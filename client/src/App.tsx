@@ -23,6 +23,7 @@ import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
 import Contact from "@/pages/contact";
 import Mission from "@/pages/mission";
+import Approach from "@/pages/approach";
 import Admin from "@/pages/admin";
 
 function Router() {
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/faq" component={FAQPage} />
           <Route path="/contact" component={Contact} />
           <Route path="/mission" component={Mission} />
+          <Route path="/approach" component={Approach} />
         </>
       ) : (
         <>
@@ -74,6 +76,7 @@ function Router() {
           <Route path="/faq" component={FAQPage} />
           <Route path="/contact" component={Contact} />
           <Route path="/mission" component={Mission} />
+          <Route path="/approach" component={Approach} />
         </>
       )}
       <Route component={NotFound} />
