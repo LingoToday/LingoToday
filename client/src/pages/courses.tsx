@@ -224,6 +224,47 @@ export default function Courses() {
   if (isLanguageSpecific && currentLanguage) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-4">
+                <Link href="/dashboard" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <Globe className="text-white text-sm" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">LingoToday</h1>
+                </Link>
+                
+                <nav className="flex space-x-8 ml-8">
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/courses">
+                    <Button variant="ghost" className="text-primary border-b-2 border-primary">
+                      Courses
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                    Progress
+                  </Button>
+                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                    Settings
+                  </Button>
+                </nav>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
+                <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Back to Courses */}
           <div className="mb-6">
@@ -432,6 +473,77 @@ export default function Courses() {
   // Default: render the general courses listing page
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 dark:bg-gray-900/95 dark:border-gray-800 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-4">
+                  <Link href="/dashboard" className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                      <Globe className="text-white text-sm" />
+                    </div>
+                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">LingoToday</h1>
+                  </Link>
+                  
+                  <nav className="flex space-x-6 ml-6">
+                    <Link href="/dashboard">
+                      <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/courses">
+                      <Button variant="ghost" size="sm" className="text-primary border-b-2 border-primary">
+                        Courses
+                      </Button>
+                    </Link>
+                    <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                      Progress
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                      Settings
+                    </Button>
+                  </nav>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
+                  <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
+                    Logout
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href="/" className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <Globe className="text-white text-sm" />
+                  </div>
+                  <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">LingoToday</h1>
+                </Link>
+                
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Button 
+                    variant="outline"
+                    className="border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 font-medium px-3 sm:px-4 py-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 text-sm sm:text-base"
+                    onClick={() => window.location.href = "/sign-in"}
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    className="bg-primary hover:bg-primary/90 text-white font-medium px-3 sm:px-6 py-2 rounded-full text-sm sm:text-base"
+                    onClick={() => window.location.href = "/onboarding"}
+                  >
+                    <span className="hidden sm:inline">Try it Free for 7 Days</span>
+                    <span className="sm:hidden">Free Trial</span>
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">
