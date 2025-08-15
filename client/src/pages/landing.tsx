@@ -7,6 +7,7 @@ import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
 import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
+import speakingPracticeImage from "@assets/5d4202ad100a247b4138bd17 copy_1755273950640.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -374,7 +375,7 @@ export default function Landing() {
                 </p>
                 <div className="flex justify-center items-center">
                   <img 
-                    src="@assets/5d4202ad100a247b4138bd17 copy_1755273950640.png" 
+                    src={speakingPracticeImage} 
                     alt="Woman speaking into a phone for language practice" 
                     className="w-48 h-32 object-cover rounded-lg"
                   />
