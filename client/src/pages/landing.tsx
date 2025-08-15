@@ -377,7 +377,7 @@ export default function Landing() {
                   <img 
                     src={speakingPracticeImage} 
                     alt="Woman speaking into a phone for language practice" 
-                    className="w-48 h-32 object-cover rounded-lg"
+                    className="w-56 h-40 object-cover rounded-lg"
                   />
                 </div>
               </CardContent>
