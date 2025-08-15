@@ -36,7 +36,7 @@ export default function Approach() {
               
               <div className="space-y-4 ml-4">
                 <div>
-                  <p><strong>No disruption</strong> – You can keep your workflow intact while still progressing.</p>
+                  <p><strong>Minimum disruption</strong> – You can keep your workflow intact while still progressing.</p>
                 </div>
                 <div>
                   <p><strong>Better retention</strong> – Revisiting concepts at spaced intervals locks them into long-term memory.</p>
