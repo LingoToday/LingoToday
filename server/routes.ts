@@ -104,18 +104,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user stats for selected language
       const language = user.selectedLanguage || "italian";
       let stats = await storage.getUserStats(userId, language);
+      
+      // Get recent progress
+      const progress = await storage.getUserProgress(userId, language);
+      
+      // Calculate real-time stats from progress data
+      const completedLessons = progress.filter(p => p.completed && p.completedAt);
+      const actualLessonsCompleted = completedLessons.length;
+      
+      // Calculate actual words learned from all completed lessons
+      let actualWordsLearned = 0;
+      if (language === 'italian') {
+        const uniqueWords = new Set<string>();
+        
+        for (const progressItem of completedLessons) {
+          try {
+            const courseFileName = `${progressItem.courseId}.json`;
+            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+            
+            if (fs.existsSync(coursePath)) {
+              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+              const course = courseData[progressItem.courseId];
+              
+              if (course && course.lessons[progressItem.lessonId]) {
+                const lesson = course.lessons[progressItem.lessonId];
+                const italianPhrase = lesson.step1?.italian;
+                
+                if (italianPhrase) {
+                  const words = italianPhrase.toLowerCase()
+                    .replace(/[!?.,:;"']/g, '')
+                    .split(/\s+/)
+                    .filter(word => word.length > 0);
+                  
+                  words.forEach((word: string) => uniqueWords.add(word));
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Error counting words for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
+          }
+        }
+        
+        actualWordsLearned = uniqueWords.size;
+      }
+      
+      // Calculate actual streak
+      let actualStreak = 0;
+      if (completedLessons.length > 0) {
+        // Sort by completion date
+        const sortedLessons = completedLessons
+          .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime());
+        
+        // Check if user completed a lesson today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let currentDate = new Date(today);
+        actualStreak = 0;
+        
+        // Count consecutive days from today backwards
+        while (true) {
+          const hasLessonOnDate = sortedLessons.some(lesson => {
+            const lessonDate = new Date(lesson.completedAt!);
+            lessonDate.setHours(0, 0, 0, 0);
+            return lessonDate.getTime() === currentDate.getTime();
+          });
+          
+          if (hasLessonOnDate) {
+            actualStreak++;
+            currentDate.setDate(currentDate.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+      }
+      
+      // Update stats if they don't exist or are outdated
       if (!stats) {
         stats = await storage.upsertUserStats({
           userId,
           language,
-          streak: 0,
-          lessonsCompleted: 0,
-          wordsLearned: 0,
+          streak: actualStreak,
+          lessonsCompleted: actualLessonsCompleted,
+          wordsLearned: actualWordsLearned,
+        });
+      } else if (stats.lessonsCompleted !== actualLessonsCompleted || 
+                 stats.wordsLearned !== actualWordsLearned || 
+                 stats.streak !== actualStreak) {
+        // Update stats to match actual progress
+        stats = await storage.upsertUserStats({
+          userId,
+          language,
+          streak: actualStreak,
+          lessonsCompleted: actualLessonsCompleted,
+          wordsLearned: actualWordsLearned,
+          lastLessonDate: stats.lastLessonDate,
         });
       }
-
-      // Get recent progress
-      const progress = await storage.getUserProgress(userId, language);
       
       // Enrich progress data with actual lesson content
       const enrichedProgress = await Promise.all(
@@ -507,21 +592,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const stats = await storage.getUserStats(userId, progressData.language);
         const lessonsCompleted = (stats?.lessonsCompleted || 0) + 1;
         
-        // Calculate streak
+        // Calculate words learned from this lesson
+        let newWordsLearned = stats?.wordsLearned || 0;
+        if (progressData.language === 'italian') {
+          try {
+            const courseFileName = `${progressData.courseId}.json`;
+            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+            
+            if (fs.existsSync(coursePath)) {
+              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+              const course = courseData[progressData.courseId];
+              
+              if (course && course.lessons[progressData.lessonId]) {
+                const lesson = course.lessons[progressData.lessonId];
+                const italianPhrase = lesson.step1?.italian;
+                
+                if (italianPhrase) {
+                  // Count unique words (split by spaces and punctuation)
+                  const words = italianPhrase.toLowerCase()
+                    .replace(/[!?.,:;"']/g, '') // Remove punctuation
+                    .split(/\s+/) // Split by whitespace
+                    .filter((word: string) => word.length > 0); // Remove empty strings
+                  
+                  newWordsLearned += words.length;
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Error counting words for ${progressData.courseId}/${progressData.lessonId}:`, error);
+          }
+        }
+        
+        // Calculate streak with proper date handling
         const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
         const lastLessonDate = stats?.lastLessonDate;
         let streak = stats?.streak || 0;
         
         if (lastLessonDate) {
-          const daysDiff = Math.floor((today.getTime() - lastLessonDate.getTime()) / (1000 * 60 * 60 * 24));
+          const lastDate = new Date(lastLessonDate);
+          lastDate.setHours(0, 0, 0, 0); // Normalize to start of day
+          const daysDiff = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+          
           if (daysDiff === 1) {
-            streak += 1;
+            streak += 1; // Consecutive day
           } else if (daysDiff > 1) {
-            streak = 1;
+            streak = 1; // Broke streak, reset to 1
           }
           // If daysDiff === 0, keep current streak (same day)
         } else {
-          streak = 1;
+          streak = 1; // First lesson
         }
         
         await storage.upsertUserStats({
@@ -529,8 +649,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           language: progressData.language,
           streak,
           lessonsCompleted,
-          wordsLearned: stats?.wordsLearned || 0,
-          lastLessonDate: today,
+          wordsLearned: newWordsLearned,
+          lastLessonDate: new Date(), // Use actual current date/time
         });
       }
       

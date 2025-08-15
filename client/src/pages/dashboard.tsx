@@ -545,7 +545,30 @@ export default function Dashboard() {
                   </Badge>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-gray-600">2% to Intermediate</div>
+                  <div className="text-sm text-gray-600">
+                    {(() => {
+                      const currentLevel = user.selectedLevel || 'beginner';
+                      const lessonsCompleted = stats?.lessonsCompleted || 0;
+                      
+                      // Define lessons required for each level
+                      const levelThresholds = {
+                        beginner: { min: 0, max: 25, next: 'Intermediate' },
+                        intermediate: { min: 25, max: 75, next: 'Advanced' },
+                        advanced: { min: 75, max: 150, next: 'Expert' }
+                      };
+                      
+                      const currentThreshold = levelThresholds[currentLevel as keyof typeof levelThresholds] || levelThresholds.beginner;
+                      const progressInLevel = Math.max(0, lessonsCompleted - currentThreshold.min);
+                      const lessonsInLevel = currentThreshold.max - currentThreshold.min;
+                      const percentage = Math.min(100, Math.round((progressInLevel / lessonsInLevel) * 100));
+                      
+                      if (percentage >= 100) {
+                        return 'Ready to advance!';
+                      }
+                      
+                      return `${percentage}% to ${currentThreshold.next}`;
+                    })()}
+                  </div>
                 </div>
               </div>
 
