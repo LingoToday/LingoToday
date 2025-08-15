@@ -1420,6 +1420,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const checkpointNumber = Math.ceil(interval / 4);
           const checkpoint = allCheckpoints.find(c => c.checkpointNumber === checkpointNumber);
           
+          // Only proceed if the checkpoint actually exists in the database
           if (checkpoint) {
             // Check if user has already completed this checkpoint
             const checkpointProgressList = await storage.getCheckpointProgress(userId, checkpoint.id);
@@ -1438,6 +1439,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Only show ONE checkpoint at a time - the earliest incomplete one
               break;
             }
+          } else {
+            console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist for interval ${interval}, skipping`);
           }
         }
       }

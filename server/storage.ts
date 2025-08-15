@@ -214,27 +214,38 @@ export class DatabaseStorage implements IStorage {
     const totalCompletedLessons = completedLessons.length;
     console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
     
-    // If user has completed a multiple of 4 lessons, check if they need a checkpoint review
+    // Check for checkpoint reviews, but only if the checkpoint actually exists
     if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
       const checkpointNumber = totalCompletedLessons / 4;
       console.log(`🔍 Checking checkpoint ${checkpointNumber} for ${totalCompletedLessons} lessons`);
       
-      // Check if this checkpoint has been completed
-      const completedCheckpoints = await db
+      // First, check if this checkpoint actually exists in the database
+      const existingCheckpoint = await db
         .select()
-        .from(checkpointProgress)
-        .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
-        .where(and(
-          eq(checkpointProgress.userId, userId),
-          eq(checkpoints.checkpointNumber, checkpointNumber),
-          eq(checkpointProgress.completed, true)
-        ));
+        .from(checkpoints)
+        .where(eq(checkpoints.checkpointNumber, checkpointNumber))
+        .limit(1);
       
-      console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
-      
-      if (completedCheckpoints.length === 0) {
-        console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
-        return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
+      if (existingCheckpoint.length > 0) {
+        // Check if this checkpoint has been completed
+        const completedCheckpoints = await db
+          .select()
+          .from(checkpointProgress)
+          .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
+          .where(and(
+            eq(checkpointProgress.userId, userId),
+            eq(checkpoints.checkpointNumber, checkpointNumber),
+            eq(checkpointProgress.completed, true)
+          ));
+        
+        console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
+        
+        if (completedCheckpoints.length === 0) {
+          console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
+          return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
+        }
+      } else {
+        console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist in database, skipping to next lesson`);
       }
     }
 
