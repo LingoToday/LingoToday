@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown } from "lucide-react";
+import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, Smartphone, Video, MessageSquare, Crown, Mic, Volume2, Headphones } from "lucide-react";
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
@@ -403,32 +403,30 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            {/* Integrations */}
+            {/* Speaking Practice */}
             <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                    <MessageSquare className="w-6 h-6 text-orange-600" />
+                    <Mic className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900">Integrations</h4>
-                    <p className="text-sm text-gray-500">Learn Where You Already Work & Chat</p>
+                    <h4 className="text-lg font-semibold text-gray-900">Speaking Practice</h4>
+                    <p className="text-sm text-gray-500">Real-Time Pronunciation Feedback</p>
                   </div>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  LingoToday will soon connect directly to your favourite tools — Slack, Microsoft Teams, WhatsApp, and more — so language learning meets you where you are.
+                  Practice speaking with AI-powered pronunciation analysis that gives instant feedback on your accent, rhythm, and fluency to help you sound more natural.
                 </p>
                 <div className="flex justify-center items-center gap-4">
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <SiSlack className="w-6 h-6 text-[#4A154B]" />
+                    <Mic className="w-6 h-6 text-orange-600" />
                   </div>
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <div className="w-6 h-6 bg-[#6264A7] rounded-sm flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">M</span>
-                    </div>
+                    <Volume2 className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <SiWhatsapp className="w-6 h-6 text-[#25D366]" />
+                    <Headphones className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
