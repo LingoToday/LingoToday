@@ -287,52 +287,6 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Progress Highlights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 items-center">
-          <div className="space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-2 text-green-600 text-sm font-medium mb-4">
-                See Real Progress (Without the Overwhelm)
-              </div>
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                Built for your work setup
-              </h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Whether you're writing emails, working in Figma, or coding in VS Code — LingoToday drops in when you've got a moment. 
-                You learn without needing to "find time." Most learning platforms are mobile-first. LingoToday is built for desktop.
-              </p>
-              <Button 
-                className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-full"
-                onClick={() => window.location.href = "/onboarding"}
-              >
-                Try It Now
-              </Button>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <div className="bg-white border border-gray-200 shadow-card p-6 rounded-2xl">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-900 font-medium">Fits into your day</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-900 font-medium">Builds a daily habit</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-900 font-medium">Keeps your brain engaged</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-900 font-medium">Actually sticks</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Coming Soon Section */}
         <div className="mb-16">
