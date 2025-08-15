@@ -372,16 +372,12 @@ export default function Landing() {
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   Practice speaking with AI-powered pronunciation analysis that gives instant feedback on your accent, rhythm, and fluency to help you sound more natural.
                 </p>
-                <div className="flex justify-center items-center gap-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Mic className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Volume2 className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Headphones className="w-6 h-6 text-blue-600" />
-                  </div>
+                <div className="flex justify-center items-center">
+                  <img 
+                    src="@assets/5d4202ad100a247b4138bd17 copy_1755273950640.png" 
+                    alt="Woman speaking into a phone for language practice" 
+                    className="w-48 h-32 object-cover rounded-lg"
+                  />
                 </div>
               </CardContent>
             </Card>
