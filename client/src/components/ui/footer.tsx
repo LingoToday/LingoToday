@@ -32,9 +32,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors text-sm">
+                <Link href="/mission" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors text-sm">
                   Mission
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors text-sm">

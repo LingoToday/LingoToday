@@ -22,6 +22,7 @@ import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
 import Contact from "@/pages/contact";
+import Mission from "@/pages/mission";
 import Admin from "@/pages/admin";
 
 function Router() {
@@ -54,6 +55,7 @@ function Router() {
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
           <Route path="/contact" component={Contact} />
+          <Route path="/mission" component={Mission} />
         </>
       ) : (
         <>
@@ -71,6 +73,7 @@ function Router() {
           <Route path="/privacy" component={Privacy} />
           <Route path="/faq" component={FAQPage} />
           <Route path="/contact" component={Contact} />
+          <Route path="/mission" component={Mission} />
         </>
       )}
       <Route component={NotFound} />
