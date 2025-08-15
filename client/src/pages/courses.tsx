@@ -228,33 +228,12 @@ export default function Courses() {
         <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <Link href="/dashboard" className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <Globe className="text-white text-sm" />
-                  </div>
-                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">LingoToday</h1>
-                </Link>
-                
-                <nav className="flex space-x-8 ml-8">
-                  <Link href="/dashboard">
-                    <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Link href="/courses">
-                    <Button variant="ghost" className="text-primary border-b-2 border-primary">
-                      Courses
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                    Progress
-                  </Button>
-                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                    Settings
-                  </Button>
-                </nav>
-              </div>
+              <Link href="/dashboard" className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Globe className="text-white text-sm" />
+                </div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">LingoToday</h1>
+              </Link>
               
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
@@ -479,33 +458,12 @@ export default function Courses() {
           <div className="flex justify-between items-center h-16">
             {isAuthenticated ? (
               <>
-                <div className="flex items-center space-x-4">
-                  <Link href="/dashboard" className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                      <Globe className="text-white text-sm" />
-                    </div>
-                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">LingoToday</h1>
-                  </Link>
-                  
-                  <nav className="flex space-x-6 ml-6">
-                    <Link href="/dashboard">
-                      <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                        Dashboard
-                      </Button>
-                    </Link>
-                    <Link href="/courses">
-                      <Button variant="ghost" size="sm" className="text-primary border-b-2 border-primary">
-                        Courses
-                      </Button>
-                    </Link>
-                    <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                      Progress
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                      Settings
-                    </Button>
-                  </nav>
-                </div>
+                <Link href="/dashboard" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <Globe className="text-white text-sm" />
+                  </div>
+                  <h1 className="text-lg font-bold text-gray-900 dark:text-white">LingoToday</h1>
+                </Link>
                 
                 <div className="flex items-center space-x-3">
                   <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
