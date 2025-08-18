@@ -74,7 +74,7 @@ export default function Landing() {
             
             <div className="mb-8 max-w-3xl lg:max-w-none">
               <div className="text-xl text-gray-600 space-y-4">
-                <p>Learn languages on your desktop. Short, well-timed browser notifications for busy professionals.</p>
+                <p>Short micro lessons delivered by notifications. Backed by science.</p>
               </div>
             </div>
             
