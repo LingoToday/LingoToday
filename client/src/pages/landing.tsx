@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, MessageSquare, Crown, Volume2, Headphones, Smartphone, Video, Mic } from "lucide-react";
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
-import desktopImage from "@assets/Group 76_1755207824120.png";
+import desktopImage from "@assets/Group 97_1755526583226.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
 import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
 import speakingPracticeImage from "@assets/speaking-practice-image.png";
