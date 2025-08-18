@@ -298,10 +298,6 @@ export default function Landing() {
         {/* Coming Soon Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 text-purple-600 text-sm font-medium mb-4">
-              <Sparkles className="w-4 h-4" />
-              Coming Soon
-            </div>
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
               The Future of Language Learning
             </h3>
