@@ -8,6 +8,7 @@ import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
 import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
 import speakingPracticeImage from "@assets/speaking-practice-image.png";
+import heroDevicesImage from "@assets/Group 91_1755518956939.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -59,38 +60,47 @@ export default function Landing() {
       </header>
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
-            <Clock className="w-4 h-4" />
-            Start learning in under 60 seconds
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Learn a Language<br />
-            <span className="text-primary">At Your Laptop</span>
-          </h1>
-          
-          <div className="mb-8 max-w-3xl mx-auto text-center">
-            <div className="text-xl text-gray-600 space-y-4">
-              <p>Learn languages on your desktop. Short, well-timed browser notifications for busy professionals.</p>
-
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
+          {/* Left side - Content */}
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
+              <Clock className="w-4 h-4" />
+              Start learning in under 60 seconds
             </div>
+            
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Learn a Language<br />
+              <span className="text-primary">At Your Laptop</span>
+            </h1>
+            
+            <div className="mb-8 max-w-3xl lg:max-w-none">
+              <div className="text-xl text-gray-600 space-y-4">
+                <p>Learn languages on your desktop. Short, well-timed browser notifications for busy professionals.</p>
+              </div>
+            </div>
+            
+            <div className="flex justify-center lg:justify-start">
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
+                onClick={() => window.location.href = "/onboarding"}
+                data-testid="button-hero-trial"
+              >Try it Free for 7 Days</Button>
+            </div>
+            
+            <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">
+              No Credit Card Required
+            </p>
           </div>
-          
-          
-          
-          <div className="flex justify-center">
-            <Button 
-              size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
-              onClick={() => window.location.href = "/onboarding"}
-            >Try it Free for 7 Days</Button>
+
+          {/* Right side - Image */}
+          <div className="relative lg:order-last">
+            <img 
+              src={heroDevicesImage} 
+              alt="LingoToday notifications on desktop and mobile devices showing Italian language learning"
+              className="w-full h-auto max-w-lg mx-auto lg:mx-0 lg:ml-auto"
+            />
           </div>
-          
-          <p className="text-sm text-gray-500 mt-4 text-center">
-            No Credit Card Required
-          </p>
         </div>
 
 
