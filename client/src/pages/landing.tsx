@@ -63,10 +63,7 @@ export default function Landing() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
           {/* Left side - Content */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
-              <Clock className="w-4 h-4" />
-              Start learning in under 60 seconds
-            </div>
+            
             
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               The Most Effective Way to Learn a Language
