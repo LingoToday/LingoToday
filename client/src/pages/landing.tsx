@@ -5,7 +5,7 @@ import { Globe, Bell, BookOpen, TrendingUp, Zap, Users, Clock, Brain, Target, Ch
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
-import heroDevicesImage from "@assets/Group 91_1755521203600.png";
+import heroDevicesImage from "@assets/Group 91_1755518956939.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
@@ -71,7 +71,7 @@ export default function Landing() {
             
             <div className="mb-8 max-w-3xl lg:max-w-none">
               <div className="text-xl text-gray-600 space-y-4">
-                <p>Short micro lessons delivered by notifications using methods backed by science.</p>
+                <p>Short micro lessons delivered by notifications. Backed by science.</p>
               </div>
             </div>
             
