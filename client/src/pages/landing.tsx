@@ -69,7 +69,7 @@ export default function Landing() {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              The Easiest & Most Efficient Way of Learning Languages
+              The Most Effective Way to Learn a Language
             </h1>
             
             <div className="mb-8 max-w-3xl lg:max-w-none">
