@@ -348,8 +348,15 @@ export default function Landing() {
                     loop
                     muted
                     playsInline
+                    preload="metadata"
+                    volume={0}
                     className="w-full h-auto object-cover"
                     style={{ aspectRatio: '9/16' }}
+                    onLoadedMetadata={(e) => {
+                      const video = e.target as HTMLVideoElement;
+                      video.volume = 0;
+                      video.muted = true;
+                    }}
                   >
                     Your browser does not support the video tag.
                   </video>
