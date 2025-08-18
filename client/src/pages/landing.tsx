@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, MessageSquare, Crown, Volume2, Headphones, Smartphone, Video } from "lucide-react";
+import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, MessageSquare, Crown, Volume2, Headphones, Smartphone, Video, Mic } from "lucide-react";
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
 import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
+import speakingPracticeImage from "@assets/speaking-practice-image.png";
 import heroDevicesImage from "@assets/Group 91_1755518956939.png";
 
 export default function Landing() {
@@ -306,7 +307,7 @@ export default function Landing() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Mobile App */}
             <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
               <CardContent className="p-6">
@@ -359,6 +360,31 @@ export default function Landing() {
                   >
                     Your browser does not support the video tag.
                   </video>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Speaking Practice */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
+                    <Mic className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900">Speaking Practice</h4>
+                    <p className="text-sm text-gray-500">Real-Time Pronunciation Feedback</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  Practice speaking with AI-powered pronunciation analysis that gives instant feedback on your accent, rhythm, and fluency to help you sound more natural.
+                </p>
+                <div className="flex justify-center items-center">
+                  <img 
+                    src={speakingPracticeImage} 
+                    alt="Woman speaking into a phone for language practice" 
+                    className="w-56 h-40 object-cover rounded-lg"
+                  />
                 </div>
               </CardContent>
             </Card>
