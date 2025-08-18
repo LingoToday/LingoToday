@@ -50,7 +50,7 @@ export default function Approach() {
               </div>
               
               <p>
-                DeskLingo turns your desk into your classroom — without the overwhelm, without the guilt, and without the need to find "extra time."
+                LingoToday turns your desk into your classroom — without the overwhelm, without the guilt, and without the need to find "extra time."
               </p>
             </div>
           </div>

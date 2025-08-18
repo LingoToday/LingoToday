@@ -27,13 +27,13 @@ export default function Mission() {
           <div className="space-y-8">
             <div className="text-gray-600 leading-relaxed text-lg space-y-6">
               <p>
-                At DeskLingo, our mission is simple: help busy people learn a new language without turning their lives upside down.
+                At LingoToday, our mission is simple: help busy people learn a new language without turning their lives upside down.
               </p>
               <p>
                 We know that for many, phone apps and long study sessions just don't fit into the day. You're at your desk, focused on work — but you still want to grow, learn, and achieve your language goals.
               </p>
               <p>
-                That's why we bring the lessons to you. In short, engaging bursts that pop up on your computer, DeskLingo lets you learn without losing momentum in your day. We're here to make language learning possible for everyone — no matter how packed your schedule.
+                That's why we bring the lessons to you. In short, engaging bursts that pop up on your computer, LingoToday lets you learn without losing momentum in your day. We're here to make language learning possible for everyone — no matter how packed your schedule.
               </p>
             </div>
           </div>

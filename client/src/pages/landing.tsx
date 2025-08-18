@@ -347,7 +347,6 @@ export default function Landing() {
                     muted
                     playsInline
                     preload="metadata"
-                    volume={0}
                     className="w-full h-auto object-cover"
                     style={{ aspectRatio: '9/16' }}
                     onLoadedMetadata={(e) => {
