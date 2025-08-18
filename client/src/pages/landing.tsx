@@ -258,7 +258,7 @@ export default function Landing() {
                 <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded-full text-xl font-bold mb-4">
                   2
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Set your browser notifications frequency for the day</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Set notifications frequency for the day</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   Each one is quick and focused — a phrase, rule, or word that actually matters
                 </p>
