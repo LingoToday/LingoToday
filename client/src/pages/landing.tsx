@@ -5,7 +5,7 @@ import { Globe, Bell, BookOpen, TrendingUp, Zap, Users, Clock, Brain, Target, Ch
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
 import desktopImage from "@assets/Group 76_1755207824120.png";
-import heroDevicesImage from "@assets/Group 91_1755518956939.png";
+import heroDevicesImage from "@assets/Group 91_1755521203600.png";
 
 export default function Landing() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
