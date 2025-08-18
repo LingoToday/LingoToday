@@ -94,7 +94,7 @@ export default function Courses() {
           title: "Italian for Beginners",
           description: "Perfect for complete beginners. Learn essential vocabulary, basic grammar, and everyday conversations.",
           duration: "8 weeks",
-          lessons: courseStats?.totalLessons || 24,
+          lessons: 282,
           level: "Beginner",
           outline: [
             "Basic greetings and introductions",
@@ -118,7 +118,7 @@ export default function Courses() {
           title: "Spanish for Beginners",
           description: "Start your Spanish journey with essential vocabulary, pronunciation, and basic conversations through structured micro-lessons.",
           duration: "9 weeks",
-          lessons: courseStats?.totalLessons || 150,
+          lessons: 197,
           level: "Beginner",
           outline: [
             "Greetings and farewells (¡Hola!, Buenos días, Adiós)",
@@ -145,7 +145,7 @@ export default function Courses() {
           title: "German for Beginners",
           description: "Learn German fundamentals including der, die, das, basic grammar, and essential vocabulary.",
           duration: "12 weeks",
-          lessons: courseStats?.totalLessons || 36,
+          lessons: 110,
           level: "Beginner",
           outline: [
             "German pronunciation and sounds",
@@ -171,7 +171,7 @@ export default function Courses() {
           title: "French for Beginners",
           description: "Master essential French through practical micro-lessons covering everyday vocabulary, proper pronunciation, and basic conversation skills.",
           duration: "9 weeks",
-          lessons: courseStats?.totalLessons || 186,
+          lessons: 0,
           level: "Beginner",
           outline: [
             "Greetings and farewells (Salut, Bonjour, Au revoir)",
