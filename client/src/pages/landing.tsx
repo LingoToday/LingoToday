@@ -560,10 +560,7 @@ export default function Landing() {
             Smarter Language Learning,<br />
             <span className="text-primary">Finally on Desktop & Mobile</span>
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-            There are thousands of language apps. This isn't one of them. LingoToday is for people who want to learn while they work — not after.
-            No signup delays. No app stores. Just hit start and learn right in your browser.
-          </p>
+          <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">There are thousands of language apps. This isn't one of them. LingoToday is for people who want to learn while they work — not after. Just hit start and micro-learn your way to a new language.</p>
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-8 py-3 rounded-full text-sm sm:text-base max-w-full"
