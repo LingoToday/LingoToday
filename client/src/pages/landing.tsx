@@ -259,9 +259,7 @@ export default function Landing() {
                   2
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Set notifications frequency for the day</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Each one is quick and focused — a phrase, rule, or word that actually matters
-                </p>
+                <p className="text-gray-600 text-sm leading-relaxed">Set your notifications for every 30 minutes, 1 hour, or custom. Each one is quick and focused — a phrase, rule, or word that actually matters</p>
               </CardContent>
             </Card>
 
