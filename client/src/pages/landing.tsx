@@ -558,7 +558,7 @@ export default function Landing() {
         <div className="text-center bg-gray-50 rounded-2xl p-12 border border-gray-200">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Smarter Language Learning,<br />
-            <span className="text-primary">Finally on Desktop</span>
+            <span className="text-primary">Finally on Desktop & Mobile</span>
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
             There are thousands of language apps. This isn't one of them. LingoToday is for people who want to learn while they work — not after.
