@@ -367,7 +367,7 @@ export default function Desktop() {
         {/* CTA Section */}
         <div className="mb-16">
           <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+            <h2 className="md:text-4xl font-bold text-gray-900 mb-8 text-[30px]">
               Start your language learning journey today
             </h2>
             <Button 
