@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { initializeNotifications } from "@/lib/notifications";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
+import Desktop from "@/pages/desktop";
 import Onboarding from "@/pages/onboarding";
 import SignIn from "@/pages/sign-in";
 import Dashboard from "@/pages/dashboard";
@@ -45,6 +46,7 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/desktop" component={Desktop} />
           <Route path="/onboarding" component={Onboarding} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/courses" component={Courses} />
@@ -62,6 +64,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Dashboard} />
+          <Route path="/desktop" component={Desktop} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
           <Route path="/admin" component={Admin} />
