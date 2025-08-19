@@ -672,14 +672,6 @@ export default function Desktop() {
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-4 rounded-full text-[14px]"
                 onClick={() => window.location.href = "/onboarding"}
               >Unlock 1 Year Free</Button>
-              <Button 
-                variant="outline"
-                size="lg"
-                className="border-gray-300 text-gray-700 font-medium px-8 py-4 rounded-full text-lg hover:bg-gray-50"
-                onClick={() => window.location.href = "/sign-in"}
-              >
-                Sign In
-              </Button>
             </div>
             
             
