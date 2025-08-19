@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Globe, Bell, BookOpen, TrendingUp, Sparkles, Zap, Users, Clock, Brain, Target, CheckCircle, MessageSquare, Crown, Volume2, Headphones, Smartphone, Video, Mic } from "lucide-react";
 import { SiSlack, SiWhatsapp } from "react-icons/si";
 import Footer from "@/components/ui/footer";
-import desktopImage from "@assets/Group 97_1755526583226.png";
 import mobileAppImage from "@assets/Group 77_1755208831106.png";
-import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59 copy_1755209004432.mov";
+import newImmersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59_1755601704305.mov";
 import speakingPracticeImage from "@assets/speaking-practice-image.png";
 import heroDevicesImage from "@assets/Group 85 (1)_1755545239041.png";
 
@@ -329,7 +328,7 @@ export default function Desktop() {
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">Learn phrases in context with immersive video scenarios. Watch real conversations from native speakers in everyday situations.</p>
                 <div className="relative rounded-lg overflow-hidden">
                   <video 
-                    src={immersionVideo}
+                    src={newImmersionVideo}
                     className="w-full h-auto object-contain"
                     poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%236b7280'%3EReal-World Video%3C/text%3E%3C/svg%3E"
                     controls
