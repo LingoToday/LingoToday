@@ -669,7 +669,7 @@ export default function Desktop() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-4 rounded-full text-lg"
+                className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-4 rounded-full text-[14px]"
                 onClick={() => window.location.href = "/onboarding"}
               >Unlock 1 Year Free</Button>
               <Button 
