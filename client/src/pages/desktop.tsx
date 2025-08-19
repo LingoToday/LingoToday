@@ -671,9 +671,7 @@ export default function Desktop() {
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-4 rounded-full text-lg"
                 onClick={() => window.location.href = "/onboarding"}
-              >
-                Start Free Trial
-              </Button>
+              >Unlock 1 Year Free</Button>
               <Button 
                 variant="outline"
                 size="lg"
