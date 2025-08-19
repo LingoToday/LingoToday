@@ -375,9 +375,7 @@ export default function Desktop() {
               className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-lg"
               onClick={() => window.location.href = "/onboarding"}
               data-testid="button-cta-signup"
-            >
-              Sign up
-            </Button>
+            >1 Year Free For Our First 100 Users</Button>
           </div>
         </div>
 
