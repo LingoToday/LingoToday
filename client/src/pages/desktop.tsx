@@ -81,7 +81,7 @@ export default function Desktop() {
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
                 onClick={() => window.location.href = "/onboarding"}
                 data-testid="button-hero-trial"
-              >Try it Free for 7 Days</Button>
+              >Join For Free</Button>
             </div>
             
             
