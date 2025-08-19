@@ -10,6 +10,8 @@ import immersionVideo from "@assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94
 import speakingPracticeImage from "@assets/speaking-practice-image.png";
 import heroDevicesImage from "@assets/Group 85 (1)_1755545239041.png";
 
+import Group_107__1_ from "@assets/Group 107 (1).png";
+
 export default function Desktop() {
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
   
@@ -90,7 +92,7 @@ export default function Desktop() {
           {/* Right side - Image */}
           <div className="relative lg:order-last">
             <img 
-              src={heroDevicesImage} 
+              src={Group_107__1_} 
               alt="LingoToday notifications on desktop and mobile devices showing Italian language learning"
               className="w-full h-auto max-w-lg mx-auto lg:mx-0 lg:ml-auto"
             />
