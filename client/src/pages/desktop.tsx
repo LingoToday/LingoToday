@@ -684,9 +684,7 @@ export default function Desktop() {
               </Button>
             </div>
             
-            <p className="text-sm text-gray-500 mt-6">
-              7-day free trial • No credit card required • Cancel anytime
-            </p>
+            
           </div>
         </div>
       </main>
