@@ -174,51 +174,41 @@ export default function Desktop() {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 items-center">
-          <div className="flex flex-col space-y-8">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Brain className="text-blue-600 w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Spaced repetition</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
-                </p>
-              </div>
+        <div className="flex flex-col space-y-8 mb-16">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Brain className="text-blue-600 w-6 h-6" />
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Zap className="text-green-600 w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Microlearning</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="text-purple-600 w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-2">The science backs it</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
-                </p>
-              </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Spaced repetition</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                You learn better when content is repeated over time. We deliver lessons when your brain is most likely to retain them.
+              </p>
             </div>
           </div>
 
-          <div className="relative">
-            <img 
-              src={desktopImage} 
-              alt="LingoToday desktop notification showing Italian lesson with analytics dashboard in background"
-              className="w-full h-auto rounded-lg"
-            />
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Zap className="text-green-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Microlearning</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Short, focused lessons mean lower cognitive load and higher engagement. It fits into your day without demanding it.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="text-purple-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">The science backs it</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Studies show people retain up to 80% more when they learn in small bursts with spaced reviews vs. one big session.
+              </p>
+            </div>
           </div>
         </div>
 
