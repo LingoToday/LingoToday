@@ -396,7 +396,7 @@ export default function Landing() {
             </h3>
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-lg"
+              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-[15px]"
               onClick={() => window.location.href = "/onboarding"}
               data-testid="button-launch-offer"
             >
