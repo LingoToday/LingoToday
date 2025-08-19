@@ -364,6 +364,23 @@ export default function Desktop() {
           </div>
         </div>
 
+        {/* CTA Section */}
+        <div className="mb-16">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+              Start your language learning journey today
+            </h2>
+            <Button 
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-lg"
+              onClick={() => window.location.href = "/onboarding"}
+              data-testid="button-cta-signup"
+            >
+              Sign up
+            </Button>
+          </div>
+        </div>
+
         {/* Testimonials */}
         <div className="mb-16">
           <div className="text-center mb-12">
