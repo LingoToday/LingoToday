@@ -446,7 +446,7 @@ export default function Desktop() {
         </div>
 
         {/* Pricing Section */}
-        <div className="mb-16">
+        <div className="mb-16 hidden">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-green-50 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
               <Crown className="w-4 h-4" />
