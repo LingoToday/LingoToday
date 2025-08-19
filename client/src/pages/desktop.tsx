@@ -84,9 +84,7 @@ export default function Desktop() {
               >Try it Free for 7 Days</Button>
             </div>
             
-            <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">
-              No Credit Card Required
-            </p>
+            
           </div>
 
           {/* Right side - Image */}
