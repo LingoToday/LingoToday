@@ -329,12 +329,21 @@ export default function Desktop() {
                 <div className="relative rounded-lg overflow-hidden">
                   <video 
                     src={newImmersionVideo}
-                    className="w-full h-auto object-contain"
-                    poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%236b7280'%3EReal-World Video%3C/text%3E%3C/svg%3E"
-                    controls
+                    autoPlay
+                    loop
                     muted
+                    playsInline
                     preload="metadata"
-                  />
+                    className="w-full h-auto object-cover"
+                    style={{ aspectRatio: '9/16' }}
+                    onLoadedMetadata={(e) => {
+                      const video = e.target as HTMLVideoElement;
+                      video.volume = 0;
+                      video.muted = true;
+                    }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               </CardContent>
             </Card>
