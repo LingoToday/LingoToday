@@ -149,6 +149,82 @@
           "answer": "Good evening!"
         }
       },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Hi / Bye'?",
+            "options": [
+              "A presto",
+              "Piacere!",
+              "Ciao!",
+              "Buon pomeriggio"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Which phrase means 'Hello'?",
+            "options": [
+              "Buona giornata",
+              "A presto",
+              "Buon pomeriggio",
+              "Salve!"
+            ],
+            "answer": "Salve!"
+          },
+          {
+            "prompt": "Which phrase means 'Good morning / Good day'?",
+            "options": [
+              "Buongiorno",
+              "Piacere!",
+              "Buonasera",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buongiorno"
+          },
+          {
+            "prompt": "Which phrase means 'Good evening'?",
+            "options": [
+              "Piacere!",
+              "Buonanotte",
+              "Buona serata",
+              "Buonasera"
+            ],
+            "answer": "Buonasera"
+          },
+          {
+            "prompt": "Select the correct Italian for: Hi / Bye",
+            "options": [
+              "Ciao!",
+              "Buonanotte",
+              "Buona giornata",
+              "Ci vediamo (dopo)"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Select the correct Italian for: Hello",
+            "options": [
+              "Piacere!",
+              "Salve!",
+              "Buongiorno",
+              "Buonanotte"
+            ],
+            "answer": "Salve!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
       "lesson5": {
         "title": "Good afternoon",
         "step1": {
@@ -291,6 +367,82 @@
             "Hello!"
           ],
           "answer": "Have a good evening!"
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "Buon pomeriggio",
+              "Buonasera",
+              "Buona giornata",
+              "Ciao!"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Which phrase means 'Good night'?",
+            "options": [
+              "Buongiorno",
+              "Buonanotte",
+              "Ci vediamo (dopo)",
+              "Piacere!"
+            ],
+            "answer": "Buonanotte"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Salve!",
+              "Buona giornata",
+              "Ci vediamo (dopo)",
+              "Buona serata"
+            ],
+            "answer": "Buona giornata"
+          },
+          {
+            "prompt": "Which phrase means 'Have a good evening'?",
+            "options": [
+              "A presto",
+              "Ci vediamo (dopo)",
+              "Buonanotte",
+              "Buona serata"
+            ],
+            "answer": "Buona serata"
+          },
+          {
+            "prompt": "Select the correct Italian for: Good afternoon",
+            "options": [
+              "Ciao!",
+              "Buonasera",
+              "Piacere!",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Select the correct Italian for: Good night",
+            "options": [
+              "Arrivederci",
+              "Ciao!",
+              "Salve!",
+              "Buonanotte"
+            ],
+            "answer": "Buonanotte"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
         }
       },
       "lesson9": {
@@ -439,6 +591,82 @@
           "answer": "See you!"
         }
       },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Arrivederci",
+              "A presto",
+              "Buona serata",
+              "Buon pomeriggio"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Which phrase means 'Bye!'?",
+            "options": [
+              "Buonasera",
+              "Buonanotte",
+              "Arrivederci",
+              "Ciao!"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Which phrase means 'See you soon'?",
+            "options": [
+              "Ci vediamo (dopo)",
+              "Buona serata",
+              "A presto",
+              "Buona giornata"
+            ],
+            "answer": "A presto"
+          },
+          {
+            "prompt": "Which phrase means 'See you (later)'?",
+            "options": [
+              "Buona giornata",
+              "Ci vediamo (dopo)",
+              "A presto",
+              "Arrivederci"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          },
+          {
+            "prompt": "Select the correct Italian for: Goodbye",
+            "options": [
+              "Buon pomeriggio",
+              "Arrivederci",
+              "Piacere!",
+              "Ciao!"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Select the correct Italian for: Bye!",
+            "options": [
+              "Buonasera",
+              "Buongiorno",
+              "Buon pomeriggio",
+              "Ciao!"
+            ],
+            "answer": "Ciao!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
       "lesson13": {
         "title": "Pleased to meet you",
         "step1": {
@@ -473,6 +701,141 @@
             "Good morning!"
           ],
           "answer": "Pleased to meet you!"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–13",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Translate to Italian: Hi / Bye",
+            "options": [
+              "Buon pomeriggio",
+              "Ciao!",
+              "Arrivederci",
+              "Ci vediamo (dopo)"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Translate to Italian: Hello",
+            "options": [
+              "Salve!",
+              "Piacere!",
+              "Ci vediamo (dopo)",
+              "Buonanotte"
+            ],
+            "answer": "Salve!"
+          },
+          {
+            "prompt": "Translate to Italian: Good morning / Good day",
+            "options": [
+              "Buongiorno",
+              "Piacere!",
+              "Ciao!"
+            ],
+            "answer": "Buongiorno"
+          },
+          {
+            "prompt": "Translate to Italian: Good evening",
+            "options": [
+              "Buona serata",
+              "Arrivederci",
+              "Piacere!",
+              "Buonasera"
+            ],
+            "answer": "Buonasera"
+          },
+          {
+            "prompt": "Translate to Italian: Good afternoon",
+            "options": [
+              "Buon pomeriggio",
+              "Piacere!",
+              "Arrivederci",
+              "Buongiorno"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Translate to Italian: Good night",
+            "options": [
+              "Ci vediamo (dopo)",
+              "A presto",
+              "Ciao!",
+              "Buonanotte"
+            ],
+            "answer": "Buonanotte"
+          },
+          {
+            "prompt": "Translate to Italian: Have a nice day",
+            "options": [
+              "Buona giornata",
+              "Buongiorno",
+              "Buonasera",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buona giornata"
+          },
+          {
+            "prompt": "Translate to Italian: Have a good evening",
+            "options": [
+              "Arrivederci",
+              "Ciao!",
+              "Ci vediamo (dopo)",
+              "Buona serata"
+            ],
+            "answer": "Buona serata"
+          },
+          {
+            "prompt": "Translate to Italian: Goodbye",
+            "options": [
+              "Ciao!",
+              "Arrivederci",
+              "Buona giornata",
+              "Buongiorno"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Translate to Italian: Bye!",
+            "options": [
+              "Salve!",
+              "Ciao!",
+              "Buonanotte",
+              "A presto"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Translate to Italian: See you soon",
+            "options": [
+              "A presto",
+              "Buonasera",
+              "Buona giornata",
+              "Ciao!"
+            ],
+            "answer": "A presto"
+          },
+          {
+            "prompt": "Translate to Italian: See you (later)",
+            "options": [
+              "Buon pomeriggio",
+              "Arrivederci",
+              "Ci vediamo (dopo)",
+              "Salve!"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 9,
+          "questions": 12
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
         }
       }
     }
