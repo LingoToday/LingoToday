@@ -1075,12 +1075,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { language, courseId, lessonId } = req.params;
       
-      if (language === 'italian') {
-        const courseFileName = `${courseId}.json`;
-        const coursePath = path.join(process.cwd(), 'server', courseFileName);
+      if (['italian', 'spanish', 'french', 'german'].includes(language)) {
+        // Use language-specific course files or fallback to generic files
+        let courseFileName = language === 'italian' ? `${courseId}.json` : `${language}_${courseId}.json`;
+        let coursePath = path.join(process.cwd(), 'server', courseFileName);
+        
+        // Fallback to generic course file if language-specific doesn't exist
+        if (!fs.existsSync(coursePath)) {
+          courseFileName = `${courseId}.json`;
+          coursePath = path.join(process.cwd(), 'server', courseFileName);
+        }
         
         if (!fs.existsSync(coursePath)) {
-          return res.status(404).json({ message: `Italian course file not found: ${courseFileName}` });
+          return res.status(404).json({ message: `Course file not found: ${courseFileName}` });
         }
         
         const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
