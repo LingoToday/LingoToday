@@ -374,11 +374,39 @@ export default function Dashboard() {
   }
 
   const recentLessonsWithCheckpoints: RecentLesson[] = recentProgress.reduce<RecentLesson[]>((acc, progress, index) => {
+    // Get the appropriate language phrase based on user's selected language
+    const getLanguagePhrase = (progress: any) => {
+      const language = user.selectedLanguage || 'italian';
+      switch (language) {
+        case 'spanish':
+          return progress.spanishPhrase || progress.targetPhrase;
+        case 'french':
+          return progress.frenchPhrase || progress.targetPhrase;
+        case 'german':
+          return progress.germanPhrase || progress.targetPhrase;
+        case 'italian':
+        default:
+          return progress.italianPhrase || progress.targetPhrase;
+      }
+    };
+
+    // Get lesson title from lesson ID for better display
+    const getLessonTitle = (lessonId: string, courseId: string) => {
+      if (lessonId?.startsWith('review')) {
+        const reviewNumber = lessonId.replace('review', '');
+        return `Review ${reviewNumber}`;
+      }
+      const lessonNumber = lessonId?.replace('lesson', '') || '';
+      const courseNumber = courseId?.replace('course', '') || '';
+      return `Lesson ${lessonNumber}`;
+    };
+
     // Add the regular lesson
+    const targetPhrase = getLanguagePhrase(progress);
     const lesson: RecentLesson = {
       id: `lesson-${index + 1}`,
-      title: progress.italianPhrase || progress.lessonId,
-      subtitle: progress.englishTranslation || progress.courseTitle || progress.courseId,
+      title: targetPhrase || getLessonTitle(progress.lessonId, progress.courseId),
+      subtitle: progress.englishTranslation || progress.courseTitle || `${progress.courseId} - ${progress.lessonId}`,
       date: progress.completedAt ? new Date(progress.completedAt).toLocaleDateString('en-GB') : 'In Progress',
       score: progress.score ? `${progress.score}%` : 'N/A',
       status: progress.completedAt ? 'completed' : 'in_progress',
