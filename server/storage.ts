@@ -210,42 +210,45 @@ export class DatabaseStorage implements IStorage {
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
 
-    // Check if user needs a checkpoint review (every 4 lessons)
-    const totalCompletedLessons = completedLessons.length;
-    console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
-    
-    // Check for checkpoint reviews, but only if the checkpoint actually exists
-    if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
-      const checkpointNumber = totalCompletedLessons / 4;
-      console.log(`🔍 Checking checkpoint ${checkpointNumber} for ${totalCompletedLessons} lessons`);
+    // Skip checkpoint logic for Spanish as it has built-in reviews in JSON
+    if (language !== 'spanish') {
+      // Check if user needs a checkpoint review (every 4 lessons)
+      const totalCompletedLessons = completedLessons.length;
+      console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
       
-      // First, check if this checkpoint actually exists in the database
-      const existingCheckpoint = await db
-        .select()
-        .from(checkpoints)
-        .where(eq(checkpoints.checkpointNumber, checkpointNumber))
-        .limit(1);
-      
-      if (existingCheckpoint.length > 0) {
-        // Check if this checkpoint has been completed
-        const completedCheckpoints = await db
+      // Check for checkpoint reviews, but only if the checkpoint actually exists
+      if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
+        const checkpointNumber = totalCompletedLessons / 4;
+        console.log(`🔍 Checking checkpoint ${checkpointNumber} for ${totalCompletedLessons} lessons`);
+        
+        // First, check if this checkpoint actually exists in the database
+        const existingCheckpoint = await db
           .select()
-          .from(checkpointProgress)
-          .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
-          .where(and(
-            eq(checkpointProgress.userId, userId),
-            eq(checkpoints.checkpointNumber, checkpointNumber),
-            eq(checkpointProgress.completed, true)
-          ));
+          .from(checkpoints)
+          .where(eq(checkpoints.checkpointNumber, checkpointNumber))
+          .limit(1);
         
-        console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
-        
-        if (completedCheckpoints.length === 0) {
-          console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
-          return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
+        if (existingCheckpoint.length > 0) {
+          // Check if this checkpoint has been completed
+          const completedCheckpoints = await db
+            .select()
+            .from(checkpointProgress)
+            .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
+            .where(and(
+              eq(checkpointProgress.userId, userId),
+              eq(checkpoints.checkpointNumber, checkpointNumber),
+              eq(checkpointProgress.completed, true)
+            ));
+          
+          console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
+          
+          if (completedCheckpoints.length === 0) {
+            console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
+            return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
+          }
+        } else {
+          console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist in database, skipping to next lesson`);
         }
-      } else {
-        console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist in database, skipping to next lesson`);
       }
     }
 
@@ -259,19 +262,59 @@ export class DatabaseStorage implements IStorage {
         const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
         
         for (const courseId of courseOrder) {
-          const coursePath = path.default.join(process.cwd(), 'server', `${courseId}.json`);
+          // Use language-specific course files
+          let coursePath;
+          if (language === 'spanish') {
+            coursePath = path.default.join(process.cwd(), 'server', `spanish_${courseId}.json`);
+          } else {
+            coursePath = path.default.join(process.cwd(), 'server', `${courseId}.json`);
+          }
           
           if (fs.default.existsSync(coursePath)) {
             const courseData = JSON.parse(fs.default.readFileSync(coursePath, 'utf-8'));
             const course = courseData[courseId];
             
             if (course && course.lessons) {
-              // Get actual lesson IDs for this course, sorted numerically
-              const lessonIds = Object.keys(course.lessons).sort((a, b) => {
-                const numA = parseInt(a.replace('lesson', ''));
-                const numB = parseInt(b.replace('lesson', ''));
-                return numA - numB;
-              });
+              // For Spanish, properly order lessons and reviews
+              let lessonIds;
+              if (language === 'spanish') {
+                // Create proper ordering: lesson1, lesson2, lesson3, lesson4, review1, lesson5, etc.
+                const allKeys = Object.keys(course.lessons);
+                const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
+                  const numA = parseInt(a.replace('lesson', ''));
+                  const numB = parseInt(b.replace('lesson', ''));
+                  return numA - numB;
+                });
+                const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
+                  const numA = parseInt(a.replace('review', '')) || 999;
+                  const numB = parseInt(b.replace('review', '')) || 999;
+                  return numA - numB;
+                });
+                
+                // Interleave lessons and reviews: lesson1-4, review1, lesson5-8, review2, etc.
+                lessonIds = [];
+                let lessonIndex = 0;
+                let reviewIndex = 0;
+                
+                while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
+                  // Add up to 4 lessons
+                  for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
+                    lessonIds.push(lessons[lessonIndex++]);
+                  }
+                  
+                  // Add review if available
+                  if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
+                    lessonIds.push(reviews[reviewIndex++]);
+                  }
+                }
+              } else {
+                // For other languages, use simple numeric sorting
+                lessonIds = Object.keys(course.lessons).sort((a, b) => {
+                  const numA = parseInt(a.replace('lesson', ''));
+                  const numB = parseInt(b.replace('lesson', ''));
+                  return numA - numB;
+                });
+              }
               
               // Check each lesson in order
               for (const lessonId of lessonIds) {
