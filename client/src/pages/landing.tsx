@@ -397,7 +397,7 @@ export default function Landing() {
               className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-[13px]"
               onClick={() => window.location.href = "/onboarding"}
               data-testid="button-launch-offer"
-            >Claim Your Free Year</Button>
+            >Try 3 Months Free</Button>
           </div>
         </div>
 
