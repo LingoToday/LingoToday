@@ -445,8 +445,12 @@ export async function showLearningNotification(language: string) {
             console.log(`✅ Using API-suggested lesson: ${nextLessonData.lessonId}`);
             
             // Create notification for the API-suggested lesson
+            const notificationBody = nextLessonData.notificationText 
+              ? `Ready to learn: ${nextLessonData.notificationText}` 
+              : `Ready for your next lesson: ${nextLessonData.title}`;
+              
             const notification = new Notification(`${cleanLanguage.charAt(0).toUpperCase() + cleanLanguage.slice(1)} Learning`, {
-              body: `Ready for your next lesson: ${nextLessonData.title}`,
+              body: notificationBody,
               icon: "/favicon.ico",
               tag: "lingotoday-lesson-" + Date.now(),
               requireInteraction: true,

@@ -360,21 +360,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get the actual lesson data
+      let courseFileName: string;
+      
       if (language === 'italian') {
-        const coursePath = path.join(process.cwd(), 'server', `${nextLesson.courseId}.json`);
-        if (fs.existsSync(coursePath)) {
-          const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-          const course = courseData[nextLesson.courseId];
+        courseFileName = `${nextLesson.courseId}.json`;
+      } else if (language === 'spanish') {
+        courseFileName = `spanish_${nextLesson.courseId}.json`;
+      } else if (language === 'german') {
+        courseFileName = `german_${nextLesson.courseId}.json`;
+      } else if (language === 'french') {
+        courseFileName = `french_${nextLesson.courseId}.json`;
+      } else {
+        // Fallback for unsupported languages
+        return res.json({
+          courseId: nextLesson.courseId,
+          lessonId: nextLesson.lessonId,
+          title: `${nextLesson.courseId} - ${nextLesson.lessonId}`,
+          description: "Continue your language learning journey"
+        });
+      }
+
+      const coursePath = path.join(process.cwd(), 'server', courseFileName);
+      if (fs.existsSync(coursePath)) {
+        const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+        const course = courseData[nextLesson.courseId];
+        
+        if (course && course.lessons[nextLesson.lessonId]) {
+          const lesson = course.lessons[nextLesson.lessonId];
           
-          if (course && course.lessons[nextLesson.lessonId]) {
-            return res.json({
-              courseId: nextLesson.courseId,
-              lessonId: nextLesson.lessonId,
-              title: course.lessons[nextLesson.lessonId].title,
-              description: course.lessons[nextLesson.lessonId].description || course.description,
-              courseTitle: course.title,
-            });
+          // Get the appropriate language phrase for notification
+          let targetPhrase: string | undefined;
+          if (language === 'italian') {
+            targetPhrase = lesson.step1?.italian;
+          } else if (language === 'spanish') {
+            targetPhrase = lesson.step1?.spanish;
+          } else if (language === 'german') {
+            targetPhrase = lesson.step1?.german;
+          } else if (language === 'french') {
+            targetPhrase = lesson.step1?.french;
           }
+          
+          return res.json({
+            courseId: nextLesson.courseId,
+            lessonId: nextLesson.lessonId,
+            title: lesson.title,
+            targetPhrase: targetPhrase, // The actual phrase in the target language
+            notificationText: targetPhrase || lesson.title, // Phrase to use in notifications
+            description: lesson.description || course.description,
+            courseTitle: course.title,
+          });
         }
       }
       
