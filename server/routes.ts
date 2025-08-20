@@ -114,39 +114,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Calculate actual words learned from all completed lessons
       let actualWordsLearned = 0;
-      if (language === 'italian') {
-        const uniqueWords = new Set<string>();
-        
-        for (const progressItem of completedLessons) {
-          try {
-            const courseFileName = `${progressItem.courseId}.json`;
-            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+      const uniqueWords = new Set<string>();
+      
+      for (const progressItem of completedLessons) {
+        try {
+          let courseFileName: string;
+          
+          if (language === 'italian') {
+            courseFileName = `${progressItem.courseId}.json`;
+          } else if (language === 'spanish') {
+            courseFileName = `spanish_${progressItem.courseId}.json`;
+          } else if (language === 'german') {
+            courseFileName = `german_${progressItem.courseId}.json`;
+          } else if (language === 'french') {
+            courseFileName = `french_${progressItem.courseId}.json`;
+          } else {
+            continue; // Skip unsupported languages
+          }
+          
+          const coursePath = path.join(process.cwd(), 'server', courseFileName);
+          
+          if (fs.existsSync(coursePath)) {
+            const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+            const course = courseData[progressItem.courseId];
             
-            if (fs.existsSync(coursePath)) {
-              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-              const course = courseData[progressItem.courseId];
+            if (course && course.lessons[progressItem.lessonId]) {
+              const lesson = course.lessons[progressItem.lessonId];
+              let targetPhrase: string | undefined;
               
-              if (course && course.lessons[progressItem.lessonId]) {
-                const lesson = course.lessons[progressItem.lessonId];
-                const italianPhrase = lesson.step1?.italian;
+              // Get the appropriate language phrase
+              if (language === 'italian') {
+                targetPhrase = lesson.step1?.italian;
+              } else if (language === 'spanish') {
+                targetPhrase = lesson.step1?.spanish;
+              } else if (language === 'german') {
+                targetPhrase = lesson.step1?.german;
+              } else if (language === 'french') {
+                targetPhrase = lesson.step1?.french;
+              }
+              
+              if (targetPhrase) {
+                const words = targetPhrase.toLowerCase()
+                  .replace(/[!?.,:;"'¡¿]/g, '') // Include Spanish punctuation
+                  .split(/\s+/)
+                  .filter(word => word.length > 0);
                 
-                if (italianPhrase) {
-                  const words = italianPhrase.toLowerCase()
-                    .replace(/[!?.,:;"']/g, '')
-                    .split(/\s+/)
-                    .filter(word => word.length > 0);
-                  
-                  words.forEach((word: string) => uniqueWords.add(word));
-                }
+                words.forEach((word: string) => uniqueWords.add(word));
               }
             }
-          } catch (error) {
-            console.error(`Error counting words for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
           }
+        } catch (error) {
+          console.error(`Error counting words for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
         }
-        
-        actualWordsLearned = uniqueWords.size;
       }
+      
+      actualWordsLearned = uniqueWords.size;
       
       // Calculate actual streak
       let actualStreak = 0;
@@ -205,29 +227,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Enrich progress data with actual lesson content
       const enrichedProgress = await Promise.all(
         progress.map(async (progressItem) => {
-          if (language === 'italian') {
-            try {
-              const courseFileName = `${progressItem.courseId}.json`;
-              const coursePath = path.join(process.cwd(), 'server', courseFileName);
-              
-              if (fs.existsSync(coursePath)) {
-                const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-                const course = courseData[progressItem.courseId];
-                
-                if (course && course.lessons[progressItem.lessonId]) {
-                  const lesson = course.lessons[progressItem.lessonId];
-                  return {
-                    ...progressItem,
-                    lessonTitle: lesson.title,
-                    italianPhrase: lesson.step1.italian,
-                    englishTranslation: lesson.step1.english,
-                    courseTitle: course.title
-                  };
-                }
-              }
-            } catch (error) {
-              console.error(`Error loading lesson content for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
+          try {
+            let courseFileName: string;
+            let languagePhrase: string | undefined;
+            
+            if (language === 'italian') {
+              courseFileName = `${progressItem.courseId}.json`;
+            } else if (language === 'spanish') {
+              courseFileName = `spanish_${progressItem.courseId}.json`;
+            } else if (language === 'german') {
+              courseFileName = `german_${progressItem.courseId}.json`;
+            } else if (language === 'french') {
+              courseFileName = `french_${progressItem.courseId}.json`;
+            } else {
+              return progressItem; // Unsupported language
             }
+            
+            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+            
+            if (fs.existsSync(coursePath)) {
+              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+              const course = courseData[progressItem.courseId];
+              
+              if (course && course.lessons[progressItem.lessonId]) {
+                const lesson = course.lessons[progressItem.lessonId];
+                
+                // Get the appropriate language phrase
+                if (language === 'italian') {
+                  languagePhrase = lesson.step1?.italian;
+                } else if (language === 'spanish') {
+                  languagePhrase = lesson.step1?.spanish;
+                } else if (language === 'german') {
+                  languagePhrase = lesson.step1?.german;
+                } else if (language === 'french') {
+                  languagePhrase = lesson.step1?.french;
+                }
+                
+                return {
+                  ...progressItem,
+                  lessonTitle: lesson.title,
+                  targetPhrase: languagePhrase, // Generic field for target language phrase
+                  spanishPhrase: lesson.step1?.spanish, // Specific field for Spanish
+                  italianPhrase: lesson.step1?.italian, // Specific field for Italian
+                  germanPhrase: lesson.step1?.german,   // Specific field for German
+                  frenchPhrase: lesson.step1?.french,   // Specific field for French
+                  englishTranslation: lesson.step1?.english,
+                  courseTitle: course.title
+                };
+              }
+            }
+          } catch (error) {
+            console.error(`Error loading lesson content for ${progressItem.courseId}/${progressItem.lessonId}:`, error);
           }
           return progressItem;
         })
