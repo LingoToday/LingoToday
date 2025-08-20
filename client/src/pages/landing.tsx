@@ -84,7 +84,7 @@ export default function Landing() {
               >Try 3 Months Free</Button>
             </div>
             
-            <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">Get 1 year free to celebrate our launch! No Credit Card Required.</p>
+            <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">Get 3 moths free to celebrate our launch! No Credit Card Required.</p>
           </div>
 
           {/* Right side - Image */}
