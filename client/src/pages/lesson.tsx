@@ -133,6 +133,26 @@ export default function Lesson() {
   const getCurrentStepData = () => {
     if (!currentLesson?.lesson) return null;
     
+    // Handle review lessons (MCQ format)
+    if (currentLesson.lesson.mode === 'mcq' && currentLesson.lesson.questions) {
+      // For review lessons, treat each question as a "step"
+      const questions = currentLesson.lesson.questions;
+      if (currentStep <= questions.length) {
+        const currentQuestion = questions[currentStep - 1];
+        return {
+          type: 'review_mcq',
+          question: currentQuestion.prompt,
+          options: currentQuestion.options || [],
+          answer: currentQuestion.answer,
+          isReview: true,
+          totalQuestions: questions.length,
+          currentQuestion: currentStep
+        };
+      }
+      return null;
+    }
+    
+    // Handle regular lessons (3-step format)
     const stepKey = `step${currentStep}`;
     const stepData = currentLesson.lesson[stepKey];
     
@@ -141,7 +161,7 @@ export default function Lesson() {
     if (currentStep === 1) {
       return {
         type: 'learn',
-        word: stepData.italian || '',
+        word: stepData.italian || stepData.spanish || stepData.french || stepData.german || '',
         translation: stepData.english || '',
         audio: stepData.audio || '',
         note: stepData.note || '',
@@ -239,7 +259,10 @@ export default function Lesson() {
 
     let correct = false;
     
-    if (currentStep === 1 && stepData.type === 'learn') {
+    if (stepData.type === 'review_mcq') {
+      // Handle review MCQ questions
+      correct = selectedAnswer === stepData.answer;
+    } else if (currentStep === 1 && stepData.type === 'learn') {
       const answerIndex = parseInt(selectedAnswer);
       correct = stepData.quiz?.options[answerIndex] === stepData.quiz?.answer;
     } else if (currentStep === 2 && stepData.type === 'type') {
@@ -370,17 +393,34 @@ export default function Lesson() {
   };
 
   const handleNextStep = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-      setSelectedAnswer("");
-      setShowResult(false);
-      setIsCorrect(false);
+    // Handle review lessons differently
+    if (stepData?.isReview) {
+      if (currentStep < stepData.totalQuestions) {
+        setCurrentStep(currentStep + 1);
+        setSelectedAnswer("");
+        setShowResult(false);
+        setIsCorrect(false);
+      } else {
+        // Calculate final score based on all questions for review
+        const correctAnswers = Object.values(stepResults).filter(Boolean).length;
+        const totalQuestions = stepData.totalQuestions;
+        const score = Math.round((correctAnswers / totalQuestions) * 100);
+        completeLessonMutation.mutate(score);
+      }
     } else {
-      // Calculate final score based on all steps
-      const correctSteps = Object.values(stepResults).filter(Boolean).length;
-      const totalSteps = 3;
-      const score = Math.round((correctSteps / totalSteps) * 100);
-      completeLessonMutation.mutate(score);
+      // Handle regular lessons
+      if (currentStep < 3) {
+        setCurrentStep(currentStep + 1);
+        setSelectedAnswer("");
+        setShowResult(false);
+        setIsCorrect(false);
+      } else {
+        // Calculate final score based on all steps
+        const correctSteps = Object.values(stepResults).filter(Boolean).length;
+        const totalSteps = 3;
+        const score = Math.round((correctSteps / totalSteps) * 100);
+        completeLessonMutation.mutate(score);
+      }
     }
   };
 
@@ -505,8 +545,12 @@ export default function Lesson() {
           </Link>
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">{currentLesson?.lesson?.title || 'Lesson'}</h1>
-            <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ')}</p>
-            <p className="text-sm text-gray-500">Step {currentStep} of 3</p>
+            <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
+            {stepData?.isReview ? (
+              <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
+            ) : (
+              <p className="text-sm text-gray-500">Step {currentStep} of 3</p>
+            )}
           </div>
         </div>
 
@@ -514,6 +558,19 @@ export default function Lesson() {
           <CardContent className="p-6">
             
             {/* Step Content */}
+            {stepData && stepData.type === 'review_mcq' && (
+              <>
+                {/* Review MCQ Question */}
+                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">🔄</div>
+                    <h2 className="text-2xl font-bold text-orange-700 mb-4">Review Question</h2>
+                    <p className="text-orange-600 text-lg mb-2">{stepData.question}</p>
+                  </div>
+                </div>
+              </>
+            )}
+
             {stepData && stepData.type === 'learn' && (
               <>
                 {/* Learn Step - Display word and translation */}
@@ -593,10 +650,41 @@ export default function Lesson() {
             {stepData && (
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-4">
-                  {stepData.type === 'learn' ? 'Quick Check' :
+                  {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
+                   stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
                    'Listen and Choose'}
                 </h3>
+
+                {stepData.type === 'review_mcq' && (
+                  <RadioGroup 
+                    value={selectedAnswer} 
+                    onValueChange={setSelectedAnswer}
+                    disabled={showResult}
+                    className="space-y-2 mb-4"
+                  >
+                    {stepData.options.map((option: string, index: number) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <RadioGroupItem 
+                          value={option} 
+                          id={`review-option-${index}`}
+                        />
+                        <Label 
+                          htmlFor={`review-option-${index}`}
+                          className={`flex-1 p-3 rounded-lg cursor-pointer transition-colors ${
+                            showResult ? (
+                              option === stepData.answer ? 'bg-green-50 text-green-700 border border-green-200' :
+                              option === selectedAnswer ? 'bg-red-50 text-red-700 border border-red-200' :
+                              'bg-gray-50'
+                            ) : 'bg-gray-50 hover:bg-gray-100'
+                          }`}
+                        >
+                          {option}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                )}
                 
                 {stepData.type === 'learn' && stepData.quiz && (
                   <>
@@ -673,7 +761,8 @@ export default function Lesson() {
                     {!isCorrect && stepData && (
                       <p className="mt-2 text-sm text-red-700">
                         The correct answer is: <strong>
-                          {stepData.type === 'learn' ? stepData.quiz.answer :
+                          {stepData.type === 'review_mcq' ? stepData.answer :
+                           stepData.type === 'learn' ? stepData.quiz.answer :
                            stepData.type === 'type' ? (
                              stepData.prompt.includes('_') ? (
                                // Show just the missing letters for fill-in-the-blank
@@ -718,7 +807,11 @@ export default function Lesson() {
                     className={`w-full text-white ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
                   >
                     {completeLessonMutation.isPending ? 'Saving Progress...' : 
-                     currentStep < 3 ? `Next Step (${currentStep + 1}/3)` : 'Complete Lesson'}
+                     stepData?.isReview ? (
+                       currentStep < stepData.totalQuestions ? `Next Question (${currentStep + 1}/${stepData.totalQuestions})` : 'Complete Review'
+                     ) : (
+                       currentStep < 3 ? `Next Step (${currentStep + 1}/3)` : 'Complete Lesson'
+                     )}
                   </Button>
                 )}
               </div>
