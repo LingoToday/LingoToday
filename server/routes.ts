@@ -476,8 +476,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let upcomingLessons: any[] = [];
 
-      if (language === 'italian') {
-        // Use same course structure as getNextLesson function - server/course*.json files
+      if (['italian', 'spanish', 'french', 'german'].includes(language)) {
+        // Use course structure from server course*.json files for all supported languages
         const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
         const allLessons: any[] = [];
         
@@ -502,12 +502,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 allLessons.push({
                   courseId: courseId,
                   lessonId: lessonId,
-                  title: lesson.step1?.italian || lesson.title, // Use Italian phrase as title, fallback to English
+                  title: lesson.step1?.[language] || lesson.title, // Use target language phrase as title, fallback to English
                   description: lesson.title, // Use English title as description
                   courseTitle: course.title,
                   category: course.title,
                   englishTitle: lesson.title,
-                  italianPhrase: lesson.step1?.italian,
+                  targetPhrase: lesson.step1?.[language],
                   englishTranslation: lesson.step1?.english
                 });
               });

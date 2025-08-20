@@ -249,13 +249,13 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // Load actual course structure from individual JSON files to get real lesson counts
-    if (language === 'italian') {
+    // Load actual course structure from individual JSON files for all supported languages
+    if (['italian', 'spanish', 'french', 'german'].includes(language)) {
       try {
         const path = await import('path');
         const fs = await import('fs');
         
-        // Use individual course files instead of consolidated italian-courses.json
+        // Use individual course files for all supported languages
         const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
         
         for (const courseId of courseOrder) {
@@ -293,9 +293,9 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // Fallback for other languages or if JSON loading fails - use all courses in order
-    const courseOrder = ['course1', 'course2', 'course3', 'course4'];
-    const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
+    // Fallback for other languages or if JSON loading fails - use full course structure
+    const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
+    const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4', 'lesson5', 'lesson6', 'lesson7', 'lesson8', 'lesson9', 'lesson10'];
 
     for (const courseId of courseOrder) {
       for (const lessonId of lessonOrder) {
