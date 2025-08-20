@@ -92,7 +92,7 @@ export default function Landing() {
             <img 
               src={heroDevicesImage} 
               alt="LingoToday notifications on desktop and mobile devices showing Italian language learning"
-              className="w-full h-auto max-w-lg mx-auto lg:max-w-none lg:w-[120%] lg:mx-0 lg:ml-auto"
+              className="w-full h-auto max-w-lg mx-auto lg:max-w-none lg:w-[108%] lg:mx-0 lg:ml-auto"
             />
           </div>
         </div>
