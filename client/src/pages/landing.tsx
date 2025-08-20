@@ -88,11 +88,11 @@ export default function Landing() {
           </div>
 
           {/* Right side - Image */}
-          <div className="relative lg:order-last">
+          <div className="relative lg:order-last lg:-mx-[10%]">
             <img 
               src={heroDevicesImage} 
               alt="LingoToday notifications on desktop and mobile devices showing Italian language learning"
-              className="w-full h-auto max-w-lg mx-auto lg:mx-0 lg:ml-auto"
+              className="w-full h-auto max-w-lg mx-auto lg:max-w-none lg:w-[120%] lg:mx-0 lg:ml-auto"
             />
           </div>
         </div>
