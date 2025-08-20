@@ -394,12 +394,10 @@ export default function Landing() {
             </h3>
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-[15px]"
+              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-[13px]"
               onClick={() => window.location.href = "/onboarding"}
               data-testid="button-launch-offer"
-            >
-              Claim Your Free Year
-            </Button>
+            >Claim Your Free Year</Button>
           </div>
         </div>
 
