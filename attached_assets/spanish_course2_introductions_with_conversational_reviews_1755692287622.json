@@ -1,17 +1,17 @@
 {
   "course2": {
     "title": "Introducing Yourself",
-    "description": "Learn to introduce yourself, ask names, say where you're from, and exchange basics in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "description": "Learn to introduce yourself, ask names, say where you’re from, and exchange basics in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
     "lessons": {
       "lesson1": {
-        "title": "What's your name? (informal)",
+        "title": "What’s your name? (informal)",
         "step1": {
           "spanish": "¿Cómo te llamas?",
-          "english": "What's your name? (informal)",
+          "english": "What’s your name? (informal)",
           "audio": "¿Cómo te llamas?",
           "note": "Use with friends, peers, and people your age. Informal 'tú' form.",
           "mcq": {
-            "question": "How do you ask someone's name informally in Spanish?",
+            "question": "How do you ask someone’s name informally in Spanish?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama?",
@@ -22,7 +22,7 @@
           }
         },
         "step2": {
-          "type_prompt": "¿C__o te ll__as?  = What's your name? (informal)",
+          "type_prompt": "¿C__o te ll__as?  = What’s your name? (informal)",
           "expected_answer": "¿Cómo te llamas?",
           "alt_answers": [
             "Como te llamas?",
@@ -33,23 +33,23 @@
         "step3": {
           "audio_sentence": "¿Cómo te llamas?",
           "options": [
-            "What's your name?",
+            "What’s your name?",
             "Where are you from?",
             "How are you?",
             "What time is it?"
           ],
-          "answer": "What's your name?"
+          "answer": "What’s your name?"
         }
       },
       "lesson2": {
-        "title": "What's your name? (formal)",
+        "title": "What’s your name? (formal)",
         "step1": {
           "spanish": "¿Cómo se llama (usted)?",
-          "english": "What's your name? (formal)",
+          "english": "What’s your name? (formal)",
           "audio": "¿Cómo se llama usted?",
           "note": "Use with strangers, older people, or in formal situations. You can omit 'usted' in context.",
           "mcq": {
-            "question": "How do you ask someone's name formally in Spanish?",
+            "question": "How do you ask someone’s name formally in Spanish?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -60,7 +60,7 @@
           }
         },
         "step2": {
-          "type_prompt": "¿Cómo se ll__a (usted)?  = What's your name? (formal)",
+          "type_prompt": "¿Cómo se ll__a (usted)?  = What’s your name? (formal)",
           "expected_answer": "¿Cómo se llama (usted)?",
           "alt_answers": [
             "¿Cómo se llama?",
@@ -71,12 +71,12 @@
         "step3": {
           "audio_sentence": "¿Cómo se llama?",
           "options": [
-            "What's your name? (formal)",
+            "What’s your name? (formal)",
             "Where are you from? (formal)",
             "How are you? (formal)",
             "Do you speak English? (formal)"
           ],
-          "answer": "What's your name? (formal)"
+          "answer": "What’s your name? (formal)"
         }
       },
       "lesson3": {
@@ -111,7 +111,7 @@
             "My name is Ana.",
             "I am from Ana.",
             "I love Ana.",
-            "I am Ana's friend."
+            "I am Ana’s friend."
           ],
           "answer": "My name is Ana."
         }
@@ -158,7 +158,7 @@
         "mode": "mcq",
         "questions": [
           {
-            "prompt": "Which phrase means 'What's your name? (informal)'?",
+            "prompt": "Which phrase means 'What’s your name? (informal)'?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -168,7 +168,7 @@
             "answer": "¿Cómo te llamas?"
           },
           {
-            "prompt": "Which phrase means 'What's your name? (formal)'?",
+            "prompt": "Which phrase means 'What’s your name? (formal)'?",
             "options": [
               "Me llamo…",
               "Soy…",
@@ -198,7 +198,7 @@
             "answer": "Soy…"
           },
           {
-            "prompt": "Which phrase means 'What's your name? (informal)'?",
+            "prompt": "Which phrase means 'What’s your name? (informal)'?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -208,7 +208,7 @@
             "answer": "¿Cómo te llamas?"
           },
           {
-            "prompt": "Which phrase means 'What's your name? (formal)'?",
+            "prompt": "Which phrase means 'What’s your name? (formal)'?",
             "options": [
               "Me llamo…",
               "Soy…",
@@ -259,7 +259,7 @@
           "audio_sentence": "¿De dónde eres?",
           "options": [
             "Where are you from?",
-            "What's your name?",
+            "What’s your name?",
             "How old are you?",
             "How are you?"
           ],
@@ -297,7 +297,7 @@
           "audio_sentence": "¿De dónde es?",
           "options": [
             "Where are you from? (formal)",
-            "What's your name? (formal)",
+            "What’s your name? (formal)",
             "How are you? (formal)",
             "Where do you live?"
           ],
@@ -305,14 +305,14 @@
         }
       },
       "lesson7": {
-        "title": "I'm from…",
+        "title": "I’m from…",
         "step1": {
           "spanish": "Soy de…",
-          "english": "I'm from…",
+          "english": "I’m from…",
           "audio": "Soy de…",
           "note": "Use with country, city, or region: 'Soy de México', 'Soy de Madrid'.",
           "mcq": {
-            "question": "How do you say 'I'm from…' in Spanish?",
+            "question": "How do you say 'I’m from…' in Spanish?",
             "options": [
               "Estoy de…",
               "Soy de…",
@@ -323,7 +323,7 @@
           }
         },
         "step2": {
-          "type_prompt": "S__ de…  = I'm from…",
+          "type_prompt": "S__ de…  = I’m from…",
           "expected_answer": "Soy de…",
           "alt_answers": [
             "Soy de...",
@@ -333,23 +333,23 @@
         "step3": {
           "audio_sentence": "Soy de Barcelona.",
           "options": [
-            "I'm from Barcelona.",
+            "I’m from Barcelona.",
             "I live in Barcelona.",
             "I go to Barcelona.",
             "I like Barcelona."
           ],
-          "answer": "I'm from Barcelona."
+          "answer": "I’m from Barcelona."
         }
       },
       "lesson8": {
-        "title": "I'm Spanish (male)",
+        "title": "I’m Spanish (male)",
         "step1": {
           "spanish": "Soy español",
-          "english": "I'm Spanish (male)",
+          "english": "I’m Spanish (male)",
           "audio": "Soy español",
           "note": "Nationality adjectives agree in gender and number.",
           "mcq": {
-            "question": "Which phrase means 'I'm Spanish' for a male speaker?",
+            "question": "Which phrase means 'I’m Spanish' for a male speaker?",
             "options": [
               "Soy española",
               "Soy español",
@@ -360,7 +360,7 @@
           }
         },
         "step2": {
-          "type_prompt": "Soy espa__l  = I'm Spanish (male)",
+          "type_prompt": "Soy espa__l  = I’m Spanish (male)",
           "expected_answer": "Soy español",
           "alt_answers": [
             "Soy espanol",
@@ -370,12 +370,12 @@
         "step3": {
           "audio_sentence": "Soy español.",
           "options": [
-            "I'm Spanish.",
-            "I'm from Spain.",
+            "I’m Spanish.",
+            "I’m from Spain.",
             "I live in Spain.",
             "I speak Spanish."
           ],
-          "answer": "I'm Spanish."
+          "answer": "I’m Spanish."
         }
       },
       "review2": {
@@ -403,7 +403,7 @@
             "answer": "¿De dónde es (usted)?"
           },
           {
-            "prompt": "Which phrase means 'I'm from…'?",
+            "prompt": "Which phrase means 'I’m from…'?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -413,12 +413,12 @@
             "answer": "Soy de…"
           },
           {
-            "prompt": "Which phrase means 'I'm Spanish (male)'?",
+            "prompt": "Which phrase means 'I’m Spanish (male)'?",
             "options": [
-              "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
               "Me llamo…",
-              "Soy español"
+              "Soy español",
+              "¿Cómo te llamas?"
             ],
             "answer": "Soy español"
           },
@@ -455,14 +455,14 @@
         }
       },
       "lesson9": {
-        "title": "I'm Spanish (female)",
+        "title": "I’m Spanish (female)",
         "step1": {
           "spanish": "Soy española",
-          "english": "I'm Spanish (female)",
+          "english": "I’m Spanish (female)",
           "audio": "Soy española",
           "note": "Use the feminine form '-a' for a female speaker.",
           "mcq": {
-            "question": "Which phrase means 'I'm Spanish' for a female speaker?",
+            "question": "Which phrase means 'I’m Spanish' for a female speaker?",
             "options": [
               "Soy española",
               "Soy español",
@@ -473,7 +473,7 @@
           }
         },
         "step2": {
-          "type_prompt": "Soy espa__la  = I'm Spanish (female)",
+          "type_prompt": "Soy espa__la  = I’m Spanish (female)",
           "expected_answer": "Soy española",
           "alt_answers": [
             "Soy espanola",
@@ -483,12 +483,12 @@
         "step3": {
           "audio_sentence": "Soy española.",
           "options": [
-            "I'm Spanish.",
-            "I'm from Spain.",
+            "I’m Spanish.",
+            "I’m from Spain.",
             "I live in Spain.",
             "I speak Spanish."
           ],
-          "answer": "I'm Spanish."
+          "answer": "I’m Spanish."
         }
       },
       "lesson10": {
@@ -606,62 +606,62 @@
         "mode": "mcq",
         "questions": [
           {
-            "prompt": "Which phrase means 'I'm Spanish (female)'?",
+            "prompt": "Which phrase means 'I’m Spanish (female)'?",
             "options": [
               "Soy española",
-              "Soy español",
-              "Mucho gusto",
-              "Encantada"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Soy española"
           },
           {
             "prompt": "Which phrase means 'Nice to meet you'?",
             "options": [
-              "Soy española",
-              "Soy español",
               "Mucho gusto",
-              "Encantada"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Mucho gusto"
           },
           {
             "prompt": "Which phrase means 'Pleased to meet you (male speaker)'?",
             "options": [
-              "Soy española",
-              "Soy español",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
               "Encantado",
-              "Encantada"
+              "¿Cómo te llamas?"
             ],
             "answer": "Encantado"
           },
           {
             "prompt": "Which phrase means 'Pleased to meet you (female speaker)'?",
             "options": [
-              "Soy española",
-              "Soy español",
-              "Encantado",
-              "Encantada"
+              "Encantada",
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Encantada"
           },
           {
-            "prompt": "Select the correct Spanish for: I'm Spanish (female)",
+            "prompt": "Which phrase means 'I’m Spanish (female)'?",
             "options": [
-              "Mucho gusto",
               "Soy española",
-              "Encantado",
-              "¿Cómo te llamas?"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Soy española"
           },
           {
-            "prompt": "Select the correct Spanish for: Nice to meet you",
+            "prompt": "Which phrase means 'Nice to meet you'?",
             "options": [
-              "Encantada",
-              "Soy español",
-              "¿De dónde eres?",
-              "Mucho gusto"
+              "Mucho gusto",
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Mucho gusto"
           }
@@ -707,7 +707,7 @@
           "audio_sentence": "¿Cómo estás?",
           "options": [
             "How are you?",
-            "What's your name?",
+            "What’s your name?",
             "Where are you from?",
             "How old are you?"
           ],
@@ -746,82 +746,84 @@
           "options": [
             "How are you? (formal)",
             "Where are you from? (formal)",
-            "What's your name? (formal)",
+            "What’s your name? (formal)",
             "Do you speak English? (formal)"
           ],
           "answer": "How are you? (formal)"
         }
       },
       "lesson15": {
-        "title": "I'm fine (informal response)",
+        "title": "I’m fine, thank you",
         "step1": {
-          "spanish": "Estoy bien",
-          "english": "I'm fine",
-          "audio": "Estoy bien",
-          "note": "Common response to '¿Cómo estás?'",
+          "spanish": "Bien, gracias",
+          "english": "I’m fine, thank you",
+          "audio": "Bien, gracias",
+          "note": "Polite response. You can add: '¿Y tú?' or '¿Y usted?' to return the question.",
           "mcq": {
-            "question": "How do you say 'I'm fine' in Spanish?",
+            "question": "Which phrase means 'I’m fine, thank you'?",
             "options": [
-              "Soy bien",
-              "Estoy bien",
-              "Tengo bien",
-              "Muy bien soy"
+              "Bien, gracias",
+              "Estoy bien, por favor",
+              "Muy bien, hola",
+              "Gracias, adiós"
             ],
-            "answer": "Estoy bien"
+            "answer": "Bien, gracias"
           }
         },
         "step2": {
-          "type_prompt": "Est__ bien  = I'm fine",
-          "expected_answer": "Estoy bien",
+          "type_prompt": "B__n, gr__ias  = I’m fine, thank you",
+          "expected_answer": "Bien, gracias",
           "alt_answers": [
-            "estoy bien"
+            "Bien gracias",
+            "bien, gracias"
           ]
         },
         "step3": {
-          "audio_sentence": "Estoy bien.",
+          "audio_sentence": "Bien, gracias.",
           "options": [
-            "I'm fine.",
-            "I'm good at something.",
-            "I'm Spanish.",
-            "I'm from here."
+            "I’m fine, thank you.",
+            "Good morning.",
+            "Goodbye.",
+            "See you soon."
           ],
-          "answer": "I'm fine."
+          "answer": "I’m fine, thank you."
         }
       },
       "lesson16": {
-        "title": "I'm very well",
+        "title": "And you? (informal)",
         "step1": {
-          "spanish": "Estoy muy bien",
-          "english": "I'm very well",
-          "audio": "Estoy muy bien",
-          "note": "Enthusiastic response; shows you're doing great.",
+          "spanish": "¿Y tú?",
+          "english": "And you? (informal)",
+          "audio": "¿Y tú?",
+          "note": "Use with friends, peers, and people your age.",
           "mcq": {
-            "question": "How do you say 'I'm very well' in Spanish?",
+            "question": "How do you say 'And you?' informally?",
             "options": [
-              "Estoy muy bien",
-              "Soy muy bien",
-              "Tengo muy bien",
-              "Estoy mucho bien"
+              "¿Y usted?",
+              "¿Y tú?",
+              "¿Y ustedes?",
+              "¿Y vos?"
             ],
-            "answer": "Estoy muy bien"
+            "answer": "¿Y tú?"
           }
         },
         "step2": {
-          "type_prompt": "Estoy m__ bien  = I'm very well",
-          "expected_answer": "Estoy muy bien",
+          "type_prompt": "¿Y t__?  = And you? (informal)",
+          "expected_answer": "¿Y tú?",
           "alt_answers": [
-            "estoy muy bien"
+            "Y tú?",
+            "¿Y tú"
           ]
         },
         "step3": {
-          "audio_sentence": "Estoy muy bien.",
+          "audio_sentence": "¿Y tú?",
           "options": [
-            "I'm very well.",
-            "I'm very good at something.",
-            "I'm Spanish.",
-            "I'm from Spain."
+            "And you?",
+            "Who are you?",
+            "Do you?",
+            "You too?"
           ],
-          "answer": "I'm very well."
+          "answer": "And you?"
         }
       },
       "review4": {
@@ -831,62 +833,62 @@
           {
             "prompt": "Which phrase means 'How are you? (informal)'?",
             "options": [
+              "Me llamo…",
               "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
             ],
             "answer": "¿Cómo estás?"
           },
           {
             "prompt": "Which phrase means 'How are you? (formal)'?",
             "options": [
-              "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "¿Cómo está (usted)?"
             ],
             "answer": "¿Cómo está (usted)?"
           },
           {
-            "prompt": "Which phrase means 'I'm fine'?",
+            "prompt": "Which phrase means 'I’m fine, thank you'?",
             "options": [
-              "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "Me llamo…",
+              "Bien, gracias",
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
             ],
-            "answer": "Estoy bien"
+            "answer": "Bien, gracias"
           },
           {
-            "prompt": "Which phrase means 'I'm very well'?",
+            "prompt": "Which phrase means 'And you? (informal)'?",
             "options": [
-              "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "Me llamo…",
+              "¿Y tú?",
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
             ],
-            "answer": "Estoy muy bien"
+            "answer": "¿Y tú?"
           },
           {
-            "prompt": "Select the correct Spanish for: How are you? (informal)",
+            "prompt": "Which phrase means 'How are you? (informal)'?",
             "options": [
-              "Mucho gusto",
+              "Me llamo…",
               "¿Cómo estás?",
-              "Estoy bien",
-              "¿De dónde eres?"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
             ],
             "answer": "¿Cómo estás?"
           },
           {
-            "prompt": "Select the correct Spanish for: I'm fine",
+            "prompt": "Which phrase means 'How are you? (formal)'?",
             "options": [
-              "Soy bien",
-              "Estoy bien",
-              "¿Cómo estás?",
-              "Mucho gusto"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "¿Cómo está (usted)?"
             ],
-            "answer": "Estoy bien"
+            "answer": "¿Cómo está (usted)?"
           }
         ],
         "pass_rule": {
@@ -900,12 +902,49 @@
           "action": "continue"
         }
       },
+      "lesson17": {
+        "title": "And you? (formal)",
+        "step1": {
+          "spanish": "¿Y usted?",
+          "english": "And you? (formal)",
+          "audio": "¿Y usted?",
+          "note": "Use in formal contexts or to show respect.",
+          "mcq": {
+            "question": "How do you say 'And you?' formally?",
+            "options": [
+              "¿Y tú?",
+              "¿Y usted?",
+              "¿Y vosotros?",
+              "¿Y él?"
+            ],
+            "answer": "¿Y usted?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Y us__d?  = And you? (formal)",
+          "expected_answer": "¿Y usted?",
+          "alt_answers": [
+            "Y usted?",
+            "¿Y usted"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Y usted?",
+          "options": [
+            "And you? (formal)",
+            "Who are you? (formal)",
+            "How are you? (formal)",
+            "Do you speak English? (formal)"
+          ],
+          "answer": "And you? (formal)"
+        }
+      },
       "review_final": {
-        "title": "Final Review: Lessons 1–16",
+        "title": "Final Review: Lessons 1–17",
         "mode": "mcq",
         "questions": [
           {
-            "prompt": "Translate to Spanish: What's your name? (informal)",
+            "prompt": "Which phrase means 'What’s your name? (informal)'?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -915,27 +954,17 @@
             "answer": "¿Cómo te llamas?"
           },
           {
-            "prompt": "Translate to Spanish: What's your name? (formal)",
+            "prompt": "Which phrase means 'What’s your name? (formal)'?",
             "options": [
-              "¿Cómo te llamas?",
-              "¿Cómo se llama (usted)?",
               "Me llamo…",
-              "Soy…"
+              "Soy…",
+              "¿Cómo se llama (usted)?",
+              "¿Cómo te llamas?"
             ],
             "answer": "¿Cómo se llama (usted)?"
           },
           {
-            "prompt": "Translate to Spanish: My name is…",
-            "options": [
-              "¿Cómo te llamas?",
-              "¿Cómo se llama (usted)?",
-              "Me llamo…",
-              "Soy…"
-            ],
-            "answer": "Me llamo…"
-          },
-          {
-            "prompt": "Translate to Spanish: I am…",
+            "prompt": "Which phrase means 'I am…'?",
             "options": [
               "¿Cómo te llamas?",
               "¿Cómo se llama (usted)?",
@@ -945,84 +974,94 @@
             "answer": "Soy…"
           },
           {
-            "prompt": "Translate to Spanish: Where are you from? (informal)",
+            "prompt": "Which phrase means 'Where are you from? (informal)'?",
             "options": [
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
               "¿De dónde eres?",
-              "¿De dónde es (usted)?",
-              "Soy de…",
-              "Soy español"
+              "¿Cómo te llamas?"
             ],
             "answer": "¿De dónde eres?"
           },
           {
-            "prompt": "Translate to Spanish: Where are you from? (formal)",
+            "prompt": "Which phrase means 'I’m from…'?",
             "options": [
-              "¿De dónde eres?",
-              "¿De dónde es (usted)?",
-              "Soy de…",
-              "Soy español"
-            ],
-            "answer": "¿De dónde es (usted)?"
-          },
-          {
-            "prompt": "Translate to Spanish: I'm from…",
-            "options": [
-              "¿De dónde eres?",
-              "¿De dónde es (usted)?",
-              "Soy de…",
-              "Soy español"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "Soy de…"
             ],
             "answer": "Soy de…"
           },
           {
-            "prompt": "Translate to Spanish: I'm Spanish (male)",
+            "prompt": "Which phrase means 'I’m Spanish (male)'?",
             "options": [
-              "Soy española",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
               "Soy español",
-              "Mucho gusto",
-              "Encantado"
+              "¿Cómo te llamas?"
             ],
             "answer": "Soy español"
           },
           {
-            "prompt": "Translate to Spanish: I'm Spanish (female)",
+            "prompt": "Which phrase means 'Nice to meet you'?",
             "options": [
-              "Soy española",
-              "Soy español",
               "Mucho gusto",
-              "Encantada"
-            ],
-            "answer": "Soy española"
-          },
-          {
-            "prompt": "Translate to Spanish: Nice to meet you",
-            "options": [
-              "Encantado",
-              "Encantada",
-              "Mucho gusto",
-              "¿Cómo estás?"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…"
             ],
             "answer": "Mucho gusto"
           },
           {
-            "prompt": "Translate to Spanish: How are you? (informal)",
+            "prompt": "Which phrase means 'Pleased to meet you (male speaker)'?",
             "options": [
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "Encantado",
+              "¿Cómo te llamas?"
+            ],
+            "answer": "Encantado"
+          },
+          {
+            "prompt": "Which phrase means 'How are you? (informal)'?",
+            "options": [
+              "Me llamo…",
               "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
             ],
             "answer": "¿Cómo estás?"
           },
           {
-            "prompt": "Translate to Spanish: I'm fine",
+            "prompt": "Which phrase means 'How are you? (formal)'?",
             "options": [
-              "¿Cómo estás?",
-              "¿Cómo está (usted)?",
-              "Estoy bien",
-              "Estoy muy bien"
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "¿Cómo está (usted)?"
             ],
-            "answer": "Estoy bien"
+            "answer": "¿Cómo está (usted)?"
+          },
+          {
+            "prompt": "Which phrase means 'And you? (informal)'?",
+            "options": [
+              "Me llamo…",
+              "¿Y tú?",
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?"
+            ],
+            "answer": "¿Y tú?"
+          },
+          {
+            "prompt": "Which phrase means 'And you? (formal)'?",
+            "options": [
+              "¿Cómo te llamas?",
+              "¿Cómo se llama (usted)?",
+              "Me llamo…",
+              "¿Y usted?"
+            ],
+            "answer": "¿Y usted?"
           }
         ],
         "pass_rule": {

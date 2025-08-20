@@ -598,60 +598,60 @@
           {
             "prompt": "Which phrase means 'Goodbye'?",
             "options": [
+              "Buenos días",
               "Adiós",
-              "Hasta luego",
-              "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Adiós"
           },
           {
             "prompt": "Which phrase means 'See you later'?",
             "options": [
-              "Adiós",
-              "Hasta luego",
-              "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Hasta luego"
             ],
             "answer": "Hasta luego"
           },
           {
             "prompt": "Which phrase means 'See you'?",
             "options": [
-              "Adiós",
-              "Hasta luego",
+              "Buenos días",
               "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Nos vemos"
           },
           {
             "prompt": "Which phrase means 'Bye!'?",
             "options": [
-              "Adiós",
-              "Hasta luego",
-              "Nos vemos",
-              "Chao"
+              "Chao",
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días"
             ],
             "answer": "Chao"
           },
           {
-            "prompt": "Select the correct Spanish for: Goodbye",
+            "prompt": "Which phrase means 'Goodbye'?",
             "options": [
-              "Hola",
-              "Adiós",
               "Buenos días",
-              "Buenas tardes"
+              "Adiós",
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Adiós"
           },
           {
-            "prompt": "Select the correct Spanish for: See you later",
+            "prompt": "Which phrase means 'See you later'?",
             "options": [
-              "Mucho gusto",
-              "Hasta luego",
+              "¡Hola!",
+              "¡Buenas!",
               "Buenos días",
-              "Buenas noches"
+              "Hasta luego"
             ],
             "answer": "Hasta luego"
           }
@@ -708,122 +708,122 @@
         "mode": "mcq",
         "questions": [
           {
-            "prompt": "Translate to Spanish: Hello / Hi",
+            "prompt": "Which phrase means 'Hello / Hi'?",
             "options": [
-              "Adiós",
-              "¡Hola!",
               "Buenos días",
-              "Buenas noches"
+              "Buenas tardes",
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "¡Hola!"
           },
           {
-            "prompt": "Translate to Spanish: Hi / Hello (casual)",
+            "prompt": "Which phrase means 'Hi / Hello (casual)'?",
             "options": [
-              "¡Buenas!",
-              "Buenos días",
               "Buenas tardes",
-              "Buenas noches"
+              "¡Buenas!",
+              "¡Hola!",
+              "Buenos días"
             ],
             "answer": "¡Buenas!"
           },
           {
-            "prompt": "Translate to Spanish: Good morning / Good day",
+            "prompt": "Which phrase means 'Good morning / Good day'?",
             "options": [
-              "Buenos días",
               "Buenas tardes",
-              "Buenas noches",
-              "¡Hola!"
+              "Buenos días",
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Buenos días"
           },
           {
-            "prompt": "Translate to Spanish: Good afternoon",
+            "prompt": "Which phrase means 'Good afternoon'?",
             "options": [
+              "¡Buenas!",
               "Buenos días",
               "Buenas tardes",
-              "Buenas noches",
-              "¡Buenas!"
+              "¡Hola!"
             ],
             "answer": "Buenas tardes"
           },
           {
-            "prompt": "Translate to Spanish: Good evening / Good night",
+            "prompt": "Which phrase means 'Good evening / Good night'?",
             "options": [
+              "¡Hola!",
+              "¡Buenas!",
               "Buenos días",
-              "Buenas tardes",
-              "Buenas noches",
-              "¡Hola!"
+              "Buenas noches"
             ],
             "answer": "Buenas noches"
           },
           {
-            "prompt": "Translate to Spanish: Have a nice day",
+            "prompt": "Which phrase means 'Have a nice day'?",
             "options": [
+              "Buenos días",
               "Que tengas buen día",
-              "Que tengas buena tarde",
-              "Que tengas buena noche",
-              "Buenos días"
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Que tengas buen día"
           },
           {
-            "prompt": "Translate to Spanish: Have a good afternoon",
+            "prompt": "Which phrase means 'Have a good evening/night'?",
             "options": [
-              "Que tengas buen día",
-              "Que tengas buena tarde",
-              "Que tengas buena noche",
-              "Buenas tardes"
-            ],
-            "answer": "Que tengas buena tarde"
-          },
-          {
-            "prompt": "Translate to Spanish: Have a good evening/night",
-            "options": [
-              "Que tengas buen día",
-              "Que tengas buena tarde",
-              "Que tengas buena noche",
-              "Buenas noches"
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Que tengas buena noche"
             ],
             "answer": "Que tengas buena noche"
           },
           {
-            "prompt": "Translate to Spanish: Goodbye",
+            "prompt": "Which phrase means 'Goodbye'?",
             "options": [
+              "Buenos días",
               "Adiós",
-              "Hasta luego",
-              "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Adiós"
           },
           {
-            "prompt": "Translate to Spanish: See you later",
+            "prompt": "Which phrase means 'See you later'?",
             "options": [
-              "Adiós",
-              "Hasta luego",
-              "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Hasta luego"
             ],
             "answer": "Hasta luego"
           },
           {
-            "prompt": "Translate to Spanish: See you",
+            "prompt": "Which phrase means 'See you'?",
             "options": [
-              "Adiós",
-              "Hasta luego",
+              "Buenos días",
               "Nos vemos",
-              "Chao"
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Nos vemos"
           },
           {
-            "prompt": "Translate to Spanish: Pleased to meet you",
+            "prompt": "Which phrase means 'Bye!'?",
             "options": [
-              "Mucho gusto",
-              "Adiós",
+              "Chao",
               "¡Hola!",
+              "¡Buenas!",
               "Buenos días"
+            ],
+            "answer": "Chao"
+          },
+          {
+            "prompt": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Buenos días",
+              "Mucho gusto",
+              "¡Hola!",
+              "¡Buenas!"
             ],
             "answer": "Mucho gusto"
           }
