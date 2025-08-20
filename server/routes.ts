@@ -477,45 +477,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let upcomingLessons: any[] = [];
 
       if (language === 'italian') {
-        // Use actual Italian course JSON files from attached_assets
-        const courseFiles = [
-          'attached_assets/italian_course1_greetings_steps_corrected_1755005294493.json',
-          'attached_assets/italian_course2_introducing_yourself_steps_full_1755005294493.json',
-          'attached_assets/italian_course3_essential_courtesy_steps_full_1755005294493.json',
-          'attached_assets/italian_course4_numbers_steps_full_29_lessons_1755005294493.json',
-          'attached_assets/italian_course5_time_date_steps_split_lessons_1755005294492.json'
-        ];
-
+        // Use same course structure as getNextLesson function - server/course*.json files
+        const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
         const allLessons: any[] = [];
         
-        for (const courseFile of courseFiles) {
-          const coursePath = path.join(process.cwd(), courseFile);
+        for (const courseId of courseOrder) {
+          const coursePath = path.join(process.cwd(), 'server', `${courseId}.json`);
+          
           if (fs.existsSync(coursePath)) {
             const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-            const courseKey = Object.keys(courseData)[0]; // course1, course2, etc.
-            const course = courseData[courseKey];
+            const course = courseData[courseId];
             
-            // Sort lessons numerically by lesson number (lesson1, lesson2, etc.)
-            const sortedLessonKeys = Object.keys(course.lessons).sort((a, b) => {
-              const aNum = parseInt(a.replace('lesson', ''));
-              const bNum = parseInt(b.replace('lesson', ''));
-              return aNum - bNum;
-            });
-            
-            sortedLessonKeys.forEach(lessonKey => {
-              const lesson = course.lessons[lessonKey];
-              allLessons.push({
-                courseId: courseKey,
-                lessonId: lessonKey,
-                title: lesson.step1.italian, // Use the Italian phrase as title
-                description: lesson.title, // Use English title as description
-                courseTitle: course.title,
-                category: course.title,
-                englishTitle: lesson.title,
-                italianPhrase: lesson.step1.italian,
-                englishTranslation: lesson.step1.english
+            if (course && course.lessons) {
+              // Get actual lesson IDs for this course, sorted numerically
+              const lessonIds = Object.keys(course.lessons).sort((a, b) => {
+                const numA = parseInt(a.replace('lesson', ''));
+                const numB = parseInt(b.replace('lesson', ''));
+                return numA - numB;
               });
-            });
+              
+              // Add each lesson to the list
+              lessonIds.forEach(lessonId => {
+                const lesson = course.lessons[lessonId];
+                allLessons.push({
+                  courseId: courseId,
+                  lessonId: lessonId,
+                  title: lesson.step1?.italian || lesson.title, // Use Italian phrase as title, fallback to English
+                  description: lesson.title, // Use English title as description
+                  courseTitle: course.title,
+                  category: course.title,
+                  englishTitle: lesson.title,
+                  italianPhrase: lesson.step1?.italian,
+                  englishTranslation: lesson.step1?.english
+                });
+              });
+            }
           }
         }
 
