@@ -48,6 +48,7 @@ function Router() {
           <Route path="/" component={Landing} />
           <Route path="/desktop" component={Desktop} />
           <Route path="/onboarding" component={Onboarding} />
+          <Route path="/onboarding-uk" component={Onboarding} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/courses" component={Courses} />
           <Route path="/courses/:language" component={Courses} />
