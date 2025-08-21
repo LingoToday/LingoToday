@@ -638,7 +638,7 @@ export default function Dashboard() {
 
 
             {/* Daily Session Start Button */}
-            {!isDailySessionActive && dashboardData?.settings?.notificationsEnabled && (
+            {!isDailySessionActive && (
               <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
