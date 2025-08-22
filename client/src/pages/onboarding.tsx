@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft, Star } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "wouter";
 import Footer from "@/components/ui/footer";
@@ -234,6 +234,51 @@ export default function Onboarding() {
           <p className="text-gray-600 text-sm sm:text-base">
             Quick setup - takes less than 2 minutes
           </p>
+        </div>
+
+        {/* Testimonials */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg p-4 shadow-sm border" data-testid="testimonial-sarah">
+              <div className="flex items-center gap-1 mb-2">
+                {[1,2,3,4,5].map((star) => (
+                  <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday..."
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-medium text-blue-700">SM</span>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Sarah Martinez</div>
+                  <div className="text-xs text-gray-500">Product Manager, San Francisco</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 shadow-sm border" data-testid="testimonial-anna">
+              <div className="flex items-center gap-1 mb-2">
+                {[1,2,3,4,5].map((star) => (
+                  <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!"
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-medium text-purple-700">AL</span>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Anna Liu</div>
+                  <div className="text-xs text-gray-500">Software Engineer, Berlin</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6">
