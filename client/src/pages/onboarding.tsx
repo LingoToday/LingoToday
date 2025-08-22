@@ -274,7 +274,7 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Anna Liu</div>
-                  <div className="text-xs text-gray-500">Software Engineer, Berlin</div>
+                  <div className="text-xs text-gray-500">Software Engineer, London</div>
                 </div>
               </div>
             </div>
@@ -631,7 +631,6 @@ export default function Onboarding() {
           )}
         </div>
       </div>
-      
       <Footer />
     </div>
   );
