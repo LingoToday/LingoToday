@@ -253,7 +253,7 @@ export default function Onboarding() {
                   <span className="text-xs font-medium text-blue-700">SM</span>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-900">Sarah Martinez</div>
+                  <div className="text-sm font-medium text-gray-900">Paul Martinez</div>
                   <div className="text-xs text-gray-500">Product Manager, San Francisco</div>
                 </div>
               </div>
