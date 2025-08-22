@@ -290,6 +290,140 @@ export default function Landing() {
           </div>
         </div>
 
+        {/* Pricing Section */}
+        <div className="mb-16">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-green-50 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-8">
+              <Crown className="w-4 h-4" />
+              Simple Pricing
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Start Your Language Journey Today
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+              Choose the plan that fits your learning style. No hidden fees, cancel anytime.
+            </p>
+
+            {/* Currency Toggle */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <span className={`text-sm font-medium ${currency === 'GBP' ? 'text-primary' : 'text-gray-500'}`}>GBP</span>
+              <button 
+                onClick={() => setCurrency(currency === 'GBP' ? 'USD' : 'GBP')}
+                className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                <span 
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    currency === 'USD' ? 'translate-x-6' : 'translate-x-1'
+                  }`} 
+                />
+              </button>
+              <span className={`text-sm font-medium ${currency === 'USD' ? 'text-primary' : 'text-gray-500'}`}>USD</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Monthly Plan */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift relative">
+              <CardContent className="p-8">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Monthly</h3>
+                  <div className="mb-6">
+                    <span className="text-3xl font-bold text-gray-900">{prices[currency].monthly}</span>
+                    <span className="text-gray-500 text-sm">/month</span>
+                  </div>
+                  
+                  <ul className="space-y-3 mb-8 text-left">
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Unlimited micro-lessons</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Smart spaced repetition</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Progress tracking</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">All languages</span>
+                    </li>
+                  </ul>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
+                    onClick={() => window.location.href = "/onboarding"}
+                    data-testid="button-monthly-plan"
+                  >
+                    Try 2 Weeks Free
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Yearly Plan - Popular */}
+            <Card className="bg-white border-2 border-primary shadow-card hover-lift relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="bg-primary text-white px-4 py-1 rounded-full text-sm font-medium">
+                  Most Popular
+                </div>
+              </div>
+              <CardContent className="p-8">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Yearly</h3>
+                  <div className="mb-2">
+                    <span className="text-3xl font-bold text-gray-900">{prices[currency].yearly}</span>
+                    <span className="text-gray-500 text-sm">/year</span>
+                  </div>
+                  <div className="mb-6">
+                    <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                      Save {prices[currency].savings}
+                    </span>
+                  </div>
+                  
+                  <ul className="space-y-3 mb-8 text-left">
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Unlimited micro-lessons</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Smart spaced repetition</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Progress tracking</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">All languages</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Priority support</span>
+                    </li>
+                  </ul>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
+                    onClick={() => window.location.href = "/onboarding"}
+                    data-testid="button-yearly-plan"
+                  >
+                    Try 2 Weeks Free
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <p className="text-center text-gray-500 text-sm mt-8">
+            2-week free trial • No credit card required • Cancel anytime
+          </p>
+        </div>
+
         {/* Coming Soon Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
