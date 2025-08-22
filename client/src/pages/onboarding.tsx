@@ -254,7 +254,7 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Paul Martinez</div>
-                  <div className="text-xs text-gray-500">Product Manager, San Francisco</div>
+                  <div className="text-xs text-gray-500">Product Manager, London</div>
                 </div>
               </div>
             </div>
