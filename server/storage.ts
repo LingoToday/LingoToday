@@ -774,7 +774,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllCheckpoints(): Promise<Checkpoint[]> {
-    return await db.select().from(checkpoints).orderBy(checkpoints.checkpointNumber);
+    return await db.select().from(checkpoints).where(eq(checkpoints.isActive, true)).orderBy(checkpoints.checkpointNumber);
   }
 
   async getCheckpoint(id: number): Promise<Checkpoint | undefined> {
