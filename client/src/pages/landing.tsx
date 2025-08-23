@@ -52,7 +52,7 @@ export default function Landing() {
                 onClick={() => window.location.href = "/onboarding"}
               >
                 <span className="hidden sm:inline text-[12px]">Try 2 Weeks Free</span>
-                <span className="sm:hidden">1 Year Free</span>
+                <span className="sm:hidden">2 Weeks Free</span>
               </Button>
             </div>
           </div>
