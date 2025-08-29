@@ -15,14 +15,24 @@ export default function Landing() {
   
   const prices = {
     GBP: {
-      monthly: '£3.99',
-      yearly: '£14.99',
-      savings: '£33'
+      pro: {
+        monthly: '£4.99',
+        yearly: '£39.99'
+      },
+      plus: {
+        monthly: '£8.99',
+        yearly: '£79.99'
+      }
     },
     USD: {
-      monthly: '$6.99',
-      yearly: '$20.99',
-      savings: '$46'
+      pro: {
+        monthly: '$6.99',
+        yearly: '$59.99'
+      },
+      plus: {
+        monthly: '$12.99',
+        yearly: '$119.99'
+      }
     }
   };
 
@@ -430,88 +440,92 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Monthly Plan */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Free Plan */}
             <Card className="bg-white border border-gray-200 shadow-card hover-lift relative">
-              <CardContent className="p-8">
+              <CardContent className="p-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Monthly</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Free</h3>
                   <div className="mb-6">
-                    <span className="text-3xl font-bold text-gray-900">{prices[currency].monthly}</span>
-                    <span className="text-gray-500 text-sm">/month</span>
+                    <span className="text-3xl font-bold text-gray-900">{currency === 'GBP' ? '£0' : '$0'}</span>
+                    <span className="text-gray-500 text-sm">/forever</span>
                   </div>
                   
                   <ul className="space-y-3 mb-8 text-left">
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Unlimited micro-lessons</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Daily notifications & micro-lessons</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Smart spaced repetition</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Streaks, badges & progress charts</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Progress tracking</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">1 video & scenario based lesson per day</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">All languages</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Referral unlocks</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">1 language</span>
                     </li>
                   </ul>
                   
                   <Button 
                     size="lg" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
+                    variant="outline"
+                    className="w-full border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
                     onClick={() => window.location.href = "/onboarding"}
-                    data-testid="button-monthly-plan"
+                    data-testid="button-free-plan"
                   >
-                    Try 2 Weeks Free
+                    Get Started Free
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Yearly Plan - Popular */}
+            {/* Pro Plan - Popular */}
             <Card className="bg-white border-2 border-primary shadow-card hover-lift relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <div className="bg-primary text-white px-4 py-1 rounded-full text-sm font-medium">
                   Most Popular
                 </div>
               </div>
-              <CardContent className="p-8">
+              <CardContent className="p-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Yearly</h3>
-                  <div className="mb-2">
-                    <span className="text-3xl font-bold text-gray-900">{prices[currency].yearly}</span>
-                    <span className="text-gray-500 text-sm">/year</span>
-                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Pro</h3>
                   <div className="mb-6">
-                    <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
-                      Save {prices[currency].savings}
-                    </span>
+                    <span className="text-3xl font-bold text-gray-900">{prices[currency].pro.monthly}</span>
+                    <span className="text-gray-500 text-sm">/month</span>
                   </div>
                   
                   <ul className="space-y-3 mb-8 text-left">
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Unlimited micro-lessons</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Learn around your interests</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Smart spaced repetition</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Multiple video & scenario based lessons per day</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Progress tracking</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Offline mode</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">All languages</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Streak insurance + "super reminders"</span>
                     </li>
                     <li className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Priority support</span>
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Custom lesson notifications</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Mobile app for continuous learning</span>
                     </li>
                   </ul>
                   
@@ -519,9 +533,54 @@ export default function Landing() {
                     size="lg" 
                     className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
                     onClick={() => window.location.href = "/onboarding"}
-                    data-testid="button-yearly-plan"
+                    data-testid="button-pro-plan"
                   >
-                    Try 2 Weeks Free
+                    Start Pro
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Plus Plan */}
+            <Card className="bg-white border border-gray-200 shadow-card hover-lift relative">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Plus</h3>
+                  <div className="mb-6">
+                    <span className="text-3xl font-bold text-gray-900">{prices[currency].plus.monthly}</span>
+                    <span className="text-gray-500 text-sm">/month</span>
+                  </div>
+                  
+                  <ul className="space-y-3 mb-8 text-left">
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Everything in Pro, plus:</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Full multi-language unlock (Italian, Spanish, French, German, etc)</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">"Netflix Mode" → short stories / dialogues with interactive quizzes</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Early access to new features</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-600 text-sm">Join our tribe with a free t-shirt</span>
+                    </li>
+                  </ul>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium"
+                    onClick={() => window.location.href = "/onboarding"}
+                    data-testid="button-plus-plan"
+                  >
+                    Go Plus
                   </Button>
                 </div>
               </CardContent>
