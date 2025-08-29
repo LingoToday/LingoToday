@@ -481,7 +481,7 @@ export default function Landing() {
                     onClick={() => window.location.href = "/onboarding"}
                     data-testid="button-free-plan"
                   >
-                    Get Started Free
+                    Join For Free
                   </Button>
                 </div>
               </CardContent>
@@ -535,7 +535,7 @@ export default function Landing() {
                     onClick={() => window.location.href = "/onboarding"}
                     data-testid="button-pro-plan"
                   >
-                    Start Pro
+                    Join For Free
                   </Button>
                 </div>
               </CardContent>
@@ -580,7 +580,7 @@ export default function Landing() {
                     onClick={() => window.location.href = "/onboarding"}
                     data-testid="button-plus-plan"
                   >
-                    Go Plus
+                    Join For Free
                   </Button>
                 </div>
               </CardContent>
