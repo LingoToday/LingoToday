@@ -93,8 +93,6 @@ export default function Landing() {
                 data-testid="button-hero-trial"
               >Try For Free</Button>
             </div>
-            
-            <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">Start learning for free to celebrate our launch! No Credit Card Required.</p>
           </div>
 
           {/* Right side - Image */}
