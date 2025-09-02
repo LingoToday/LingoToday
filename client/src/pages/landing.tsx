@@ -572,9 +572,7 @@ export default function Landing() {
             </Card>
           </div>
 
-          <p className="text-center text-gray-500 text-sm mt-8">
-            Free to start • No credit card required • Cancel anytime
-          </p>
+          <p className="text-center text-gray-500 text-sm mt-8">No credit card required • Cancel anytime</p>
         </div>
 
         {/* Final CTA */}
