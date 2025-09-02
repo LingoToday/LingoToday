@@ -79,7 +79,7 @@ export default function Landing() {
             
             <div className="mb-8 max-w-3xl lg:max-w-none">
               <div className="text-xl text-gray-600 space-y-4">
-                <p>Short micro lessons delivered by notifications to your laptop or phone. Using learning methods backed by science.</p>
+                <p>Micro lessons delivered by notifications to your laptop or phone. Using the official Common European Framework of Reference for Languages courses.</p>
               </div>
             </div>
             
