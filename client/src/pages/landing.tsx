@@ -396,19 +396,6 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Launch Offer Section */}
-        <div className="mb-16">
-          <div className="text-center bg-primary/5 rounded-2xl p-12 border border-primary/20">
-            <h3 className="md:text-4xl font-bold text-gray-900 mb-6 text-[30px]">Start learning for free as part of our launch offer!</h3>
-            <Button 
-              size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full text-[13px]"
-              onClick={() => window.location.href = "/onboarding"}
-              data-testid="button-launch-offer"
-            >Try For Free</Button>
-          </div>
-        </div>
-
         {/* Pricing Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
