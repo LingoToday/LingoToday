@@ -80,18 +80,18 @@ export default function AnalyticsPage() {
   // Process data for different chart types
   const chartData = analyticsData?.pageViews?.map(item => ({
     date: format(new Date(item.date), "MMM dd"),
-    views: item.count,
+    views: parseInt(String(item.count)) || 0,
   })) || [];
 
   const pageBreakdownData = analyticsData?.pageBreakdown?.map((item, index) => ({
     name: item.page === "/" ? "Home" : item.page.replace(/^\//, "").replace(/-/g, " "),
-    value: item.count,
+    value: parseInt(String(item.count)) || 0,
     page: item.page,
     fill: CHART_COLORS[index % CHART_COLORS.length],
   })) || [];
 
-  // Calculate totals
-  const totalViews = analyticsData?.pageViews?.reduce((sum, item) => sum + item.count, 0) || 0;
+  // Calculate totals - ensure numbers are properly converted
+  const totalViews = analyticsData?.pageViews?.reduce((sum, item) => sum + (parseInt(String(item.count)) || 0), 0) || 0;
   const totalPages = uniquePages.length;
   const avgViewsPerDay = chartData.length > 0 ? Math.round(totalViews / chartData.length) : 0;
 
