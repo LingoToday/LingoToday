@@ -77,34 +77,78 @@ interface CourseJsonData {
   };
 }
 
-function SimpleCourseViewer({ 
-  course 
+function JsonCourseViewer({ 
+  language,
+  courseNumber 
 }: { 
-  course: any; 
+  language: string;
+  courseNumber: number; 
 }) {
+  const { data: courseData, isLoading, error } = useQuery({
+    queryKey: ['/api/admin/simple-course', language, courseNumber],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/simple-course/${language}/${courseNumber}`, {
+        credentials: 'same-origin'
+      });
+      return response.json();
+    },
+    retry: 1
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center py-2">
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
+        <span className="text-sm text-gray-600 dark:text-gray-300">Loading JSON content...</span>
+      </div>
+    );
+  }
+
+  if (error || !courseData?.items?.length) {
+    return (
+      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+        {courseData?.message || 'No JSON course content available'}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        Course Content ({course.lessons.length} lessons in database)
+        JSON Course Content: {courseData.courseTitle}
       </div>
       
       <div className="max-h-60 overflow-y-auto space-y-1">
-        {course.lessons.map((lesson: any, index: number) => (
+        {courseData.items.map((item: any) => (
           <div 
-            key={lesson.id} 
-            className="flex items-center justify-between py-1.5 px-2 rounded text-xs bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-400"
+            key={item.id} 
+            className={`flex items-center justify-between py-1.5 px-2 rounded text-xs ${
+              item.type === 'lesson' 
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-400' 
+                : 'bg-orange-50 dark:bg-orange-900/20 border-l-2 border-l-orange-400'
+            }`}
           >
             <div className="flex items-center gap-2">
-              <span className="font-mono text-gray-500 dark:text-gray-400 min-w-[3rem]">
-                #{lesson.lessonNumber}
+              <span className="font-mono text-gray-500 dark:text-gray-400 min-w-[4rem]">
+                {item.id}
               </span>
-              <span className="text-blue-700 dark:text-blue-300">
-                {lesson.title}
+              <span className={item.type === 'lesson' ? 'text-blue-700 dark:text-blue-300' : 'text-orange-700 dark:text-orange-300'}>
+                {item.title}
               </span>
             </div>
-            <Badge variant="default" className="text-xs">
-              Lesson
-            </Badge>
+            <div className="flex items-center gap-2">
+              {item.questions && (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {item.questions} questions
+                </span>
+              )}
+              <Badge 
+                variant={item.type === 'lesson' ? "default" : "secondary"}
+                className="text-xs"
+              >
+                {item.type === 'lesson' ? 'Lesson' : 'Review'}
+              </Badge>
+            </div>
           </div>
         ))}
       </div>
@@ -247,10 +291,13 @@ export default function AdminPage() {
                                 <div className="mt-3">
                                   <details className="text-sm">
                                     <summary className="cursor-pointer font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                                      View Course Lessons ({course.lessons.length} lessons)
+                                      View JSON Course Content (Lessons & Reviews)
                                     </summary>
                                     <div className="mt-3">
-                                      <SimpleCourseViewer course={course} />
+                                      <JsonCourseViewer 
+                                        language={languageData.language.code}
+                                        courseNumber={course.courseNumber} 
+                                      />
                                     </div>
                                   </details>
                                 </div>

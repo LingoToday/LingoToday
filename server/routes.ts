@@ -1885,133 +1885,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get course JSON structure for admin view
-  app.get('/api/admin/course-json/:language/:courseNumber', isAuthenticated, async (req, res) => {
+  // Simple course structure viewer - shows lessons and reviews in sequence
+  app.get('/api/admin/simple-course/:language/:courseNumber', isAuthenticated, async (req, res) => {
     try {
       const { language, courseNumber } = req.params;
       
-      // Construct file path based on language and course number
-      let courseFileName: string;
-      if (language === 'spanish' || language === 'es') {
-        courseFileName = `spanish_course${courseNumber}.json`;
-      } else if (language === 'german' || language === 'de') {
-        courseFileName = `german_course${courseNumber}.json`;
-      } else if (language === 'french' || language === 'fr') {
-        courseFileName = `french_course${courseNumber}.json`;
-      } else if (language === 'italian' || language === 'it') {
-        // Map Italian course numbers to the actual filenames used in seeding
-        const italianCourseFiles: { [key: string]: string } = {
-          '1': 'Italian_course1_greetings_with_inline_reviews_1756914297318.json',
-          '2': 'italian_course2_introductions_with_inline_reviews_1756914297319.json',
-          '3': 'italian_course3_essential_courtesy_with_inline_reviews_q4_1756914955271.json',
-          '4': 'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756914955272.json',
-          '5': 'italian_course5_time_date_with_inline_reviews_q4_1756924425578.json',
-          '6': 'italian_course6_travel_basics_with_inline_reviews_q4_1756895270936.json',
-          '7': 'italian_course7_describing_things_with_inline_reviews_q4_1756896700949.json',
-          '8': 'italian_course8_weather_and_seasons_with_inline_reviews_q4_1756898173198.json',
-          '9': 'italian_course9_food_and_drinks_with_inline_reviews_q4_v2_1756898433747.json',
-          '10': 'italian_course10_directions_and_places_with_inline_reviews_q4_1756899105692.json',
-          '11': 'Italian_beginner_course11_shopping_full_1755080022546.json',
-          '12': 'Italian_beginner_course12_expressing_likes_dislikes_full_1755080022546.json',
-          '13': 'Italian_beginner_course13_basic_grammar_essentials_full_1755080022546.json'
-        };
-        courseFileName = italianCourseFiles[courseNumber];
-        if (!courseFileName) {
-          return res.status(404).json({ 
-            message: `Italian course ${courseNumber} not found`,
-            availableCourses: Object.keys(italianCourseFiles)
-          });
-        }
-      } else {
-        // Fallback to old naming convention
-        courseFileName = `course${courseNumber}.json`;
+      // Only support Italian for now
+      if (language !== 'it') {
+        return res.json({ items: [], message: `Simple viewer only supports Italian courses` });
+      }
+
+      // Map Italian course numbers to filenames
+      const italianCourseFiles: { [key: string]: string } = {
+        '1': 'Italian_course1_greetings_with_inline_reviews_1756914297318.json',
+        '2': 'italian_course2_introductions_with_inline_reviews_1756914297319.json',
+        '3': 'italian_course3_essential_courtesy_with_inline_reviews_q4_1756914955271.json',
+        '4': 'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756914955272.json',
+        '5': 'italian_course5_time_date_with_inline_reviews_q4_1756924425578.json',
+        '6': 'italian_course6_travel_basics_with_inline_reviews_q4_1756895270936.json',
+        '7': 'italian_course7_describing_things_with_inline_reviews_q4_1756896700949.json',
+        '8': 'italian_course8_weather_and_seasons_with_inline_reviews_q4_1756898173198.json',
+        '9': 'italian_course9_food_and_drinks_with_inline_reviews_q4_v2_1756898433747.json',
+        '10': 'italian_course10_directions_and_places_with_inline_reviews_q4_1756899105692.json',
+        '11': 'Italian_beginner_course11_shopping_full_1755080022546.json',
+        '12': 'Italian_beginner_course12_expressing_likes_dislikes_full_1755080022546.json',
+        '13': 'Italian_beginner_course13_basic_grammar_essentials_full_1755080022546.json'
+      };
+      
+      const courseFileName = italianCourseFiles[courseNumber];
+      if (!courseFileName) {
+        return res.json({ items: [], message: `Course ${courseNumber} not found` });
       }
       
       const coursePath = path.join(process.cwd(), 'attached_assets', courseFileName);
-      
       if (!fs.existsSync(coursePath)) {
-        return res.status(404).json({ 
-          message: `Course file not found: ${courseFileName}`,
-          requestedPath: coursePath,
-          language: language,
-          courseNumber: courseNumber
-        });
+        return res.json({ items: [], message: `Course file not found` });
       }
       
       const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
       const courseKey = `course${courseNumber}`;
       const course = courseData[courseKey];
       
-      if (!course || !course.lessons) {
-        return res.status(404).json({ 
-          message: 'Course data not found in JSON structure',
-          availableKeys: Object.keys(courseData),
-          expectedKey: courseKey,
-          courseDataStructure: course ? 'Course found but no lessons' : 'Course not found'
-        });
+      if (!course?.lessons) {
+        return res.json({ items: [], message: `Course structure not found` });
       }
       
-      // Parse and organize lessons and reviews
+      // Get all lesson and review keys
       const allKeys = Object.keys(course.lessons);
-      const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
-        const numA = parseInt(a.replace('lesson', ''));
-        const numB = parseInt(b.replace('lesson', ''));
+      const items = allKeys.map(key => ({
+        id: key,
+        type: key.startsWith('lesson') ? 'lesson' : 'review',
+        title: course.lessons[key].title || key,
+        questions: key.startsWith('review') ? (course.lessons[key].questions?.length || 0) : undefined
+      }));
+      
+      // Sort to show lessons and reviews in natural order
+      items.sort((a, b) => {
+        if (a.type !== b.type) {
+          // If mixing lessons and reviews, sort by their natural order in the course
+          return a.id.localeCompare(b.id);
+        }
+        // Extract numbers for proper sorting
+        const numA = parseInt(a.id.replace(/[^0-9]/g, '')) || 999;
+        const numB = parseInt(b.id.replace(/[^0-9]/g, '')) || 999;
         return numA - numB;
       });
-      const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
-        const numA = parseInt(a.replace('review', '')) || 999;
-        const numB = parseInt(b.replace('review', '')) || 999;
-        return numA - numB;
-      });
-      
-      // Create ordered list with lessons and reviews interleaved
-      const orderedItems = [];
-      let lessonIndex = 0;
-      let reviewIndex = 0;
-      
-      while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
-        // Add up to 4 lessons
-        for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
-          const lessonKey = lessons[lessonIndex++];
-          orderedItems.push({
-            id: lessonKey,
-            type: 'lesson',
-            title: course.lessons[lessonKey].title,
-            data: course.lessons[lessonKey]
-          });
-        }
-        
-        // Add review if available (after every 4 lessons)
-        if (reviewIndex < reviews.length && lessonIndex > 0 && lessonIndex % 4 === 0) {
-          const reviewKey = reviews[reviewIndex++];
-          orderedItems.push({
-            id: reviewKey,
-            type: 'review',
-            title: course.lessons[reviewKey].title,
-            questions: course.lessons[reviewKey].questions?.length || 0,
-            data: course.lessons[reviewKey]
-          });
-        }
-      }
       
       res.json({
         courseTitle: course.title,
-        courseDescription: course.description,
-        items: orderedItems,
-        summary: {
-          totalLessons: lessons.length,
-          totalReviews: reviews.length,
-          totalItems: orderedItems.length
-        }
+        items: items
       });
     } catch (error) {
-      console.error('Error fetching course JSON:', error);
-      res.status(500).json({ 
-        message: 'Failed to fetch course structure',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        language: req.params.language,
-        courseNumber: req.params.courseNumber
-      });
+      console.error('Error fetching simple course structure:', error);
+      res.json({ items: [], message: 'Error loading course' });
     }
   });
 
