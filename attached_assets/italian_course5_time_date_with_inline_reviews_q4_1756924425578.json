@@ -1,0 +1,2654 @@
+{
+  "course5": {
+    "title": "Time and Date",
+    "description": "Each lesson is a short micro-burst using step1 (introduce), step2 (typing recall), and step3 (listening/comprehension). Days and months are separate lessons; time and date phrases are each their own lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "italian": "lunedì",
+          "english": "Monday",
+          "audio": "lunedì",
+          "note": "loo-neh-DEE; days aren’t capitalized; week starts on Monday.",
+          "mcq": {
+            "question": "Which phrase means 'Monday'?",
+            "options": [
+              "lunedì",
+              "martedì",
+              "mercoledì",
+              "giovedì"
+            ],
+            "answer": "lunedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "l____ì  = Monday",
+          "expected_answer": "lunedì",
+          "alt_answers": [
+            "Lunedì",
+            "lunedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lunedì",
+          "options": [
+            "Monday.",
+            "Tuesday.",
+            "Wednesday.",
+            "Thursday."
+          ],
+          "answer": "Monday."
+        }
+      },
+      "lesson2": {
+        "title": "Tuesday",
+        "step1": {
+          "italian": "martedì",
+          "english": "Tuesday",
+          "audio": "martedì",
+          "note": "mar-teh-DEE; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Tuesday'?",
+            "options": [
+              "martedì",
+              "lunedì",
+              "mercoledì",
+              "giovedì"
+            ],
+            "answer": "martedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_____ì  = Tuesday",
+          "expected_answer": "martedì",
+          "alt_answers": [
+            "Martedì",
+            "martedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "martedì",
+          "options": [
+            "Tuesday.",
+            "Monday.",
+            "Wednesday.",
+            "Thursday."
+          ],
+          "answer": "Tuesday."
+        }
+      },
+      "lesson3": {
+        "title": "Wednesday",
+        "step1": {
+          "italian": "mercoledì",
+          "english": "Wednesday",
+          "audio": "mercoledì",
+          "note": "mer-coh-leh-DEE; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Wednesday'?",
+            "options": [
+              "mercoledì",
+              "lunedì",
+              "martedì",
+              "giovedì"
+            ],
+            "answer": "mercoledì"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_______ì  = Wednesday",
+          "expected_answer": "mercoledì",
+          "alt_answers": [
+            "Mercoledì",
+            "mercoledì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mercoledì",
+          "options": [
+            "Wednesday.",
+            "Monday.",
+            "Tuesday.",
+            "Thursday."
+          ],
+          "answer": "Wednesday."
+        }
+      },
+      "lesson4": {
+        "title": "Thursday",
+        "step1": {
+          "italian": "giovedì",
+          "english": "Thursday",
+          "audio": "giovedì",
+          "note": "jo-veh-DEE; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Thursday'?",
+            "options": [
+              "giovedì",
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "giovedì"
+          }
+        },
+        "step2": {
+          "type_prompt": "g_____ì  = Thursday",
+          "expected_answer": "giovedì",
+          "alt_answers": [
+            "Giovedì",
+            "giovedì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "giovedì",
+          "options": [
+            "Thursday.",
+            "Monday.",
+            "Tuesday.",
+            "Wednesday."
+          ],
+          "answer": "Thursday."
+        }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'Monday'?",
+            "options": [
+              "lunedì",
+              "martedì",
+              "mercoledì",
+              "giovedì"
+            ],
+            "answer": "lunedì"
+          },
+          {
+            "prompt": "What does this mean in English: lunedì",
+            "options": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday"
+            ],
+            "answer": "Monday"
+          },
+          {
+            "prompt": "Which word means 'Tuesday'?",
+            "options": [
+              "martedì",
+              "lunedì",
+              "mercoledì",
+              "giovedì"
+            ],
+            "answer": "martedì"
+          },
+          {
+            "prompt": "What does this mean in English: martedì",
+            "options": [
+              "Tuesday",
+              "Monday",
+              "Wednesday",
+              "Thursday"
+            ],
+            "answer": "Tuesday"
+          },
+          {
+            "prompt": "Which word means 'Wednesday'?",
+            "options": [
+              "mercoledì",
+              "lunedì",
+              "martedì",
+              "giovedì"
+            ],
+            "answer": "mercoledì"
+          },
+          {
+            "prompt": "What does this mean in English: mercoledì",
+            "options": [
+              "Wednesday",
+              "Monday",
+              "Tuesday",
+              "Thursday"
+            ],
+            "answer": "Wednesday"
+          },
+          {
+            "prompt": "Which word means 'Thursday'?",
+            "options": [
+              "giovedì",
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "giovedì"
+          },
+          {
+            "prompt": "What does this mean in English: giovedì",
+            "options": [
+              "Thursday",
+              "Monday",
+              "Tuesday",
+              "Wednesday"
+            ],
+            "answer": "Thursday"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson5": {
+        "title": "Friday",
+        "step1": {
+          "italian": "venerdì",
+          "english": "Friday",
+          "audio": "venerdì",
+          "note": "veh-ner-DEE; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Friday'?",
+            "options": [
+              "venerdì",
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "venerdì"
+          }
+        },
+        "step2": {
+          "type_prompt": "v_____ì  = Friday",
+          "expected_answer": "venerdì",
+          "alt_answers": [
+            "Venerdì",
+            "venerdì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "venerdì",
+          "options": [
+            "Friday.",
+            "Monday.",
+            "Tuesday.",
+            "Wednesday."
+          ],
+          "answer": "Friday."
+        }
+      },
+      "lesson6": {
+        "title": "Saturday",
+        "step1": {
+          "italian": "sabato",
+          "english": "Saturday",
+          "audio": "sabato",
+          "note": "SAH-bah-toh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Saturday'?",
+            "options": [
+              "sabato",
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "sabato"
+          }
+        },
+        "step2": {
+          "type_prompt": "s____o  = Saturday",
+          "expected_answer": "sabato",
+          "alt_answers": [
+            "Sabato",
+            "sabato"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sabato",
+          "options": [
+            "Saturday.",
+            "Monday.",
+            "Tuesday.",
+            "Wednesday."
+          ],
+          "answer": "Saturday."
+        }
+      },
+      "lesson7": {
+        "title": "Sunday",
+        "step1": {
+          "italian": "domenica",
+          "english": "Sunday",
+          "audio": "domenica",
+          "note": "doh-MEH-nee-kah; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'Sunday'?",
+            "options": [
+              "domenica",
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "domenica"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______a  = Sunday",
+          "expected_answer": "domenica",
+          "alt_answers": [
+            "Domenica",
+            "domenica"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "domenica",
+          "options": [
+            "Sunday.",
+            "Monday.",
+            "Tuesday.",
+            "Wednesday."
+          ],
+          "answer": "Sunday."
+        }
+      },
+      "lesson8": {
+        "title": "January",
+        "step1": {
+          "italian": "gennaio",
+          "english": "January",
+          "audio": "gennaio",
+          "note": "jen-NAH-yoh; months aren’t capitalized; use 'a/in' for 'in [month]': a settembre.",
+          "mcq": {
+            "question": "Which phrase means 'January'?",
+            "options": [
+              "gennaio",
+              "febbraio",
+              "marzo",
+              "aprile"
+            ],
+            "answer": "gennaio"
+          }
+        },
+        "step2": {
+          "type_prompt": "g_____o  = January",
+          "expected_answer": "gennaio",
+          "alt_answers": [
+            "Gennaio",
+            "gennaio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "gennaio",
+          "options": [
+            "January.",
+            "February.",
+            "March.",
+            "April."
+          ],
+          "answer": "January."
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'Friday'?",
+            "options": [
+              "venerdì",
+              "sabato",
+              "domenica",
+              "gennaio"
+            ],
+            "answer": "venerdì"
+          },
+          {
+            "prompt": "What does this mean in English: venerdì",
+            "options": [
+              "Friday",
+              "Saturday",
+              "Sunday",
+              "January"
+            ],
+            "answer": "Friday"
+          },
+          {
+            "prompt": "Which word means 'Saturday'?",
+            "options": [
+              "sabato",
+              "venerdì",
+              "domenica",
+              "gennaio"
+            ],
+            "answer": "sabato"
+          },
+          {
+            "prompt": "What does this mean in English: sabato",
+            "options": [
+              "Saturday",
+              "Friday",
+              "Sunday",
+              "January"
+            ],
+            "answer": "Saturday"
+          },
+          {
+            "prompt": "Which word means 'Sunday'?",
+            "options": [
+              "domenica",
+              "venerdì",
+              "sabato",
+              "gennaio"
+            ],
+            "answer": "domenica"
+          },
+          {
+            "prompt": "What does this mean in English: domenica",
+            "options": [
+              "Sunday",
+              "Friday",
+              "Saturday",
+              "January"
+            ],
+            "answer": "Sunday"
+          },
+          {
+            "prompt": "Which word means 'January'?",
+            "options": [
+              "gennaio",
+              "venerdì",
+              "sabato",
+              "domenica"
+            ],
+            "answer": "gennaio"
+          },
+          {
+            "prompt": "What does this mean in English: gennaio",
+            "options": [
+              "January",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "answer": "January"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson9": {
+        "title": "February",
+        "step1": {
+          "italian": "febbraio",
+          "english": "February",
+          "audio": "febbraio",
+          "note": "feb-BRAH-yoh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'February'?",
+            "options": [
+              "febbraio",
+              "gennaio",
+              "marzo",
+              "aprile"
+            ],
+            "answer": "febbraio"
+          }
+        },
+        "step2": {
+          "type_prompt": "f______o  = February",
+          "expected_answer": "febbraio",
+          "alt_answers": [
+            "Febbraio",
+            "febbraio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "febbraio",
+          "options": [
+            "February.",
+            "January.",
+            "March.",
+            "April."
+          ],
+          "answer": "February."
+        }
+      },
+      "lesson10": {
+        "title": "March",
+        "step1": {
+          "italian": "marzo",
+          "english": "March",
+          "audio": "marzo",
+          "note": "MAR-tsoh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'March'?",
+            "options": [
+              "marzo",
+              "gennaio",
+              "febbraio",
+              "aprile"
+            ],
+            "answer": "marzo"
+          }
+        },
+        "step2": {
+          "type_prompt": "m___o  = March",
+          "expected_answer": "marzo",
+          "alt_answers": [
+            "Marzo",
+            "marzo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "marzo",
+          "options": [
+            "March.",
+            "January.",
+            "February.",
+            "April."
+          ],
+          "answer": "March."
+        }
+      },
+      "lesson11": {
+        "title": "April",
+        "step1": {
+          "italian": "aprile",
+          "english": "April",
+          "audio": "aprile",
+          "note": "ah-PREE-leh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'April'?",
+            "options": [
+              "aprile",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "aprile"
+          }
+        },
+        "step2": {
+          "type_prompt": "a____e  = April",
+          "expected_answer": "aprile",
+          "alt_answers": [
+            "Aprile",
+            "aprile"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "aprile",
+          "options": [
+            "April.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "April."
+        }
+      },
+      "lesson12": {
+        "title": "May",
+        "step1": {
+          "italian": "maggio",
+          "english": "May",
+          "audio": "maggio",
+          "note": "MAJ-joh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'May'?",
+            "options": [
+              "maggio",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "maggio"
+          }
+        },
+        "step2": {
+          "type_prompt": "m____o  = May",
+          "expected_answer": "maggio",
+          "alt_answers": [
+            "Maggio",
+            "maggio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "maggio",
+          "options": [
+            "May.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "May."
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'February'?",
+            "options": [
+              "febbraio",
+              "marzo",
+              "aprile",
+              "maggio"
+            ],
+            "answer": "febbraio"
+          },
+          {
+            "prompt": "What does this mean in English: febbraio",
+            "options": [
+              "February",
+              "March",
+              "April",
+              "May"
+            ],
+            "answer": "February"
+          },
+          {
+            "prompt": "Which word means 'March'?",
+            "options": [
+              "marzo",
+              "febbraio",
+              "aprile",
+              "maggio"
+            ],
+            "answer": "marzo"
+          },
+          {
+            "prompt": "What does this mean in English: marzo",
+            "options": [
+              "March",
+              "February",
+              "April",
+              "May"
+            ],
+            "answer": "March"
+          },
+          {
+            "prompt": "Which word means 'April'?",
+            "options": [
+              "aprile",
+              "febbraio",
+              "marzo",
+              "maggio"
+            ],
+            "answer": "aprile"
+          },
+          {
+            "prompt": "What does this mean in English: aprile",
+            "options": [
+              "April",
+              "February",
+              "March",
+              "May"
+            ],
+            "answer": "April"
+          },
+          {
+            "prompt": "Which word means 'May'?",
+            "options": [
+              "maggio",
+              "febbraio",
+              "marzo",
+              "aprile"
+            ],
+            "answer": "maggio"
+          },
+          {
+            "prompt": "What does this mean in English: maggio",
+            "options": [
+              "May",
+              "February",
+              "March",
+              "April"
+            ],
+            "answer": "May"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson13": {
+        "title": "June",
+        "step1": {
+          "italian": "giugno",
+          "english": "June",
+          "audio": "giugno",
+          "note": "JOO-nyoh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'June'?",
+            "options": [
+              "giugno",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "giugno"
+          }
+        },
+        "step2": {
+          "type_prompt": "g____o  = June",
+          "expected_answer": "giugno",
+          "alt_answers": [
+            "Giugno",
+            "giugno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "giugno",
+          "options": [
+            "June.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "June."
+        }
+      },
+      "lesson14": {
+        "title": "July",
+        "step1": {
+          "italian": "luglio",
+          "english": "July",
+          "audio": "luglio",
+          "note": "LOO-lyoh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'July'?",
+            "options": [
+              "luglio",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "luglio"
+          }
+        },
+        "step2": {
+          "type_prompt": "l____o  = July",
+          "expected_answer": "luglio",
+          "alt_answers": [
+            "Luglio",
+            "luglio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "luglio",
+          "options": [
+            "July.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "July."
+        }
+      },
+      "lesson15": {
+        "title": "August",
+        "step1": {
+          "italian": "agosto",
+          "english": "August",
+          "audio": "agosto",
+          "note": "ah-GOHS-toh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'August'?",
+            "options": [
+              "agosto",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "agosto"
+          }
+        },
+        "step2": {
+          "type_prompt": "a____o  = August",
+          "expected_answer": "agosto",
+          "alt_answers": [
+            "Agosto",
+            "agosto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "agosto",
+          "options": [
+            "August.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "August."
+        }
+      },
+      "lesson16": {
+        "title": "September",
+        "step1": {
+          "italian": "settembre",
+          "english": "September",
+          "audio": "settembre",
+          "note": "set-TEM-breh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'September'?",
+            "options": [
+              "settembre",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "settembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "s_______e  = September",
+          "expected_answer": "settembre",
+          "alt_answers": [
+            "Settembre",
+            "settembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "settembre",
+          "options": [
+            "September.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "September."
+        }
+      },
+      "review4": {
+        "title": "Review: Lessons 13–16",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'June'?",
+            "options": [
+              "giugno",
+              "luglio",
+              "agosto",
+              "settembre"
+            ],
+            "answer": "giugno"
+          },
+          {
+            "prompt": "What does this mean in English: giugno",
+            "options": [
+              "June",
+              "July",
+              "August",
+              "September"
+            ],
+            "answer": "June"
+          },
+          {
+            "prompt": "Which word means 'July'?",
+            "options": [
+              "luglio",
+              "giugno",
+              "agosto",
+              "settembre"
+            ],
+            "answer": "luglio"
+          },
+          {
+            "prompt": "What does this mean in English: luglio",
+            "options": [
+              "July",
+              "June",
+              "August",
+              "September"
+            ],
+            "answer": "July"
+          },
+          {
+            "prompt": "Which word means 'August'?",
+            "options": [
+              "agosto",
+              "giugno",
+              "luglio",
+              "settembre"
+            ],
+            "answer": "agosto"
+          },
+          {
+            "prompt": "What does this mean in English: agosto",
+            "options": [
+              "August",
+              "June",
+              "July",
+              "September"
+            ],
+            "answer": "August"
+          },
+          {
+            "prompt": "Which word means 'September'?",
+            "options": [
+              "settembre",
+              "giugno",
+              "luglio",
+              "agosto"
+            ],
+            "answer": "settembre"
+          },
+          {
+            "prompt": "What does this mean in English: settembre",
+            "options": [
+              "September",
+              "June",
+              "July",
+              "August"
+            ],
+            "answer": "September"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson17": {
+        "title": "October",
+        "step1": {
+          "italian": "ottobre",
+          "english": "October",
+          "audio": "ottobre",
+          "note": "ot-TOH-breh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'October'?",
+            "options": [
+              "ottobre",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "ottobre"
+          }
+        },
+        "step2": {
+          "type_prompt": "o_____e  = October",
+          "expected_answer": "ottobre",
+          "alt_answers": [
+            "Ottobre",
+            "ottobre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ottobre",
+          "options": [
+            "October.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "October."
+        }
+      },
+      "lesson18": {
+        "title": "November",
+        "step1": {
+          "italian": "novembre",
+          "english": "November",
+          "audio": "novembre",
+          "note": "noh-VEM-breh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'November'?",
+            "options": [
+              "novembre",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "novembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "n______e  = November",
+          "expected_answer": "novembre",
+          "alt_answers": [
+            "Novembre",
+            "novembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "novembre",
+          "options": [
+            "November.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "November."
+        }
+      },
+      "lesson19": {
+        "title": "December",
+        "step1": {
+          "italian": "dicembre",
+          "english": "December",
+          "audio": "dicembre",
+          "note": "dee-CHEM-breh; not capitalized.",
+          "mcq": {
+            "question": "Which phrase means 'December'?",
+            "options": [
+              "dicembre",
+              "gennaio",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "dicembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______e  = December",
+          "expected_answer": "dicembre",
+          "alt_answers": [
+            "Dicembre",
+            "dicembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dicembre",
+          "options": [
+            "December.",
+            "January.",
+            "February.",
+            "March."
+          ],
+          "answer": "December."
+        }
+      },
+      "lesson20": {
+        "title": "What time is it? (Che ora è?)",
+        "step1": {
+          "italian": "Che ora è?",
+          "english": "What time is it? (Che ora è?)",
+          "audio": "Che ora è?",
+          "note": "keh OR-ah EH — Use to ask the time (singular hour).",
+          "mcq": {
+            "question": "Which phrase means 'What time is it? (Che ora è?)'?",
+            "options": [
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una.",
+              "Sono le due."
+            ],
+            "answer": "Che ora è?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Che ora è?  = What time is it? (Che ora è?)",
+          "expected_answer": "Che ora è?",
+          "alt_answers": [
+            "che ora è?",
+            "Che ora è?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Che ora è?",
+          "options": [
+            "What time is it?",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "What time is it?"
+        }
+      },
+      "review5": {
+        "title": "Review: Lessons 17–20",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'October'?",
+            "options": [
+              "ottobre",
+              "novembre",
+              "dicembre",
+              "Che ora è?"
+            ],
+            "answer": "ottobre"
+          },
+          {
+            "prompt": "What does this mean in English: ottobre",
+            "options": [
+              "October",
+              "November",
+              "December",
+              "What time is it? (Che ora è?)"
+            ],
+            "answer": "October"
+          },
+          {
+            "prompt": "Which word means 'November'?",
+            "options": [
+              "novembre",
+              "ottobre",
+              "dicembre",
+              "Che ora è?"
+            ],
+            "answer": "novembre"
+          },
+          {
+            "prompt": "What does this mean in English: novembre",
+            "options": [
+              "November",
+              "October",
+              "December",
+              "What time is it? (Che ora è?)"
+            ],
+            "answer": "November"
+          },
+          {
+            "prompt": "Which word means 'December'?",
+            "options": [
+              "dicembre",
+              "ottobre",
+              "novembre",
+              "Che ora è?"
+            ],
+            "answer": "dicembre"
+          },
+          {
+            "prompt": "What does this mean in English: dicembre",
+            "options": [
+              "December",
+              "October",
+              "November",
+              "What time is it? (Che ora è?)"
+            ],
+            "answer": "December"
+          },
+          {
+            "prompt": "Which phrase means 'What time is it? (Che ora è?)'?",
+            "options": [
+              "Che ora è?",
+              "ottobre",
+              "novembre",
+              "dicembre"
+            ],
+            "answer": "Che ora è?"
+          },
+          {
+            "prompt": "What does this mean in English: Che ora è?",
+            "options": [
+              "What time is it? (Che ora è?)",
+              "October",
+              "November",
+              "December"
+            ],
+            "answer": "What time is it? (Che ora è?)"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson21": {
+        "title": "What time is it? (Che ore sono?)",
+        "step1": {
+          "italian": "Che ore sono?",
+          "english": "What time is it? (Che ore sono?)",
+          "audio": "Che ore sono?",
+          "note": "keh OH-reh SO-noh — Alternate way to ask the time (plural hours).",
+          "mcq": {
+            "question": "Which phrase means 'What time is it? (Che ore sono?)'?",
+            "options": [
+              "Che ore sono?",
+              "Che ora è?",
+              "È l'una.",
+              "Sono le due."
+            ],
+            "answer": "Che ore sono?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Che ore s__o?  = What time is it? (Che ore sono?)",
+          "expected_answer": "Che ore sono?",
+          "alt_answers": [
+            "che ore sono?",
+            "Che ore sono?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Che ore sono?",
+          "options": [
+            "What time is it?",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "What time is it?"
+        }
+      },
+      "lesson22": {
+        "title": "It’s 1:00",
+        "step1": {
+          "italian": "È l'una.",
+          "english": "It’s 1:00",
+          "audio": "È l'una.",
+          "note": "eh LOON-ah — Use 'È' for 1 o’clock because 'ora' is singular.",
+          "mcq": {
+            "question": "Which phrase means 'It’s 1:00'?",
+            "options": [
+              "È l'una.",
+              "Che ora è?",
+              "Che ore sono?",
+              "Sono le due."
+            ],
+            "answer": "È l'una."
+          }
+        },
+        "step2": {
+          "type_prompt": "È l___a.  = It’s 1:00",
+          "expected_answer": "È l'una.",
+          "alt_answers": [
+            "è l'una.",
+            "È l'una."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È l'una.",
+          "options": [
+            "It’s one o’clock.",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "It’s one o’clock."
+        }
+      },
+      "lesson23": {
+        "title": "It’s 2:00",
+        "step1": {
+          "italian": "Sono le due.",
+          "english": "It’s 2:00",
+          "audio": "Sono le due.",
+          "note": "SO-noh leh DOO-eh — Use 'Sono le' for all hours except 1 o’clock.",
+          "mcq": {
+            "question": "Which phrase means 'It’s 2:00'?",
+            "options": [
+              "Sono le due.",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "Sono le due."
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o le due.  = It’s 2:00",
+          "expected_answer": "Sono le due.",
+          "alt_answers": [
+            "sono le due.",
+            "Sono le due."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le due.",
+          "options": [
+            "It’s two o’clock.",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "It’s two o’clock."
+        }
+      },
+      "lesson24": {
+        "title": "It’s noon",
+        "step1": {
+          "italian": "È mezzogiorno.",
+          "english": "It’s noon",
+          "audio": "È mezzogiorno.",
+          "note": "12:00 pm.",
+          "mcq": {
+            "question": "Which phrase means 'It’s noon'?",
+            "options": [
+              "È mezzogiorno.",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "È mezzogiorno."
+          }
+        },
+        "step2": {
+          "type_prompt": "È m_________o.  = It’s noon",
+          "expected_answer": "È mezzogiorno.",
+          "alt_answers": [
+            "è mezzogiorno.",
+            "È mezzogiorno."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È mezzogiorno.",
+          "options": [
+            "It’s noon.",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "It’s noon."
+        }
+      },
+      "review6": {
+        "title": "Review: Lessons 21–24",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'What time is it? (Che ore sono?)'?",
+            "options": [
+              "Che ore sono?",
+              "È l'una.",
+              "Sono le due.",
+              "È mezzogiorno."
+            ],
+            "answer": "Che ore sono?"
+          },
+          {
+            "prompt": "What does this mean in English: Che ore sono?",
+            "options": [
+              "What time is it? (Che ore sono?)",
+              "It’s 1:00",
+              "It’s 2:00",
+              "It’s noon"
+            ],
+            "answer": "What time is it? (Che ore sono?)"
+          },
+          {
+            "prompt": "Which phrase means 'It’s 1:00'?",
+            "options": [
+              "È l'una.",
+              "Che ore sono?",
+              "Sono le due.",
+              "È mezzogiorno."
+            ],
+            "answer": "È l'una."
+          },
+          {
+            "prompt": "What does this mean in English: È l'una.",
+            "options": [
+              "It’s 1:00",
+              "What time is it? (Che ore sono?)",
+              "It’s 2:00",
+              "It’s noon"
+            ],
+            "answer": "It’s 1:00"
+          },
+          {
+            "prompt": "Which phrase means 'It’s 2:00'?",
+            "options": [
+              "Sono le due.",
+              "Che ore sono?",
+              "È l'una.",
+              "È mezzogiorno."
+            ],
+            "answer": "Sono le due."
+          },
+          {
+            "prompt": "What does this mean in English: Sono le due.",
+            "options": [
+              "It’s 2:00",
+              "What time is it? (Che ore sono?)",
+              "It’s 1:00",
+              "It’s noon"
+            ],
+            "answer": "It’s 2:00"
+          },
+          {
+            "prompt": "Which phrase means 'It’s noon'?",
+            "options": [
+              "È mezzogiorno.",
+              "Che ore sono?",
+              "È l'una.",
+              "Sono le due."
+            ],
+            "answer": "È mezzogiorno."
+          },
+          {
+            "prompt": "What does this mean in English: È mezzogiorno.",
+            "options": [
+              "It’s noon",
+              "What time is it? (Che ore sono?)",
+              "It’s 1:00",
+              "It’s 2:00"
+            ],
+            "answer": "It’s noon"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson25": {
+        "title": "It’s midnight",
+        "step1": {
+          "italian": "È mezzanotte.",
+          "english": "It’s midnight",
+          "audio": "È mezzanotte.",
+          "note": "12:00 am.",
+          "mcq": {
+            "question": "Which phrase means 'It’s midnight'?",
+            "options": [
+              "È mezzanotte.",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "È mezzanotte."
+          }
+        },
+        "step2": {
+          "type_prompt": "È m________e.  = It’s midnight",
+          "expected_answer": "È mezzanotte.",
+          "alt_answers": [
+            "è mezzanotte.",
+            "È mezzanotte."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È mezzanotte.",
+          "options": [
+            "It’s midnight.",
+            "It’s two o’clock.",
+            "What time is it?",
+            "It’s noon."
+          ],
+          "answer": "It’s midnight."
+        }
+      },
+      "lesson26": {
+        "title": "Quarter past",
+        "step1": {
+          "italian": "e un quarto",
+          "english": "Quarter past",
+          "audio": "e un quarto",
+          "note": "Attach after the hour: es. Sono le due e un quarto (2:15).",
+          "mcq": {
+            "question": "Which phrase means 'Quarter past'?",
+            "options": [
+              "e un quarto",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "e un quarto"
+          }
+        },
+        "step2": {
+          "type_prompt": "e un q____o  = Quarter past",
+          "expected_answer": "e un quarto",
+          "alt_answers": [
+            "e un quarto",
+            "E un quarto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le due e un quarto.",
+          "options": [
+            "It’s quarter past two.",
+            "It’s half past six.",
+            "It’s ten to three.",
+            "It’s noon."
+          ],
+          "answer": "It’s quarter past two."
+        }
+      },
+      "lesson27": {
+        "title": "Half past",
+        "step1": {
+          "italian": "e mezza",
+          "english": "Half past",
+          "audio": "e mezza",
+          "note": "Attach after the hour: es. Sono le sei e mezza (6:30).",
+          "mcq": {
+            "question": "Which phrase means 'Half past'?",
+            "options": [
+              "e mezza",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "e mezza"
+          }
+        },
+        "step2": {
+          "type_prompt": "e m___a  = Half past",
+          "expected_answer": "e mezza",
+          "alt_answers": [
+            "e mezza",
+            "E mezza"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le sei e mezza.",
+          "options": [
+            "It’s half past six.",
+            "It’s quarter past two.",
+            "It’s ten to three.",
+            "It’s midnight."
+          ],
+          "answer": "It’s half past six."
+        }
+      },
+      "lesson28": {
+        "title": "Minutes to the hour",
+        "step1": {
+          "italian": "meno [minuti]",
+          "english": "Minutes to the hour",
+          "audio": "meno [minuti]",
+          "note": "Use with next hour: es. Sono le tre meno dieci (2:50 → 10 to 3).",
+          "mcq": {
+            "question": "Which phrase means 'Minutes to the hour'?",
+            "options": [
+              "meno [minuti]",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "meno [minuti]"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__o [m____i]  = Minutes to the hour",
+          "expected_answer": "meno [minuti]",
+          "alt_answers": [
+            "meno [minuti]",
+            "Meno [minuti]"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le tre meno dieci.",
+          "options": [
+            "It’s ten to three.",
+            "It’s half past six.",
+            "It’s noon.",
+            "It’s midnight."
+          ],
+          "answer": "It’s ten to three."
+        }
+      },
+      "review7": {
+        "title": "Review: Lessons 25–28",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'It’s midnight'?",
+            "options": [
+              "È mezzanotte.",
+              "e un quarto",
+              "e mezza",
+              "meno [minuti]"
+            ],
+            "answer": "È mezzanotte."
+          },
+          {
+            "prompt": "What does this mean in English: È mezzanotte.",
+            "options": [
+              "It’s midnight",
+              "Quarter past",
+              "Half past",
+              "Minutes to the hour"
+            ],
+            "answer": "It’s midnight"
+          },
+          {
+            "prompt": "Which phrase means 'Quarter past'?",
+            "options": [
+              "e un quarto",
+              "È mezzanotte.",
+              "e mezza",
+              "meno [minuti]"
+            ],
+            "answer": "e un quarto"
+          },
+          {
+            "prompt": "What does this mean in English: e un quarto",
+            "options": [
+              "Quarter past",
+              "It’s midnight",
+              "Half past",
+              "Minutes to the hour"
+            ],
+            "answer": "Quarter past"
+          },
+          {
+            "prompt": "Which phrase means 'Half past'?",
+            "options": [
+              "e mezza",
+              "È mezzanotte.",
+              "e un quarto",
+              "meno [minuti]"
+            ],
+            "answer": "e mezza"
+          },
+          {
+            "prompt": "What does this mean in English: e mezza",
+            "options": [
+              "Half past",
+              "It’s midnight",
+              "Quarter past",
+              "Minutes to the hour"
+            ],
+            "answer": "Half past"
+          },
+          {
+            "prompt": "Which phrase means 'Minutes to the hour'?",
+            "options": [
+              "meno [minuti]",
+              "È mezzanotte.",
+              "e un quarto",
+              "e mezza"
+            ],
+            "answer": "meno [minuti]"
+          },
+          {
+            "prompt": "What does this mean in English: meno [minuti]",
+            "options": [
+              "Minutes to the hour",
+              "It’s midnight",
+              "Quarter past",
+              "Half past"
+            ],
+            "answer": "Minutes to the hour"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson29": {
+        "title": "AM phrase",
+        "step1": {
+          "italian": "di mattina",
+          "english": "AM phrase",
+          "audio": "di mattina",
+          "note": "Morning. Use with times for clarity.",
+          "mcq": {
+            "question": "Which phrase means 'AM phrase'?",
+            "options": [
+              "di mattina",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "di mattina"
+          }
+        },
+        "step2": {
+          "type_prompt": "di m_____a  = AM phrase",
+          "expected_answer": "di mattina",
+          "alt_answers": [
+            "di mattina",
+            "Di mattina"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le cinque di mattina.",
+          "options": [
+            "It’s 5 in the morning.",
+            "It’s 5 in the afternoon.",
+            "It’s 8 in the evening.",
+            "It’s midnight."
+          ],
+          "answer": "It’s 5 in the morning."
+        }
+      },
+      "lesson30": {
+        "title": "Afternoon phrase",
+        "step1": {
+          "italian": "di pomeriggio",
+          "english": "Afternoon phrase",
+          "audio": "di pomeriggio",
+          "note": "Afternoon.",
+          "mcq": {
+            "question": "Which phrase means 'Afternoon phrase'?",
+            "options": [
+              "di pomeriggio",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "di pomeriggio"
+          }
+        },
+        "step2": {
+          "type_prompt": "di p________o  = Afternoon phrase",
+          "expected_answer": "di pomeriggio",
+          "alt_answers": [
+            "di pomeriggio",
+            "Di pomeriggio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le cinque di pomeriggio.",
+          "options": [
+            "It’s 5 in the afternoon.",
+            "It’s 5 in the morning.",
+            "It’s 8 in the evening.",
+            "It’s midnight."
+          ],
+          "answer": "It’s 5 in the afternoon."
+        }
+      },
+      "lesson31": {
+        "title": "Evening phrase",
+        "step1": {
+          "italian": "di sera",
+          "english": "Evening phrase",
+          "audio": "di sera",
+          "note": "Evening.",
+          "mcq": {
+            "question": "Which phrase means 'Evening phrase'?",
+            "options": [
+              "di sera",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "di sera"
+          }
+        },
+        "step2": {
+          "type_prompt": "di s__a  = Evening phrase",
+          "expected_answer": "di sera",
+          "alt_answers": [
+            "di sera",
+            "Di sera"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le otto di sera.",
+          "options": [
+            "It’s 8 in the evening.",
+            "It’s 5 in the morning.",
+            "It’s 5 in the afternoon.",
+            "It’s midnight."
+          ],
+          "answer": "It’s 8 in the evening."
+        }
+      },
+      "lesson32": {
+        "title": "Night phrase",
+        "step1": {
+          "italian": "di notte",
+          "english": "Night phrase",
+          "audio": "di notte",
+          "note": "At night.",
+          "mcq": {
+            "question": "Which phrase means 'Night phrase'?",
+            "options": [
+              "di notte",
+              "Che ora è?",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "di notte"
+          }
+        },
+        "step2": {
+          "type_prompt": "di n___e  = Night phrase",
+          "expected_answer": "di notte",
+          "alt_answers": [
+            "di notte",
+            "Di notte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono le due di notte.",
+          "options": [
+            "It’s 2 at night.",
+            "It’s 8 in the evening.",
+            "It’s noon.",
+            "It’s midnight."
+          ],
+          "answer": "It’s 2 at night."
+        }
+      },
+      "review8": {
+        "title": "Review: Lessons 29–32",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'AM phrase'?",
+            "options": [
+              "di mattina",
+              "di pomeriggio",
+              "di sera",
+              "di notte"
+            ],
+            "answer": "di mattina"
+          },
+          {
+            "prompt": "What does this mean in English: di mattina",
+            "options": [
+              "AM phrase",
+              "Afternoon phrase",
+              "Evening phrase",
+              "Night phrase"
+            ],
+            "answer": "AM phrase"
+          },
+          {
+            "prompt": "Which phrase means 'Afternoon phrase'?",
+            "options": [
+              "di pomeriggio",
+              "di mattina",
+              "di sera",
+              "di notte"
+            ],
+            "answer": "di pomeriggio"
+          },
+          {
+            "prompt": "What does this mean in English: di pomeriggio",
+            "options": [
+              "Afternoon phrase",
+              "AM phrase",
+              "Evening phrase",
+              "Night phrase"
+            ],
+            "answer": "Afternoon phrase"
+          },
+          {
+            "prompt": "Which phrase means 'Evening phrase'?",
+            "options": [
+              "di sera",
+              "di mattina",
+              "di pomeriggio",
+              "di notte"
+            ],
+            "answer": "di sera"
+          },
+          {
+            "prompt": "What does this mean in English: di sera",
+            "options": [
+              "Evening phrase",
+              "AM phrase",
+              "Afternoon phrase",
+              "Night phrase"
+            ],
+            "answer": "Evening phrase"
+          },
+          {
+            "prompt": "Which phrase means 'Night phrase'?",
+            "options": [
+              "di notte",
+              "di mattina",
+              "di pomeriggio",
+              "di sera"
+            ],
+            "answer": "di notte"
+          },
+          {
+            "prompt": "What does this mean in English: di notte",
+            "options": [
+              "Night phrase",
+              "AM phrase",
+              "Afternoon phrase",
+              "Evening phrase"
+            ],
+            "answer": "Night phrase"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson33": {
+        "title": "What’s today’s date?",
+        "step1": {
+          "italian": "Qual è la data di oggi?",
+          "english": "What’s today’s date?",
+          "audio": "Qual è la data di oggi?",
+          "note": "Literally: Which is today’s date?",
+          "mcq": {
+            "question": "Which phrase means 'What’s today’s date?'?",
+            "options": [
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri",
+              "oggi"
+            ],
+            "answer": "Qual è la data di oggi?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q__l è la d__a di o__i?  = What’s today’s date?",
+          "expected_answer": "Qual è la data di oggi?",
+          "alt_answers": [
+            "qual è la data di oggi?",
+            "Qual è la data di oggi?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Qual è la data di oggi?",
+          "options": [
+            "What’s today’s date?",
+            "Yesterday.",
+            "Today.",
+            "Tomorrow."
+          ],
+          "answer": "What’s today’s date?"
+        }
+      },
+      "lesson34": {
+        "title": "Today is March 1st",
+        "step1": {
+          "italian": "Oggi è il 1º (primo) marzo.",
+          "english": "Today is March 1st",
+          "audio": "Oggi è il 1º (primo) marzo.",
+          "note": "For the first, use 'primo'. Format: il [number] [month].",
+          "mcq": {
+            "question": "Which phrase means 'Today is March 1st'?",
+            "options": [
+              "Oggi è il 1º (primo) marzo.",
+              "Qual è la data di oggi?",
+              "ieri",
+              "oggi"
+            ],
+            "answer": "Oggi è il 1º (primo) marzo."
+          }
+        },
+        "step2": {
+          "type_prompt": "O__i è il 1º (p___o) m___o.  = Today is March 1st",
+          "expected_answer": "Oggi è il 1º (primo) marzo.",
+          "alt_answers": [
+            "oggi è il 1º (primo) marzo.",
+            "Oggi è il 1º (primo) marzo."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi è il 1º marzo.",
+          "options": [
+            "Today is March 1st.",
+            "Yesterday.",
+            "Tomorrow.",
+            "The day after tomorrow."
+          ],
+          "answer": "Today is March 1st."
+        }
+      },
+      "lesson35": {
+        "title": "Yesterday",
+        "step1": {
+          "italian": "ieri",
+          "english": "Yesterday",
+          "audio": "ieri",
+          "note": "Yesterday.",
+          "mcq": {
+            "question": "Which phrase means 'Yesterday'?",
+            "options": [
+              "ieri",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "oggi"
+            ],
+            "answer": "ieri"
+          }
+        },
+        "step2": {
+          "type_prompt": "i__i  = Yesterday",
+          "expected_answer": "ieri",
+          "alt_answers": [
+            "ieri",
+            "Ieri"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ieri",
+          "options": [
+            "Yesterday.",
+            "Yesterday.",
+            "Today.",
+            "Tomorrow."
+          ],
+          "answer": "Yesterday."
+        }
+      },
+      "lesson36": {
+        "title": "Today",
+        "step1": {
+          "italian": "oggi",
+          "english": "Today",
+          "audio": "oggi",
+          "note": "Today.",
+          "mcq": {
+            "question": "Which phrase means 'Today'?",
+            "options": [
+              "oggi",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri"
+            ],
+            "answer": "oggi"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__i  = Today",
+          "expected_answer": "oggi",
+          "alt_answers": [
+            "oggi",
+            "Oggi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "oggi",
+          "options": [
+            "Today.",
+            "Yesterday.",
+            "Today.",
+            "Tomorrow."
+          ],
+          "answer": "Today."
+        }
+      },
+      "review9": {
+        "title": "Review: Lessons 33–36",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'What’s today’s date?'?",
+            "options": [
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri",
+              "oggi"
+            ],
+            "answer": "Qual è la data di oggi?"
+          },
+          {
+            "prompt": "What does this mean in English: Qual è la data di oggi?",
+            "options": [
+              "What’s today’s date?",
+              "Today is March 1st",
+              "Yesterday",
+              "Today"
+            ],
+            "answer": "What’s today’s date?"
+          },
+          {
+            "prompt": "Which phrase means 'Today is March 1st'?",
+            "options": [
+              "Oggi è il 1º (primo) marzo.",
+              "Qual è la data di oggi?",
+              "ieri",
+              "oggi"
+            ],
+            "answer": "Oggi è il 1º (primo) marzo."
+          },
+          {
+            "prompt": "What does this mean in English: Oggi è il 1º (primo) marzo.",
+            "options": [
+              "Today is March 1st",
+              "What’s today’s date?",
+              "Yesterday",
+              "Today"
+            ],
+            "answer": "Today is March 1st"
+          },
+          {
+            "prompt": "Which word means 'Yesterday'?",
+            "options": [
+              "ieri",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "oggi"
+            ],
+            "answer": "ieri"
+          },
+          {
+            "prompt": "What does this mean in English: ieri",
+            "options": [
+              "Yesterday",
+              "What’s today’s date?",
+              "Today is March 1st",
+              "Today"
+            ],
+            "answer": "Yesterday"
+          },
+          {
+            "prompt": "Which word means 'Today'?",
+            "options": [
+              "oggi",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri"
+            ],
+            "answer": "oggi"
+          },
+          {
+            "prompt": "What does this mean in English: oggi",
+            "options": [
+              "Today",
+              "What’s today’s date?",
+              "Today is March 1st",
+              "Yesterday"
+            ],
+            "answer": "Today"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson37": {
+        "title": "Tomorrow",
+        "step1": {
+          "italian": "domani",
+          "english": "Tomorrow",
+          "audio": "domani",
+          "note": "Tomorrow.",
+          "mcq": {
+            "question": "Which phrase means 'Tomorrow'?",
+            "options": [
+              "domani",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri"
+            ],
+            "answer": "domani"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____i  = Tomorrow",
+          "expected_answer": "domani",
+          "alt_answers": [
+            "domani",
+            "Domani"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "domani",
+          "options": [
+            "Tomorrow.",
+            "Yesterday.",
+            "Today.",
+            "Tomorrow."
+          ],
+          "answer": "Tomorrow."
+        }
+      },
+      "lesson38": {
+        "title": "The day after tomorrow",
+        "step1": {
+          "italian": "dopodomani",
+          "english": "The day after tomorrow",
+          "audio": "dopodomani",
+          "note": "The day after tomorrow.",
+          "mcq": {
+            "question": "Which phrase means 'The day after tomorrow'?",
+            "options": [
+              "dopodomani",
+              "Qual è la data di oggi?",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri"
+            ],
+            "answer": "dopodomani"
+          }
+        },
+        "step2": {
+          "type_prompt": "d________i  = The day after tomorrow",
+          "expected_answer": "dopodomani",
+          "alt_answers": [
+            "dopodomani",
+            "Dopodomani"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dopodomani",
+          "options": [
+            "The day after tomorrow.",
+            "Yesterday.",
+            "Today.",
+            "Tomorrow."
+          ],
+          "answer": "The day after tomorrow."
+        }
+      },
+      "review10": {
+        "title": "Review: Lessons 37–38",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which word means 'Tomorrow'?",
+            "options": [
+              "domani",
+              "dopodomani"
+            ],
+            "answer": "domani"
+          },
+          {
+            "prompt": "What does this mean in English: domani",
+            "options": [
+              "Tomorrow",
+              "The day after tomorrow"
+            ],
+            "answer": "Tomorrow"
+          },
+          {
+            "prompt": "Which word means 'The day after tomorrow'?",
+            "options": [
+              "dopodomani",
+              "domani"
+            ],
+            "answer": "dopodomani"
+          },
+          {
+            "prompt": "What does this mean in English: dopodomani",
+            "options": [
+              "The day after tomorrow",
+              "Tomorrow"
+            ],
+            "answer": "The day after tomorrow"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 2,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–38",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the Italian for: Monday",
+            "options": [
+              "lunedì",
+              "martedì",
+              "mercoledì"
+            ],
+            "answer": "lunedì"
+          },
+          {
+            "prompt": "Select the English for: lunedì",
+            "options": [
+              "Monday",
+              "Tuesday",
+              "Wednesday"
+            ],
+            "answer": "Monday"
+          },
+          {
+            "prompt": "Select the Italian for: Sunday",
+            "options": [
+              "domenica",
+              "sabato",
+              "gennaio",
+              "febbraio"
+            ],
+            "answer": "domenica"
+          },
+          {
+            "prompt": "Select the English for: domenica",
+            "options": [
+              "Sunday",
+              "Saturday",
+              "January",
+              "February"
+            ],
+            "answer": "Sunday"
+          },
+          {
+            "prompt": "Select the Italian for: January",
+            "options": [
+              "gennaio",
+              "domenica",
+              "febbraio",
+              "marzo"
+            ],
+            "answer": "gennaio"
+          },
+          {
+            "prompt": "Select the English for: gennaio",
+            "options": [
+              "January",
+              "Sunday",
+              "February",
+              "March"
+            ],
+            "answer": "January"
+          },
+          {
+            "prompt": "Select the Italian for: May",
+            "options": [
+              "maggio",
+              "aprile",
+              "giugno",
+              "luglio"
+            ],
+            "answer": "maggio"
+          },
+          {
+            "prompt": "Select the English for: maggio",
+            "options": [
+              "May",
+              "April",
+              "June",
+              "July"
+            ],
+            "answer": "May"
+          },
+          {
+            "prompt": "Select the Italian for: December",
+            "options": [
+              "dicembre",
+              "novembre",
+              "Che ora è?",
+              "Che ore sono?"
+            ],
+            "answer": "dicembre"
+          },
+          {
+            "prompt": "Select the English for: dicembre",
+            "options": [
+              "December",
+              "November",
+              "What time is it? (Che ora è?)",
+              "What time is it? (Che ore sono?)"
+            ],
+            "answer": "December"
+          },
+          {
+            "prompt": "Select the Italian for: What time is it? (Che ora è?)",
+            "options": [
+              "Che ora è?",
+              "dicembre",
+              "Che ore sono?",
+              "È l'una."
+            ],
+            "answer": "Che ora è?"
+          },
+          {
+            "prompt": "Select the English for: Che ora è?",
+            "options": [
+              "What time is it? (Che ora è?)",
+              "December",
+              "What time is it? (Che ore sono?)",
+              "It’s 1:00"
+            ],
+            "answer": "What time is it? (Che ora è?)"
+          },
+          {
+            "prompt": "Select the Italian for: It’s 1:00",
+            "options": [
+              "È l'una.",
+              "Che ore sono?",
+              "Sono le due.",
+              "È mezzogiorno."
+            ],
+            "answer": "È l'una."
+          },
+          {
+            "prompt": "Select the English for: È l'una.",
+            "options": [
+              "It’s 1:00",
+              "What time is it? (Che ore sono?)",
+              "It’s 2:00",
+              "It’s noon"
+            ],
+            "answer": "It’s 1:00"
+          },
+          {
+            "prompt": "Select the Italian for: It’s noon",
+            "options": [
+              "È mezzogiorno.",
+              "Sono le due.",
+              "È mezzanotte.",
+              "e un quarto"
+            ],
+            "answer": "È mezzogiorno."
+          },
+          {
+            "prompt": "Select the English for: È mezzogiorno.",
+            "options": [
+              "It’s noon",
+              "It’s 2:00",
+              "It’s midnight",
+              "Quarter past"
+            ],
+            "answer": "It’s noon"
+          },
+          {
+            "prompt": "Select the Italian for: Quarter past",
+            "options": [
+              "e un quarto",
+              "È mezzanotte.",
+              "e mezza",
+              "meno [minuti]"
+            ],
+            "answer": "e un quarto"
+          },
+          {
+            "prompt": "Select the English for: e un quarto",
+            "options": [
+              "Quarter past",
+              "It’s midnight",
+              "Half past",
+              "Minutes to the hour"
+            ],
+            "answer": "Quarter past"
+          },
+          {
+            "prompt": "Select the Italian for: Half past",
+            "options": [
+              "e mezza",
+              "e un quarto",
+              "meno [minuti]",
+              "di mattina"
+            ],
+            "answer": "e mezza"
+          },
+          {
+            "prompt": "Select the English for: e mezza",
+            "options": [
+              "Half past",
+              "Quarter past",
+              "Minutes to the hour",
+              "AM phrase"
+            ],
+            "answer": "Half past"
+          },
+          {
+            "prompt": "Select the Italian for: AM phrase",
+            "options": [
+              "di mattina",
+              "meno [minuti]",
+              "di pomeriggio",
+              "di sera"
+            ],
+            "answer": "di mattina"
+          },
+          {
+            "prompt": "Select the English for: di mattina",
+            "options": [
+              "AM phrase",
+              "Minutes to the hour",
+              "Afternoon phrase",
+              "Evening phrase"
+            ],
+            "answer": "AM phrase"
+          },
+          {
+            "prompt": "Select the Italian for: Evening phrase",
+            "options": [
+              "di sera",
+              "di pomeriggio",
+              "di notte",
+              "Qual è la data di oggi?"
+            ],
+            "answer": "di sera"
+          },
+          {
+            "prompt": "Select the English for: di sera",
+            "options": [
+              "Evening phrase",
+              "Afternoon phrase",
+              "Night phrase",
+              "What’s today’s date?"
+            ],
+            "answer": "Evening phrase"
+          },
+          {
+            "prompt": "Select the Italian for: What’s today’s date?",
+            "options": [
+              "Qual è la data di oggi?",
+              "di notte",
+              "Oggi è il 1º (primo) marzo.",
+              "ieri"
+            ],
+            "answer": "Qual è la data di oggi?"
+          },
+          {
+            "prompt": "Select the English for: Qual è la data di oggi?",
+            "options": [
+              "What’s today’s date?",
+              "Night phrase",
+              "Today is March 1st",
+              "Yesterday"
+            ],
+            "answer": "What’s today’s date?"
+          },
+          {
+            "prompt": "Select the Italian for: Yesterday",
+            "options": [
+              "ieri",
+              "Oggi è il 1º (primo) marzo.",
+              "oggi",
+              "domani"
+            ],
+            "answer": "ieri"
+          },
+          {
+            "prompt": "Select the English for: ieri",
+            "options": [
+              "Yesterday",
+              "Today is March 1st",
+              "Today",
+              "Tomorrow"
+            ],
+            "answer": "Yesterday"
+          },
+          {
+            "prompt": "Select the Italian for: Tomorrow",
+            "options": [
+              "domani",
+              "oggi",
+              "dopodomani"
+            ],
+            "answer": "domani"
+          },
+          {
+            "prompt": "Select the English for: domani",
+            "options": [
+              "Tomorrow",
+              "Today",
+              "The day after tomorrow"
+            ],
+            "answer": "Tomorrow"
+          },
+          {
+            "prompt": "Select the Italian for: The day after tomorrow",
+            "options": [
+              "dopodomani",
+              "domani"
+            ],
+            "answer": "dopodomani"
+          },
+          {
+            "prompt": "Select the English for: dopodomani",
+            "options": [
+              "The day after tomorrow",
+              "Tomorrow"
+            ],
+            "answer": "The day after tomorrow"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 16,
+          "questions": 32
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      }
+    }
+  }
+}
