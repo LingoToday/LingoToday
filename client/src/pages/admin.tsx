@@ -77,118 +77,34 @@ interface CourseJsonData {
   };
 }
 
-function CourseJsonViewer({ 
-  language, 
-  courseNumber 
+function SimpleCourseViewer({ 
+  course 
 }: { 
-  language: string; 
-  courseNumber: number; 
+  course: any; 
 }) {
-  // Only try to fetch JSON for languages that have course files
-  const hasJsonFiles = ['it', 'es'].includes(language); // Italian and Spanish have JSON files
-  
-  if (!hasJsonFiles) {
-    return (
-      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
-        <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4" />
-          <span>JSON course files not available for {language.toUpperCase()}</span>
-        </div>
-        <div className="text-xs mt-1">
-          Only showing database lesson records for this language
-        </div>
-      </div>
-    );
-  }
-  const { data: courseJson, isLoading, error } = useQuery<CourseJsonData>({
-    queryKey: ['/api/admin/course-json', language, courseNumber],
-    queryFn: async () => {
-      const response = await fetch(`/api/admin/course-json/${language}/${courseNumber}`, {
-        credentials: 'same-origin'
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to fetch course structure`);
-      }
-      return response.json();
-    },
-    retry: 1,
-    retryDelay: 1000
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-        <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">Loading course structure...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-sm text-red-600 dark:text-red-400 py-2">
-        <div className="font-medium">Failed to load course structure from JSON</div>
-        <div className="text-xs mt-1 text-red-500/80">
-          {error instanceof Error ? error.message : 'Unknown error occurred'}
-        </div>
-        <div className="text-xs mt-1 text-gray-500">
-          Looking for: {language}/course{courseNumber}.json
-        </div>
-      </div>
-    );
-  }
-
-  if (!courseJson) {
-    return (
-      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
-        No course structure available
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          JSON Course Structure
-        </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          {courseJson.summary.totalLessons} lessons, {courseJson.summary.totalReviews} reviews
-        </div>
+    <div className="space-y-2">
+      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Course Content ({course.lessons.length} lessons in database)
       </div>
       
       <div className="max-h-60 overflow-y-auto space-y-1">
-        {courseJson.items.map((item, index) => (
+        {course.lessons.map((lesson: any, index: number) => (
           <div 
-            key={item.id} 
-            className={`flex items-center justify-between py-1.5 px-2 rounded text-xs ${
-              item.type === 'lesson' 
-                ? 'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-400' 
-                : 'bg-orange-50 dark:bg-orange-900/20 border-l-2 border-l-orange-400'
-            }`}
+            key={lesson.id} 
+            className="flex items-center justify-between py-1.5 px-2 rounded text-xs bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-400"
           >
             <div className="flex items-center gap-2">
-              <span className="font-mono text-gray-500 dark:text-gray-400 min-w-[4rem]">
-                {item.id}
+              <span className="font-mono text-gray-500 dark:text-gray-400 min-w-[3rem]">
+                #{lesson.lessonNumber}
               </span>
-              <span className={item.type === 'lesson' ? 'text-blue-700 dark:text-blue-300' : 'text-orange-700 dark:text-orange-300'}>
-                {item.title}
+              <span className="text-blue-700 dark:text-blue-300">
+                {lesson.title}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              {item.type === 'review' && item.questions && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {item.questions} questions
-                </span>
-              )}
-              <Badge 
-                variant={item.type === 'lesson' ? "default" : "secondary"}
-                className="text-xs"
-              >
-                {item.type === 'lesson' ? 'Lesson' : 'Review'}
-              </Badge>
-            </div>
+            <Badge variant="default" className="text-xs">
+              Lesson
+            </Badge>
           </div>
         ))}
       </div>
@@ -331,13 +247,10 @@ export default function AdminPage() {
                                 <div className="mt-3">
                                   <details className="text-sm">
                                     <summary className="cursor-pointer font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                                      View Lessons & Reviews from JSON ({course.lessons.length} in DB)
+                                      View Course Lessons ({course.lessons.length} lessons)
                                     </summary>
                                     <div className="mt-3">
-                                      <CourseJsonViewer 
-                                        language={languageData.language.code} 
-                                        courseNumber={course.courseNumber} 
-                                      />
+                                      <SimpleCourseViewer course={course} />
                                     </div>
                                   </details>
                                 </div>
