@@ -470,6 +470,174 @@
           ],
           "answer": "I’m fine, thank you. And you?"
         }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq", 
+        "questions": [
+          {
+            "prompt": "Which phrase means 'What is your name? (informal)'?",
+            "options": [
+              "Come ti chiami?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Come ti chiami?"
+          },
+          {
+            "prompt": "Which phrase means 'What is your name? (formal)'?",
+            "options": [
+              "Come ti chiami?",
+              "Come si chiama?",
+              "Mi chiamo...",
+              "Sono..."
+            ],
+            "answer": "Come si chiama?"
+          },
+          {
+            "prompt": "How do you say 'My name is...'?",
+            "options": [
+              "Mi chiamo...",
+              "Come ti chiami?",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Mi chiamo..."
+          },
+          {
+            "prompt": "How do you say 'I am...'?",
+            "options": [
+              "Mi chiamo...",
+              "Sono...",
+              "Come ti chiami?",
+              "Piacere!"
+            ],
+            "answer": "Sono..."
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Where are you from? (informal)'?",
+            "options": [
+              "Di dove sei?",
+              "Di dov'è?", 
+              "Sono di...",
+              "Vengo da..."
+            ],
+            "answer": "Di dove sei?"
+          },
+          {
+            "prompt": "Which phrase means 'Where are you from? (formal)'?",
+            "options": [
+              "Di dove sei?",
+              "Di dov'è?",
+              "Sono di...",
+              "Vengo da..."
+            ],
+            "answer": "Di dov'è?"
+          },
+          {
+            "prompt": "How do you say 'I am from...'?",
+            "options": [
+              "Sono di...",
+              "Di dove sei?",
+              "Vengo da...",
+              "Mi chiamo..."
+            ],
+            "answer": "Sono di..."
+          },
+          {
+            "prompt": "How do you say 'I come from...'?",
+            "options": [
+              "Sono di...",
+              "Vengo da...",
+              "Di dove sei?", 
+              "Di dov'è?"
+            ],
+            "answer": "Vengo da..."
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'How are you? (informal)'?",
+            "options": [
+              "Come stai?",
+              "Come sta?",
+              "Sto bene",
+              "Molto bene"
+            ],
+            "answer": "Come stai?"
+          },
+          {
+            "prompt": "Which phrase means 'How are you? (formal)'?", 
+            "options": [
+              "Come stai?",
+              "Come sta?",
+              "Sto bene",
+              "Molto bene"
+            ],
+            "answer": "Come sta?"
+          },
+          {
+            "prompt": "How do you say 'I'm fine'?",
+            "options": [
+              "Sto bene",
+              "Molto bene",
+              "Come stai?",
+              "Come sta?"
+            ],
+            "answer": "Sto bene"
+          },
+          {
+            "prompt": "How do you say 'Very well'?",
+            "options": [
+              "Sto bene",
+              "Molto bene", 
+              "Come stai?",
+              "Grazie"
+            ],
+            "answer": "Molto bene"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
       }
     }
   }
