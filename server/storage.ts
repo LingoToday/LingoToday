@@ -876,6 +876,15 @@ export class DatabaseStorage implements IStorage {
   async getPageViewsCount(startDate?: Date, endDate?: Date, page?: string): Promise<{date: string, count: number, page?: string}[]> {
     let whereConditions: any = sql`1 = 1`;
     
+    // Filter out non-user-facing pages
+    whereConditions = sql`${whereConditions} AND ${pageViews.page} NOT LIKE '/api/%' 
+      AND ${pageViews.page} NOT LIKE '%.js' 
+      AND ${pageViews.page} NOT LIKE '%.css' 
+      AND ${pageViews.page} NOT LIKE '%.map' 
+      AND ${pageViews.page} NOT LIKE '/src/%'
+      AND ${pageViews.page} NOT LIKE '/_next/%'
+      AND ${pageViews.page} NOT LIKE '/static/%'`;
+    
     if (startDate) {
       whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} >= ${startDate}`;
     }
@@ -903,6 +912,15 @@ export class DatabaseStorage implements IStorage {
 
   async getPageViewsByPage(startDate?: Date, endDate?: Date): Promise<{page: string, count: number}[]> {
     let whereConditions: any = sql`1 = 1`;
+    
+    // Filter out non-user-facing pages
+    whereConditions = sql`${whereConditions} AND ${pageViews.page} NOT LIKE '/api/%' 
+      AND ${pageViews.page} NOT LIKE '%.js' 
+      AND ${pageViews.page} NOT LIKE '%.css' 
+      AND ${pageViews.page} NOT LIKE '%.map' 
+      AND ${pageViews.page} NOT LIKE '/src/%'
+      AND ${pageViews.page} NOT LIKE '/_next/%'
+      AND ${pageViews.page} NOT LIKE '/static/%'`;
     
     if (startDate) {
       whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} >= ${startDate}`;
