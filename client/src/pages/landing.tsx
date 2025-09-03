@@ -52,7 +52,7 @@ export default function Landing() {
             <div className="flex items-center gap-2 sm:gap-3">
               <Button 
                 variant="outline"
-                className="border-gray-300 text-gray-700 font-medium px-3 sm:px-4 py-2 rounded-full hover:bg-gray-50 sm:text-base text-[12px]"
+                className="border-gray-300 text-gray-700 font-medium px-3 sm:px-4 py-2 rounded-full hover:bg-gray-50 text-[12px]"
                 onClick={() => window.location.href = "/sign-in"}
               >
                 Sign In
