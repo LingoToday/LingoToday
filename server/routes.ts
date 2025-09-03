@@ -1981,8 +1981,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Add review if available
-        if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
+        // Add review if available (after every 4 lessons)
+        if (reviewIndex < reviews.length && lessonIndex > 0 && lessonIndex % 4 === 0) {
           const reviewKey = reviews[reviewIndex++];
           orderedItems.push({
             id: reviewKey,
