@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 9 (Food and Drinks) with Inline Reviews**:
+  - Replaced the existing Italian Food and Drinks course with enhanced version that includes reviews after every 4 lessons
+  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
+  - Successfully imported 22 lessons with 66 lesson steps plus 7 checkpoints
+  - Reviews include multiple-choice questions covering beverages, food items, and restaurant phrases
+  - Course now covers comprehensive food and drink vocabulary with structured review intervals
 - **Updated Italian Course 8 (Weather and Seasons) with Inline Reviews**:
   - Replaced the existing Italian Weather and Seasons course with enhanced version that includes reviews after every 4 lessons
   - Added 6 checkpoint reviews throughout the course (5 regular reviews + 1 final review)
