@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 6 (Travel Basics) with Inline Reviews**:
+  - Replaced the existing Italian Travel Basics course with enhanced version that includes reviews after every 4 lessons
+  - Added 10 checkpoint reviews throughout the course (9 regular reviews + 1 final review)
+  - Successfully imported 34 lessons with 102 lesson steps plus 10 checkpoints
+  - Reviews include multiple-choice questions covering travel phrases, directions, transportation, and emergency needs
+  - Course now covers essential travel vocabulary with structured review intervals for better retention
 - **Updated Italian Course 5 (Time and Date) with Inline Reviews**:
   - Replaced the existing Italian Time and Date course with enhanced version that includes reviews after every 4 lessons
   - Added 11 checkpoint reviews throughout the course (10 regular reviews + 1 final review)
