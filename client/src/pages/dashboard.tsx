@@ -696,19 +696,36 @@ export default function Dashboard() {
                 {upcomingLessons.length > 0 ? (
                   <>
                     {/* Next lesson - prominent display */}
-                    <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-3 text-white">
+                    <div className={`rounded-lg p-3 text-white ${
+                      upcomingLessons[0].isReview 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600' 
+                        : 'bg-gradient-to-r from-purple-500 to-purple-600'
+                    }`}>
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="text-lg font-bold">{upcomingLessons[0].title}</div>
-                          <div className="text-purple-100 text-sm">{upcomingLessons[0].description}</div>
+                          <div className="flex items-center space-x-2">
+                            {upcomingLessons[0].isReview && (
+                              <Trophy className="w-5 h-5 text-yellow-100" />
+                            )}
+                            <div className="text-lg font-bold">{upcomingLessons[0].title}</div>
+                          </div>
+                          <div className={`text-sm ${
+                            upcomingLessons[0].isReview ? 'text-yellow-100' : 'text-purple-100'
+                          }`}>{upcomingLessons[0].description}</div>
                         </div>
                         <Link href={
                           upcomingLessons[0].courseId === 'checkpoint' 
                             ? `/checkpoint/${upcomingLessons[0].lessonId.replace('checkpoint', '')}`
+                            : upcomingLessons[0].isReview
+                            ? `/checkpoint/${upcomingLessons[0].lessonId.replace('review', '')}`
                             : `/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`
                         }>
-                          <Button variant="secondary" size="sm" className="bg-white text-purple-600 hover:bg-gray-100 font-medium">
-                            Start Now
+                          <Button variant="secondary" size="sm" className={`font-medium ${
+                            upcomingLessons[0].isReview 
+                              ? 'bg-white text-yellow-600 hover:bg-gray-100'
+                              : 'bg-white text-purple-600 hover:bg-gray-100'
+                          }`}>
+                            {upcomingLessons[0].isReview ? 'Review Now' : 'Start Now'}
                           </Button>
                         </Link>
                       </div>
@@ -717,13 +734,29 @@ export default function Dashboard() {
                     {/* Upcoming lessons - compact list */}
                     <div className="space-y-2">
                       {upcomingLessons.slice(1, 5).map((lesson, index) => (
-                        <div key={`${lesson.courseId}-${lesson.lessonId}`} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                          <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium text-gray-600">
-                            {index + 2}
+                        <div key={`${lesson.courseId}-${lesson.lessonId}`} className={`flex items-center space-x-3 p-2 rounded-lg transition-colors ${
+                          lesson.isReview 
+                            ? 'hover:bg-yellow-50 border-l-2 border-yellow-400' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                            lesson.isReview 
+                              ? 'bg-yellow-100 text-yellow-600'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {lesson.isReview ? (
+                              <Trophy className="w-3 h-3" />
+                            ) : (
+                              index + 2
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate">{lesson.title}</div>
-                            <div className="text-xs text-gray-500 truncate">{lesson.description}</div>
+                            <div className={`font-medium text-sm truncate ${
+                              lesson.isReview ? 'text-yellow-800' : ''
+                            }`}>{lesson.title}</div>
+                            <div className={`text-xs truncate ${
+                              lesson.isReview ? 'text-yellow-600' : 'text-gray-500'
+                            }`}>{lesson.description}</div>
                           </div>
                         </div>
                       ))}

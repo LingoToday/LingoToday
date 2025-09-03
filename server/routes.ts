@@ -580,45 +580,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const course = courseData[courseId];
             
             if (course && course.lessons) {
-              // For Spanish, properly order lessons and reviews
-              let lessonIds;
-              if (language === 'spanish') {
-                // Create proper ordering: lesson1, lesson2, lesson3, lesson4, review1, lesson5, etc.
-                const allKeys = Object.keys(course.lessons);
-                const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
-                  const numA = parseInt(a.replace('lesson', ''));
-                  const numB = parseInt(b.replace('lesson', ''));
-                  return numA - numB;
-                });
-                const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
-                  const numA = parseInt(a.replace('review', '')) || 999;
-                  const numB = parseInt(b.replace('review', '')) || 999;
-                  return numA - numB;
-                });
-                
-                // Interleave lessons and reviews: lesson1-4, review1, lesson5-8, review2, etc.
-                lessonIds = [];
-                let lessonIndex = 0;
-                let reviewIndex = 0;
-                
-                while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
-                  // Add up to 4 lessons
-                  for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
-                    lessonIds.push(lessons[lessonIndex++]);
-                  }
-                  
-                  // Add review if available
-                  if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
-                    lessonIds.push(reviews[reviewIndex++]);
-                  }
+              // Properly order lessons and reviews for all languages
+              const allKeys = Object.keys(course.lessons);
+              const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
+                const numA = parseInt(a.replace('lesson', ''));
+                const numB = parseInt(b.replace('lesson', ''));
+                return numA - numB;
+              });
+              const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
+                const numA = parseInt(a.replace('review', '')) || 999;
+                const numB = parseInt(b.replace('review', '')) || 999;
+                return numA - numB;
+              });
+              
+              // Interleave lessons and reviews: lesson1-4, review1, lesson5-8, review2, etc.
+              let lessonIds = [];
+              let lessonIndex = 0;
+              let reviewIndex = 0;
+              
+              while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
+                // Add up to 4 lessons
+                for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
+                  lessonIds.push(lessons[lessonIndex++]);
                 }
-              } else {
-                // For other languages, use simple numeric sorting
-                lessonIds = Object.keys(course.lessons).sort((a, b) => {
-                  const numA = parseInt(a.replace('lesson', ''));
-                  const numB = parseInt(b.replace('lesson', ''));
-                  return numA - numB;
-                });
+                
+                // Add review if available
+                if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
+                  lessonIds.push(reviews[reviewIndex++]);
+                }
               }
               
               // Add each lesson/review to the list
