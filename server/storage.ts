@@ -732,8 +732,9 @@ export class DatabaseStorage implements IStorage {
         .where(eq(courses.id, existingCourse[0].id))
         .returning();
 
-      // Delete existing lessons and steps
+      // Delete existing lessons, steps, and checkpoints
       await db.delete(lessons).where(eq(lessons.courseId, createdCourse.id));
+      await db.delete(checkpoints).where(eq(checkpoints.courseId, createdCourse.id));
     } else {
       // Create new course
       createdCourse = await this.createCourse({
@@ -745,30 +746,45 @@ export class DatabaseStorage implements IStorage {
       });
     }
 
-    // Import lessons
+    // Import lessons and reviews
     for (const [lessonKey, lessonData] of Object.entries(course.lessons)) {
-      const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
-      const lesson = lessonData as any;
+      if (lessonKey.startsWith('lesson')) {
+        // Handle regular lessons
+        const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
+        const lesson = lessonData as any;
 
-      const createdLesson = await this.createLesson({
-        courseId: createdCourse.id,
-        lessonNumber,
-        title: lesson.title,
-      });
+        const createdLesson = await this.createLesson({
+          courseId: createdCourse.id,
+          lessonNumber,
+          title: lesson.title,
+        });
 
-      // Import steps
-      const steps = [
-        { stepNumber: 1, stepType: 'introduction', content: lesson.step1 },
-        { stepNumber: 2, stepType: 'typing', content: lesson.step2 },
-        { stepNumber: 3, stepType: 'comprehension', content: lesson.step3 },
-      ];
+        // Import steps
+        const steps = [
+          { stepNumber: 1, stepType: 'introduction', content: lesson.step1 },
+          { stepNumber: 2, stepType: 'typing', content: lesson.step2 },
+          { stepNumber: 3, stepType: 'comprehension', content: lesson.step3 },
+        ];
 
-      for (const step of steps) {
-        await this.createLessonStep({
-          lessonId: createdLesson.id,
-          stepNumber: step.stepNumber,
-          stepType: step.stepType,
-          content: step.content,
+        for (const step of steps) {
+          await this.createLessonStep({
+            lessonId: createdLesson.id,
+            stepNumber: step.stepNumber,
+            stepType: step.stepType,
+            content: step.content,
+          });
+        }
+      } else if (lessonKey.startsWith('review')) {
+        // Handle review checkpoints
+        const checkpointNumber = parseInt(lessonKey.replace('review', '')) || 0;
+        const review = lessonData as any;
+
+        await this.createCheckpoint({
+          courseId: createdCourse.id,
+          checkpointNumber,
+          title: review.title,
+          description: review.title, // Use title as description for now
+          questions: review.questions,
         });
       }
     }

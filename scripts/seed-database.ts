@@ -59,7 +59,7 @@ async function seedDatabase() {
     'italian_course1_greetings_steps_corrected_1755005294493.json',
     'italian_course2_introducing_yourself_steps_full_1755005294493.json',
     'italian_course3_essential_courtesy_steps_full_1755005294493.json',
-    'italian_course4_numbers_steps_full_29_lessons_1755005294493.json',
+    'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756890604470.json',
     'italian_course5_time_date_steps_split_lessons_1755005294492.json',
     'italian_course6_travel_basics_steps_full_regenerated_1755005294492.json',
     'course7_describing_things_split_1755005294489.json',

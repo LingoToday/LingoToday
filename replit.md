@@ -7,7 +7,16 @@ LingoToday is a full-stack language learning application designed to deliver mic
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
-## Recent Changes (August 13, 2025)
+## Recent Changes (September 3, 2025)
+- **Updated Italian Course 4 (Numbers) with Inline Reviews**:
+  - Replaced the existing Italian Numbers course with enhanced version that includes reviews after every 4 lessons
+  - Added 9 checkpoint reviews throughout the course (8 regular reviews + 1 final review)
+  - Updated database storage system to handle both regular lessons and review checkpoints during course import
+  - Enhanced `importCourseFromJSON` method to process review sections and create checkpoint records
+  - Successfully imported 32 lessons with 96 lesson steps plus 9 checkpoints
+  - Reviews include multiple-choice questions with pass/fail rules and retry logic
+
+## Previous Changes (August 13, 2025)
 - Added Italian Beginner Courses 9-13 to the database:
   - Course 9: Food and Drinks (22 lessons)
   - Course 10: Directions and Places (21 lessons) 
