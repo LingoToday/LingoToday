@@ -58,8 +58,8 @@ async function seedDatabase() {
   const courseFiles = [
     'Italian_course1_greetings_with_inline_reviews_1756914297318.json',
     'italian_course2_introductions_with_inline_reviews_1756914297319.json',
-    'italian_course3_essential_courtesy_steps_full_1755005294493.json',
-    'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756890604470.json',
+    'italian_course3_essential_courtesy_with_inline_reviews_q4_1756914955271.json',
+    'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756914955272.json',
     'italian_course5_time_date_with_inline_reviews_q4_1756894312305.json',
     'italian_course6_travel_basics_with_inline_reviews_q4_1756895270936.json',
     'italian_course7_describing_things_with_inline_reviews_q4_1756896700949.json',
