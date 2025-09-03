@@ -1885,6 +1885,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get course JSON structure for admin view
+  app.get('/api/admin/course-json/:language/:courseNumber', isAuthenticated, async (req, res) => {
+    try {
+      const { language, courseNumber } = req.params;
+      
+      // Construct file path based on language
+      let courseFileName: string;
+      if (language === 'spanish') {
+        courseFileName = `spanish_course${courseNumber}.json`;
+      } else if (language === 'german') {
+        courseFileName = `german_course${courseNumber}.json`;
+      } else if (language === 'french') {
+        courseFileName = `french_course${courseNumber}.json`;
+      } else {
+        // Default to Italian
+        courseFileName = `course${courseNumber}.json`;
+      }
+      
+      const coursePath = path.join(process.cwd(), 'server', courseFileName);
+      
+      if (!fs.existsSync(coursePath)) {
+        return res.status(404).json({ message: 'Course file not found' });
+      }
+      
+      const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+      const courseKey = `course${courseNumber}`;
+      const course = courseData[courseKey];
+      
+      if (!course || !course.lessons) {
+        return res.status(404).json({ message: 'Course data not found' });
+      }
+      
+      // Parse and organize lessons and reviews
+      const allKeys = Object.keys(course.lessons);
+      const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
+        const numA = parseInt(a.replace('lesson', ''));
+        const numB = parseInt(b.replace('lesson', ''));
+        return numA - numB;
+      });
+      const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
+        const numA = parseInt(a.replace('review', '')) || 999;
+        const numB = parseInt(b.replace('review', '')) || 999;
+        return numA - numB;
+      });
+      
+      // Create ordered list with lessons and reviews interleaved
+      const orderedItems = [];
+      let lessonIndex = 0;
+      let reviewIndex = 0;
+      
+      while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
+        // Add up to 4 lessons
+        for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
+          const lessonKey = lessons[lessonIndex++];
+          orderedItems.push({
+            id: lessonKey,
+            type: 'lesson',
+            title: course.lessons[lessonKey].title,
+            data: course.lessons[lessonKey]
+          });
+        }
+        
+        // Add review if available
+        if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
+          const reviewKey = reviews[reviewIndex++];
+          orderedItems.push({
+            id: reviewKey,
+            type: 'review',
+            title: course.lessons[reviewKey].title,
+            questions: course.lessons[reviewKey].questions?.length || 0,
+            data: course.lessons[reviewKey]
+          });
+        }
+      }
+      
+      res.json({
+        courseTitle: course.title,
+        courseDescription: course.description,
+        items: orderedItems,
+        summary: {
+          totalLessons: lessons.length,
+          totalReviews: reviews.length,
+          totalItems: orderedItems.length
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching course JSON:', error);
+      res.status(500).json({ message: 'Failed to fetch course structure' });
+    }
+  });
+
   // Admin route - get all courses organized by language and skill level
   app.get('/api/admin/courses', isAuthenticated, async (req: any, res) => {
     try {

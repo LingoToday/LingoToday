@@ -3,7 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Users, Clock, FileText } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle } from "lucide-react";
+import { useState } from "react";
 
 interface Course {
   id: number;
@@ -54,6 +56,119 @@ interface LanguageData {
     name: string;
   };
   skillLevels: SkillLevelData[];
+}
+
+interface CourseItem {
+  id: string;
+  type: 'lesson' | 'review';
+  title: string;
+  questions?: number;
+  data: any;
+}
+
+interface CourseJsonData {
+  courseTitle: string;
+  courseDescription: string;
+  items: CourseItem[];
+  summary: {
+    totalLessons: number;
+    totalReviews: number;
+    totalItems: number;
+  };
+}
+
+function CourseJsonViewer({ 
+  language, 
+  courseNumber 
+}: { 
+  language: string; 
+  courseNumber: number; 
+}) {
+  const { data: courseJson, isLoading, error } = useQuery<CourseJsonData>({
+    queryKey: ['/api/admin/course-json', language, courseNumber],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/course-json/${language}/${courseNumber}`, {
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch course structure');
+      }
+      return response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+        <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">Loading course structure...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-sm text-red-600 dark:text-red-400 py-2">
+        Failed to load course structure from JSON
+      </div>
+    );
+  }
+
+  if (!courseJson) {
+    return (
+      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+        No course structure available
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          JSON Course Structure
+        </div>
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          {courseJson.summary.totalLessons} lessons, {courseJson.summary.totalReviews} reviews
+        </div>
+      </div>
+      
+      <div className="max-h-60 overflow-y-auto space-y-1">
+        {courseJson.items.map((item, index) => (
+          <div 
+            key={item.id} 
+            className={`flex items-center justify-between py-1.5 px-2 rounded text-xs ${
+              item.type === 'lesson' 
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-400' 
+                : 'bg-orange-50 dark:bg-orange-900/20 border-l-2 border-l-orange-400'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-gray-500 dark:text-gray-400 min-w-[4rem]">
+                {item.id}
+              </span>
+              <span className={item.type === 'lesson' ? 'text-blue-700 dark:text-blue-300' : 'text-orange-700 dark:text-orange-300'}>
+                {item.title}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {item.type === 'review' && item.questions && (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {item.questions} questions
+                </span>
+              )}
+              <Badge 
+                variant={item.type === 'lesson' ? "default" : "secondary"}
+                className="text-xs"
+              >
+                {item.type === 'lesson' ? 'Lesson' : 'Review'}
+              </Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function AdminPage() {
@@ -188,35 +303,19 @@ export default function AdminPage() {
                                   </div>
                                 </div>
                                 
-                                {course.lessons.length > 0 && (
-                                  <div className="mt-3">
-                                    <details className="text-sm">
-                                      <summary className="cursor-pointer font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                                        View Lessons ({course.lessons.length})
-                                      </summary>
-                                      <div className="mt-2 space-y-1">
-                                        {course.lessons
-                                          .sort((a, b) => a.lessonNumber - b.lessonNumber)
-                                          .map((lesson) => (
-                                            <div 
-                                              key={lesson.id} 
-                                              className="flex items-center justify-between py-1 px-2 bg-gray-50 dark:bg-gray-800 rounded"
-                                            >
-                                              <span className="text-xs">
-                                                Lesson {lesson.lessonNumber}: {lesson.title}
-                                              </span>
-                                              <Badge 
-                                                variant={lesson.isActive ? "default" : "secondary"} 
-                                                className="text-xs"
-                                              >
-                                                {lesson.isActive ? "Active" : "Inactive"}
-                                              </Badge>
-                                            </div>
-                                          ))}
-                                      </div>
-                                    </details>
-                                  </div>
-                                )}
+                                <div className="mt-3">
+                                  <details className="text-sm">
+                                    <summary className="cursor-pointer font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                                      View Lessons & Reviews from JSON ({course.lessons.length} in DB)
+                                    </summary>
+                                    <div className="mt-3">
+                                      <CourseJsonViewer 
+                                        language={languageData.language.code} 
+                                        courseNumber={course.courseNumber} 
+                                      />
+                                    </div>
+                                  </details>
+                                </div>
                               </CardContent>
                             </Card>
                           ))}
