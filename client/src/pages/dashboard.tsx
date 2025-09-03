@@ -637,8 +637,8 @@ export default function Dashboard() {
 
 
 
-            {/* Daily Session Start Button */}
-            {!isDailySessionActive && (
+            {/* Daily Session Start Button - Always show for new users or when no session is active */}
+            {(!isDailySessionActive || ((stats?.lessonsCompleted || 0) === 0)) && (
               <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -663,8 +663,8 @@ export default function Dashboard() {
               </Card>
             )}
 
-            {/* Daily Session Status */}
-            {isDailySessionActive && (
+            {/* Daily Session Status - Only show for users with progress and active session */}
+            {isDailySessionActive && ((stats?.lessonsCompleted || 0) > 0) && (
               <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
