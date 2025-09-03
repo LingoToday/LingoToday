@@ -36,6 +36,38 @@ app.use((req, res, next) => {
   next();
 });
 
+// Analytics tracking middleware
+app.use(async (req, res, next) => {
+  // Skip tracking for API routes, static assets, and hot reload
+  const skipPaths = ['/api/', '/assets/', '/@vite/', '/node_modules/', '/__vite_ping', '/favicon.ico'];
+  const shouldSkip = skipPaths.some(path => req.path.startsWith(path));
+  
+  if (!shouldSkip && req.method === 'GET') {
+    try {
+      const { storage } = await import("./storage");
+      
+      // Track the page view asynchronously to not slow down response
+      setImmediate(async () => {
+        try {
+          await storage.trackPageView({
+            userId: req.user?.claims?.sub || req.user?.id || null,
+            page: req.path,
+            userAgent: req.get('User-Agent') || null,
+            ipAddress: req.ip || req.connection.remoteAddress || null,
+          });
+        } catch (error) {
+          console.error("Error tracking page view:", error);
+        }
+      });
+    } catch (error) {
+      // Silent fail for analytics - don't break the user experience
+      console.error("Analytics middleware error:", error);
+    }
+  }
+  
+  next();
+});
+
 (async () => {
   const server = await registerRoutes(app);
 

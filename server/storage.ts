@@ -4,6 +4,7 @@ import {
   userProgress,
   userStats,
   waitlist,
+  pageViews,
   languages,
   skillLevels,
   courses,
@@ -21,6 +22,8 @@ import {
   type InsertUserStats,
   type Waitlist,
   type InsertWaitlist,
+  type PageView,
+  type InsertPageView,
   type Language,
   type InsertLanguage,
   type SkillLevel,
@@ -39,7 +42,7 @@ import {
   type LessonWithSteps,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -121,6 +124,11 @@ export interface IStorage {
   
   // Bulk import operations
   importCourseFromJSON(languageCode: string, skillLevelCode: string, courseData: any): Promise<Course>;
+  
+  // Analytics operations
+  trackPageView(pageView: InsertPageView): Promise<PageView>;
+  getPageViewsCount(startDate?: Date, endDate?: Date, page?: string): Promise<{date: string, count: number, page?: string}[]>;
+  getPageViewsByPage(startDate?: Date, endDate?: Date): Promise<{page: string, count: number}[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -857,6 +865,64 @@ export class DatabaseStorage implements IStorage {
       const [created] = await db.insert(checkpointProgress).values(progressData).returning();
       return created;
     }
+  }
+
+  // Analytics operations
+  async trackPageView(pageViewData: InsertPageView): Promise<PageView> {
+    const [pageView] = await db.insert(pageViews).values(pageViewData).returning();
+    return pageView;
+  }
+
+  async getPageViewsCount(startDate?: Date, endDate?: Date, page?: string): Promise<{date: string, count: number, page?: string}[]> {
+    let whereConditions: any = sql`1 = 1`;
+    
+    if (startDate) {
+      whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} >= ${startDate}`;
+    }
+    if (endDate) {
+      whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} <= ${endDate}`;
+    }
+    if (page) {
+      whereConditions = sql`${whereConditions} AND ${pageViews.page} = ${page}`;
+    }
+
+    const query = sql`
+      SELECT 
+        DATE(${pageViews.viewedAt}) as date, 
+        COUNT(*) as count
+        ${page ? sql`` : sql`, ${pageViews.page} as page`}
+      FROM ${pageViews} 
+      WHERE ${whereConditions}
+      GROUP BY DATE(${pageViews.viewedAt})${page ? sql`` : sql`, ${pageViews.page}`}
+      ORDER BY date DESC
+    `;
+
+    const results = await db.execute(query);
+    return results.rows as {date: string, count: number, page?: string}[];
+  }
+
+  async getPageViewsByPage(startDate?: Date, endDate?: Date): Promise<{page: string, count: number}[]> {
+    let whereConditions: any = sql`1 = 1`;
+    
+    if (startDate) {
+      whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} >= ${startDate}`;
+    }
+    if (endDate) {
+      whereConditions = sql`${whereConditions} AND ${pageViews.viewedAt} <= ${endDate}`;
+    }
+
+    const query = sql`
+      SELECT 
+        ${pageViews.page} as page, 
+        COUNT(*) as count
+      FROM ${pageViews} 
+      WHERE ${whereConditions}
+      GROUP BY ${pageViews.page}
+      ORDER BY count DESC
+    `;
+
+    const results = await db.execute(query);
+    return results.rows as {page: string, count: number}[];
   }
 }
 

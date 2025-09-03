@@ -318,11 +318,30 @@ export const sessions = pgTable('sessions', {
   expire: timestamp('expire', { mode: 'date' }).notNull(),
 });
 
+// Page views analytics table
+export const pageViews = pgTable('page_views', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'set null' }), // Allow anonymous tracking
+  page: text('page').notNull(), // e.g., '/dashboard', '/lesson/italian/course1/lesson1'
+  userAgent: text('user_agent'), // Browser information
+  ipAddress: text('ip_address'), // For duplicate prevention (hashed for privacy)
+  viewedAt: timestamp('viewed_at').defaultNow().notNull(),
+});
+
+// Page views relations
+export const pageViewsRelations = relations(pageViews, ({ one }) => ({
+  user: one(users, {
+    fields: [pageViews.userId],
+    references: [users.id],
+  }),
+}));
+
 // User table relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   settings: one(userSettings),
   progress: many(userProgress),
   stats: many(userStats),
+  pageViews: many(pageViews),
 }));
 
 export const userSettingsRelations = relations(userSettings, ({ one }) => ({
@@ -376,6 +395,11 @@ export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
   createdAt: true,
 });
 
+export const insertPageViewSchema = createInsertSchema(pageViews).omit({
+  id: true,
+  viewedAt: true,
+});
+
 // User types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -392,6 +416,9 @@ export type InsertUserStats = z.infer<typeof insertUserStatsSchema>;
 
 export type Waitlist = typeof waitlist.$inferSelect;
 export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
+
+export type PageView = typeof pageViews.$inferSelect;
+export type InsertPageView = z.infer<typeof insertPageViewSchema>;
 
 // Extended types with relations
 export type CourseWithRelations = Course & {

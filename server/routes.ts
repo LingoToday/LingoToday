@@ -6,6 +6,7 @@ import {
   insertUserSettingsSchema, 
   insertUserProgressSchema, 
   insertWaitlistSchema,
+  insertPageViewSchema,
   insertCourseSchema,
   insertLessonSchema,
   insertLessonStepSchema,
@@ -1808,6 +1809,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       res.status(500).json({ message: "Failed to save checkpoint progress" });
+    }
+  });
+
+  // Analytics routes
+  
+  // Track page view
+  app.post('/api/analytics/track', async (req, res) => {
+    try {
+      const pageViewData = insertPageViewSchema.parse({
+        ...req.body,
+        userId: req.user?.claims?.sub || req.user?.id || null, // Allow anonymous tracking
+      });
+      
+      const pageView = await storage.trackPageView(pageViewData);
+      res.json(pageView);
+    } catch (error) {
+      console.error("Error tracking page view:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data provided",
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to track page view" });
+    }
+  });
+
+  // Get analytics data
+  app.get('/api/analytics', isAuthenticated, async (req, res) => {
+    try {
+      const { period, page, startDate, endDate } = req.query;
+      
+      let start: Date | undefined;
+      let end: Date | undefined;
+      
+      // Handle different time periods
+      if (period === 'day') {
+        start = new Date();
+        start.setHours(0, 0, 0, 0);
+        end = new Date();
+        end.setHours(23, 59, 59, 999);
+      } else if (period === 'week') {
+        start = new Date();
+        start.setDate(start.getDate() - 7);
+        start.setHours(0, 0, 0, 0);
+        end = new Date();
+      } else if (period === 'month') {
+        start = new Date();
+        start.setDate(start.getDate() - 30);
+        start.setHours(0, 0, 0, 0);
+        end = new Date();
+      } else if (startDate && endDate) {
+        start = new Date(startDate as string);
+        end = new Date(endDate as string);
+      }
+      
+      const pageFilter = page as string || undefined;
+      const pageViewsData = await storage.getPageViewsCount(start, end, pageFilter);
+      const pageBreakdown = await storage.getPageViewsByPage(start, end);
+      
+      res.json({
+        pageViews: pageViewsData,
+        pageBreakdown: pageBreakdown,
+        period: period || 'custom',
+        filters: {
+          page: pageFilter,
+          startDate: start?.toISOString(),
+          endDate: end?.toISOString()
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+      res.status(500).json({ message: "Failed to fetch analytics data" });
     }
   });
 

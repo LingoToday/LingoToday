@@ -26,6 +26,7 @@ import Contact from "@/pages/contact";
 import Mission from "@/pages/mission";
 import Approach from "@/pages/approach";
 import Admin from "@/pages/admin";
+import Analytics from "@/pages/analytics";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -69,6 +70,7 @@ function Router() {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
           <Route path="/admin" component={Admin} />
+          <Route path="/analytics" component={Analytics} />
           <Route path="/courses" component={Courses} />
           <Route path="/courses/:language" component={Courses} />
           <Route path="/course-manager" component={CourseManager} />
