@@ -255,6 +255,8 @@ export const users = pgTable('users', {
   authProvider: text('auth_provider').default('local').notNull(), // 'local', 'github', 'google', etc.
   selectedLanguage: text('selected_language'), // User's chosen language to learn
   selectedLevel: text('selected_level'), // User's chosen skill level
+  currentCourse: text('current_course').default('course1'), // Current course user is on (e.g., 'course1', 'course2')
+  currentLesson: text('current_lesson').default('lesson1'), // Current lesson user is on (e.g., 'lesson1', 'lesson2')
   completedOnboarding: boolean('completed_onboarding').default(false).notNull(),
   hasSeenNotificationSetup: boolean('has_seen_notification_setup').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

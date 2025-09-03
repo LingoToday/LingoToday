@@ -88,6 +88,8 @@ export async function registerUser(userData: RegisterRequest) {
     authProvider: 'local',
     selectedLanguage: selectedLanguage || 'italian',
     selectedLevel: selectedLevel || 'A1',
+    currentCourse: 'course1', // Start new users at the first course
+    currentLesson: 'lesson1', // Start new users at the first lesson
     completedOnboarding: !!(selectedLanguage && selectedLevel), // Mark as completed if both are provided
   });
 

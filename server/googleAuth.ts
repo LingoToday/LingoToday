@@ -30,7 +30,7 @@ export function setupOAuthStrategies(passport: any) {
           email: profile.emails[0].value,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName || '',
-          profileImageUrl: profile.photos[0]?.value,
+          avatarUrl: profile.photos[0]?.value,
           authProvider: 'google',
         });
       } else {
@@ -41,8 +41,12 @@ export function setupOAuthStrategies(passport: any) {
           email: profile.emails[0].value,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName || '',
-          profileImageUrl: profile.photos[0]?.value,
+          avatarUrl: profile.photos[0]?.value,
           authProvider: 'google',
+          selectedLanguage: 'italian', // Default language for new OAuth users
+          selectedLevel: 'A1', // Default level for new OAuth users
+          currentCourse: 'course1', // Start new users at the first course
+          currentLesson: 'lesson1', // Start new users at the first lesson
         });
       }
 
@@ -53,7 +57,7 @@ export function setupOAuthStrategies(passport: any) {
           email: user.email,
           first_name: user.firstName,
           last_name: user.lastName,
-          profile_image_url: user.profileImageUrl,
+          profile_image_url: user.avatarUrl,
         }
       };
 
@@ -86,7 +90,7 @@ export function setupOAuthStrategies(passport: any) {
           email: email,
           firstName: profile.displayName?.split(' ')[0] || profile.username,
           lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
-          profileImageUrl: profile.photos[0]?.value,
+          avatarUrl: profile.photos[0]?.value,
           authProvider: 'github',
         });
       } else {
@@ -97,8 +101,12 @@ export function setupOAuthStrategies(passport: any) {
           email: email,
           firstName: profile.displayName?.split(' ')[0] || profile.username,
           lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
-          profileImageUrl: profile.photos[0]?.value,
+          avatarUrl: profile.photos[0]?.value,
           authProvider: 'github',
+          selectedLanguage: 'italian', // Default language for new OAuth users
+          selectedLevel: 'A1', // Default level for new OAuth users
+          currentCourse: 'course1', // Start new users at the first course
+          currentLesson: 'lesson1', // Start new users at the first lesson
         });
       }
 
@@ -109,7 +117,7 @@ export function setupOAuthStrategies(passport: any) {
           email: user.email,
           first_name: user.firstName,
           last_name: user.lastName,
-          profile_image_url: user.profileImageUrl,
+          profile_image_url: user.avatarUrl,
         }
       };
 
