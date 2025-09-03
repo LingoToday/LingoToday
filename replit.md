@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 10 (Directions and Places) with Inline Reviews**:
+  - Replaced the existing Italian Directions and Places course with enhanced version that includes reviews after every 4 lessons
+  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
+  - Successfully imported 21 lessons with 63 lesson steps plus 7 checkpoints
+  - Reviews include multiple-choice questions covering direction words, location terms, and asking for directions
+  - Course now covers essential navigation vocabulary with structured review intervals
 - **Updated Italian Course 9 (Food and Drinks) with Inline Reviews**:
   - Replaced the existing Italian Food and Drinks course with enhanced version that includes reviews after every 4 lessons
   - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
