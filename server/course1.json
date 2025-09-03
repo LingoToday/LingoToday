@@ -530,6 +530,118 @@
         "on_pass": {
           "action": "continue"
         }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "Buon pomeriggio",
+              "Buongiorno",
+              "Buonasera",
+              "Buonanotte"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Which phrase means 'Good night'?",
+            "options": [
+              "Buonasera",
+              "Buonanotte",
+              "Buongiorno",
+              "Ciao"
+            ],
+            "answer": "Buonanotte"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Buona giornata",
+              "Buongiorno",
+              "Buonasera",
+              "Arrivederci"
+            ],
+            "answer": "Buona giornata"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice evening'?",
+            "options": [
+              "Buona giornata",
+              "Buona serata",
+              "Buonanotte",
+              "Ciao"
+            ],
+            "answer": "Buona serata"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Arrivederci",
+              "Ciao",
+              "Buonasera",
+              "Salve"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Which phrase means 'See you soon'?",
+            "options": [
+              "A presto",
+              "Arrivederci",
+              "Buonanotte",
+              "Ciao"
+            ],
+            "answer": "A presto"
+          },
+          {
+            "prompt": "Which phrase means 'See you (later)'?",
+            "options": [
+              "Ci vediamo (dopo)",
+              "Arrivederci",
+              "Buona serata",
+              "Buona giornata"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          },
+          {
+            "prompt": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Arrivederci",
+              "Piacere!",
+              "Buonasera",
+              "Ciao"
+            ],
+            "answer": "Piacere!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
       }
     }
   }
