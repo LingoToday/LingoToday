@@ -1906,7 +1906,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const coursePath = path.join(process.cwd(), 'server', courseFileName);
       
       if (!fs.existsSync(coursePath)) {
-        return res.status(404).json({ message: 'Course file not found' });
+        return res.status(404).json({ 
+          message: `Course file not found: ${courseFileName}`,
+          requestedPath: coursePath,
+          language: language,
+          courseNumber: courseNumber
+        });
       }
       
       const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
@@ -1914,7 +1919,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const course = courseData[courseKey];
       
       if (!course || !course.lessons) {
-        return res.status(404).json({ message: 'Course data not found' });
+        return res.status(404).json({ 
+          message: 'Course data not found in JSON structure',
+          availableKeys: Object.keys(courseData),
+          expectedKey: courseKey,
+          courseDataStructure: course ? 'Course found but no lessons' : 'Course not found'
+        });
       }
       
       // Parse and organize lessons and reviews
@@ -1972,7 +1982,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Error fetching course JSON:', error);
-      res.status(500).json({ message: 'Failed to fetch course structure' });
+      res.status(500).json({ 
+        message: 'Failed to fetch course structure',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        language: req.params.language,
+        courseNumber: req.params.courseNumber
+      });
     }
   });
 

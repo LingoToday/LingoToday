@@ -84,6 +84,22 @@ function CourseJsonViewer({
   language: string; 
   courseNumber: number; 
 }) {
+  // Only try to fetch JSON for languages that have course files
+  const hasJsonFiles = ['it', 'es'].includes(language); // Italian and Spanish have JSON files
+  
+  if (!hasJsonFiles) {
+    return (
+      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+        <div className="flex items-center gap-2">
+          <FileText className="w-4 h-4" />
+          <span>JSON course files not available for {language.toUpperCase()}</span>
+        </div>
+        <div className="text-xs mt-1">
+          Only showing database lesson records for this language
+        </div>
+      </div>
+    );
+  }
   const { data: courseJson, isLoading, error } = useQuery<CourseJsonData>({
     queryKey: ['/api/admin/course-json', language, courseNumber],
     queryFn: async () => {
@@ -91,10 +107,13 @@ function CourseJsonViewer({
         credentials: 'same-origin'
       });
       if (!response.ok) {
-        throw new Error('Failed to fetch course structure');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: Failed to fetch course structure`);
       }
       return response.json();
-    }
+    },
+    retry: 1,
+    retryDelay: 1000
   });
 
   if (isLoading) {
@@ -109,7 +128,13 @@ function CourseJsonViewer({
   if (error) {
     return (
       <div className="text-sm text-red-600 dark:text-red-400 py-2">
-        Failed to load course structure from JSON
+        <div className="font-medium">Failed to load course structure from JSON</div>
+        <div className="text-xs mt-1 text-red-500/80">
+          {error instanceof Error ? error.message : 'Unknown error occurred'}
+        </div>
+        <div className="text-xs mt-1 text-gray-500">
+          Looking for: {language}/course{courseNumber}.json
+        </div>
       </div>
     );
   }
