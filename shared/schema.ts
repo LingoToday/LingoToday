@@ -257,6 +257,7 @@ export const users = pgTable('users', {
   selectedLevel: text('selected_level'), // User's chosen skill level
   currentCourse: text('current_course').default('course1'), // Current course user is on (e.g., 'course1', 'course2')
   currentLesson: text('current_lesson').default('lesson1'), // Current lesson user is on (e.g., 'lesson1', 'lesson2')
+  priceTier: text('price_tier').default('n/a').notNull(), // Price tier: 'pro-monthly', 'pro-yearly', 'plus-monthly', 'plus-yearly', 'free-trial', or 'n/a'
   completedOnboarding: boolean('completed_onboarding').default(false).notNull(),
   hasSeenNotificationSetup: boolean('has_seen_notification_setup').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
