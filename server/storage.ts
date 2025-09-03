@@ -218,8 +218,8 @@ export class DatabaseStorage implements IStorage {
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
 
-    // Skip checkpoint logic for Spanish as it has built-in reviews in JSON
-    if (language !== 'spanish') {
+    // Skip old checkpoint logic for all languages with JSON structure reviews (Spanish and Italian)
+    if (!['spanish', 'italian'].includes(language)) {
       // Check if user needs a checkpoint review (every 4 lessons)
       const totalCompletedLessons = completedLessons.length;
       console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
@@ -283,9 +283,9 @@ export class DatabaseStorage implements IStorage {
             const course = courseData[courseId];
             
             if (course && course.lessons) {
-              // For Spanish, properly order lessons and reviews
+              // For Spanish and Italian, properly order lessons and reviews
               let lessonIds;
-              if (language === 'spanish') {
+              if (language === 'spanish' || language === 'italian') {
                 // Create proper ordering: lesson1, lesson2, lesson3, lesson4, review1, lesson5, etc.
                 const allKeys = Object.keys(course.lessons);
                 const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {

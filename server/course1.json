@@ -474,6 +474,62 @@
           ],
           "answer": "Pleased to meet you!"
         }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Hi / Bye'?",
+            "options": [
+              "Ciao",
+              "Arrivederci",
+              "Buonasera", 
+              "Salve"
+            ],
+            "answer": "Ciao"
+          },
+          {
+            "prompt": "Which phrase means 'Hello' (polite)?",
+            "options": [
+              "Ciao",
+              "Salve",
+              "Buongiorno",
+              "Buonanotte"
+            ],
+            "answer": "Salve"
+          },
+          {
+            "prompt": "Which phrase means 'Good morning'?",
+            "options": [
+              "Buonanotte",
+              "Buongiorno", 
+              "Buonasera",
+              "Arrivederci"
+            ],
+            "answer": "Buongiorno"
+          },
+          {
+            "prompt": "Which phrase means 'Good evening'?",
+            "options": [
+              "Buongiorno",
+              "Buonasera",
+              "Buonanotte",
+              "Ciao"
+            ],
+            "answer": "Buonasera"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 3,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
       }
     }
   }
