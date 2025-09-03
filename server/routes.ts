@@ -1890,20 +1890,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { language, courseNumber } = req.params;
       
-      // Construct file path based on language
+      // Construct file path based on language and course number
       let courseFileName: string;
-      if (language === 'spanish') {
+      if (language === 'spanish' || language === 'es') {
         courseFileName = `spanish_course${courseNumber}.json`;
-      } else if (language === 'german') {
+      } else if (language === 'german' || language === 'de') {
         courseFileName = `german_course${courseNumber}.json`;
-      } else if (language === 'french') {
+      } else if (language === 'french' || language === 'fr') {
         courseFileName = `french_course${courseNumber}.json`;
+      } else if (language === 'italian' || language === 'it') {
+        // Map Italian course numbers to the actual filenames used in seeding
+        const italianCourseFiles: { [key: string]: string } = {
+          '1': 'Italian_course1_greetings_with_inline_reviews_1756914297318.json',
+          '2': 'italian_course2_introductions_with_inline_reviews_1756914297319.json',
+          '3': 'italian_course3_essential_courtesy_steps_full_1755005294493.json',
+          '4': 'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756890604470.json',
+          '5': 'italian_course5_time_date_with_inline_reviews_q4_1756894312305.json',
+          '6': 'italian_course6_travel_basics_with_inline_reviews_q4_1756895270936.json',
+          '7': 'italian_course7_describing_things_with_inline_reviews_q4_1756896700949.json',
+          '8': 'italian_course8_weather_and_seasons_with_inline_reviews_q4_1756898173198.json',
+          '9': 'italian_course9_food_and_drinks_with_inline_reviews_q4_v2_1756898433747.json',
+          '10': 'italian_course10_directions_and_places_with_inline_reviews_q4_1756899105692.json',
+          '11': 'Italian_beginner_course11_shopping_full_1755080022546.json',
+          '12': 'Italian_beginner_course12_expressing_likes_dislikes_full_1755080022546.json',
+          '13': 'Italian_beginner_course13_basic_grammar_essentials_full_1755080022546.json'
+        };
+        courseFileName = italianCourseFiles[courseNumber];
+        if (!courseFileName) {
+          return res.status(404).json({ 
+            message: `Italian course ${courseNumber} not found`,
+            availableCourses: Object.keys(italianCourseFiles)
+          });
+        }
       } else {
-        // Default to Italian
+        // Fallback to old naming convention
         courseFileName = `course${courseNumber}.json`;
       }
       
-      const coursePath = path.join(process.cwd(), 'server', courseFileName);
+      const coursePath = path.join(process.cwd(), 'attached_assets', courseFileName);
       
       if (!fs.existsSync(coursePath)) {
         return res.status(404).json({ 
