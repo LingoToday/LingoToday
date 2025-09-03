@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 8 (Weather and Seasons) with Inline Reviews**:
+  - Replaced the existing Italian Weather and Seasons course with enhanced version that includes reviews after every 4 lessons
+  - Added 6 checkpoint reviews throughout the course (5 regular reviews + 1 final review)
+  - Successfully imported 18 lessons with 54 lesson steps plus 6 checkpoints
+  - Reviews include multiple-choice questions covering weather expressions, seasonal vocabulary, and personal temperature feelings
+  - Course now covers comprehensive weather and season vocabulary with structured review intervals
 - **Updated Italian Course 7 (Describing Things - Colors & Adjectives) with Inline Reviews**:
   - Replaced the existing Italian Colors & Adjectives course with enhanced version that includes reviews after every 4 lessons
   - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
