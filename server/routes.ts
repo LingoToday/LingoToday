@@ -580,9 +580,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const course = courseData[courseId];
             
             if (course && course.lessons) {
-              // For Spanish and Italian, properly order lessons and reviews
+              // For Spanish, properly order lessons and reviews
               let lessonIds;
-              if (language === 'spanish' || language === 'italian') {
+              if (language === 'spanish') {
                 // Create proper ordering: lesson1, lesson2, lesson3, lesson4, review1, lesson5, etc.
                 const allKeys = Object.keys(course.lessons);
                 const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
