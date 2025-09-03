@@ -146,11 +146,6 @@ export default function AnalyticsPage() {
                     Dashboard
                   </Button>
                 </Link>
-                <Link href="/analytics">
-                  <Button variant="ghost" className="text-blue-600">
-                    Analytics
-                  </Button>
-                </Link>
               </nav>
             </div>
             
@@ -173,12 +168,6 @@ export default function AnalyticsPage() {
                     <DropdownMenuItem data-testid="account-menu-item">
                       <User className="w-4 h-4 mr-2" />
                       Account Settings
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/analytics">
-                    <DropdownMenuItem data-testid="analytics-menu-item">
-                      <BarChart3 className="w-4 h-4 mr-2" />
-                      Analytics
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
