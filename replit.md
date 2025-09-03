@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 5 (Time and Date) with Inline Reviews**:
+  - Replaced the existing Italian Time and Date course with enhanced version that includes reviews after every 4 lessons
+  - Added 11 checkpoint reviews throughout the course (10 regular reviews + 1 final review)
+  - Successfully imported 38 lessons with 114 lesson steps plus 11 checkpoints
+  - Reviews include multiple-choice questions covering days of the week, months, time expressions, and date phrases
+  - Course now covers comprehensive time and date vocabulary with structured review intervals
 - **Updated Italian Course 4 (Numbers) with Inline Reviews**:
   - Replaced the existing Italian Numbers course with enhanced version that includes reviews after every 4 lessons
   - Added 9 checkpoint reviews throughout the course (8 regular reviews + 1 final review)
