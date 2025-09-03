@@ -8,6 +8,12 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (September 3, 2025)
+- **Updated Italian Course 7 (Describing Things - Colors & Adjectives) with Inline Reviews**:
+  - Replaced the existing Italian Colors & Adjectives course with enhanced version that includes reviews after every 4 lessons
+  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
+  - Successfully imported 22 lessons with 66 lesson steps plus 7 checkpoints
+  - Reviews include multiple-choice questions covering colors with gender agreement and basic descriptive adjectives
+  - Course now covers essential color vocabulary and adjective usage with structured review intervals
 - **Updated Italian Course 6 (Travel Basics) with Inline Reviews**:
   - Replaced the existing Italian Travel Basics course with enhanced version that includes reviews after every 4 lessons
   - Added 10 checkpoint reviews throughout the course (9 regular reviews + 1 final review)

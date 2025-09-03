@@ -62,7 +62,7 @@ async function seedDatabase() {
     'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756890604470.json',
     'italian_course5_time_date_with_inline_reviews_q4_1756894312305.json',
     'italian_course6_travel_basics_with_inline_reviews_q4_1756895270936.json',
-    'course7_describing_things_split_1755005294489.json',
+    'italian_course7_describing_things_with_inline_reviews_q4_1756896700949.json',
     'course8_weather_and_seasons_full (1)_1755005294491.json',
     'Italian_beginner_course9_food_and_drinks_full (1)_1755080022537.json',
     'Italian_beginner_course10_directions_and_places_full_1755080022546.json',
