@@ -260,71 +260,70 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // Load actual course structure from individual JSON files for all supported languages
-    if (['italian', 'spanish', 'french', 'german'].includes(language)) {
+    // For languages with imported course data (Italian, Spanish), use database structure
+    if (['italian', 'spanish'].includes(language)) {
       try {
-        const path = await import('path');
-        const fs = await import('fs');
+        const languageRecord = await db
+          .select()
+          .from(languages)
+          .where(eq(languages.code, language === 'italian' ? 'it' : 'es'))
+          .limit(1);
         
-        // Use individual course files for all supported languages
-        const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
-        
-        for (const courseId of courseOrder) {
-          // Use language-specific course files
-          let coursePath;
-          if (language === 'spanish') {
-            coursePath = path.default.join(process.cwd(), 'server', `spanish_${courseId}.json`);
-          } else {
-            coursePath = path.default.join(process.cwd(), 'server', `${courseId}.json`);
-          }
+        if (languageRecord.length > 0) {
+          const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
           
-          if (fs.default.existsSync(coursePath)) {
-            const courseData = JSON.parse(fs.default.readFileSync(coursePath, 'utf-8'));
-            const course = courseData[courseId];
+          for (const courseId of courseOrder) {
+            const courseNumber = parseInt(courseId.replace('course', ''));
             
-            if (course && course.lessons) {
-              // For Spanish and Italian, properly order lessons and reviews
-              let lessonIds;
-              if (language === 'spanish' || language === 'italian') {
-                // Create proper ordering: lesson1, lesson2, lesson3, lesson4, review1, lesson5, etc.
-                const allKeys = Object.keys(course.lessons);
-                const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
-                  const numA = parseInt(a.replace('lesson', ''));
-                  const numB = parseInt(b.replace('lesson', ''));
-                  return numA - numB;
-                });
-                const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
-                  const numA = parseInt(a.replace('review', '')) || 999;
-                  const numB = parseInt(b.replace('review', '')) || 999;
-                  return numA - numB;
-                });
+            // Get course and its lessons and checkpoints from database
+            const course = await db
+              .select()
+              .from(courses)
+              .where(and(
+                eq(courses.languageId, languageRecord[0].id),
+                eq(courses.courseNumber, courseNumber)
+              ))
+              .limit(1);
+            
+            if (course.length > 0) {
+              // Get lessons for this course
+              const courseLessons = await db
+                .select()
+                .from(lessons)
+                .where(eq(lessons.courseId, course[0].id))
+                .orderBy(lessons.lessonNumber);
+              
+              // Get checkpoints for this course
+              const courseCheckpoints = await db
+                .select()
+                .from(checkpoints)
+                .where(eq(checkpoints.courseId, course[0].id))
+                .orderBy(checkpoints.checkpointNumber);
+              
+              // Create proper lesson sequence: lesson1-4, review1, lesson5-8, review2, etc.
+              const lessonIds: string[] = [];
+              let lessonIndex = 0;
+              
+              for (const lesson of courseLessons) {
+                lessonIds.push(`lesson${lesson.lessonNumber}`);
                 
-                // Interleave lessons and reviews: lesson1-4, review1, lesson5-8, review2, etc.
-                lessonIds = [];
-                let lessonIndex = 0;
-                let reviewIndex = 0;
-                
-                while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
-                  // Add up to 4 lessons
-                  for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
-                    lessonIds.push(lessons[lessonIndex++]);
-                  }
-                  
-                  // Add review if available
-                  if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
-                    lessonIds.push(reviews[reviewIndex++]);
+                // After every 4 lessons, check if there's a corresponding review
+                if (lesson.lessonNumber % 4 === 0) {
+                  const reviewNumber = lesson.lessonNumber / 4;
+                  const correspondingCheckpoint = courseCheckpoints.find((cp: any) => cp.checkpointNumber === reviewNumber);
+                  if (correspondingCheckpoint) {
+                    lessonIds.push(`review${reviewNumber}`);
                   }
                 }
-              } else {
-                // For other languages, use simple numeric sorting
-                lessonIds = Object.keys(course.lessons).sort((a, b) => {
-                  const numA = parseInt(a.replace('lesson', ''));
-                  const numB = parseInt(b.replace('lesson', ''));
-                  return numA - numB;
-                });
               }
               
-              // Check each lesson in order
+              // Add final review if it exists
+              const finalReview = courseCheckpoints.find((cp: any) => cp.checkpointNumber === 0);
+              if (finalReview && courseLessons.length > 0) {
+                lessonIds.push('review_final');
+              }
+              
+              // Check each lesson/review in order
               for (const lessonId of lessonIds) {
                 const isCompleted = completedLessons.some(
                   lesson => lesson.courseId === courseId && lesson.lessonId === lessonId
@@ -339,8 +338,8 @@ export class DatabaseStorage implements IStorage {
           }
         }
       } catch (error) {
-        console.error('Error loading course structure:', error);
-        // Fall back to hardcoded structure if file loading fails
+        console.error('Error loading course structure from database:', error);
+        // Fall back to hardcoded structure if database loading fails
       }
     }
 
