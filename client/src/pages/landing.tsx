@@ -365,27 +365,28 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            {/* Speaking Practice */}
+            {/* Micro Learning Science */}
             <Card className="bg-white border border-gray-200 shadow-card hover-lift group">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                    <Mic className="w-6 h-6 text-orange-600" />
+                    <Brain className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900">Speaking Practice</h4>
-                    <p className="text-sm text-gray-500">Real-Time Pronunciation Feedback</p>
+                    <h4 className="text-lg font-semibold text-gray-900">Micro Learning</h4>
+                    <p className="text-sm text-gray-500">Science-Backed Learning Method</p>
                   </div>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  Practice speaking with AI-powered pronunciation analysis that gives instant feedback on your accent, rhythm, and fluency to help you sound more natural.
+                  Research shows learning in small, frequent sessions improves retention by up to 80% compared to cramming. Our micro-lessons work with your brain's natural learning patterns.
                 </p>
                 <div className="flex justify-center items-center">
-                  <img 
-                    src={speakingPracticeImage} 
-                    alt="Woman speaking into a phone for language practice" 
-                    className="w-56 h-40 object-cover rounded-lg"
-                  />
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg w-full max-w-sm">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600 mb-1">80%</div>
+                      <div className="text-xs text-gray-600">Better retention with micro-learning</div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
