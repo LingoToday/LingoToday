@@ -784,11 +784,6 @@ export default function Lesson() {
                         </strong>
                       </p>
                     )}
-                    {fromNotification && (
-                      <p className="mt-2 text-sm text-blue-600">
-                        ✨ You successfully answered a notification question!
-                      </p>
-                    )}
                   </div>
                 )}
                 
