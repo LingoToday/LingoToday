@@ -61,7 +61,7 @@ export default function Landing() {
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-3 sm:px-6 py-2 rounded-full text-[13px] sm:text-base"
                 onClick={() => window.location.href = "/onboarding"}
               >
-                <span className="hidden sm:inline text-[12px]">Use For Free</span>
+                <span className="hidden sm:inline text-[13px]">Use For Free</span>
                 <span className="sm:hidden">Use For Free</span>
               </Button>
             </div>
