@@ -575,6 +575,9 @@ export class DatabaseStorage implements IStorage {
           },
           orderBy: lessons.lessonNumber,
         },
+        checkpoints: {
+          orderBy: checkpoints.checkpointNumber,
+        },
       },
     });
     return result;
@@ -601,6 +604,9 @@ export class DatabaseStorage implements IStorage {
             steps: true,
           },
           orderBy: lessons.lessonNumber,
+        },
+        checkpoints: {
+          orderBy: checkpoints.checkpointNumber,
         },
       },
       orderBy: courses.courseNumber,

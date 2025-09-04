@@ -428,6 +428,7 @@ export type CourseWithRelations = Course & {
   language: Language;
   skillLevel: SkillLevel;
   lessons: LessonWithSteps[];
+  checkpoints: Checkpoint[];
 };
 
 export type LessonWithSteps = Lesson & {

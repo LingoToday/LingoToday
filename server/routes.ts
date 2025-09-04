@@ -1208,6 +1208,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { language, courseId, lessonId } = req.params;
       
+      // Handle review lessons for Italian and Spanish (fetch from database checkpoints)
+      if ((['italian', 'spanish'].includes(language)) && lessonId.startsWith('review')) {
+        const languageCode = language === 'italian' ? 'it' : 'es';
+        
+        // Get language and course from database
+        const languageRecord = await storage.getLanguageByCode(languageCode);
+        if (!languageRecord) {
+          return res.status(404).json({ message: `Language not found: ${languageCode}` });
+        }
+        
+        const courseNumber = parseInt(courseId.replace('course', ''));
+        
+        // Get beginner skill level ID
+        const skillLevel = await storage.getSkillLevelByCode('beginner');
+        if (!skillLevel) {
+          return res.status(404).json({ message: 'Beginner skill level not found' });
+        }
+        
+        const courses = await storage.getCoursesWithRelations(languageRecord.id, skillLevel.id);
+        const course = courses.find(c => c.courseNumber === courseNumber);
+        
+        if (!course) {
+          return res.status(404).json({ message: `Course not found: ${courseId}` });
+        }
+        
+        // Find the checkpoint based on lessonId (review1 -> checkpoint 1, review_final -> checkpoint 0)
+        let checkpointNumber;
+        if (lessonId === 'review_final') {
+          checkpointNumber = 0;
+        } else {
+          checkpointNumber = parseInt(lessonId.replace('review', ''));
+        }
+        
+        const checkpoint = course.checkpoints.find(cp => cp.checkpointNumber === checkpointNumber);
+        
+        if (!checkpoint) {
+          return res.status(404).json({ message: `Review checkpoint not found: ${lessonId} in ${courseId}` });
+        }
+        
+        // Format checkpoint data as a lesson
+        res.json({
+          courseId,
+          courseTitle: course.title,
+          courseDescription: course.description,
+          lessonId,
+          lesson: {
+            title: checkpoint.title,
+            mode: 'mcq',
+            questions: checkpoint.questions
+          }
+        });
+        return;
+      }
+      
       if (['italian', 'spanish', 'french', 'german'].includes(language)) {
         // Use language-specific course files or fallback to generic files
         let courseFileName = language === 'italian' ? `${courseId}.json` : `${language}_${courseId}.json`;
