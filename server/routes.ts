@@ -1601,44 +1601,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const checkpoint = allCheckpoints.find(c => c.checkpointNumber === checkpointNumber);
       
       if (!checkpoint) {
-        // Create a generic checkpoint if none exists in database
-        return res.json({
-          id: checkpointNumber,
-          checkpointNumber: checkpointNumber,
-          title: `Checkpoint ${checkpointNumber}: Review`,
-          description: `Review your progress from the last 4 lessons`,
-          questions: [
-            {
-              id: 1,
-              question: "Which Italian greeting is used in formal situations?",
-              options: ["Ciao", "Buongiorno", "Hey", "Salve"],
-              correctAnswer: "Buongiorno",
-              explanation: "Buongiorno is the formal way to say good morning/good day in Italian."
-            },
-            {
-              id: 2,
-              question: "How do you say 'What is your name?' informally in Italian?",
-              options: ["Come si chiama?", "Come ti chiami?", "Che cosa fai?", "Come stai?"],
-              correctAnswer: "Come ti chiami?",
-              explanation: "Come ti chiami? is the informal way to ask someone's name."
-            },
-            {
-              id: 3,
-              question: "Which response is appropriate for 'Come stai?'",
-              options: ["Mi chiamo Marco", "Bene, grazie", "Prego", "Arrivederci"],
-              correctAnswer: "Bene, grazie",
-              explanation: "Bene, grazie means 'Well, thank you' and is the proper response to 'How are you?'"
-            },
-            {
-              id: 4,
-              question: "What does 'Prego' mean in Italian?",
-              options: ["Thank you", "You're welcome / Please", "Excuse me", "Goodbye"],
-              correctAnswer: "You're welcome / Please",
-              explanation: "Prego is a versatile word meaning 'you're welcome' or 'please' depending on context."
-            }
-          ],
-          isActive: true
-        });
+        return res.status(404).json({ message: "Checkpoint not found" });
       }
       
       res.json(checkpoint);
