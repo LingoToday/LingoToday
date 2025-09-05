@@ -120,7 +120,9 @@ export default function NotificationSetupOverlay({
     >
       <div 
         ref={overlayRef}
-        className="relative max-w-md w-full"
+        className={`relative w-full ${
+          step === 2 ? 'max-w-lg' : 'max-w-md'
+        }`}
         tabIndex={-1}
         role="dialog"
         aria-labelledby="overlay-title"
@@ -162,7 +164,7 @@ export default function NotificationSetupOverlay({
               <div className="flex justify-center">
                 <video 
                   controls 
-                  className="w-48 h-64 rounded-lg shadow-lg"
+                  className="w-56 h-80 rounded-lg shadow-lg"
                   data-testid="welcome-video"
                 >
                   <source src="/attached_assets/copy_1EC8BCF0-0552-45EA-94D0-8EAACB53AF04_1757075689342.MOV" type="video/quicktime" />
