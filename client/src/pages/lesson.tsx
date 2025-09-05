@@ -438,7 +438,7 @@ export default function Lesson() {
           correct
         });
       }
-    } else if (currentStep === 3 && stepData.type === 'audio') {
+    } else if (stepData.type === 'audio') {
       correct = selectedAnswer === stepData.answer;
     }
 
