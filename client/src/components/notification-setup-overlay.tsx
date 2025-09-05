@@ -164,6 +164,8 @@ export default function NotificationSetupOverlay({
               <div className="flex justify-center">
                 <video 
                   controls 
+                  autoPlay
+                  muted
                   className="w-56 h-80 rounded-lg shadow-lg"
                   data-testid="welcome-video"
                 >
