@@ -175,11 +175,38 @@ export default function Lesson() {
         // Step 3: Typing practice (fill in the blank with the word)
         const word = currentLesson.lesson.content.word || '';
         const translation = currentLesson.lesson.content.translation || '';
+        
+        // Generate proper fill-in-the-blank format
+        const generateFillInText = (word: string) => {
+          // For phrases with spaces, show the first word and blank out the rest
+          if (word.includes(' ')) {
+            const parts = word.split(' ');
+            return parts[0] + "_".repeat(word.length - parts[0].length);
+          }
+          // For single words
+          if (word.length <= 3) return word.charAt(0) + "_".repeat(word.length - 1);
+          return word.substring(0, 2) + "_".repeat(word.length - 2);
+        };
+        
+        const getMissingLetters = (word: string) => {
+          // For phrases with spaces, return everything after the first word (excluding the space)
+          if (word.includes(' ')) {
+            const firstSpaceIndex = word.indexOf(' ');
+            return word.substring(firstSpaceIndex + 1); // +1 to skip the space
+          }
+          // For single words
+          if (word.length <= 3) return word.substring(1);
+          return word.substring(2);
+        };
+        
+        const fillInPrompt = generateFillInText(word);
+        const missingLetters = getMissingLetters(word);
+        
         return {
           type: 'type',
-          prompt: `"____" = ${translation}`,
-          expected: word,
-          alternatives: [word.toLowerCase(), word.toUpperCase()]
+          prompt: `${fillInPrompt} = ${translation}`,
+          expected: missingLetters,
+          alternatives: [missingLetters.toLowerCase(), missingLetters.toUpperCase()]
         };
       } else if (currentStep === 4) {
         // Step 4: Audio comprehension (listening practice)
