@@ -2151,6 +2151,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin route - get user metrics data
+  app.get('/api/admin/user-metrics', async (req, res) => {
+    try {
+      // Get all users with their basic info
+      const allUsers = await storage.getAllUsers();
+      
+      // For each user, get their progress data across all languages
+      const userMetrics = await Promise.all(
+        allUsers.map(async (user) => {
+          const languages = ['italian', 'spanish', 'french', 'german'];
+          const userProgressData = {};
+          
+          for (const language of languages) {
+            const progress = await storage.getUserProgress(user.id, language);
+            const stats = await storage.getUserStats(user.id, language);
+            
+            if (progress.length > 0 || stats) {
+              const completedLessons = progress.filter(p => p.completed && p.completedAt);
+              const latestProgress = completedLessons.length > 0 
+                ? completedLessons[completedLessons.length - 1] 
+                : null;
+              
+              userProgressData[language] = {
+                lessonsCompleted: completedLessons.length,
+                totalProgress: progress.length,
+                currentCourse: latestProgress?.courseId || 'course1',
+                currentLesson: latestProgress?.lessonId || 'lesson1',
+                lastActivity: latestProgress?.completedAt || null,
+                streak: stats?.streak || 0,
+                wordsLearned: stats?.wordsLearned || 0
+              };
+            }
+          }
+          
+          // Only include users who have some progress
+          if (Object.keys(userProgressData).length > 0) {
+            return {
+              userId: user.id,
+              email: user.email,
+              firstName: user.firstName || 'Unknown',
+              lastName: user.lastName || '',
+              selectedLanguage: user.selectedLanguage || 'italian',
+              progress: userProgressData,
+              totalLanguagesStarted: Object.keys(userProgressData).length,
+              overallLessonsCompleted: Object.values(userProgressData).reduce((sum: number, lang: any) => sum + lang.lessonsCompleted, 0),
+              lastActivity: Math.max(...Object.values(userProgressData).map((lang: any) => lang.lastActivity ? new Date(lang.lastActivity).getTime() : 0)) || null
+            };
+          }
+          return null;
+        })
+      );
+      
+      // Filter out null values and sort by last activity
+      const activeUsers = userMetrics
+        .filter(user => user !== null)
+        .sort((a, b) => {
+          if (!a.lastActivity && !b.lastActivity) return 0;
+          if (!a.lastActivity) return 1;
+          if (!b.lastActivity) return -1;
+          return new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime();
+        });
+      
+      res.json({
+        totalUsers: allUsers.length,
+        activeUsers: activeUsers.length,
+        users: activeUsers
+      });
+    } catch (error) {
+      console.error("Error fetching user metrics:", error);
+      res.status(500).json({ message: "Failed to fetch user metrics" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
