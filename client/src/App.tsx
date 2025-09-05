@@ -62,6 +62,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/mission" component={Mission} />
           <Route path="/approach" component={Approach} />
+          <Route path="/admin" component={Admin} />
         </>
       ) : (
         <>
@@ -69,7 +70,6 @@ function Router() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
-          <Route path="/admin" component={Admin} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/courses" component={Courses} />
           <Route path="/courses/:language" component={Courses} />
