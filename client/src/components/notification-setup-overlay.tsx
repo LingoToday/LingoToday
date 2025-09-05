@@ -137,9 +137,12 @@ export default function NotificationSetupOverlay({
               <X className="w-5 h-5" />
             </button>
             
-            <div className="flex justify-center mb-4">
-              {steps[step].icon}
-            </div>
+            {/* Show icon only if not the video step */}
+            {step !== 2 && (
+              <div className="flex justify-center mb-4">
+                {steps[step].icon}
+              </div>
+            )}
             
             <CardTitle id="overlay-title" className="text-xl font-semibold text-gray-900">
               {steps[step].title}
