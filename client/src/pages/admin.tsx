@@ -4,8 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle, Lock, BarChart3 } from "lucide-react";
 import { useState } from "react";
+import Analytics from "@/pages/analytics";
 
 interface Course {
   id: number;
@@ -156,7 +159,7 @@ function JsonCourseViewer({
   );
 }
 
-export default function AdminPage() {
+function CourseStructurePage() {
   const { data: adminData, isLoading, error } = useQuery<LanguageData[]>({
     queryKey: ['/api/admin/courses'],
   });
@@ -201,11 +204,12 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Admin Dashboard
-          </h1>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Course Structure
+          </h2>
           <p className="text-gray-600 dark:text-gray-300">
             View all uploaded courses organized by language and skill level
           </p>
@@ -325,6 +329,107 @@ export default function AdminPage() {
               </Card>
             </TabsContent>
           ))}
+        </Tabs>
+      </div>
+    </div>
+  );
+}
+
+function AccessCodeForm({ onAccessGranted }: { onAccessGranted: () => void }) {
+  const [accessCode, setAccessCode] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (accessCode === "crazy00") {
+      onAccessGranted();
+    } else {
+      setError("Invalid access code");
+      setAccessCode("");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <Card className="w-96">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2">
+            <Lock className="w-5 h-5" />
+            Admin Access Required
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="accessCode" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Enter Access Code
+              </label>
+              <Input
+                id="accessCode"
+                type="password"
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
+                placeholder="Access code"
+                data-testid="access-code-input"
+                className={error ? "border-red-500" : ""}
+              />
+              {error && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400" data-testid="access-error">
+                  {error}
+                </p>
+              )}
+            </div>
+            <Button type="submit" className="w-full" data-testid="access-submit">
+              Access Admin
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default function AdminPage() {
+  const [hasAccess, setHasAccess] = useState(false);
+  const [activeTab, setActiveTab] = useState("course-structure");
+
+  if (!hasAccess) {
+    return <AccessCodeForm onAccessGranted={() => setHasAccess(true)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Admin Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Manage and monitor the language learning platform
+          </p>
+        </div>
+
+        {/* Sub Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6" data-testid="admin-nav-tabs">
+            <TabsTrigger value="course-structure" data-testid="tab-course-structure" className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Course Structure
+            </TabsTrigger>
+            <TabsTrigger value="analytics" data-testid="tab-analytics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="course-structure">
+            <CourseStructurePage />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <Analytics />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
