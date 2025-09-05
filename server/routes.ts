@@ -1287,6 +1287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         // Process the steps to build the lesson data
+        const allSteps: any = {};
         for (const step of lessonWithSteps.steps) {
           if (step.stepType === 'word_review') {
             // New 4-step structure: word review step
@@ -1295,6 +1296,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             lesson.content.translation = content.english;
             lesson.content.audio = content.audio;
             lesson.content.note = content.note;
+            allSteps.word_review = {
+              type: 'word_review',
+              word: content.italian,
+              translation: content.english,
+              audio: content.audio,
+              note: content.note
+            };
           } else if (step.stepType === 'quick_check') {
             // New 4-step structure: quick check step
             const content = step.content as any;
@@ -1303,6 +1311,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
               question: mcq.question,
               options: mcq.options,
               correct: mcq.options.indexOf(mcq.answer)
+            };
+            allSteps.quick_check = {
+              type: 'quick_check',
+              question: mcq.question,
+              options: mcq.options,
+              answer: mcq.answer
+            };
+          } else if (step.stepType === 'typing_practice') {
+            // New 4-step structure: typing practice step
+            const content = step.content as any;
+            allSteps.typing_practice = {
+              type: 'type',
+              prompt: content.prompt,
+              expected: content.expected,
+              alternatives: content.alternatives || []
+            };
+          } else if (step.stepType === 'listening_comprehension') {
+            // New 4-step structure: listening comprehension step
+            const content = step.content as any;
+            allSteps.listening_comprehension = {
+              type: 'audio',
+              audioSentence: content.audioSentence,
+              options: content.options,
+              answer: content.answer
             };
           } else if (step.stepType === 'introduction') {
             // Old 3-step structure: introduction step (contains both word review and MCQ)
@@ -1318,6 +1350,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
               correct: mcq.options.indexOf(mcq.answer)
             };
           }
+        }
+
+        // Add the steps to the lesson for the new 4-step structure
+        if (Object.keys(allSteps).length > 0) {
+          lesson.steps = allSteps;
         }
 
         // Get course info
