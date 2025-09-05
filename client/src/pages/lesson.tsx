@@ -152,7 +152,52 @@ export default function Lesson() {
       return null;
     }
     
-    // Handle regular lessons (3-step format)
+    // Handle new lesson format (with content and quiz properties)
+    if (currentLesson.lesson.content && currentLesson.lesson.quiz) {
+      if (currentStep === 1) {
+        // Step 1: Learn step (word introduction)
+        return {
+          type: 'learn',
+          word: currentLesson.lesson.content.word || '',
+          translation: currentLesson.lesson.content.translation || '',
+          audio: currentLesson.lesson.content.audio || '',
+          note: currentLesson.lesson.content.note || '',
+          quiz: {
+            question: currentLesson.lesson.quiz.question || '',
+            options: currentLesson.lesson.quiz.options || [],
+            answer: currentLesson.lesson.quiz.options?.[currentLesson.lesson.quiz.correct] || ''
+          }
+        };
+      } else if (currentStep === 2) {
+        // Step 2: Typing practice (fill in the blank with the word)
+        const word = currentLesson.lesson.content.word || '';
+        const translation = currentLesson.lesson.content.translation || '';
+        return {
+          type: 'type',
+          prompt: `"____" = ${translation}`,
+          expected: word,
+          alternatives: [word.toLowerCase(), word.toUpperCase()]
+        };
+      } else if (currentStep === 3) {
+        // Step 3: Audio comprehension (listening practice)
+        const word = currentLesson.lesson.content.word || '';
+        const translation = currentLesson.lesson.content.translation || '';
+        return {
+          type: 'audio',
+          audioSentence: `${word}, ciao!`,
+          options: [
+            `${translation}, hi!`,
+            `${translation}, good evening!`,
+            `Goodbye, ${translation.toLowerCase()}!`,
+            `Hello, how are you?`
+          ],
+          answer: `${translation}, hi!`
+        };
+      }
+      return null;
+    }
+    
+    // Handle old lesson format (with step1, step2, step3 properties) - fallback for compatibility
     const stepKey = `step${currentStep}`;
     const stepData = currentLesson.lesson[stepKey];
     

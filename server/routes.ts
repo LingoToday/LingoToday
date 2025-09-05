@@ -1298,7 +1298,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else if (step.stepType === 'quick_check') {
             // New 4-step structure: quick check step
             const content = step.content as any;
-            lesson.quiz = content.mcq;
+            const mcq = content.mcq;
+            lesson.quiz = {
+              question: mcq.question,
+              options: mcq.options,
+              correct: mcq.options.indexOf(mcq.answer)
+            };
           } else if (step.stepType === 'introduction') {
             // Old 3-step structure: introduction step (contains both word review and MCQ)
             const content = step.content as any;
@@ -1306,7 +1311,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             lesson.content.translation = content.english;
             lesson.content.audio = content.audio;
             lesson.content.note = content.note;
-            lesson.quiz = content.mcq;
+            const mcq = content.mcq;
+            lesson.quiz = {
+              question: mcq.question,
+              options: mcq.options,
+              correct: mcq.options.indexOf(mcq.answer)
+            };
           }
         }
 
