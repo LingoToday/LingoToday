@@ -156,7 +156,7 @@ export default function NotificationSetupOverlay({
               <div className="flex justify-center">
                 <video 
                   controls 
-                  className="w-full max-w-md rounded-lg shadow-lg"
+                  className="w-64 h-36 rounded-lg shadow-lg"
                   data-testid="welcome-video"
                 >
                   <source src="/attached_assets/copy_1EC8BCF0-0552-45EA-94D0-8EAACB53AF04_1757075689342.MOV" type="video/quicktime" />
