@@ -43,11 +43,6 @@ export default function NotificationSetupOverlay({
 
   const steps = [
     {
-      title: "Welcome to LingoToday!",
-      content: "Watch this quick video to learn how LingoToday works and how it will help you learn your new language.",
-      icon: <Play className="w-8 h-8 text-blue-600" />
-    },
-    {
       title: "Enable Notifications",
       content: "Turn on browser notifications to receive gentle reminders for your language lessons throughout the day.",
       icon: <Bell className="w-8 h-8 text-green-600" />
@@ -56,6 +51,11 @@ export default function NotificationSetupOverlay({
       title: "Set Your Schedule",
       content: "Choose how often you'd like to be reminded and set your preferred learning hours that work with your daily routine.",
       icon: <Clock className="w-8 h-8 text-purple-600" />
+    },
+    {
+      title: "Welcome to LingoToday!",
+      content: "",
+      icon: <Play className="w-8 h-8 text-blue-600" />
     }
   ];
 
@@ -147,12 +147,15 @@ export default function NotificationSetupOverlay({
           </CardHeader>
           
           <CardContent className="text-center space-y-6">
-            <p id="overlay-description" className="text-gray-600 leading-relaxed">
-              {steps[step].content}
-            </p>
+            {/* Show content text only if it's not empty (not the video step) */}
+            {steps[step].content && (
+              <p id="overlay-description" className="text-gray-600 leading-relaxed">
+                {steps[step].content}
+              </p>
+            )}
 
-            {/* Video - Show only on first step */}
-            {step === 0 && (
+            {/* Video - Show only on third step */}
+            {step === 2 && (
               <div className="flex justify-center">
                 <video 
                   controls 
@@ -166,8 +169,8 @@ export default function NotificationSetupOverlay({
               </div>
             )}
 
-            {/* Enable Notifications Toggle - Show only on second step */}
-            {step === 1 && (
+            {/* Enable Notifications Toggle - Show only on first step */}
+            {step === 0 && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <div className="flex items-center justify-between mb-3">
                   <Label htmlFor="notification-toggle" className="text-sm font-medium text-blue-800">
@@ -205,17 +208,7 @@ export default function NotificationSetupOverlay({
               ))}
             </div>
 
-            {/* Special content for last step */}
-            {step === steps.length - 1 && (
-              <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-sm text-green-800 font-medium mb-2">
-                  You're all set! 🎉
-                </p>
-                <p className="text-xs text-green-600">
-                  Click "Get Started" to begin your language learning journey
-                </p>
-              </div>
-            )}
+            {/* No special content for the video step - it's clean */}
 
             {/* FAQ link */}
             <div className="border-t pt-4">
