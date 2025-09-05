@@ -1643,7 +1643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get individual checkpoint by checkpoint number (not database ID)
-  app.get('/api/checkpoint/:checkpointNumber', async (req, res) => {
+  app.get('/api/checkpoint/number/:checkpointNumber', async (req, res) => {
     try {
       const checkpointNumber = parseInt(req.params.checkpointNumber);
       if (isNaN(checkpointNumber)) {
