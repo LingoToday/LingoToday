@@ -1321,10 +1321,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else if (step.stepType === 'typing_practice') {
             // New 4-step structure: typing practice step
             const content = step.content as any;
+            
+            // Generate proper fill-in-the-blank format
+            const generateFillInText = (word: string) => {
+              // For phrases with spaces, show the first word and blank out the rest
+              if (word.includes(' ')) {
+                const parts = word.split(' ');
+                return parts[0] + "_".repeat(word.length - parts[0].length);
+              }
+              // For single words
+              if (word.length <= 3) return word.charAt(0) + "_".repeat(word.length - 1);
+              return word.substring(0, 2) + "_".repeat(word.length - 2);
+            };
+            
+            const getMissingLetters = (word: string) => {
+              // For phrases with spaces, return everything after the first word (excluding the space)
+              if (word.includes(' ')) {
+                const firstSpaceIndex = word.indexOf(' ');
+                return word.substring(firstSpaceIndex + 1); // +1 to skip the space
+              }
+              // For single words
+              if (word.length <= 3) return word.substring(1);
+              return word.substring(2);
+            };
+            
+            // Get the target word from the expected answer or extract from content
+            const targetWord = content.expected || content.italian || '';
+            const fillInPrompt = `${generateFillInText(targetWord)} = ${content.english || content.translation || ''}`;
+            const missingLetters = getMissingLetters(targetWord);
+            
             allSteps.typing_practice = {
               type: 'type',
-              prompt: content.prompt,
-              expected: content.expected,
+              prompt: fillInPrompt,
+              expected: missingLetters,
               alternatives: content.alternatives || []
             };
           } else if (step.stepType === 'listening_comprehension') {
