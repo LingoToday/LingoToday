@@ -209,19 +209,30 @@ export default function Lesson() {
           alternatives: [missingLetters.toLowerCase(), missingLetters.toUpperCase()]
         };
       } else if (currentStep === 4) {
-        // Step 4: Audio comprehension (listening practice)
+        // Step 4: Audio comprehension - use JSON step3 data
+        const step3Data = currentLesson.lesson.step3;
+        if (step3Data) {
+          return {
+            type: 'audio',
+            audioSentence: step3Data.audio_sentence || '',
+            options: step3Data.options || [],
+            answer: step3Data.answer || (step3Data.options && step3Data.options[0]) || ''
+          };
+        }
+        
+        // Fallback if no step3 data
         const word = currentLesson.lesson.content.word || '';
         const translation = currentLesson.lesson.content.translation || '';
         return {
           type: 'audio',
-          audioSentence: `${word}, ciao!`,
+          audioSentence: word,
           options: [
-            `${translation}, hi!`,
-            `${translation}, good evening!`,
-            `Goodbye, ${translation.toLowerCase()}!`,
-            `Hello, how are you?`
+            translation,
+            'Hello!',
+            'Goodbye!',
+            'Good night!'
           ],
-          answer: `${translation}, hi!`
+          answer: translation
         };
       }
       return null;

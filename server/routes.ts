@@ -1386,6 +1386,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lesson.steps = allSteps;
         }
 
+        // Also try to load JSON file data for step3 audio data
+        try {
+          const courseFileName = `${courseId}.json`;
+          const coursePath = path.join(process.cwd(), 'server', courseFileName);
+          if (fs.existsSync(coursePath)) {
+            const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
+            const course = courseData[courseId];
+            if (course && course.lessons[lessonId] && course.lessons[lessonId].step3) {
+              // Add step3 data from JSON for audio step
+              lesson.step3 = course.lessons[lessonId].step3;
+            }
+          }
+        } catch (error) {
+          console.log('Could not load JSON file data for step3:', error);
+        }
+
         // Get course info
         const languageRecord = await storage.getLanguageByCode(languageCode);
         const skillLevel = await storage.getSkillLevelByCode('beginner');
