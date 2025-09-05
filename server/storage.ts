@@ -764,11 +764,23 @@ export class DatabaseStorage implements IStorage {
           title: lesson.title,
         });
 
-        // Import steps
+        // Import steps - split original step1 into word review and quick check
+        const originalStep1 = lesson.step1;
+        const wordReviewContent = {
+          italian: originalStep1.italian,
+          english: originalStep1.english,
+          audio: originalStep1.audio,
+          note: originalStep1.note,
+        };
+        const quickCheckContent = {
+          mcq: originalStep1.mcq,
+        };
+
         const steps = [
-          { stepNumber: 1, stepType: 'introduction', content: lesson.step1 },
-          { stepNumber: 2, stepType: 'typing', content: lesson.step2 },
-          { stepNumber: 3, stepType: 'comprehension', content: lesson.step3 },
+          { stepNumber: 1, stepType: 'word_review', content: wordReviewContent },
+          { stepNumber: 2, stepType: 'quick_check', content: quickCheckContent },
+          { stepNumber: 3, stepType: 'typing', content: lesson.step2 },
+          { stepNumber: 4, stepType: 'comprehension', content: lesson.step3 },
         ];
 
         for (const step of steps) {

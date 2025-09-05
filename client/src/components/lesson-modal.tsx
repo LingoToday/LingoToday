@@ -16,27 +16,29 @@ interface LessonModalProps {
   onClose: () => void;
 }
 
-type Phase = 1 | 2 | 3;
+type Phase = 1 | 2 | 3 | 4;
 
 export default function LessonModal({ lesson, language, onClose }: LessonModalProps) {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>(1);
   const [completedPhases, setCompletedPhases] = useState<Set<Phase>>(new Set());
   
-  // Phase 1 state
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
-  const [showPhase1Result, setShowPhase1Result] = useState(false);
-  const [phase1Correct, setPhase1Correct] = useState(false);
+  // Phase 1 state (Word Review - no interaction needed)
   
-  // Phase 2 state
-  const [fillInAnswer, setFillInAnswer] = useState<string>("");
+  // Phase 2 state (Quick Check MCQ)
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showPhase2Result, setShowPhase2Result] = useState(false);
   const [phase2Correct, setPhase2Correct] = useState(false);
   
-  // Phase 3 state
-  const [phase3Answer, setPhase3Answer] = useState<string>("");
+  // Phase 3 state (Typing Practice)
+  const [fillInAnswer, setFillInAnswer] = useState<string>("");
   const [showPhase3Result, setShowPhase3Result] = useState(false);
   const [phase3Correct, setPhase3Correct] = useState(false);
+  
+  // Phase 4 state (Listening Comprehension)
+  const [phase4Answer, setPhase4Answer] = useState<string>("");
+  const [showPhase4Result, setShowPhase4Result] = useState(false);
+  const [phase4Correct, setPhase4Correct] = useState(false);
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -98,25 +100,17 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
   };
 
   // Phase handlers
-  const handlePhase1Submit = () => {
+  const handlePhase1Complete = () => {
+    // Phase 1 is just word review, automatically mark as complete
+    setCompletedPhases(prev => new Set([...Array.from(prev), 1 as Phase]));
+    setCurrentPhase(2);
+  };
+
+  const handlePhase2Submit = () => {
     if (!selectedAnswer || !lesson?.quiz) return;
     
     const answerIndex = parseInt(selectedAnswer);
     const correct = answerIndex === lesson.quiz.correct;
-    setPhase1Correct(correct);
-    setShowPhase1Result(true);
-    
-    if (correct) {
-      setCompletedPhases(prev => new Set([...Array.from(prev), 1 as Phase]));
-    }
-  };
-
-  const handlePhase2Submit = () => {
-    if (!fillInAnswer.trim()) return;
-    
-    // Check if the answer matches only the missing letters (case insensitive)
-    const expectedLetters = getMissingLetters(lesson.content.word);
-    const correct = fillInAnswer.toLowerCase().trim() === expectedLetters.toLowerCase();
     setPhase2Correct(correct);
     setShowPhase2Result(true);
     
@@ -126,11 +120,11 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
   };
 
   const handlePhase3Submit = () => {
-    if (!phase3Answer) return;
+    if (!fillInAnswer.trim()) return;
     
-    const answerIndex = parseInt(phase3Answer);
-    // The first option is always correct for Phase 3 listening comprehension
-    const correct = answerIndex === 0;
+    // Check if the answer matches only the missing letters (case insensitive)
+    const expectedLetters = getMissingLetters(lesson.content.word);
+    const correct = fillInAnswer.toLowerCase().trim() === expectedLetters.toLowerCase();
     setPhase3Correct(correct);
     setShowPhase3Result(true);
     
@@ -139,9 +133,23 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     }
   };
 
+  const handlePhase4Submit = () => {
+    if (!phase4Answer) return;
+    
+    const answerIndex = parseInt(phase4Answer);
+    // The first option is always correct for Phase 4 listening comprehension
+    const correct = answerIndex === 0;
+    setPhase4Correct(correct);
+    setShowPhase4Result(true);
+    
+    if (correct) {
+      setCompletedPhases(prev => new Set([...Array.from(prev), 4 as Phase]));
+    }
+  };
+
   const handleCompleteLesson = () => {
     const completedCount = completedPhases.size;
-    const score = Math.round((completedCount / 3) * 100);
+    const score = Math.round((completedCount / 4) * 100);
     completeLessonMutation.mutate(score);
   };
 
@@ -149,6 +157,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
     if (phase === 1) return true;
     if (phase === 2) return completedPhases.has(1);
     if (phase === 3) return completedPhases.has(1) && completedPhases.has(2);
+    if (phase === 4) return completedPhases.has(1) && completedPhases.has(2) && completedPhases.has(3);
     return false;
   };
 
@@ -193,13 +202,13 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
         </DialogHeader>
 
         {/* Phase Navigation */}
-        <div className="flex items-center justify-center space-x-4 mb-6">
-          {[1, 2, 3].map((phase) => (
+        <div className="flex items-center justify-center space-x-2 mb-6">
+          {[1, 2, 3, 4].map((phase) => (
             <button
               key={phase}
               onClick={() => canNavigateToPhase(phase as Phase) && setCurrentPhase(phase as Phase)}
               disabled={!canNavigateToPhase(phase as Phase)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 currentPhase === phase
                   ? 'bg-blue-500 text-white'
                   : completedPhases.has(phase as Phase)
@@ -215,20 +224,21 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                 <span>{phase}</span>
               )}
               <span>
-                {phase === 1 && 'Introduction & Recognition'}
-                {phase === 2 && 'Retrieval & Practice'}
-                {phase === 3 && 'Listening & Context'}
+                {phase === 1 && 'Word Review'}
+                {phase === 2 && 'Quick Check'}
+                {phase === 3 && 'Typing Practice'}
+                {phase === 4 && 'Listening & Context'}
               </span>
             </button>
           ))}
         </div>
 
         <div className="space-y-6">
-          {/* Phase 1: Introduction & Recognition */}
+          {/* Phase 1: Word Review */}
           {currentPhase === 1 && (
             <>
               <div className="text-center mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 1 — Introduction & Recognition</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 1 — Word Review</h3>
               </div>
 
               {/* Word Introduction */}
@@ -242,84 +252,115 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                     className="bg-blue-500 text-white hover:bg-blue-600"
                   >
                     <Volume2 className="h-4 w-4 mr-2" />
-                    Audio: "{lesson.content.word}"
+                    Listen
                   </Button>
                 </div>
               </div>
 
-              {/* Note */}
-              <div className="bg-gray-50 rounded-lg p-4">
+              {/* Usage Note */}
+              <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+                <h4 className="font-semibold text-gray-900 mb-2">Usage Note</h4>
                 <p className="text-gray-700">
-                  <strong>Note:</strong> {lesson.content.note || 'Polite but still friendly. Good for strangers or when you want to be respectful without being too formal.'}
+                  {lesson.content.note || 'Polite but still friendly. Good for strangers or when you want to be respectful without being too formal.'}
                 </p>
               </div>
 
-              {/* Multiple Choice */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  onClick={handlePhase1Complete}
+                  className="flex-1"
+                >
+                  Continue to Quick Check <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            </>
+          )}
+
+          {/* Phase 2: Quick Check */}
+          {currentPhase === 2 && (
+            <>
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 2 — Quick Check</h3>
+              </div>
+
+              {/* Multiple Choice Question */}
               <div className="border-t pt-6">
-                <h4 className="font-semibold text-gray-900 mb-4">Multiple Choice Question: {lesson.quiz?.question || `Which phrase means "${lesson.content.translation}"?`}</h4>
+                <h4 className="font-semibold text-gray-900 mb-4">{lesson.quiz?.question || `Which phrase means "${lesson.content.translation}"?`}</h4>
                 
                 <RadioGroup 
                   value={selectedAnswer} 
                   onValueChange={setSelectedAnswer}
-                  disabled={showPhase1Result}
+                  disabled={showPhase2Result}
                   className="space-y-3 mb-4"
                 >
                   {(lesson.quiz?.options || [lesson.content.word, 'Ciao', 'Buongiorno', 'Buonanotte']).map((option: string, index: number) => (
                     <div key={index} className="flex items-center space-x-3">
                       <RadioGroupItem 
                         value={index.toString()} 
-                        id={`phase1-option-${index}`}
-                        className={showPhase1Result ? (
+                        id={`phase2-option-${index}`}
+                        className={showPhase2Result ? (
                           index === (lesson.quiz?.correct || 0) ? 'border-green-500 text-green-500' :
                           index.toString() === selectedAnswer ? 'border-red-500 text-red-500' :
                           'border-gray-300'
                         ) : ''}
+                        data-testid={`radio-phase2-option-${index}`}
                       />
                       <Label 
-                        htmlFor={`phase1-option-${index}`}
+                        htmlFor={`phase2-option-${index}`}
                         className={`flex-1 p-3 rounded-lg cursor-pointer transition-colors ${
-                          showPhase1Result ? (
+                          showPhase2Result ? (
                             index === (lesson.quiz?.correct || 0) ? 'bg-green-50 text-green-700' :
                             index.toString() === selectedAnswer ? 'bg-red-50 text-red-700' :
                             'bg-gray-50'
                           ) : 'bg-gray-50 hover:bg-gray-100'
                         }`}
+                        data-testid={`label-phase2-option-${index}`}
                       >
-                        {String.fromCharCode(97 + index)}) {option} {index === (lesson.quiz?.correct || 0) && showPhase1Result && '✅'}
+                        {option} {index === (lesson.quiz?.correct || 0) && showPhase2Result && '✅'}
                       </Label>
                     </div>
                   ))}
                 </RadioGroup>
 
-                {showPhase1Result && (
-                  <div className={`p-4 rounded-lg mb-4 ${phase1Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                {showPhase2Result && (
+                  <div className={`p-4 rounded-lg mb-4 ${phase2Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                     <div className="flex items-center">
                       <Check className="h-5 w-5 mr-2" />
-                      {phase1Correct ? 'Correct! Well done!' : `Incorrect. The correct answer is: ${(lesson.quiz?.options || [lesson.content.word])[lesson.quiz?.correct || 0]}`}
+                      {phase2Correct ? 'Correct! Well done!' : `Incorrect. The correct answer is: ${(lesson.quiz?.options || [lesson.content.word])[lesson.quiz?.correct || 0]}`}
                     </div>
                   </div>
                 )}
 
                 <div className="flex gap-3 pt-4">
-                  {!showPhase1Result ? (
+                  <Button 
+                    variant="outline"
+                    onClick={() => setCurrentPhase(1)}
+                    className="flex-1"
+                    data-testid="button-back-phase1"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" /> Back to Word Review
+                  </Button>
+                  {!showPhase2Result ? (
                     <Button 
-                      onClick={handlePhase1Submit}
+                      onClick={handlePhase2Submit}
                       disabled={!selectedAnswer}
                       className="flex-1"
+                      data-testid="button-submit-phase2"
                     >
                       Submit Answer
                     </Button>
                   ) : (
                     <Button 
                       onClick={() => {
-                        if (phase1Correct) {
-                          setCurrentPhase(2);
+                        if (phase2Correct) {
+                          setCurrentPhase(3);
                         }
                       }}
-                      disabled={!phase1Correct}
+                      disabled={!phase2Correct}
                       className="flex-1"
+                      data-testid="button-continue-phase3"
                     >
-                      Continue to Phase 2 <ArrowRight className="h-4 w-4 ml-2" />
+                      Continue to Typing Practice <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   )}
                 </div>
@@ -327,11 +368,11 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
             </>
           )}
 
-          {/* Phase 2: Retrieval & Controlled Practice */}
-          {currentPhase === 2 && (
+          {/* Phase 3: Typing Practice */}
+          {currentPhase === 3 && (
             <>
               <div className="text-center mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 2 — Retrieval & Controlled Practice</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 3 — Typing Practice</h3>
               </div>
 
               {/* Fill in Exercise */}
@@ -349,16 +390,17 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                     onChange={(e) => setFillInAnswer(e.target.value)}
                     placeholder="Type the missing letters only"
                     className="text-center text-lg max-w-xs mx-auto"
-                    disabled={showPhase2Result}
+                    disabled={showPhase3Result}
+                    data-testid="input-typing-practice"
                   />
                 </div>
               </div>
 
-              {showPhase2Result && (
-                <div className={`p-4 rounded-lg mb-4 ${phase2Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              {showPhase3Result && (
+                <div className={`p-4 rounded-lg mb-4 ${phase3Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                   <div className="flex items-center">
                     <Check className="h-5 w-5 mr-2" />
-                    {phase2Correct ? 'Excellent! You got it right!' : `Not quite. The missing letters are: ${getMissingLetters(lesson.content.word)}`}
+                    {phase3Correct ? 'Excellent! You got it right!' : `Not quite. The missing letters are: ${getMissingLetters(lesson.content.word)}`}
                   </div>
                 </div>
               )}
@@ -366,41 +408,44 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
               <div className="flex gap-3 pt-4">
                 <Button 
                   variant="outline"
-                  onClick={() => setCurrentPhase(1)}
+                  onClick={() => setCurrentPhase(2)}
                   className="flex-1"
+                  data-testid="button-back-phase2"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Phase 1
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quick Check
                 </Button>
-                {!showPhase2Result ? (
+                {!showPhase3Result ? (
                   <Button 
-                    onClick={handlePhase2Submit}
+                    onClick={handlePhase3Submit}
                     disabled={!fillInAnswer.trim()}
                     className="flex-1"
+                    data-testid="button-submit-phase3"
                   >
                     Check Answer
                   </Button>
                 ) : (
                   <Button 
                     onClick={() => {
-                      if (phase2Correct) {
-                        setCurrentPhase(3);
+                      if (phase3Correct) {
+                        setCurrentPhase(4);
                       }
                     }}
-                    disabled={!phase2Correct}
+                    disabled={!phase3Correct}
                     className="flex-1"
+                    data-testid="button-continue-phase4"
                   >
-                    Continue to Phase 3 <ArrowRight className="h-4 w-4 ml-2" />
+                    Continue to Listening <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 )}
               </div>
             </>
           )}
 
-          {/* Phase 3: Listening & Contextual Application */}
-          {currentPhase === 3 && (
+          {/* Phase 4: Listening & Contextual Application */}
+          {currentPhase === 4 && (
             <>
               <div className="text-center mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 3 — Listening & Contextual Application</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Phase 4 — Listening & Contextual Application</h3>
               </div>
 
               {/* Audio Context */}
@@ -411,6 +456,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                     onClick={() => speakText(`${lesson.content.word}, ciao!`)}
                     className="bg-green-500 text-white hover:bg-green-600 mb-4"
                     size="lg"
+                    data-testid="button-play-audio"
                   >
                     <Volume2 className="h-4 w-4 mr-2" />
                     Play: "{lesson.content.word}, ciao!"
@@ -424,9 +470,9 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                 <h4 className="font-semibold text-gray-900 mb-4">Choose the correct translation:</h4>
                 
                 <RadioGroup 
-                  value={phase3Answer} 
-                  onValueChange={setPhase3Answer}
-                  disabled={showPhase3Result}
+                  value={phase4Answer} 
+                  onValueChange={setPhase4Answer}
+                  disabled={showPhase4Result}
                   className="space-y-3 mb-4"
                 >
                   {[
@@ -438,34 +484,36 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                     <div key={index} className="flex items-center space-x-3">
                       <RadioGroupItem 
                         value={index.toString()} 
-                        id={`phase3-option-${index}`}
-                        className={showPhase3Result ? (
+                        id={`phase4-option-${index}`}
+                        className={showPhase4Result ? (
                           index === 0 ? 'border-green-500 text-green-500' :
-                          index.toString() === phase3Answer ? 'border-red-500 text-red-500' :
+                          index.toString() === phase4Answer ? 'border-red-500 text-red-500' :
                           'border-gray-300'
                         ) : ''}
+                        data-testid={`radio-phase4-option-${index}`}
                       />
                       <Label 
-                        htmlFor={`phase3-option-${index}`}
+                        htmlFor={`phase4-option-${index}`}
                         className={`flex-1 p-3 rounded-lg cursor-pointer transition-colors ${
-                          showPhase3Result ? (
+                          showPhase4Result ? (
                             index === 0 ? 'bg-green-50 text-green-700' :
-                            index.toString() === phase3Answer ? 'bg-red-50 text-red-700' :
+                            index.toString() === phase4Answer ? 'bg-red-50 text-red-700' :
                             'bg-gray-50'
                           ) : 'bg-gray-50 hover:bg-gray-100'
                         }`}
+                        data-testid={`label-phase4-option-${index}`}
                       >
-                        {String.fromCharCode(97 + index)}) {option} {index === 0 && showPhase3Result && '✅'}
+                        {String.fromCharCode(97 + index)}) {option} {index === 0 && showPhase4Result && '✅'}
                       </Label>
                     </div>
                   ))}
                 </RadioGroup>
 
-                {showPhase3Result && (
-                  <div className={`p-4 rounded-lg mb-4 ${phase3Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                {showPhase4Result && (
+                  <div className={`p-4 rounded-lg mb-4 ${phase4Correct ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                     <div className="flex items-center">
                       <Check className="h-5 w-5 mr-2" />
-                      {phase3Correct ? 'Perfect! You completed all phases!' : `Not quite. The correct answer is: ${lesson.content.translation}, hi!`}
+                      {phase4Correct ? 'Perfect! You completed all phases!' : `Not quite. The correct answer is: ${lesson.content.translation}, hi!`}
                     </div>
                   </div>
                 )}
@@ -473,16 +521,18 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                 <div className="flex gap-3 pt-4">
                   <Button 
                     variant="outline"
-                    onClick={() => setCurrentPhase(2)}
+                    onClick={() => setCurrentPhase(3)}
                     className="flex-1"
+                    data-testid="button-back-phase3"
                   >
-                    <ArrowLeft className="h-4 w-4 mr-2" /> Back to Phase 2
+                    <ArrowLeft className="h-4 w-4 mr-2" /> Back to Typing Practice
                   </Button>
-                  {!showPhase3Result ? (
+                  {!showPhase4Result ? (
                     <Button 
-                      onClick={handlePhase3Submit}
-                      disabled={!phase3Answer}
+                      onClick={handlePhase4Submit}
+                      disabled={!phase4Answer}
                       className="flex-1"
+                      data-testid="button-submit-phase4"
                     >
                       Submit Answer
                     </Button>
@@ -491,6 +541,7 @@ export default function LessonModal({ lesson, language, onClose }: LessonModalPr
                       onClick={handleCompleteLesson}
                       disabled={completeLessonMutation.isPending}
                       className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+                      data-testid="button-complete-lesson"
                     >
                       {completeLessonMutation.isPending ? 'Saving...' : 'Complete Lesson'}
                     </Button>

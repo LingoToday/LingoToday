@@ -45,12 +45,12 @@ export const lessons = pgTable('lessons', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Lesson steps table - stores the 3 steps for each lesson
+// Lesson steps table - stores the 4 steps for each lesson
 export const lessonSteps = pgTable('lesson_steps', {
   id: serial('id').primaryKey(),
   lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
-  stepNumber: integer('step_number').notNull(), // 1, 2, or 3
-  stepType: varchar('step_type', { length: 20 }).notNull(), // 'introduction', 'typing', 'comprehension'
+  stepNumber: integer('step_number').notNull(), // 1, 2, 3, or 4
+  stepType: varchar('step_type', { length: 20 }).notNull(), // 'word_review', 'quick_check', 'typing', 'comprehension'
   content: jsonb('content').notNull(), // Flexible JSON to store step-specific content
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -159,21 +159,28 @@ export const checkpointQuestionSchema = z.object({
 // Checkpoint questions array schema
 export const checkpointQuestionsSchema = z.array(checkpointQuestionSchema);
 
+// Step 1: Word/Phrase Review (just the review content)
 export const step1ContentSchema = z.object({
   italian: z.string(),
   english: z.string(),
   audio: z.string(),
   note: z.string(),
+});
+
+// Step 2: Quick Check Multiple Choice
+export const step2ContentSchema = z.object({
   mcq: mcqSchema,
 });
 
-export const step2ContentSchema = z.object({
+// Step 3: Typing Practice
+export const step3ContentSchema = z.object({
   type_prompt: z.string(),
   expected_answer: z.string(),
   alt_answers: z.array(z.string()),
 });
 
-export const step3ContentSchema = z.object({
+// Step 4: Listening Comprehension
+export const step4ContentSchema = z.object({
   audio_sentence: z.string(),
   options: z.array(z.string()),
   answer: z.string(),
