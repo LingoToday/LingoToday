@@ -1,10 +1,14 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Serve attached_assets directory for video and media files
+app.use('/attached_assets', express.static(path.resolve(import.meta.dirname, '..', 'attached_assets')));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -39,7 +43,7 @@ app.use((req, res, next) => {
 // Analytics tracking middleware
 app.use(async (req, res, next) => {
   // Skip tracking for API routes, static assets, and hot reload
-  const skipPaths = ['/api/', '/assets/', '/@vite/', '/node_modules/', '/__vite_ping', '/favicon.ico'];
+  const skipPaths = ['/api/', '/assets/', '/attached_assets/', '/@vite/', '/node_modules/', '/__vite_ping', '/favicon.ico'];
   const shouldSkip = skipPaths.some(path => req.path.startsWith(path));
   
   if (!shouldSkip && req.method === 'GET') {

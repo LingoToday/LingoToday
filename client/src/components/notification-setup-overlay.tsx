@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { X, Bell, Clock, Settings, ArrowDown, ExternalLink } from "lucide-react";
+import { X, Bell, Clock, Settings, ArrowDown, ExternalLink, Play } from "lucide-react";
 import { Link } from "wouter";
 import { requestNotificationPermission } from "@/lib/notifications";
 
@@ -43,6 +43,11 @@ export default function NotificationSetupOverlay({
 
   const steps = [
     {
+      title: "Welcome to LingoToday!",
+      content: "Watch this quick video to learn how LingoToday works and how it will help you learn your new language.",
+      icon: <Play className="w-8 h-8 text-blue-600" />
+    },
+    {
       title: "Enable Notifications",
       content: "Turn on browser notifications to receive gentle reminders for your language lessons throughout the day.",
       icon: <Bell className="w-8 h-8 text-green-600" />
@@ -77,9 +82,8 @@ export default function NotificationSetupOverlay({
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      // Scroll to notification settings section
-      scrollToNotificationSettings();
-      onClose();
+      // For the final step, redirect to dashboard instead of scrolling to notifications
+      window.location.href = '/';
     }
   };
 
@@ -147,8 +151,23 @@ export default function NotificationSetupOverlay({
               {steps[step].content}
             </p>
 
-            {/* Enable Notifications Toggle - Show only on first step */}
+            {/* Video - Show only on first step */}
             {step === 0 && (
+              <div className="flex justify-center">
+                <video 
+                  controls 
+                  className="w-full max-w-md rounded-lg shadow-lg"
+                  data-testid="welcome-video"
+                >
+                  <source src="/attached_assets/copy_1EC8BCF0-0552-45EA-94D0-8EAACB53AF04_1757075689342.MOV" type="video/quicktime" />
+                  <source src="/attached_assets/copy_1EC8BCF0-0552-45EA-94D0-8EAACB53AF04_1757075689342.MOV" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            )}
+
+            {/* Enable Notifications Toggle - Show only on second step */}
+            {step === 1 && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <div className="flex items-center justify-between mb-3">
                   <Label htmlFor="notification-toggle" className="text-sm font-medium text-blue-800">
@@ -188,15 +207,12 @@ export default function NotificationSetupOverlay({
 
             {/* Special content for last step */}
             {step === steps.length - 1 && (
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="flex items-center justify-center mb-2">
-                  <ArrowDown className="w-5 h-5 text-blue-600 animate-bounce" />
-                </div>
-                <p className="text-sm text-blue-800 font-medium mb-2">
-                  Look for the Notifications section below
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-green-800 font-medium mb-2">
+                  You're all set! 🎉
                 </p>
-                <p className="text-xs text-blue-600">
-                  We'll highlight it for you after you close this dialog
+                <p className="text-xs text-green-600">
+                  Click "Get Started" to begin your language learning journey
                 </p>
               </div>
             )}
