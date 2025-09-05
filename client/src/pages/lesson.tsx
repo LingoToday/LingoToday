@@ -665,6 +665,38 @@ export default function Lesson() {
                     <p className="text-indigo-600 text-lg mb-2">{stepData.question}</p>
                   </div>
                 </div>
+
+                {/* Multiple Choice Options */}
+                <RadioGroup 
+                  value={selectedAnswer} 
+                  onValueChange={setSelectedAnswer}
+                  disabled={showResult}
+                  className="space-y-2 mb-4"
+                >
+                  {stepData.options?.map((option: string, index: number) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <RadioGroupItem 
+                        value={option} 
+                        id={`quick-check-option-${index}`}
+                      />
+                      <Label 
+                        htmlFor={`quick-check-option-${index}`}
+                        className={`flex-1 p-3 rounded-lg cursor-pointer transition-colors ${
+                          showResult ? (
+                            option === stepData.answer ? 'bg-green-50 text-green-700 border border-green-200' :
+                            selectedAnswer === option ? 'bg-red-50 text-red-700 border border-red-200' :
+                            'bg-gray-50 text-gray-500 border border-gray-200'
+                          ) : (
+                            selectedAnswer === option ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+                            'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                          )
+                        }`}
+                      >
+                        {option} {option === stepData.answer && showResult && '✅'}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </>
             )}
 
