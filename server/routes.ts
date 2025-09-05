@@ -47,8 +47,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         entry: {
           id: entry.id,
           email: entry.email,
-          language: entry.language,
-          level: entry.level,
           createdAt: entry.createdAt
         }
       });
@@ -435,7 +433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Create default settings
         const defaultSettings = await storage.upsertUserSettings({
           userId,
-          selectedLanguage: "spanish",
+          language: "spanish",
           notificationFrequency: 30,
           notificationsEnabled: false,
         });
@@ -1727,9 +1725,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const [stats, progress, latestProgress] = await Promise.all([
-        storage.getUserStats(userId, settings.selectedLanguage),
-        storage.getUserProgress(userId, settings.selectedLanguage),
-        storage.getLatestProgress(userId, settings.selectedLanguage),
+        storage.getUserStats(userId, settings.language),
+        storage.getUserProgress(userId, settings.language),
+        storage.getLatestProgress(userId, settings.language),
       ]);
       
       res.json({
@@ -1767,8 +1765,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "hasSeenNotificationSetup must be a boolean" });
       }
       
+      const currentUser = await storage.getUser(userId);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
       const updatedUser = await storage.upsertUser({
         id: userId,
+        email: currentUser.email,
         hasSeenNotificationSetup
       });
       

@@ -381,7 +381,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
   updatedAt: true,
 });
 
-export const upsertUserSchema = insertUserSchema.partial().required({ id: true });
+export const upsertUserSchema = insertUserSchema.partial().required({ id: true, email: true });
 
 export const insertUserSettingsSchema = createInsertSchema(userSettings).omit({
   createdAt: true,
