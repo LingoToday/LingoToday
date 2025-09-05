@@ -26,6 +26,7 @@ export default function Lesson() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [fromNotification, setFromNotification] = useState(false);
   const [stepResults, setStepResults] = useState<{[key: number]: boolean}>({});
+  const [showIntroVideo, setShowIntroVideo] = useState(false);
 
   // Check if user came from notification and handle lesson ID
   useEffect(() => {
@@ -115,6 +116,21 @@ export default function Lesson() {
     }
   }, [notificationLessonId, lessonError, lesson, language, courseId, lessonId]);
 
+  // Check if this is Italian course1 lesson1 and if intro video should be shown
+  useEffect(() => {
+    if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1') {
+      const hasSeenIntroVideo = localStorage.getItem('italian_course1_intro_shown');
+      if (!hasSeenIntroVideo) {
+        setShowIntroVideo(true);
+      }
+    }
+  }, [language, courseId, lessonId]);
+
+  const handleContinueFromIntro = () => {
+    localStorage.setItem('italian_course1_intro_shown', 'true');
+    setShowIntroVideo(false);
+  };
+
   // Use fallback lesson if API lesson is not available, or notification lesson if coming from notification
   const apiLessonData = lesson as any; // API returns different structure
   
@@ -126,7 +142,8 @@ export default function Lesson() {
     hasFallbackLesson: !!fallbackLesson,
     fromNotification,
     selectedLesson: currentLesson ? 'found' : 'none',
-    apiLessonKeys: apiLessonData ? Object.keys(apiLessonData) : 'none'
+    apiLessonKeys: apiLessonData ? Object.keys(apiLessonData) : 'none',
+    showIntroVideo
   });
 
   // Get current step data
@@ -627,28 +644,64 @@ export default function Lesson() {
             </div>
           </div>
         )}
-        
-        {/* Header */}
-        <div className="flex items-center mb-6">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="mr-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">{currentLesson?.lesson?.title || 'Lesson'}</h1>
-            <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
-            {stepData?.isReview ? (
-              <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
-            ) : (
-              <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
-            )}
-          </div>
-        </div>
 
-        <Card className="shadow-material-lg">
-          <CardContent className="p-6">
+        {/* Italian Course 1 Intro Video */}
+        {showIntroVideo && (
+          <div className="mb-6">
+            <Card className="shadow-lg">
+              <CardContent className="p-8 text-center">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Welcome to Italian Beginners Course!
+                </h2>
+                <div className="flex justify-center mb-6">
+                  <video 
+                    controls 
+                    autoPlay
+                    muted
+                    className="w-80 h-60 rounded-lg shadow-lg"
+                    data-testid="italian-course-intro-video"
+                  >
+                    <source src="/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <Button 
+                  onClick={handleContinueFromIntro}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                  data-testid="continue-from-intro-button"
+                >
+                  Continue to Lesson
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        
+        {/* Header - Hide when showing intro video */}
+        {!showIntroVideo && (
+          <div className="flex items-center mb-6">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="mr-4">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">{currentLesson?.lesson?.title || 'Lesson'}</h1>
+              <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
+              {stepData?.isReview ? (
+                <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
+              ) : (
+                <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Lesson Content - Hide when showing intro video */}
+        {!showIntroVideo && (
+          <Card className="shadow-material-lg">
+            <CardContent className="p-6">
             
             {/* Step Content */}
             {stepData && stepData.type === 'review_mcq' && (
@@ -985,6 +1038,7 @@ export default function Lesson() {
             )}
           </CardContent>
         </Card>
+        )}
       </div>
       
       <Footer />
