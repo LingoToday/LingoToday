@@ -658,7 +658,7 @@ export default function Lesson() {
                     controls 
                     autoPlay
                     muted
-                    className="w-80 h-60 rounded-lg shadow-lg"
+                    className="w-96 h-[28rem] rounded-lg shadow-lg"
                     data-testid="italian-course-intro-video"
                   >
                     <source src="/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4" type="video/mp4" />
