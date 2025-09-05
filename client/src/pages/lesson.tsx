@@ -152,24 +152,27 @@ export default function Lesson() {
       return null;
     }
     
-    // Handle new lesson format (with content and quiz properties)
+    // Handle new lesson format (with content and quiz properties) - 4 steps
     if (currentLesson.lesson.content && currentLesson.lesson.quiz) {
       if (currentStep === 1) {
-        // Step 1: Learn step (word introduction)
+        // Step 1: Word Review ONLY (no quiz)
         return {
-          type: 'learn',
+          type: 'word_review',
           word: currentLesson.lesson.content.word || '',
           translation: currentLesson.lesson.content.translation || '',
           audio: currentLesson.lesson.content.audio || '',
-          note: currentLesson.lesson.content.note || '',
-          quiz: {
-            question: currentLesson.lesson.quiz.question || '',
-            options: currentLesson.lesson.quiz.options || [],
-            answer: currentLesson.lesson.quiz.options?.[currentLesson.lesson.quiz.correct] || ''
-          }
+          note: currentLesson.lesson.content.note || ''
         };
       } else if (currentStep === 2) {
-        // Step 2: Typing practice (fill in the blank with the word)
+        // Step 2: Quick Check ONLY (multiple choice quiz)
+        return {
+          type: 'quick_check',
+          question: currentLesson.lesson.quiz.question || '',
+          options: currentLesson.lesson.quiz.options || [],
+          answer: currentLesson.lesson.quiz.options?.[currentLesson.lesson.quiz.correct] || ''
+        };
+      } else if (currentStep === 3) {
+        // Step 3: Typing practice (fill in the blank with the word)
         const word = currentLesson.lesson.content.word || '';
         const translation = currentLesson.lesson.content.translation || '';
         return {
@@ -178,8 +181,8 @@ export default function Lesson() {
           expected: word,
           alternatives: [word.toLowerCase(), word.toUpperCase()]
         };
-      } else if (currentStep === 3) {
-        // Step 3: Audio comprehension (listening practice)
+      } else if (currentStep === 4) {
+        // Step 4: Audio comprehension (listening practice)
         const word = currentLesson.lesson.content.word || '';
         const translation = currentLesson.lesson.content.translation || '';
         return {
@@ -242,7 +245,7 @@ export default function Lesson() {
         language,
         courseId: courseId || "course1", // Use URL courseId or default
         lessonId: lessonId || currentLesson!.id,
-        stepNumber: 3, // All 3 steps completed
+        stepNumber: 4, // All 4 steps completed
         completed: true,
         score,
         completedAt: new Date(),
@@ -307,10 +310,16 @@ export default function Lesson() {
     if (stepData.type === 'review_mcq') {
       // Handle review MCQ questions
       correct = selectedAnswer === stepData.answer;
+    } else if (stepData.type === 'word_review') {
+      // Step 1: Word review - automatically advance (no interaction needed)
+      correct = true;
+    } else if (stepData.type === 'quick_check') {
+      // Step 2: Quick check MCQ
+      correct = selectedAnswer === stepData.answer;
     } else if (currentStep === 1 && stepData.type === 'learn') {
       const answerIndex = parseInt(selectedAnswer);
       correct = stepData.quiz?.options[answerIndex] === stepData.quiz?.answer;
-    } else if (currentStep === 2 && stepData.type === 'type') {
+    } else if (stepData.type === 'type') {
       const userAnswer = normalizeText(selectedAnswer);
       const expected = normalizeText(stepData.expected || '');
       const alternatives = (stepData.alternatives || []).map((alt: string) => normalizeText(alt));
@@ -454,7 +463,7 @@ export default function Lesson() {
       }
     } else {
       // Handle regular lessons
-      if (currentStep < 3) {
+      if (currentStep < 4) {
         setCurrentStep(currentStep + 1);
         setSelectedAnswer("");
         setShowResult(false);
@@ -594,7 +603,7 @@ export default function Lesson() {
             {stepData?.isReview ? (
               <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
             ) : (
-              <p className="text-sm text-gray-500">Step {currentStep} of 3</p>
+              <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
             )}
           </div>
         </div>
@@ -611,6 +620,49 @@ export default function Lesson() {
                     <div className="text-3xl mb-4">🔄</div>
                     <h2 className="text-2xl font-bold text-orange-700 mb-4">Review Question</h2>
                     <p className="text-orange-600 text-lg mb-2">{stepData.question}</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {stepData && stepData.type === 'word_review' && (
+              <>
+                {/* Word Review Step - Display word and translation with note */}
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">👋</div>
+                    <h2 className="text-3xl font-bold text-blue-700 mb-2">{stepData.word}</h2>
+                    <p className="text-blue-600 text-xl mb-4">{stepData.translation}</p>
+                    <Button 
+                      onClick={() => speakText(stepData.word)}
+                      className="bg-blue-500 text-white hover:bg-blue-600"
+                    >
+                      <Volume2 className="h-4 w-4 mr-2" />
+                      Listen
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Usage Note */}
+                {stepData.note && (
+                  <div className="bg-blue-50 border-l-4 border-blue-400 rounded-lg p-4 mb-6">
+                    <div className="text-blue-800">
+                      <p className="font-medium mb-1">Usage Note</p>
+                      <p className="text-sm">{stepData.note}</p>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {stepData && stepData.type === 'quick_check' && (
+              <>
+                {/* Quick Check Step - Multiple choice quiz */}
+                <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">🎯</div>
+                    <h2 className="text-2xl font-bold text-indigo-700 mb-4">Quick Check</h2>
+                    <p className="text-indigo-600 text-lg mb-2">{stepData.question}</p>
                   </div>
                 </div>
               </>
@@ -807,6 +859,8 @@ export default function Lesson() {
                       <p className="mt-2 text-sm text-red-700">
                         The correct answer is: <strong>
                           {stepData.type === 'review_mcq' ? stepData.answer :
+                           stepData.type === 'word_review' ? 'N/A' :
+                           stepData.type === 'quick_check' ? stepData.answer :
                            stepData.type === 'learn' ? stepData.quiz.answer :
                            stepData.type === 'type' ? (
                              stepData.prompt.includes('_') ? (
@@ -835,10 +889,10 @@ export default function Lesson() {
                 {!showResult ? (
                   <Button 
                     onClick={handleStepSubmit}
-                    disabled={!selectedAnswer || (stepData?.type === 'type' && !selectedAnswer.trim())}
+                    disabled={stepData?.type === 'word_review' ? false : (!selectedAnswer || (stepData?.type === 'type' && !selectedAnswer.trim()))}
                     className="w-full"
                   >
-                    Submit Answer
+                    {stepData?.type === 'word_review' ? 'Continue' : 'Submit Answer'}
                   </Button>
                 ) : (
                   <Button 
@@ -850,7 +904,7 @@ export default function Lesson() {
                      stepData?.isReview ? (
                        currentStep < stepData.totalQuestions ? `Next Question (${currentStep + 1}/${stepData.totalQuestions})` : 'Complete Review'
                      ) : (
-                       currentStep < 3 ? `Next Step (${currentStep + 1}/3)` : 'Complete Lesson'
+                       currentStep < 4 ? `Next Step (${currentStep + 1}/4)` : 'Complete Lesson'
                      )}
                   </Button>
                 )}
