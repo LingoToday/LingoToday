@@ -213,22 +213,24 @@ export default function NotificationSetupOverlay({
 
             {/* No special content for the video step - it's clean */}
 
-            {/* FAQ link */}
-            <div className="border-t pt-4">
-              <p className="text-xs text-gray-500 mb-2">
-                For more information on how to enable notifications, visit our FAQ page
-              </p>
-              <Link href="/faq">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-blue-600 hover:text-blue-700 text-xs p-1 h-auto"
-                  data-testid="faq-link-button"
-                >
-                  FAQ Page <ExternalLink className="w-3 h-3 ml-1" />
-                </Button>
-              </Link>
-            </div>
+            {/* FAQ link - Show only on notification steps, not on video step */}
+            {step !== 2 && (
+              <div className="border-t pt-4">
+                <p className="text-xs text-gray-500 mb-2">
+                  For more information on how to enable notifications, visit our FAQ page
+                </p>
+                <Link href="/faq">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-blue-600 hover:text-blue-700 text-xs p-1 h-auto"
+                    data-testid="faq-link-button"
+                  >
+                    FAQ Page <ExternalLink className="w-3 h-3 ml-1" />
+                  </Button>
+                </Link>
+              </div>
+            )}
 
             {/* Action buttons */}
             <div className="flex justify-between pt-4">
