@@ -311,8 +311,9 @@ export default function Lesson() {
       // Handle review MCQ questions
       correct = selectedAnswer === stepData.answer;
     } else if (stepData.type === 'word_review') {
-      // Step 1: Word review - automatically advance (no interaction needed)
-      correct = true;
+      // Step 1: Word review - go directly to next step without showing result
+      handleNextStep();
+      return;
     } else if (stepData.type === 'quick_check') {
       // Step 2: Quick check MCQ
       correct = selectedAnswer === stepData.answer;
@@ -780,6 +781,8 @@ export default function Lesson() {
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-4">
                   {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
+                   stepData.type === 'word_review' ? '' :
+                   stepData.type === 'quick_check' ? '' :
                    stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
                    'Listen and Choose'}
