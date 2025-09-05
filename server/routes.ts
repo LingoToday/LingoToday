@@ -1262,9 +1262,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
       
-      if (['italian', 'spanish', 'french', 'german'].includes(language)) {
-        // Use language-specific course files or fallback to generic files
-        let courseFileName = language === 'italian' ? `${courseId}.json` : `${language}_${courseId}.json`;
+      if (['italian', 'spanish'].includes(language)) {
+        // Use database for Italian and Spanish lessons (which have the new 4-step structure)
+        const languageCode = language === 'italian' ? 'it' : 'es';
+        const courseNumber = parseInt(courseId.replace('course', ''));
+        const lessonNumber = parseInt(lessonId.replace('lesson', ''));
+        
+        const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
+        
+        if (!lessonWithSteps) {
+          return res.status(404).json({ message: `Lesson not found in database: ${courseId}/${lessonId}` });
+        }
+
+        // Convert the database steps to the expected frontend format
+        const lesson = {
+          title: lessonWithSteps.title,
+          content: {
+            word: '',
+            translation: '',
+            audio: '',
+            note: ''
+          },
+          quiz: null as any
+        };
+
+        // Process the steps to build the lesson data
+        for (const step of lessonWithSteps.steps) {
+          if (step.stepType === 'word_review') {
+            // New 4-step structure: word review step
+            const content = step.content as any;
+            lesson.content.word = content.italian;
+            lesson.content.translation = content.english;
+            lesson.content.audio = content.audio;
+            lesson.content.note = content.note;
+          } else if (step.stepType === 'quick_check') {
+            // New 4-step structure: quick check step
+            const content = step.content as any;
+            lesson.quiz = content.mcq;
+          } else if (step.stepType === 'introduction') {
+            // Old 3-step structure: introduction step (contains both word review and MCQ)
+            const content = step.content as any;
+            lesson.content.word = content.italian;
+            lesson.content.translation = content.english;
+            lesson.content.audio = content.audio;
+            lesson.content.note = content.note;
+            lesson.quiz = content.mcq;
+          }
+        }
+
+        // Get course info
+        const languageRecord = await storage.getLanguageByCode(languageCode);
+        const skillLevel = await storage.getSkillLevelByCode('beginner');
+        const courses = await storage.getCoursesWithRelations(languageRecord?.id, skillLevel?.id);
+        const course = courses.find(c => c.courseNumber === courseNumber);
+
+        res.json({
+          courseId,
+          courseTitle: course?.title || 'Course',
+          courseDescription: course?.description || '',
+          lessonId,
+          lesson
+        });
+      } else if (['french', 'german'].includes(language)) {
+        // Use language-specific course files for French and German (fallback to old structure)
+        let courseFileName = `${language}_${courseId}.json`;
         let coursePath = path.join(process.cwd(), 'server', courseFileName);
         
         // Fallback to generic course file if language-specific doesn't exist

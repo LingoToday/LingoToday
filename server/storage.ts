@@ -99,6 +99,7 @@ export interface IStorage {
   getLessons(courseId: number): Promise<Lesson[]>;
   getLesson(id: number): Promise<Lesson | undefined>;
   getLessonWithSteps(id: number): Promise<LessonWithSteps | undefined>;
+  getLessonByCourseAndNumber(languageCode: string, courseNumber: number, lessonNumber: number): Promise<LessonWithSteps | undefined>;
   createLesson(lesson: InsertLesson): Promise<Lesson>;
   updateLesson(id: number, lesson: Partial<InsertLesson>): Promise<Lesson>;
   deleteLesson(id: number): Promise<void>;
@@ -651,6 +652,46 @@ export class DatabaseStorage implements IStorage {
         },
       },
     });
+    return result;
+  }
+
+  async getLessonByCourseAndNumber(languageCode: string, courseNumber: number, lessonNumber: number): Promise<LessonWithSteps | undefined> {
+    // Get language and skill level
+    const language = await this.getLanguageByCode(languageCode);
+    const skillLevel = await this.getSkillLevelByCode('beginner');
+    
+    if (!language || !skillLevel) {
+      return undefined;
+    }
+
+    // Find the course
+    const courseResults = await db.select()
+      .from(courses)
+      .where(and(
+        eq(courses.languageId, language.id),
+        eq(courses.skillLevelId, skillLevel.id),
+        eq(courses.courseNumber, courseNumber)
+      ));
+    
+    if (courseResults.length === 0) {
+      return undefined;
+    }
+
+    const course = courseResults[0];
+
+    // Find the lesson with steps
+    const result = await db.query.lessons.findFirst({
+      where: and(
+        eq(lessons.courseId, course.id),
+        eq(lessons.lessonNumber, lessonNumber)
+      ),
+      with: {
+        steps: {
+          orderBy: lessonSteps.stepNumber,
+        },
+      },
+    });
+    
     return result;
   }
 
