@@ -1799,50 +1799,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get individual checkpoint by checkpoint number (filtered by user's language)
-  app.get('/api/checkpoint/number/:checkpointNumber', isAuthenticated, async (req: any, res) => {
+  // Get individual checkpoint by checkpoint number (not database ID)
+  app.get('/api/checkpoint/number/:checkpointNumber', async (req, res) => {
     try {
       const checkpointNumber = parseInt(req.params.checkpointNumber);
       if (isNaN(checkpointNumber)) {
         return res.status(400).json({ message: "Invalid checkpoint number" });
       }
       
-      const userId = req.user.claims?.sub || req.user.id;
-      const user = await storage.getUser(userId);
-      const language = user?.selectedLanguage || 'italian';
-      
-      // Map language names to language codes
-      const languageCodeMap: { [key: string]: string } = {
-        'italian': 'it',
-        'spanish': 'es', 
-        'german': 'de',
-        'french': 'fr'
-      };
-      
-      const languageCode = languageCodeMap[language] || language;
-      
-      // Get language record
-      const languageRecord = await storage.getLanguageByCode(languageCode);
-      if (!languageRecord) {
-        return res.status(404).json({ message: "Language not found" });
-      }
-      
-      // Get skill level
-      const skillLevel = await storage.getSkillLevelByCode('beginner');
-      if (!skillLevel) {
-        return res.status(404).json({ message: "Skill level not found" });
-      }
-      
-      // Get courses for this language and skill level
-      const courses = await storage.getCoursesByLanguageAndSkillLevel(languageRecord.id, skillLevel.id);
-      
-      // Find checkpoint by checkpoint number within the user's selected language courses
+      // Find checkpoint by checkpoint number
       const allCheckpoints = await storage.getAllCheckpoints();
-      const relevantCourseIds = courses.map(c => c.id);
-      const checkpoint = allCheckpoints.find(c => 
-        c.checkpointNumber === checkpointNumber && 
-        relevantCourseIds.includes(c.courseId)
-      );
+      const checkpoint = allCheckpoints.find(c => c.checkpointNumber === checkpointNumber);
       
       if (!checkpoint) {
         return res.status(404).json({ message: "Checkpoint not found" });
