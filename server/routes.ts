@@ -673,6 +673,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         upcomingLessons = allLessons
           .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
           .slice(0, 5);
+
+        console.log('📋 Final upcoming lessons:', upcomingLessons.map(l => ({ 
+          id: `${l.courseId}-${l.lessonId}`, 
+          title: l.title, 
+          isReview: l.isReview 
+        })));
       } else {
         // Fallback to lessons.json structure
         const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
@@ -712,7 +718,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      res.json(upcomingLessons);
+      // Add timestamp to prevent caching issues during debugging
+      res.json({ 
+        lessons: upcomingLessons,
+        timestamp: Date.now()
+      });
     } catch (error) {
       console.error("Error fetching upcoming lessons:", error);
       res.status(500).json({ message: "Failed to fetch upcoming lessons" });

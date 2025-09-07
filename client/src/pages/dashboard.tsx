@@ -337,10 +337,12 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
-  const { data: upcomingLessons = [] } = useQuery<any[]>({
+  const { data: upcomingLessonsResponse } = useQuery<{ lessons: any[], timestamp: number }>({
     queryKey: ["/api/upcoming-lessons"],
     enabled: !!user,
   });
+  
+  const upcomingLessons = upcomingLessonsResponse?.lessons || [];
 
   // Fetch available checkpoints for correct URL construction
   const { data: availableCheckpoints } = useQuery<{ availableCheckpoints: any[] }>({
