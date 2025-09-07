@@ -505,6 +505,38 @@ export default function Lesson() {
       }
     } else if (stepData.type === 'audio') {
       correct = selectedAnswer === stepData.answer;
+    } else if (stepData.type === 'video') {
+      // Handle video lessons - validate text input against expected answers
+      const userAnswer = normalizeText(selectedAnswer);
+      const expectedAnswers = (stepData.expected_answers || []).map((answer: string) => normalizeText(answer));
+      
+      // Check for exact match or fuzzy match
+      const isExactMatch = expectedAnswers.includes(userAnswer);
+      
+      // Fuzzy matching for video answers - allow more flexibility
+      const isFuzzyMatch = !isExactMatch && expectedAnswers.some((expected: string) => {
+        // Check for partial matches (contains)
+        if (expected.includes(userAnswer) || userAnswer.includes(expected)) return true;
+        
+        // Check for minor character differences (up to 3 characters)
+        if (Math.abs(userAnswer.length - expected.length) <= 3) {
+          const differences = Array.from(userAnswer).filter((char, i) => char !== expected[i]).length;
+          return differences <= 3;
+        }
+        
+        return false;
+      });
+      
+      correct = isExactMatch || isFuzzyMatch;
+      
+      // Debug logging
+      console.log('🎬 Video validation:', {
+        userAnswer,
+        expectedAnswers,
+        isExactMatch,
+        isFuzzyMatch,
+        correct
+      });
     }
 
     setIsCorrect(correct);
@@ -528,8 +560,11 @@ export default function Lesson() {
         completeLessonMutation.mutate(score);
       }
     } else {
-      // Handle regular lessons
-      if (currentStep < 4) {
+      // Handle regular lessons and video lessons
+      const isVideoLesson = stepData?.type === 'video';
+      const maxSteps = isVideoLesson ? 1 : 4;
+      
+      if (currentStep < maxSteps) {
         setCurrentStep(currentStep + 1);
         setSelectedAnswer("");
         setShowResult(false);
@@ -537,7 +572,7 @@ export default function Lesson() {
       } else {
         // Calculate final score based on all steps
         const correctSteps = Object.values(stepResults).filter(Boolean).length;
-        const totalSteps = 3;
+        const totalSteps = isVideoLesson ? 1 : 3;
         const score = Math.round((correctSteps / totalSteps) * 100);
         completeLessonMutation.mutate(score);
       }
@@ -701,6 +736,8 @@ export default function Lesson() {
               <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
               {stepData?.isReview ? (
                 <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
+              ) : stepData?.type === 'video' ? (
+                <p className="text-sm text-gray-500">Video Challenge</p>
               ) : (
                 <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
               )}
@@ -927,6 +964,7 @@ export default function Lesson() {
                    stepData.type === 'quick_check' ? '' :
                    stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
+                   stepData.type === 'video' ? '' :
                    'Listen and Choose'}
                 </h3>
 
