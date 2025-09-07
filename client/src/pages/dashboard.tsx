@@ -342,6 +342,12 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  // Fetch available checkpoints for correct URL construction
+  const { data: availableCheckpoints } = useQuery<{ availableCheckpoints: any[] }>({
+    queryKey: ["/api/available-checkpoints"],
+    enabled: !!user,
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -717,7 +723,14 @@ export default function Dashboard() {
                           upcomingLessons[0].courseId === 'checkpoint' 
                             ? `/checkpoint/${upcomingLessons[0].lessonId.replace('checkpoint', '')}`
                             : upcomingLessons[0].isReview
-                            ? `/checkpoint/${upcomingLessons[0].lessonId.replace('review', '')}`
+                            ? (() => {
+                                // Find the correct checkpoint database ID for review lessons
+                                const checkpointNumber = parseInt(upcomingLessons[0].lessonId.replace('review', ''));
+                                const checkpoint = availableCheckpoints?.availableCheckpoints?.find(
+                                  (cp: any) => cp.checkpointNumber === checkpointNumber
+                                );
+                                return checkpoint ? `/checkpoint/${checkpoint.id}` : '#';
+                              })()
                             : `/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`
                         }>
                           <Button variant="secondary" size="sm" className={`font-medium ${
