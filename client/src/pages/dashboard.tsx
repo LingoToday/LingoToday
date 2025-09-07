@@ -719,36 +719,19 @@ export default function Dashboard() {
                             upcomingLessons[0].isReview ? 'text-yellow-100' : 'text-purple-100'
                           }`}>{upcomingLessons[0].description}</div>
                         </div>
-                        {upcomingLessons[0].isReview && availableCheckpoints?.availableCheckpoints ? (
-                          <Link href={(() => {
-                            // Find the correct checkpoint database ID for review lessons
-                            const checkpointNumber = parseInt(upcomingLessons[0].lessonId.replace('review', ''));
-                            const checkpoint = availableCheckpoints.availableCheckpoints.find(
-                              (cp: any) => cp.checkpointNumber === checkpointNumber
-                            );
-                            console.log('🔍 Review button URL debug:', { 
-                              checkpointNumber, 
-                              checkpoint: checkpoint?.id, 
-                              availableCount: availableCheckpoints.availableCheckpoints.length,
-                              allCheckpoints: availableCheckpoints.availableCheckpoints.map(cp => ({ id: cp.id, checkpointNumber: cp.checkpointNumber }))
-                            });
-                            return checkpoint ? `/checkpoint/${checkpoint.id}` : '#';
-                          })()}>
-                            <Button variant="secondary" size="sm" className="font-medium bg-white text-yellow-600 hover:bg-gray-100">
-                              Review Now
-                            </Button>
-                          </Link>
-                        ) : upcomingLessons[0].isReview ? (
-                          <Button variant="secondary" size="sm" className="font-medium bg-gray-300 text-gray-500" disabled>
-                            Loading Review...
+                        <Link href={
+                          upcomingLessons[0].isReview
+                            ? `/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`
+                            : `/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`
+                        }>
+                          <Button variant="secondary" size="sm" className={`font-medium ${
+                            upcomingLessons[0].isReview 
+                              ? 'bg-white text-yellow-600 hover:bg-gray-100'
+                              : 'bg-white text-purple-600 hover:bg-gray-100'
+                          }`}>
+                            {upcomingLessons[0].isReview ? 'Review Now' : 'Start Now'}
                           </Button>
-                        ) : (
-                          <Link href={`/lesson/${user.selectedLanguage || 'italian'}/${upcomingLessons[0].courseId}/${upcomingLessons[0].lessonId}`}>
-                            <Button variant="secondary" size="sm" className="font-medium bg-white text-purple-600 hover:bg-gray-100">
-                              Start Now
-                            </Button>
-                          </Link>
-                        )}
+                        </Link>
                       </div>
                     </div>
 
