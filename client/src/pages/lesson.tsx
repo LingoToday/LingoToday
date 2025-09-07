@@ -261,16 +261,6 @@ export default function Lesson() {
     
     if (!stepData) return null;
 
-    // Handle video lessons (IRL videos)
-    if (stepData.type === 'video') {
-      return {
-        type: 'video',
-        video_url: stepData.video_url || '',
-        prompt: stepData.prompt || '',
-        expected_answers: stepData.expected_answers || []
-      };
-    }
-
     if (currentStep === 1) {
       return {
         type: 'learn',
@@ -505,38 +495,6 @@ export default function Lesson() {
       }
     } else if (stepData.type === 'audio') {
       correct = selectedAnswer === stepData.answer;
-    } else if (stepData.type === 'video') {
-      // Handle video lessons - validate text input against expected answers
-      const userAnswer = normalizeText(selectedAnswer);
-      const expectedAnswers = (stepData.expected_answers || []).map((answer: string) => normalizeText(answer));
-      
-      // Check for exact match or fuzzy match
-      const isExactMatch = expectedAnswers.includes(userAnswer);
-      
-      // Fuzzy matching for video answers - allow more flexibility
-      const isFuzzyMatch = !isExactMatch && expectedAnswers.some((expected: string) => {
-        // Check for partial matches (contains)
-        if (expected.includes(userAnswer) || userAnswer.includes(expected)) return true;
-        
-        // Check for minor character differences (up to 3 characters)
-        if (Math.abs(userAnswer.length - expected.length) <= 3) {
-          const differences = Array.from(userAnswer).filter((char, i) => char !== expected[i]).length;
-          return differences <= 3;
-        }
-        
-        return false;
-      });
-      
-      correct = isExactMatch || isFuzzyMatch;
-      
-      // Debug logging
-      console.log('🎬 Video validation:', {
-        userAnswer,
-        expectedAnswers,
-        isExactMatch,
-        isFuzzyMatch,
-        correct
-      });
     }
 
     setIsCorrect(correct);
@@ -560,11 +518,8 @@ export default function Lesson() {
         completeLessonMutation.mutate(score);
       }
     } else {
-      // Handle regular lessons and video lessons
-      const isVideoLesson = stepData?.type === 'video';
-      const maxSteps = isVideoLesson ? 1 : 4;
-      
-      if (currentStep < maxSteps) {
+      // Handle regular lessons
+      if (currentStep < 4) {
         setCurrentStep(currentStep + 1);
         setSelectedAnswer("");
         setShowResult(false);
@@ -572,7 +527,7 @@ export default function Lesson() {
       } else {
         // Calculate final score based on all steps
         const correctSteps = Object.values(stepResults).filter(Boolean).length;
-        const totalSteps = isVideoLesson ? 1 : 3;
+        const totalSteps = 3;
         const score = Math.round((correctSteps / totalSteps) * 100);
         completeLessonMutation.mutate(score);
       }
@@ -736,8 +691,6 @@ export default function Lesson() {
               <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
               {stepData?.isReview ? (
                 <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
-              ) : stepData?.type === 'video' ? (
-                <p className="text-sm text-gray-500">Video Challenge</p>
               ) : (
                 <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
               )}
@@ -913,47 +866,6 @@ export default function Lesson() {
                 </div>
               </>
             )}
-
-            {stepData && stepData.type === 'video' && (
-              <>
-                {/* Video Step - IRL Video Challenge */}
-                <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-6 mb-6">
-                  <div className="text-center">
-                    <div className="text-3xl mb-4">🎬</div>
-                    <h2 className="text-2xl font-bold text-red-700 mb-4">IRL Video Challenge</h2>
-                    <p className="text-red-600 text-lg mb-4">{stepData.prompt}</p>
-                  </div>
-                </div>
-
-                {/* Video Player */}
-                <div className="flex justify-center mb-6">
-                  <video 
-                    controls 
-                    className="w-full max-w-sm aspect-[9/16] rounded-lg shadow-lg"
-                    data-testid="irl-video-player"
-                  >
-                    <source src={`/attached_assets/${stepData.video_url}`} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-
-                {/* Text Input for Answer */}
-                <div className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 mb-6">
-                  <div className="text-red-800">
-                    <p className="font-medium mb-3">Your Response:</p>
-                    <input
-                      type="text"
-                      value={selectedAnswer}
-                      onChange={(e) => setSelectedAnswer(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg text-lg"
-                      placeholder="Type your Italian response..."
-                      disabled={showResult}
-                      data-testid="video-text-input"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
             
             {/* Quiz Section */}
             {stepData && (
@@ -964,7 +876,6 @@ export default function Lesson() {
                    stepData.type === 'quick_check' ? '' :
                    stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
-                   stepData.type === 'video' ? '' :
                    'Listen and Choose'}
                 </h3>
 

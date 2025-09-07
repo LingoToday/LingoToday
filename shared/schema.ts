@@ -50,7 +50,7 @@ export const lessonSteps = pgTable('lesson_steps', {
   id: serial('id').primaryKey(),
   lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
   stepNumber: integer('step_number').notNull(), // 1, 2, 3, or 4
-  stepType: varchar('step_type', { length: 20 }).notNull(), // 'word_review', 'quick_check', 'typing', 'comprehension', 'video'
+  stepType: varchar('step_type', { length: 20 }).notNull(), // 'word_review', 'quick_check', 'typing', 'comprehension'
   content: jsonb('content').notNull(), // Flexible JSON to store step-specific content
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -184,14 +184,6 @@ export const step4ContentSchema = z.object({
   audio_sentence: z.string(),
   options: z.array(z.string()),
   answer: z.string(),
-});
-
-// Video step: IRL Video lessons with text input
-export const videoContentSchema = z.object({
-  type: z.literal('video'),
-  video_url: z.string(),
-  prompt: z.string(),
-  expected_answers: z.array(z.string()),
 });
 
 // Insert schemas
@@ -453,5 +445,3 @@ export type LessonWithSteps = Lesson & {
 export type Step1Content = z.infer<typeof step1ContentSchema>;
 export type Step2Content = z.infer<typeof step2ContentSchema>;
 export type Step3Content = z.infer<typeof step3ContentSchema>;
-export type Step4Content = z.infer<typeof step4ContentSchema>;
-export type VideoContent = z.infer<typeof videoContentSchema>;

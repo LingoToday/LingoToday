@@ -56,7 +56,7 @@ async function seedDatabase() {
   // Import Italian courses
   console.log('📖 Importing Italian courses...');
   const courseFiles = [
-    'Italian_course1_greetings_with_IRL_regenerated_1757252969964.json',
+    'Italian_course1_greetings_with_inline_reviews_1756914297318.json',
     'italian_course2_introductions_with_inline_reviews_1756914297319.json',
     'italian_course3_essential_courtesy_with_inline_reviews_q4_1756914955271.json',
     'italian_course4_numbers_with_inline_reviews_full_cleaned_v2_1756914955272.json',

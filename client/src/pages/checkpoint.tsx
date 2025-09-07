@@ -26,10 +26,9 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
 
   const checkpointId = parseInt(params.id);
 
-  // Fetch checkpoint data by checkpoint number (not database ID)
+  // Fetch checkpoint data
   const { data: checkpoint, isLoading } = useQuery({
-    queryKey: ['/api/checkpoint/number', checkpointId],
-    queryFn: () => fetch(`/api/checkpoint/number/${checkpointId}`).then(res => res.json()),
+    queryKey: ['/api/checkpoint', checkpointId],
     enabled: !isNaN(checkpointId),
   });
 

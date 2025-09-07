@@ -397,21 +397,7 @@ export default function Courses() {
                             </p>
                           </div>
                         </div>
-                        <Link href={`/checkpoint/${(() => {
-                          const checkpointMap: Record<string, number> = {
-                            'course1': 589,
-                            'course2': 593, 
-                            'course3': 594,
-                            'course4': 599,
-                            'course5': 608,
-                            'course6': 619,
-                            'course7': 629,
-                            'course8': 636,
-                            'course9': 642,
-                            'course10': 649
-                          };
-                          return checkpointMap[courseId] || 1;
-                        })()}`}>
+                        <Link href="/checkpoint/1">
                           <Button size="sm" variant="outline" data-testid="button-checkpoint">
                             Start Review
                           </Button>

@@ -769,25 +769,7 @@ export class DatabaseStorage implements IStorage {
 
     // Import lessons and reviews
     for (const [lessonKey, lessonData] of Object.entries(course.lessons)) {
-      if (lessonKey.startsWith('lesson_irl')) {
-        // Handle IRL video lessons
-        const lessonNumber = parseInt(lessonKey.replace('lesson_irl', ''));
-        const lesson = lessonData as any;
-
-        const createdLesson = await this.createLesson({
-          courseId: createdCourse.id,
-          lessonNumber,
-          title: lesson.title,
-        });
-
-        // Create single video step
-        await this.createLessonStep({
-          lessonId: createdLesson.id,
-          stepNumber: 1,
-          stepType: 'video',
-          content: lesson.step1, // Contains type, video_url, prompt, expected_answers
-        });
-      } else if (lessonKey.startsWith('lesson')) {
+      if (lessonKey.startsWith('lesson')) {
         // Handle regular lessons
         const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
         const lesson = lessonData as any;
