@@ -397,7 +397,7 @@ export default function Courses() {
                             </p>
                           </div>
                         </div>
-                        <Link href="/checkpoint/1">
+                        <Link href={`/checkpoint/${courseId.replace('course', '')}`}>
                           <Button size="sm" variant="outline" data-testid="button-checkpoint">
                             Start Review
                           </Button>
