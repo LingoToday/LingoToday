@@ -2179,6 +2179,153 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auto-sync endpoint - synchronizes all JSON files from attached_assets to database
+  app.post('/api/admin/sync-courses', async (req: any, res) => {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      
+      const attachedAssetsPath = path.join(process.cwd(), 'attached_assets');
+      
+      if (!fs.existsSync(attachedAssetsPath)) {
+        return res.status(404).json({ message: 'attached_assets directory not found' });
+      }
+      
+      const jsonFiles = fs.readdirSync(attachedAssetsPath)
+        .filter((file: string) => file.endsWith('.json'))
+        .sort(); // Process in alphabetical order for consistency
+      
+      const syncResults: any[] = [];
+      
+      console.log(`🔄 Starting course sync from attached_assets. Found ${jsonFiles.length} JSON files.`);
+      
+      for (const fileName of jsonFiles) {
+        try {
+          const filePath = path.join(attachedAssetsPath, fileName);
+          const courseData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+          
+          // Determine language from filename patterns
+          let languageCode = 'it'; // Default to Italian
+          if (fileName.toLowerCase().includes('spanish')) {
+            languageCode = 'es';
+          } else if (fileName.toLowerCase().includes('german')) {
+            languageCode = 'de';
+          } else if (fileName.toLowerCase().includes('french')) {
+            languageCode = 'fr';
+          }
+          
+          // Import each course in the JSON file
+          for (const courseKey of Object.keys(courseData)) {
+            if (courseKey.startsWith('course')) {
+              console.log(`📚 Syncing ${fileName} -> ${courseKey} (${languageCode})`);
+              
+              const singleCourseData = { [courseKey]: courseData[courseKey] };
+              const importedCourse = await storage.importCourseFromJSON(languageCode, 'beginner', singleCourseData);
+              
+              syncResults.push({
+                fileName,
+                courseKey,
+                languageCode,
+                courseTitle: importedCourse.title,
+                status: 'synced',
+                lessons: courseData[courseKey].lessons ? Object.keys(courseData[courseKey].lessons).length : 0
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`❌ Error syncing ${fileName}:`, error);
+          syncResults.push({
+            fileName,
+            status: 'error',
+            error: error instanceof Error ? error.message : 'Unknown error'
+          });
+        }
+      }
+      
+      const successCount = syncResults.filter(r => r.status === 'synced').length;
+      const errorCount = syncResults.filter(r => r.status === 'error').length;
+      
+      console.log(`✅ Course sync complete! ${successCount} courses synced, ${errorCount} errors.`);
+      
+      res.json({
+        message: `Course sync complete! ${successCount} courses synced, ${errorCount} errors.`,
+        results: syncResults,
+        summary: {
+          totalFiles: jsonFiles.length,
+          coursesProcessed: successCount,
+          errors: errorCount
+        }
+      });
+    } catch (error) {
+      console.error('Error in course sync:', error);
+      res.status(500).json({ 
+        message: 'Course sync failed', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
+  // Auto-sync endpoint - specific course sync from attached_assets
+  app.post('/api/admin/sync-course/:fileName', async (req: any, res) => {
+    try {
+      const { fileName } = req.params;
+      const fs = require('fs');
+      const path = require('path');
+      
+      const filePath = path.join(process.cwd(), 'attached_assets', fileName);
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: `File not found: ${fileName}` });
+      }
+      
+      const courseData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      
+      // Determine language from filename patterns
+      let languageCode = 'it'; // Default to Italian
+      if (fileName.toLowerCase().includes('spanish')) {
+        languageCode = 'es';
+      } else if (fileName.toLowerCase().includes('german')) {
+        languageCode = 'de';
+      } else if (fileName.toLowerCase().includes('french')) {
+        languageCode = 'fr';
+      }
+      
+      const syncResults: any[] = [];
+      
+      // Import each course in the JSON file
+      for (const courseKey of Object.keys(courseData)) {
+        if (courseKey.startsWith('course')) {
+          console.log(`📚 Syncing ${fileName} -> ${courseKey} (${languageCode})`);
+          
+          const singleCourseData = { [courseKey]: courseData[courseKey] };
+          const importedCourse = await storage.importCourseFromJSON(languageCode, 'beginner', singleCourseData);
+          
+          syncResults.push({
+            courseKey,
+            languageCode,
+            courseTitle: importedCourse.title,
+            status: 'synced',
+            lessons: courseData[courseKey].lessons ? Object.keys(courseData[courseKey].lessons).length : 0
+          });
+        }
+      }
+      
+      console.log(`✅ File ${fileName} synced successfully!`);
+      
+      res.json({
+        message: `File ${fileName} synced successfully!`,
+        fileName,
+        results: syncResults
+      });
+    } catch (error) {
+      console.error(`Error syncing file ${req.params.fileName}:`, error);
+      res.status(500).json({ 
+        message: 'File sync failed', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
   // Admin route - get all courses organized by language and skill level
   app.get('/api/admin/courses', async (req: any, res) => {
     try {
