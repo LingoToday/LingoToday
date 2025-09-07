@@ -261,6 +261,16 @@ export default function Lesson() {
     
     if (!stepData) return null;
 
+    // Handle video lessons (IRL videos)
+    if (stepData.type === 'video') {
+      return {
+        type: 'video',
+        video_url: stepData.video_url || '',
+        prompt: stepData.prompt || '',
+        expected_answers: stepData.expected_answers || []
+      };
+    }
+
     if (currentStep === 1) {
       return {
         type: 'learn',
@@ -862,6 +872,47 @@ export default function Lesson() {
                       <Volume2 className="h-4 w-4 mr-2" />
                       Play Audio
                     </Button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {stepData && stepData.type === 'video' && (
+              <>
+                {/* Video Step - IRL Video Challenge */}
+                <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">🎬</div>
+                    <h2 className="text-2xl font-bold text-red-700 mb-4">IRL Video Challenge</h2>
+                    <p className="text-red-600 text-lg mb-4">{stepData.prompt}</p>
+                  </div>
+                </div>
+
+                {/* Video Player */}
+                <div className="flex justify-center mb-6">
+                  <video 
+                    controls 
+                    className="w-full max-w-sm aspect-[9/16] rounded-lg shadow-lg"
+                    data-testid="irl-video-player"
+                  >
+                    <source src={`/attached_assets/${stepData.video_url}`} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                {/* Text Input for Answer */}
+                <div className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 mb-6">
+                  <div className="text-red-800">
+                    <p className="font-medium mb-3">Your Response:</p>
+                    <input
+                      type="text"
+                      value={selectedAnswer}
+                      onChange={(e) => setSelectedAnswer(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg text-lg"
+                      placeholder="Type your Italian response..."
+                      disabled={showResult}
+                      data-testid="video-text-input"
+                    />
                   </div>
                 </div>
               </>
