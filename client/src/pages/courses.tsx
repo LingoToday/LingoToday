@@ -397,11 +397,9 @@ export default function Courses() {
                             </p>
                           </div>
                         </div>
-                        <Link href="/checkpoint/1">
-                          <Button size="sm" variant="outline" data-testid="button-checkpoint">
-                            Start Review
-                          </Button>
-                        </Link>
+                        <Button size="sm" variant="outline" data-testid="button-checkpoint" disabled>
+                          Review Available Soon
+                        </Button>
                       </div>
                     </div>
                   )}
