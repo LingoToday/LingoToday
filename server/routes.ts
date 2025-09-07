@@ -651,6 +651,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
         );
 
+        console.log('🔍 Upcoming lessons debug:', {
+          totalLessons: allLessons.length,
+          completedIds: Array.from(completedLessonIds),
+          nextFewLessons: allLessons.slice(0, 10).map(l => ({ 
+            id: `${l.courseId}-${l.lessonId}`, 
+            title: l.title, 
+            isReview: l.isReview,
+            completed: completedLessonIds.has(`${l.courseId}-${l.lessonId}`)
+          }))
+        });
+
         upcomingLessons = allLessons
           .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
           .slice(0, 5);
