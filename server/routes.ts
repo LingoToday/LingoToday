@@ -1524,55 +1524,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const coursesWithRelations = await storage.getCoursesWithRelations(dbLanguage.id, skillLevel.id);
       
-      // Convert to old lessons structure for backward compatibility  
-      const languageLessons: any = {};
-      
-      if (!languageLessons) {
-        return res.status(404).json({ message: `Lessons not found for language: ${language}` });
+      if (coursesWithRelations.length === 0) {
+        return res.status(404).json({ message: `No courses found for language: ${language}` });
       }
-
-      // First try old week/day structure for backwards compatibility
-      const weekKey = `week_${week}`;
-      const dayKey = `day_${day}`;
       
-      const weekLessons = languageLessons[weekKey];
-      if (weekLessons && weekLessons[dayKey]) {
-        return res.json(weekLessons[dayKey]);
-      }
-
-      // Map week/day to category-based structure
-      // Week corresponds to categoryOrder, Day corresponds to lesson number within category
-      const targetCategoryOrder = parseInt(week);
+      // Map week/day to course/lesson structure
+      // Week corresponds to course number, Day corresponds to lesson number within course
+      const targetCourseNumber = parseInt(week);
       const targetLessonNumber = parseInt(day);
       
-      console.log(`Mapping week ${week}, day ${day} to categoryOrder ${targetCategoryOrder}, lesson ${targetLessonNumber}`);
+      console.log(`Mapping week ${week}, day ${day} to course ${targetCourseNumber}, lesson ${targetLessonNumber}`);
       
-      // Find lessons with the target categoryOrder
-      let foundLesson: any = null;
-      
-      Object.keys(languageLessons).forEach(categoryKey => {
-        const categoryData = languageLessons[categoryKey];
-        
-        Object.keys(categoryData).forEach(lessonKey => {
-          const lesson = categoryData[lessonKey];
-          
-          if (lesson.categoryOrder === targetCategoryOrder) {
-            const lessonNumber = parseInt(lessonKey.replace('lesson_', ''));
-            if (lessonNumber === targetLessonNumber) {
-              foundLesson = lesson;
-            }
-          }
-        });
-      });
-      
-      if (!foundLesson) {
+      // Find the specific course and lesson
+      const targetCourse = coursesWithRelations.find(c => c.courseNumber === targetCourseNumber);
+      if (!targetCourse) {
         return res.status(404).json({ 
-          message: `Lesson not found: week ${week} (categoryOrder ${targetCategoryOrder}), day ${day} (lesson ${targetLessonNumber}) for ${language}` 
+          message: `Course ${targetCourseNumber} not found for ${language}` 
         });
       }
       
-      console.log(`Found lesson: ${foundLesson.category} - ${foundLesson.title}`);
-      res.json(foundLesson);
+      const targetLesson = targetCourse.lessons.find(l => l.lessonNumber === targetLessonNumber);
+      if (!targetLesson) {
+        return res.status(404).json({ 
+          message: `Lesson ${targetLessonNumber} not found in course ${targetCourseNumber} for ${language}` 
+        });
+      }
+      
+      // Convert to old lesson format for backward compatibility
+      const lessonData: any = {
+        title: targetLesson.title
+      };
+      
+      // Add step data
+      targetLesson.steps?.forEach(step => {
+        lessonData[`step${step.stepNumber}`] = step.content;
+      });
+      
+      console.log(`Found lesson: ${targetCourse.title} - ${targetLesson.title}`);
+      res.json(lessonData);
     } catch (error) {
       console.error("Error fetching specific lesson:", error);
       res.status(500).json({ message: "Failed to fetch lesson" });
@@ -1659,65 +1648,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         // Language not available in database yet
         return res.status(404).json({ message: `Language not available in database: ${language}` });
-      }
-        
-        console.log(`🔍 Available languages: ${Object.keys(lessonsData)}`);
-        console.log(`🔍 Looking for language: ${language}`);
-        console.log(`🔍 Language lessons found: ${!!languageLessons}`);
-        
-        if (!languageLessons) {
-          return res.status(404).json({ message: `Lessons not found for language: ${language}` });
-        }
-        
-        // Get all available lessons (handle both old week-based and new category-based structure)
-        const allLessons: Array<{
-          lesson: any;
-          week?: number;
-          day?: number;
-          category?: string;
-        }> = [];
-        
-        Object.keys(languageLessons).forEach(categoryKey => {
-          const categoryData = languageLessons[categoryKey];
-          
-          if (categoryKey.startsWith('week_')) {
-            // Handle old week-based structure
-            const week = parseInt(categoryKey.replace('week_', ''));
-            Object.keys(categoryData).forEach(dayKey => {
-              const day = parseInt(dayKey.replace('day_', ''));
-              const lesson = categoryData[dayKey];
-              allLessons.push({ lesson, week, day });
-            });
-          } else {
-            // Handle new category-based structure
-            Object.keys(categoryData).forEach(lessonKey => {
-              const lesson = categoryData[lessonKey];
-              allLessons.push({ 
-                lesson, 
-                category: lesson.category || categoryKey,
-                week: lesson.week || 1,
-                day: lesson.day || allLessons.length + 1
-              });
-            });
-          }
-        });
-        
-        if (allLessons.length === 0) {
-          return res.status(404).json({ message: `No lessons found for ${language}` });
-        }
-        
-        // Pick a random lesson
-        const randomIndex = Math.floor(Math.random() * allLessons.length);
-        const { lesson, week, day, category } = allLessons[randomIndex];
-        
-        res.json({
-          question: lesson.quiz.question,
-          lessonPath: `/lesson/${language}/${week}/${day}`,
-          week,
-          day,
-          category,
-          title: lesson.title
-        });
       }
     } catch (error) {
       console.error("Error fetching notification lesson:", error);
