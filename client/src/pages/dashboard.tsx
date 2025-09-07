@@ -729,7 +729,8 @@ export default function Dashboard() {
                             console.log('🔍 Review button URL debug:', { 
                               checkpointNumber, 
                               checkpoint: checkpoint?.id, 
-                              availableCount: availableCheckpoints.availableCheckpoints.length 
+                              availableCount: availableCheckpoints.availableCheckpoints.length,
+                              allCheckpoints: availableCheckpoints.availableCheckpoints.map(cp => ({ id: cp.id, checkpointNumber: cp.checkpointNumber }))
                             });
                             return checkpoint ? `/checkpoint/${checkpoint.id}` : '#';
                           })()}>
