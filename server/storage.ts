@@ -224,55 +224,25 @@ export class DatabaseStorage implements IStorage {
       return { courseId: 'course1', lessonId: 'lesson1' };
     }
 
-    // Skip old checkpoint logic for all languages with JSON structure reviews (Spanish and Italian)
-    if (!['spanish', 'italian'].includes(language)) {
-      // Check if user needs a checkpoint review (every 4 lessons)
-      const totalCompletedLessons = completedLessons.length;
-      console.log(`🔍 Checkpoint logic: ${totalCompletedLessons} lessons completed`);
-      
-      // Check for checkpoint reviews, but only if the checkpoint actually exists
-      if (totalCompletedLessons % 4 === 0 && totalCompletedLessons > 0) {
-        const checkpointNumber = totalCompletedLessons / 4;
-        console.log(`🔍 Checking checkpoint ${checkpointNumber} for ${totalCompletedLessons} lessons`);
-        
-        // First, check if this checkpoint actually exists in the database
-        const existingCheckpoint = await db
-          .select()
-          .from(checkpoints)
-          .where(eq(checkpoints.checkpointNumber, checkpointNumber))
-          .limit(1);
-        
-        if (existingCheckpoint.length > 0) {
-          // Check if this checkpoint has been completed
-          const completedCheckpoints = await db
-            .select()
-            .from(checkpointProgress)
-            .innerJoin(checkpoints, eq(checkpointProgress.checkpointId, checkpoints.id))
-            .where(and(
-              eq(checkpointProgress.userId, userId),
-              eq(checkpoints.checkpointNumber, checkpointNumber),
-              eq(checkpointProgress.completed, true)
-            ));
-          
-          console.log(`🔍 Found ${completedCheckpoints.length} completed checkpoints for checkpoint ${checkpointNumber}`);
-          
-          if (completedCheckpoints.length === 0) {
-            console.log(`🎯 Checkpoint review needed: checkpoint${checkpointNumber} after ${totalCompletedLessons} lessons`);
-            return { courseId: 'checkpoint', lessonId: `checkpoint${checkpointNumber}` };
-          }
-        } else {
-          console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist in database, skipping to next lesson`);
-        }
-      }
-    }
+    // All languages now use JSON structure with imported checkpoints only
 
-    // For languages with imported course data (Italian, Spanish), use database structure
-    if (['italian', 'spanish'].includes(language)) {
+    // For all languages, use database structure with imported course data
+    if (true) {
       try {
+        // Map language names to language codes
+        const languageCodeMap: { [key: string]: string } = {
+          'italian': 'it',
+          'spanish': 'es', 
+          'german': 'de',
+          'french': 'fr'
+        };
+        
+        const languageCode = languageCodeMap[language] || language;
+        
         const languageRecord = await db
           .select()
           .from(languages)
-          .where(eq(languages.code, language === 'italian' ? 'it' : 'es'))
+          .where(eq(languages.code, languageCode))
           .limit(1);
         
         if (languageRecord.length > 0) {
