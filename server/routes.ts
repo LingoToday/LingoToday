@@ -2064,7 +2064,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get analytics data
-  app.get('/api/analytics', isAuthenticated, async (req, res) => {
+  app.get('/api/analytics', async (req, res) => {
     try {
       const { period, page, startDate, endDate } = req.query;
       
@@ -2113,7 +2113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Simple course structure viewer - shows lessons and reviews in sequence
-  app.get('/api/admin/simple-course/:language/:courseNumber', isAuthenticated, async (req, res) => {
+  app.get('/api/admin/simple-course/:language/:courseNumber', async (req, res) => {
     try {
       const { language, courseNumber } = req.params;
       
@@ -2189,7 +2189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin route - get all courses organized by language and skill level
-  app.get('/api/admin/courses', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/courses', async (req: any, res) => {
     try {
       // Get all languages
       const languages = await storage.getLanguages();
