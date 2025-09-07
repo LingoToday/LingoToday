@@ -1,0 +1,110 @@
+ rest-express@1.0.0 dev
+5:00:52 PM [express] serving on port 5000s
+Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+5:01:03 PM [express] GET /api/auth/user 304 in 90ms :: {"id":"local_1757255014323_diqf2mwca","email"…
+🔍 Upcoming lessons debug v2: {
+  totalLessons: 283,
+  completedIds: [
+    'course1-lesson8',
+    'course1-lesson7',
+    'course1-lesson6',
+    'course1-lesson5',
+    'course1-review1',
+    'course1-lesson4',
+    'course1-lesson3',
+    'course1-lesson2',
+    'course1-lesson1'
+  ],
+  nextFewLessons: [
+    {
+      id: 'course1-lesson1',
+      title: 'Ciao!',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson2',
+      title: 'Salve!',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson3',
+      title: 'Buongiorno',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson4',
+      title: 'Buonasera',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-review1',
+      title: 'Review: Lessons 1–4',
+      isReview: true,
+      completed: true
+    },
+    {
+      id: 'course1-lesson5',
+      title: 'Buon pomeriggio',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson6',
+      title: 'Buonanotte',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson7',
+      title: 'Buona giornata',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson8',
+      title: 'Buona serata',
+      isReview: false,
+      completed: true
+    },
+    {
+      id: 'course1-lesson9',
+      title: 'Arrivederci',
+      isReview: false,
+      completed: false
+    }
+  ],
+  filteredUpcoming: [
+    { id: 'course1-lesson9', title: 'Arrivederci', isReview: false },
+    { id: 'course1-lesson10', title: 'Ciao!', isReview: false },
+    { id: 'course1-lesson11', title: 'A presto', isReview: false },
+    {
+      id: 'course1-lesson12',
+      title: 'Ci vediamo (dopo)',
+      isReview: false
+    },
+    { id: 'course1-lesson13', title: 'Piacere!', isReview: false }
+  ]
+}
+📋 Final upcoming lessons: [
+  { id: 'course1-lesson9', title: 'Arrivederci', isReview: false },
+  { id: 'course1-lesson10', title: 'Ciao!', isReview: false },
+  { id: 'course1-lesson11', title: 'A presto', isReview: false },
+  {
+    id: 'course1-lesson12',
+    title: 'Ci vediamo (dopo)',
+    isReview: false
+  },
+  { id: 'course1-lesson13', title: 'Piacere!', isReview: false }
+]
+5:01:03 PM [express] GET /api/upcoming-lessons 200 in 113ms :: {"lessons":[{"courseId":"course1","le…
+5:01:03 PM [express] GET /api/dashboard 304 in 155ms :: {"user":{"id":"local_1757255014323_diqf2mwca…
+📚 Next lesson found: course1/review2
+5:01:03 PM [express] GET /api/next-lesson 304 in 234ms :: {"courseId":"course1","lessonId":"review2"…
+5:01:03 PM [express] GET /api/course-stats 304 in 469ms :: {"totalCourses":13,"totalLessons":278}
+5:01:04 PM [express] GET /api/available-checkpoints 304 in 1082ms :: {"availableCheckpoints":[{"id":…
