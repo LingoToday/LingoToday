@@ -1822,63 +1822,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Check if user should see checkpoint reviews based on completed lessons
+  // Get checkpoints that are part of the actual course structure (JSON imported)
   app.get('/api/available-checkpoints', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       const language = user?.selectedLanguage || 'italian';
       
-      // Get user progress
+      // Map language names to language codes
+      const languageCodeMap: { [key: string]: string } = {
+        'italian': 'it',
+        'spanish': 'es', 
+        'german': 'de',
+        'french': 'fr'
+      };
+      
+      const languageCode = languageCodeMap[language] || language;
+      
+      // Get language record
+      const languageRecord = await storage.getLanguageByCode(languageCode);
+      if (!languageRecord) {
+        return res.json({ availableCheckpoints: [], totalCompletedLessons: 0 });
+      }
+      
+      // Get user progress for this language
       const userProgress = await storage.getUserProgress(userId, language);
       const completedLessons = userProgress.filter((p: any) => p.completed).length;
       
-      // Get all checkpoints
-      const allCheckpoints = await storage.getAllCheckpoints();
+      // Get all courses for this language
+      const skillLevel = await storage.getSkillLevelByCode('beginner');
+      if (!skillLevel) {
+        return res.json({ availableCheckpoints: [], totalCompletedLessons: completedLessons });
+      }
       
-      // Determine which checkpoints should be available
+      // Get all courses for this language and skill level
+      const courses = await storage.getCourses(languageRecord.id, skillLevel.id);
+      
       const availableCheckpoints = [];
       
-      // Show checkpoint after every 4 lessons completed
-      const checkpointIntervals = [4, 8, 12, 16, 20]; // Add more as needed
-      
-      // Only show the NEXT checkpoint that the user is eligible for but hasn't completed yet
-      // This prevents showing all past checkpoints repeatedly
-      for (const interval of checkpointIntervals) {
-        if (completedLessons >= interval) {
-          // Find the appropriate checkpoint for this interval
-          const checkpointNumber = Math.ceil(interval / 4);
-          const checkpoint = allCheckpoints.find(c => c.checkpointNumber === checkpointNumber);
+      // For each course, check if there are incomplete checkpoints that the user is eligible for
+      for (const course of courses) {
+        // Get checkpoints for this course (these are JSON imported)
+        const courseCheckpoints = await storage.getCheckpoints(course.id);
+        
+        // Get completed lessons for this specific course
+        const courseLessons = await storage.getLessons(course.id);
+        const completedCourseLessons = userProgress.filter((p: any) => 
+          p.completed && courseLessons.some((lesson: any) => 
+            `lesson${lesson.lessonNumber}` === p.lessonId && 
+            `course${course.courseNumber}` === p.courseId
+          )
+        );
+        
+        // Check each checkpoint in this course
+        for (const checkpoint of courseCheckpoints) {
+          // Calculate how many lessons should be completed before this checkpoint
+          const requiredLessons = checkpoint.checkpointNumber * 4;
           
-          // Only proceed if the checkpoint actually exists in the database
-          if (checkpoint) {
-            // Check if user has already completed this checkpoint
-            const checkpointProgressList = await storage.getCheckpointProgress(userId, checkpoint.id);
-            const isCompleted = checkpointProgressList.length > 0 && checkpointProgressList[0].completed;
+          // Check if user has completed enough lessons to unlock this checkpoint
+          if (completedCourseLessons.length >= requiredLessons) {
+            // Check if this checkpoint is already completed
+            const checkpointProgress = await storage.getCheckpointProgress(userId, checkpoint.id);
+            const isCompleted = checkpointProgress.length > 0 && checkpointProgress[0].completed;
             
-            // Only add this checkpoint if it's not completed
             if (!isCompleted) {
               availableCheckpoints.push({
                 ...checkpoint,
                 isAvailable: true,
                 isCompleted: false,
-                requiredLessons: interval,
-                userCompletedLessons: completedLessons
+                requiredLessons: requiredLessons,
+                userCompletedLessons: completedCourseLessons.length,
+                courseTitle: course.title,
+                courseNumber: course.courseNumber
               });
-              
-              // Only show ONE checkpoint at a time - the earliest incomplete one
-              break;
             }
-          } else {
-            console.log(`⚠️ Checkpoint ${checkpointNumber} doesn't exist for interval ${interval}, skipping`);
           }
         }
       }
       
+      // Sort by course number and checkpoint number to show earliest available checkpoint first
+      availableCheckpoints.sort((a, b) => {
+        if (a.courseNumber !== b.courseNumber) {
+          return a.courseNumber - b.courseNumber;
+        }
+        return a.checkpointNumber - b.checkpointNumber;
+      });
+      
+      // Only return the first available checkpoint to avoid overwhelming the user
+      const nextCheckpoint = availableCheckpoints.length > 0 ? [availableCheckpoints[0]] : [];
+      
       res.json({
-        availableCheckpoints,
-        totalCompletedLessons: completedLessons,
-        nextCheckpointAt: checkpointIntervals.find(interval => completedLessons < interval) || null
+        availableCheckpoints: nextCheckpoint,
+        totalCompletedLessons: completedLessons
       });
     } catch (error) {
       console.error("Error fetching available checkpoints:", error);
