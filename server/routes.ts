@@ -117,39 +117,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const progressItem of completedLessons) {
         try {
-          let courseFileName: string;
+          // Extract course number from courseId (e.g., "course1" -> 1)
+          const courseNumber = parseInt(progressItem.courseId.replace('course', ''));
+          // Extract lesson number from lessonId (e.g., "lesson1" -> 1)  
+          const lessonNumber = parseInt(progressItem.lessonId.replace('lesson', ''));
           
-          if (language === 'italian') {
-            courseFileName = `${progressItem.courseId}.json`;
-          } else if (language === 'spanish') {
-            courseFileName = `spanish_${progressItem.courseId}.json`;
-          } else if (language === 'german') {
-            courseFileName = `german_${progressItem.courseId}.json`;
-          } else if (language === 'french') {
-            courseFileName = `french_${progressItem.courseId}.json`;
-          } else {
-            continue; // Skip unsupported languages
+          // Skip if not a regular lesson
+          if (isNaN(courseNumber) || isNaN(lessonNumber)) {
+            continue;
           }
           
-          const coursePath = path.join(process.cwd(), 'server', courseFileName);
+          // Get language code for database query
+          let languageCode = language;
+          if (language === 'italian') languageCode = 'it';
+          else if (language === 'spanish') languageCode = 'es';
+          else if (language === 'german') languageCode = 'de';
+          else if (language === 'french') languageCode = 'fr';
           
-          if (fs.existsSync(coursePath)) {
-            const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-            const course = courseData[progressItem.courseId];
+          // Get lesson data from database
+          const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
+          
+          if (lessonWithSteps && lessonWithSteps.steps) {
+            // Find word review step (should be the first step)
+            const wordReviewStep = lessonWithSteps.steps.find(step => step.stepType === 'word_review');
             
-            if (course && course.lessons[progressItem.lessonId]) {
-              const lesson = course.lessons[progressItem.lessonId];
+            if (wordReviewStep && wordReviewStep.content) {
+              const content = wordReviewStep.content as any;
               let targetPhrase: string | undefined;
               
-              // Get the appropriate language phrase
+              // Get the appropriate language phrase from database content
               if (language === 'italian') {
-                targetPhrase = lesson.step1?.italian;
+                targetPhrase = content.italian;
               } else if (language === 'spanish') {
-                targetPhrase = lesson.step1?.spanish;
+                targetPhrase = content.spanish;
               } else if (language === 'german') {
-                targetPhrase = lesson.step1?.german;
+                targetPhrase = content.german;
               } else if (language === 'french') {
-                targetPhrase = lesson.step1?.french;
+                targetPhrase = content.french;
               }
               
               if (targetPhrase) {
@@ -223,55 +227,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Enrich progress data with actual lesson content
+      // Enrich progress data with actual lesson content from database
       const enrichedProgress = await Promise.all(
         progress.map(async (progressItem) => {
           try {
-            let courseFileName: string;
-            let languagePhrase: string | undefined;
+            // Extract course and lesson numbers
+            const courseNumber = parseInt(progressItem.courseId.replace('course', ''));
+            const lessonNumber = parseInt(progressItem.lessonId.replace('lesson', ''));
             
-            if (language === 'italian') {
-              courseFileName = `${progressItem.courseId}.json`;
-            } else if (language === 'spanish') {
-              courseFileName = `spanish_${progressItem.courseId}.json`;
-            } else if (language === 'german') {
-              courseFileName = `german_${progressItem.courseId}.json`;
-            } else if (language === 'french') {
-              courseFileName = `french_${progressItem.courseId}.json`;
-            } else {
+            if (isNaN(courseNumber) || isNaN(lessonNumber)) {
+              return progressItem; // Skip non-standard lesson IDs
+            }
+            
+            // Get language code for database query
+            let languageCode = language;
+            if (language === 'italian') languageCode = 'it';
+            else if (language === 'spanish') languageCode = 'es';
+            else if (language === 'german') languageCode = 'de';
+            else if (language === 'french') languageCode = 'fr';
+            else {
               return progressItem; // Unsupported language
             }
             
-            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+            // Get lesson data from database
+            const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
             
-            if (fs.existsSync(coursePath)) {
-              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-              const course = courseData[progressItem.courseId];
+            if (lessonWithSteps && lessonWithSteps.steps) {
+              // Find word review step for phrases
+              const wordReviewStep = lessonWithSteps.steps.find(step => step.stepType === 'word_review');
               
-              if (course && course.lessons[progressItem.lessonId]) {
-                const lesson = course.lessons[progressItem.lessonId];
+              let languagePhrase: string | undefined;
+              let allPhrases: any = {};
+              
+              if (wordReviewStep && wordReviewStep.content) {
+                const content = wordReviewStep.content as any;
                 
                 // Get the appropriate language phrase
                 if (language === 'italian') {
-                  languagePhrase = lesson.step1?.italian;
+                  languagePhrase = content.italian;
                 } else if (language === 'spanish') {
-                  languagePhrase = lesson.step1?.spanish;
+                  languagePhrase = content.spanish;
                 } else if (language === 'german') {
-                  languagePhrase = lesson.step1?.german;
+                  languagePhrase = content.german;
                 } else if (language === 'french') {
-                  languagePhrase = lesson.step1?.french;
+                  languagePhrase = content.french;
                 }
+                
+                // Collect all language phrases
+                allPhrases = {
+                  italian: content.italian,
+                  spanish: content.spanish,
+                  german: content.german,
+                  french: content.french,
+                  english: content.english
+                };
+              }
+              
+              // Get course info for title
+              const dbLanguage = await storage.getLanguageByCode(languageCode);
+              const skillLevel = await storage.getSkillLevelByCode('beginner');
+              
+              if (dbLanguage && skillLevel) {
+                const coursesWithRelations = await storage.getCoursesWithRelations(dbLanguage.id, skillLevel.id);
+                const courseInfo = coursesWithRelations.find(c => c.courseNumber === courseNumber);
                 
                 return {
                   ...progressItem,
-                  lessonTitle: lesson.title,
+                  lessonTitle: lessonWithSteps.title,
                   targetPhrase: languagePhrase, // Generic field for target language phrase
-                  spanishPhrase: lesson.step1?.spanish, // Specific field for Spanish
-                  italianPhrase: lesson.step1?.italian, // Specific field for Italian
-                  germanPhrase: lesson.step1?.german,   // Specific field for German
-                  frenchPhrase: lesson.step1?.french,   // Specific field for French
-                  englishTranslation: lesson.step1?.english,
-                  courseTitle: course.title
+                  spanishPhrase: allPhrases.spanish, // Specific field for Spanish
+                  italianPhrase: allPhrases.italian, // Specific field for Italian
+                  germanPhrase: allPhrases.german,   // Specific field for German
+                  frenchPhrase: allPhrases.french,   // Specific field for French
+                  englishTranslation: allPhrases.english,
+                  courseTitle: courseInfo?.title || `Course ${courseNumber}`
                 };
               }
             }
@@ -358,57 +387,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Get the actual lesson data
-      let courseFileName: string;
-      
-      if (language === 'italian') {
-        courseFileName = `${nextLesson.courseId}.json`;
-      } else if (language === 'spanish') {
-        courseFileName = `spanish_${nextLesson.courseId}.json`;
-      } else if (language === 'german') {
-        courseFileName = `german_${nextLesson.courseId}.json`;
-      } else if (language === 'french') {
-        courseFileName = `french_${nextLesson.courseId}.json`;
-      } else {
-        // Fallback for unsupported languages
-        return res.json({
-          courseId: nextLesson.courseId,
-          lessonId: nextLesson.lessonId,
-          title: `${nextLesson.courseId} - ${nextLesson.lessonId}`,
-          description: "Continue your language learning journey"
-        });
-      }
-
-      const coursePath = path.join(process.cwd(), 'server', courseFileName);
-      if (fs.existsSync(coursePath)) {
-        const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-        const course = courseData[nextLesson.courseId];
+      // Get the actual lesson data from database
+      try {
+        // Extract course and lesson numbers
+        const courseNumber = parseInt(nextLesson.courseId.replace('course', ''));
+        const lessonNumber = parseInt(nextLesson.lessonId.replace('lesson', ''));
         
-        if (course && course.lessons[nextLesson.lessonId]) {
-          const lesson = course.lessons[nextLesson.lessonId];
-          
-          // Get the appropriate language phrase for notification
-          let targetPhrase: string | undefined;
-          if (language === 'italian') {
-            targetPhrase = lesson.step1?.italian;
-          } else if (language === 'spanish') {
-            targetPhrase = lesson.step1?.spanish;
-          } else if (language === 'german') {
-            targetPhrase = lesson.step1?.german;
-          } else if (language === 'french') {
-            targetPhrase = lesson.step1?.french;
-          }
-          
+        if (isNaN(courseNumber) || isNaN(lessonNumber)) {
+          // Fallback for non-standard lesson IDs
           return res.json({
             courseId: nextLesson.courseId,
             lessonId: nextLesson.lessonId,
-            title: lesson.title,
-            targetPhrase: targetPhrase, // The actual phrase in the target language
-            notificationText: targetPhrase || lesson.title, // Phrase to use in notifications
-            description: lesson.description || course.description,
-            courseTitle: course.title,
+            title: `${nextLesson.courseId} - ${nextLesson.lessonId}`,
+            description: "Continue your language learning journey"
           });
         }
+        
+        // Get language code for database query
+        let languageCode = language;
+        if (language === 'italian') languageCode = 'it';
+        else if (language === 'spanish') languageCode = 'es';
+        else if (language === 'german') languageCode = 'de';
+        else if (language === 'french') languageCode = 'fr';
+        
+        // Get lesson data from database
+        const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
+        
+        if (lessonWithSteps && lessonWithSteps.steps) {
+          // Find word review step for the target phrase
+          const wordReviewStep = lessonWithSteps.steps.find(step => step.stepType === 'word_review');
+          
+          let targetPhrase: string | undefined;
+          if (wordReviewStep && wordReviewStep.content) {
+            const content = wordReviewStep.content as any;
+            
+            // Get the appropriate language phrase from database content
+            if (language === 'italian') {
+              targetPhrase = content.italian;
+            } else if (language === 'spanish') {
+              targetPhrase = content.spanish;
+            } else if (language === 'german') {
+              targetPhrase = content.german;
+            } else if (language === 'french') {
+              targetPhrase = content.french;
+            }
+          }
+          
+          // Get course info from database to get title and description
+          const dbLanguage = await storage.getLanguageByCode(languageCode);
+          const skillLevel = await storage.getSkillLevelByCode('beginner');
+          
+          if (dbLanguage && skillLevel) {
+            const coursesWithRelations = await storage.getCoursesWithRelations(dbLanguage.id, skillLevel.id);
+            const courseInfo = coursesWithRelations.find(c => c.courseNumber === courseNumber);
+            
+            return res.json({
+              courseId: nextLesson.courseId,
+              lessonId: nextLesson.lessonId,
+              title: lessonWithSteps.title,
+              targetPhrase: targetPhrase, // The actual phrase in the target language
+              notificationText: targetPhrase || lessonWithSteps.title, // Phrase to use in notifications
+              description: courseInfo?.description || "Continue your language learning journey",
+              courseTitle: courseInfo?.title || `Course ${courseNumber}`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching lesson from database:", error);
       }
       
       res.json({
@@ -560,165 +605,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let upcomingLessons: any[] = [];
 
       if (['italian', 'spanish', 'french', 'german'].includes(language)) {
-        // Use course structure from server course*.json files for all supported languages
-        const courseOrder = ['course1', 'course2', 'course3', 'course4', 'course5', 'course6', 'course7', 'course8', 'course9', 'course10', 'course11', 'course12', 'course13'];
-        const allLessons: any[] = [];
+        // Get language code for database query
+        let languageCode = language;
+        if (language === 'italian') languageCode = 'it';
+        else if (language === 'spanish') languageCode = 'es';
+        else if (language === 'german') languageCode = 'de';
+        else if (language === 'french') languageCode = 'fr';
         
-        for (const courseId of courseOrder) {
-          // Use language-specific course files
-          let coursePath;
-          if (language === 'spanish') {
-            coursePath = path.join(process.cwd(), 'server', `spanish_${courseId}.json`);
-          } else {
-            coursePath = path.join(process.cwd(), 'server', `${courseId}.json`);
-          }
+        // Get all courses from database with their lessons
+        const dbLanguage = await storage.getLanguageByCode(languageCode);
+        const skillLevel = await storage.getSkillLevelByCode('beginner');
+        
+        if (dbLanguage && skillLevel) {
+          const coursesWithRelations = await storage.getCoursesWithRelations(dbLanguage.id, skillLevel.id);
+          const allLessons: any[] = [];
           
-          if (fs.existsSync(coursePath)) {
-            const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-            const course = courseData[courseId];
+          for (const course of coursesWithRelations) {
+            // Get lessons and checkpoints
+            const lessons = course.lessons.filter(lesson => lesson.lessonNumber > 0).sort((a, b) => a.lessonNumber - b.lessonNumber);
+            const checkpoints = course.checkpoints.sort((a, b) => a.checkpointNumber - b.checkpointNumber);
             
-            if (course && course.lessons) {
-              // Properly order lessons and reviews for all languages
-              const allKeys = Object.keys(course.lessons);
-              const lessons = allKeys.filter(key => key.startsWith('lesson')).sort((a, b) => {
-                const numA = parseInt(a.replace('lesson', ''));
-                const numB = parseInt(b.replace('lesson', ''));
-                return numA - numB;
-              });
-              const reviews = allKeys.filter(key => key.startsWith('review')).sort((a, b) => {
-                const numA = parseInt(a.replace('review', '')) || 999;
-                const numB = parseInt(b.replace('review', '')) || 999;
-                return numA - numB;
-              });
+            // Add lessons
+            for (const lesson of lessons) {
+              const wordReviewStep = lesson.steps?.find(step => step.stepType === 'word_review');
+              let targetPhrase = '';
               
-              // Interleave lessons and reviews: lesson1-4, review1, lesson5-8, review2, etc.
-              let lessonIds = [];
-              let lessonIndex = 0;
-              let reviewIndex = 0;
-              
-              while (lessonIndex < lessons.length || reviewIndex < reviews.length) {
-                // Add up to 4 lessons
-                for (let i = 0; i < 4 && lessonIndex < lessons.length; i++) {
-                  lessonIds.push(lessons[lessonIndex++]);
-                }
-                
-                // Add review if available
-                if (reviewIndex < reviews.length && lessonIndex % 4 === 0) {
-                  lessonIds.push(reviews[reviewIndex++]);
-                }
+              if (wordReviewStep && wordReviewStep.content) {
+                const content = wordReviewStep.content as any;
+                if (language === 'italian') targetPhrase = content.italian || '';
+                else if (language === 'spanish') targetPhrase = content.spanish || '';
+                else if (language === 'german') targetPhrase = content.german || '';
+                else if (language === 'french') targetPhrase = content.french || '';
               }
               
-              // Add each lesson/review to the list
-              lessonIds.forEach(lessonId => {
-                const lesson = course.lessons[lessonId];
-                
-                // Handle review sections differently
-                if (lessonId.startsWith('review')) {
-                  allLessons.push({
-                    courseId: courseId,
-                    lessonId: lessonId,
-                    title: lesson.title || `Review ${lessonId.replace('review', '')}`,
-                    description: lesson.title || `Review section`,
-                    courseTitle: course.title,
-                    category: course.title,
-                    englishTitle: lesson.title || `Review ${lessonId.replace('review', '')}`,
-                    targetPhrase: lesson.title,
-                    englishTranslation: lesson.title,
-                    isReview: true
-                  });
-                } else {
-                  // Regular lesson
-                  allLessons.push({
-                    courseId: courseId,
-                    lessonId: lessonId,
-                    title: lesson.step1?.[language] || lesson.title, // Use target language phrase as title, fallback to English
-                    description: lesson.title, // Use English title as description
-                    courseTitle: course.title,
-                    category: course.title,
-                    englishTitle: lesson.title,
-                    targetPhrase: lesson.step1?.[language],
-                    englishTranslation: lesson.step1?.english,
-                    isReview: false
-                  });
-                }
+              allLessons.push({
+                courseId: `course${course.courseNumber}`,
+                lessonId: `lesson${lesson.lessonNumber}`,
+                title: targetPhrase || lesson.title,
+                description: lesson.title,
+                courseTitle: course.title,
+                targetPhrase: targetPhrase,
+                isReview: false
+              });
+            }
+            
+            // Add checkpoints
+            for (const checkpoint of checkpoints) {
+              allLessons.push({
+                courseId: `course${course.courseNumber}`,
+                lessonId: `review${checkpoint.checkpointNumber}`,
+                title: checkpoint.title || `Review ${checkpoint.checkpointNumber}`,
+                description: checkpoint.title || `Review section`,
+                courseTitle: course.title,
+                isReview: true
               });
             }
           }
-        }
 
-        // Filter out completed lessons
-        const completedLessonIds = new Set(
-          userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
-        );
+          // Filter out completed lessons
+          const completedLessonIds = new Set(
+            userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
+          );
 
-        console.log('🔍 Upcoming lessons debug v2:', {
-          totalLessons: allLessons.length,
-          completedIds: Array.from(completedLessonIds),
-          nextFewLessons: allLessons.slice(0, 10).map(l => ({ 
-            id: `${l.courseId}-${l.lessonId}`, 
-            title: l.title, 
-            isReview: l.isReview,
-            completed: completedLessonIds.has(`${l.courseId}-${l.lessonId}`)
-          })),
-          filteredUpcoming: allLessons
+          upcomingLessons = allLessons
             .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
-            .slice(0, 5)
-            .map(l => ({ 
-              id: `${l.courseId}-${l.lessonId}`, 
-              title: l.title, 
-              isReview: l.isReview 
-            }))
-        });
-
-        upcomingLessons = allLessons
-          .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
-          .slice(0, 5);
-
-        console.log('📋 Final upcoming lessons:', upcomingLessons.map(l => ({ 
-          id: `${l.courseId}-${l.lessonId}`, 
-          title: l.title, 
-          isReview: l.isReview 
-        })));
-      } else {
-        // Fallback to lessons.json structure
-        const lessonsPath = path.join(process.cwd(), 'server', 'lessons.json');
-        
-        if (fs.existsSync(lessonsPath)) {
-          const lessonsData = JSON.parse(fs.readFileSync(lessonsPath, 'utf-8'));
-          const languageLessons = lessonsData[language];
-
-          if (languageLessons) {
-            const allLessons: any[] = [];
-            
-            Object.keys(languageLessons).sort().forEach(weekKey => {
-              const weekData = languageLessons[weekKey];
-              Object.keys(weekData).sort().forEach(dayKey => {
-                const lesson = weekData[dayKey];
-                allLessons.push({
-                  courseId: weekKey,
-                  lessonId: dayKey,
-                  title: lesson.title,
-                  description: `Week ${weekKey.replace('week_', '')}, Day ${dayKey.replace('day_', '')}`,
-                  courseTitle: lesson.title,
-                  category: 'General',
-                  vocabulary: lesson.vocabulary
-                });
-              });
-            });
-
-            // Filter completed lessons and get next 5
-            const completedLessonIds = new Set(
-              userProgress.map((p: any) => `${p.courseId}-${p.lessonId}`)
-            );
-
-            upcomingLessons = allLessons
-              .filter(lesson => !completedLessonIds.has(`${lesson.courseId}-${lesson.lessonId}`))
-              .slice(0, 5);
-          }
+            .slice(0, 5);
         }
       }
 
-      // Add timestamp to prevent caching issues during debugging
       res.json({ 
         lessons: upcomingLessons,
         timestamp: Date.now()
@@ -748,25 +702,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const stats = await storage.getUserStats(userId, progressData.language);
         const lessonsCompleted = (stats?.lessonsCompleted || 0) + 1;
         
-        // Calculate words learned from this lesson
+        // Calculate words learned from this lesson using database
         let newWordsLearned = stats?.wordsLearned || 0;
-        if (progressData.language === 'italian') {
-          try {
-            const courseFileName = `${progressData.courseId}.json`;
-            const coursePath = path.join(process.cwd(), 'server', courseFileName);
+        try {
+          // Extract course and lesson numbers
+          const courseNumber = parseInt(progressData.courseId.replace('course', ''));
+          const lessonNumber = parseInt(progressData.lessonId.replace('lesson', ''));
+          
+          if (!isNaN(courseNumber) && !isNaN(lessonNumber)) {
+            // Get language code for database query
+            let languageCode = progressData.language;
+            if (progressData.language === 'italian') languageCode = 'it';
+            else if (progressData.language === 'spanish') languageCode = 'es';
+            else if (progressData.language === 'german') languageCode = 'de';
+            else if (progressData.language === 'french') languageCode = 'fr';
             
-            if (fs.existsSync(coursePath)) {
-              const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8'));
-              const course = courseData[progressData.courseId];
+            // Get lesson data from database
+            const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
+            
+            if (lessonWithSteps && lessonWithSteps.steps) {
+              // Find word review step for target phrase
+              const wordReviewStep = lessonWithSteps.steps.find(step => step.stepType === 'word_review');
               
-              if (course && course.lessons[progressData.lessonId]) {
-                const lesson = course.lessons[progressData.lessonId];
-                const italianPhrase = lesson.step1?.italian;
+              if (wordReviewStep && wordReviewStep.content) {
+                const content = wordReviewStep.content as any;
+                let targetPhrase: string | undefined;
                 
-                if (italianPhrase) {
+                // Get the appropriate language phrase from database content
+                if (progressData.language === 'italian') {
+                  targetPhrase = content.italian;
+                } else if (progressData.language === 'spanish') {
+                  targetPhrase = content.spanish;
+                } else if (progressData.language === 'german') {
+                  targetPhrase = content.german;
+                } else if (progressData.language === 'french') {
+                  targetPhrase = content.french;
+                }
+                
+                if (targetPhrase) {
                   // Count unique words (split by spaces and punctuation)
-                  const words = italianPhrase.toLowerCase()
-                    .replace(/[!?.,:;"']/g, '') // Remove punctuation
+                  const words = targetPhrase.toLowerCase()
+                    .replace(/[!?.,:;"'¡¿]/g, '') // Remove punctuation (include Spanish)
                     .split(/\s+/) // Split by whitespace
                     .filter((word: string) => word.length > 0); // Remove empty strings
                   
@@ -774,9 +750,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 }
               }
             }
-          } catch (error) {
-            console.error(`Error counting words for ${progressData.courseId}/${progressData.lessonId}:`, error);
           }
+        } catch (error) {
+          console.error(`Error counting words for ${progressData.courseId}/${progressData.lessonId}:`, error);
         }
         
         // Calculate streak with proper date handling
@@ -1209,20 +1185,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         res.json(coursesData);
       } else {
-        // Fallback to old lessons structure for other languages
-        const coursesPath = path.join(process.cwd(), 'server', 'lessons.json');
-        
-        if (!fs.existsSync(coursesPath)) {
-          return res.status(404).json({ message: "Courses file not found" });
-        }
-        
-        const coursesData = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-        const languageLessons = coursesData[language];
-        
-        if (!languageLessons) {
-          return res.status(404).json({ message: `Courses not found for language: ${language}` });
-        }
-        res.json(languageLessons);
+        // Fallback: if language not in database yet, return empty courses
+        res.json({});
       }
     } catch (error) {
       console.error("Error fetching courses:", error);
