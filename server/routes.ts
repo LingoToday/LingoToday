@@ -2109,11 +2109,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auto-sync endpoint - synchronizes all JSON files from attached_assets to database
+  // Auto-sync endpoint - synchronizes all JSON files from attached_assets to database (no auth required)
   app.post('/api/admin/sync-courses', async (req: any, res) => {
     try {
-      const fs = require('fs');
-      const path = require('path');
       
       const attachedAssetsPath = path.join(process.cwd(), 'attached_assets');
       
@@ -2195,12 +2193,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auto-sync endpoint - specific course sync from attached_assets
+  // Auto-sync endpoint - specific course sync from attached_assets (no auth required)
   app.post('/api/admin/sync-course/:fileName', async (req: any, res) => {
     try {
       const { fileName } = req.params;
-      const fs = require('fs');
-      const path = require('path');
       
       const filePath = path.join(process.cwd(), 'attached_assets', fileName);
       

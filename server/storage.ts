@@ -772,6 +772,10 @@ export class DatabaseStorage implements IStorage {
       if (lessonKey.startsWith('lesson')) {
         // Handle regular lessons
         const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
+        if (isNaN(lessonNumber)) {
+          console.warn(`Skipping invalid lesson key: ${lessonKey}`);
+          continue;
+        }
         const lesson = lessonData as any;
 
         const createdLesson = await this.createLesson({
@@ -809,7 +813,15 @@ export class DatabaseStorage implements IStorage {
         }
       } else if (lessonKey.startsWith('review')) {
         // Handle review checkpoints
-        const checkpointNumber = parseInt(lessonKey.replace('review', '')) || 0;
+        const reviewMatch = lessonKey.match(/review(\d+|_final)/);
+        let checkpointNumber = 0;
+        if (reviewMatch) {
+          if (reviewMatch[1] === '_final') {
+            checkpointNumber = 999; // Use high number for final review
+          } else {
+            checkpointNumber = parseInt(reviewMatch[1]) || 0;
+          }
+        }
         const review = lessonData as any;
 
         await this.createCheckpoint({
