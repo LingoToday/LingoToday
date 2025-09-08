@@ -119,9 +119,21 @@ export default function Lesson() {
   // Check if this is Italian course1 lesson1 and if intro video should be shown
   useEffect(() => {
     if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1') {
+      // Check for reset parameter to clear localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('reset') === 'video') {
+        localStorage.removeItem('italian_course1_intro_shown');
+        console.log('🎬 Video localStorage cleared - video will show');
+        // Clean the URL
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+      
       const hasSeenIntroVideo = localStorage.getItem('italian_course1_intro_shown');
       if (!hasSeenIntroVideo) {
         setShowIntroVideo(true);
+        console.log('🎬 Showing intro video for Italian Course 1');
+      } else {
+        console.log('🎬 Video already seen, skipping');
       }
     }
   }, [language, courseId, lessonId]);
