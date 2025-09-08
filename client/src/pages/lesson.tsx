@@ -771,7 +771,6 @@ export default function Lesson() {
                 {/* IRL Video Lesson */}
                 <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 mb-6">
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold text-purple-700 mb-4">Real-World Challenge</h2>
                     <p className="text-purple-600 text-lg mb-6">{stepData.prompt}</p>
                   </div>
                 </div>
