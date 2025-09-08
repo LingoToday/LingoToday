@@ -1341,6 +1341,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(404).json({ message: `Lesson not found in database: ${courseId}/${lessonId}` });
         }
 
+        // Get course information for response
+        const dbLanguage = await storage.getLanguageByCode(languageCode);
+        const beginnerLevel = await storage.getSkillLevelByCode('beginner');
+        const courseInfo = await storage.getCourse(dbLanguage?.id || 0, beginnerLevel?.id || 0, courseNumber);
+
         // Check if this is an IRL lesson
         const isIRLLesson = lessonNumber >= 1000;
         
@@ -1351,8 +1356,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const content = irlStep.content as any;
             return res.json({
               courseId,
-              courseTitle: course.title,
-              courseDescription: course.description,
+              courseTitle: courseInfo?.title || 'Course',
+              courseDescription: courseInfo?.description || 'Course description',
               lessonId,
               lesson: {
                 title: lessonWithSteps.title,
@@ -1480,8 +1485,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Get course info
         const languageRecord = await storage.getLanguageByCode(languageCode);
-        const skillLevel = await storage.getSkillLevelByCode('beginner');
-        const courses = await storage.getCoursesWithRelations(languageRecord?.id, skillLevel?.id);
+        const skillLevelRec = await storage.getSkillLevelByCode('beginner');
+        const courses = await storage.getCoursesWithRelations(languageRecord?.id, skillLevelRec?.id);
         const course = courses.find(c => c.courseNumber === courseNumber);
 
         res.json({
