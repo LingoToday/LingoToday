@@ -985,6 +985,7 @@ export default function Lesson() {
                   {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
                    stepData.type === 'word_review' ? '' :
                    stepData.type === 'quick_check' ? '' :
+                   stepData.type === 'irl_video' ? '' :
                    stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
                    'Listen and Choose'}
