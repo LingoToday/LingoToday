@@ -1325,12 +1325,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Use database for Italian and Spanish lessons (which have the new 4-step structure)
         const languageCode = language === 'italian' ? 'it' : 'es';
         const courseNumber = parseInt(courseId.replace('course', ''));
-        const lessonNumber = parseInt(lessonId.replace('lesson', ''));
+        
+        // Handle IRL lessons (lesson_irl1 -> 1001, lesson_irl2 -> 1002, etc.)
+        let lessonNumber: number;
+        if (lessonId.startsWith('lesson_irl')) {
+          const irlNumber = parseInt(lessonId.replace('lesson_irl', ''));
+          lessonNumber = 1000 + irlNumber; // Convert to database lesson number
+        } else {
+          lessonNumber = parseInt(lessonId.replace('lesson', ''));
+        }
         
         const lessonWithSteps = await storage.getLessonByCourseAndNumber(languageCode, courseNumber, lessonNumber);
         
         if (!lessonWithSteps) {
           return res.status(404).json({ message: `Lesson not found in database: ${courseId}/${lessonId}` });
+        }
+
+        // Check if this is an IRL lesson
+        const isIRLLesson = lessonNumber >= 1000;
+        
+        if (isIRLLesson) {
+          // Handle IRL video lesson
+          const irlStep = lessonWithSteps.steps.find(step => step.stepType === 'irl_video');
+          if (irlStep) {
+            const content = irlStep.content as any;
+            return res.json({
+              courseId,
+              courseTitle: course.title,
+              courseDescription: course.description,
+              lessonId,
+              lesson: {
+                title: lessonWithSteps.title,
+                steps: lessonWithSteps.steps,
+                isIRLLesson: true,
+                content: content
+              }
+            });
+          }
         }
 
         // Convert the database steps to the expected frontend format
