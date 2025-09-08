@@ -625,6 +625,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const lessons = course.lessons.filter(lesson => lesson.lessonNumber > 0).sort((a, b) => a.lessonNumber - b.lessonNumber);
             const checkpoints = course.checkpoints.sort((a, b) => a.checkpointNumber - b.checkpointNumber);
             
+            console.log(`🔍 Course ${course.courseNumber} lessons:`, lessons.map(l => ({ 
+              num: l.lessonNumber, 
+              title: l.title,
+              isIRL: l.lessonNumber >= 1000
+            })));
+            
             // Create an interleaved sequence of lessons and reviews
             const courseItems: any[] = [];
             
@@ -674,7 +680,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 isReview: false,
                 isIRLLesson: isIRLLesson,
                 sortOrder: lesson.lessonNumber >= 1000 ? 
-                  ((lesson.lessonNumber - 1000) * 100 + 50) : // IRL lessons after reviews (e.g., 150, 250)  
+                  ((lesson.lessonNumber - 1000) * 10 + 5) : // IRL lessons come after their corresponding regular lesson (e.g., 45 for lesson_irl1 after lesson4)
                   lesson.lessonNumber * 10 // Regular lessons (e.g., 10, 20, 30, 40)
               });
               
@@ -715,6 +721,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Sort items by their order and add to allLessons
             courseItems.sort((a, b) => a.sortOrder - b.sortOrder);
+            console.log(`🎯 Course ${course.courseNumber} items after sorting:`, courseItems.map(item => ({
+              lessonId: item.lessonId,
+              title: item.title,
+              sortOrder: item.sortOrder,
+              isIRL: item.isIRLLesson || false
+            })));
             allLessons.push(...courseItems);
           }
 
