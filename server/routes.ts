@@ -625,7 +625,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const lessons = course.lessons.filter(lesson => lesson.lessonNumber > 0).sort((a, b) => a.lessonNumber - b.lessonNumber);
             const checkpoints = course.checkpoints.sort((a, b) => a.checkpointNumber - b.checkpointNumber);
             
-            // Add lessons
+            // Create an interleaved sequence of lessons and reviews
+            const courseItems: any[] = [];
+            
+            // Add lessons with reviews at appropriate points
             for (const lesson of lessons) {
               const wordReviewStep = lesson.steps?.find(step => step.stepType === 'word_review');
               let targetPhrase = '';
@@ -638,28 +641,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 else if (language === 'french') targetPhrase = content.french || '';
               }
               
-              allLessons.push({
+              courseItems.push({
                 courseId: `course${course.courseNumber}`,
                 lessonId: `lesson${lesson.lessonNumber}`,
                 title: targetPhrase || lesson.title,
                 description: lesson.title,
                 courseTitle: course.title,
                 targetPhrase: targetPhrase,
-                isReview: false
+                isReview: false,
+                sortOrder: lesson.lessonNumber * 10 // Base order for lessons
+              });
+              
+              // Check if there's a review that should come after this lesson
+              const reviewAfterThisLesson = checkpoints.find(cp => {
+                if (cp.checkpointNumber === 999) return false; // Final review goes at end
+                // Regular reviews (1, 2, 3) come after lessons 4, 8, 12
+                const triggerLessonNumber = cp.checkpointNumber * 4;
+                return lesson.lessonNumber === triggerLessonNumber;
+              });
+              
+              if (reviewAfterThisLesson) {
+                courseItems.push({
+                  courseId: `course${course.courseNumber}`,
+                  lessonId: `review${reviewAfterThisLesson.checkpointNumber}`,
+                  title: reviewAfterThisLesson.title || `Review ${reviewAfterThisLesson.checkpointNumber}`,
+                  description: reviewAfterThisLesson.title || `Review section`,
+                  courseTitle: course.title,
+                  isReview: true,
+                  sortOrder: lesson.lessonNumber * 10 + 5 // Reviews come after lessons
+                });
+              }
+            }
+            
+            // Add final review at the end if it exists
+            const finalReview = checkpoints.find(cp => cp.checkpointNumber === 999);
+            if (finalReview) {
+              courseItems.push({
+                courseId: `course${course.courseNumber}`,
+                lessonId: `review${finalReview.checkpointNumber}`,
+                title: finalReview.title || 'Final Review',
+                description: finalReview.title || 'Final review section',
+                courseTitle: course.title,
+                isReview: true,
+                sortOrder: lessons.length * 10 + 10 // Final review at end
               });
             }
             
-            // Add checkpoints
-            for (const checkpoint of checkpoints) {
-              allLessons.push({
-                courseId: `course${course.courseNumber}`,
-                lessonId: `review${checkpoint.checkpointNumber}`,
-                title: checkpoint.title || `Review ${checkpoint.checkpointNumber}`,
-                description: checkpoint.title || `Review section`,
-                courseTitle: course.title,
-                isReview: true
-              });
-            }
+            // Sort items by their order and add to allLessons
+            courseItems.sort((a, b) => a.sortOrder - b.sortOrder);
+            allLessons.push(...courseItems);
           }
 
           // Filter out completed lessons
