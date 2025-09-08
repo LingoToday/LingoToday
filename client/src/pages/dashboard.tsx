@@ -765,17 +765,6 @@ export default function Dashboard() {
                             ? 'hover:bg-yellow-50 border-l-2 border-yellow-400' 
                             : 'hover:bg-gray-50'
                         }`}>
-                          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                            lesson.isReview 
-                              ? 'bg-yellow-100 text-yellow-600'
-                              : 'bg-gray-100 text-gray-600'
-                          }`}>
-                            {lesson.isReview ? (
-                              <Trophy className="w-3 h-3" />
-                            ) : (
-                              ""
-                            )}
-                          </div>
                           <div className="flex-1 min-w-0">
                             <div className={`font-medium text-sm truncate ${
                               lesson.isReview ? 'text-yellow-800' : ''
