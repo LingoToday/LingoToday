@@ -770,12 +770,27 @@ export class DatabaseStorage implements IStorage {
     // Import lessons and reviews
     for (const [lessonKey, lessonData] of Object.entries(course.lessons)) {
       if (lessonKey.startsWith('lesson')) {
-        // Handle regular lessons
-        const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
-        if (isNaN(lessonNumber)) {
-          console.warn(`Skipping invalid lesson key: ${lessonKey}`);
-          continue;
+        let lessonNumber: number;
+        let isIRLLesson = false;
+        
+        // Handle IRL lessons (lesson_irl1, lesson_irl2, etc.)
+        if (lessonKey.startsWith('lesson_irl')) {
+          const irlNumber = parseInt(lessonKey.replace('lesson_irl', ''));
+          if (isNaN(irlNumber)) {
+            console.warn(`Skipping invalid IRL lesson key: ${lessonKey}`);
+            continue;
+          }
+          lessonNumber = 1000 + irlNumber; // Use offset to avoid conflicts with regular lessons
+          isIRLLesson = true;
+        } else {
+          // Handle regular lessons
+          lessonNumber = parseInt(lessonKey.replace('lesson', ''));
+          if (isNaN(lessonNumber)) {
+            console.warn(`Skipping invalid lesson key: ${lessonKey}`);
+            continue;
+          }
         }
+        
         const lesson = lessonData as any;
 
         const createdLesson = await this.createLesson({
@@ -784,32 +799,50 @@ export class DatabaseStorage implements IStorage {
           title: lesson.title,
         });
 
-        // Import steps - split original step1 into word review and quick check
-        const originalStep1 = lesson.step1;
-        const wordReviewContent = {
-          italian: originalStep1.italian,
-          english: originalStep1.english,
-          audio: originalStep1.audio,
-          note: originalStep1.note,
-        };
-        const quickCheckContent = {
-          mcq: originalStep1.mcq,
-        };
+        if (isIRLLesson) {
+          // Handle IRL video lesson structure
+          const step1 = lesson.step1;
+          const irlContent = {
+            isIRLLesson: true,
+            videoUrl: step1.video_url,
+            word: step1.prompt, // Store prompt as word for consistency
+            expectedAnswers: step1.expected_answers
+          };
 
-        const steps = [
-          { stepNumber: 1, stepType: 'word_review', content: wordReviewContent },
-          { stepNumber: 2, stepType: 'quick_check', content: quickCheckContent },
-          { stepNumber: 3, stepType: 'typing', content: lesson.step2 },
-          { stepNumber: 4, stepType: 'comprehension', content: lesson.step3 },
-        ];
-
-        for (const step of steps) {
           await this.createLessonStep({
             lessonId: createdLesson.id,
-            stepNumber: step.stepNumber,
-            stepType: step.stepType,
-            content: step.content,
+            stepNumber: 1,
+            stepType: 'irl_video',
+            content: irlContent,
           });
+        } else {
+          // Import steps - split original step1 into word review and quick check
+          const originalStep1 = lesson.step1;
+          const wordReviewContent = {
+            italian: originalStep1.italian,
+            english: originalStep1.english,
+            audio: originalStep1.audio,
+            note: originalStep1.note,
+          };
+          const quickCheckContent = {
+            mcq: originalStep1.mcq,
+          };
+
+          const steps = [
+            { stepNumber: 1, stepType: 'word_review', content: wordReviewContent },
+            { stepNumber: 2, stepType: 'quick_check', content: quickCheckContent },
+            { stepNumber: 3, stepType: 'typing', content: lesson.step2 },
+            { stepNumber: 4, stepType: 'comprehension', content: lesson.step3 },
+          ];
+
+          for (const step of steps) {
+            await this.createLessonStep({
+              lessonId: createdLesson.id,
+              stepNumber: step.stepNumber,
+              stepType: step.stepType,
+              content: step.content,
+            });
+          }
         }
       } else if (lessonKey.startsWith('review')) {
         // Handle review checkpoints

@@ -181,13 +181,14 @@ export default function Lesson() {
   const getCurrentStepData = () => {
     if (!currentLesson?.lesson) return null;
     
-    // Handle IRL video lessons
-    if (currentLesson.lesson.isIRLLesson || (currentLesson.lesson.content && currentLesson.lesson.content.videoUrl)) {
+    // Handle IRL video lessons (check both lesson content and step content)
+    const stepData = currentLesson.lesson?.steps?.[0];
+    if (stepData?.stepType === 'irl_video' || stepData?.content?.isIRLLesson) {
       return {
         type: 'irl_video',
-        videoUrl: currentLesson.lesson.content.videoUrl || '',
-        prompt: currentLesson.lesson.content.word || '',
-        expectedAnswers: currentLesson.lesson.content.expectedAnswers || []
+        videoUrl: stepData.content.videoUrl || '',
+        prompt: stepData.content.word || '',
+        expectedAnswers: stepData.content.expectedAnswers || []
       };
     }
     
