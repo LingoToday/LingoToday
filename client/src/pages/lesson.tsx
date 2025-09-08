@@ -13,7 +13,7 @@ import { ArrowLeft, Volume2, Check, Bell } from "lucide-react";
 import { Link } from "wouter";
 import { getLessonById } from "@/lib/lessonStore";
 import { resetNotificationCooldown } from "@/lib/notifications";
-import type { Lesson } from "@shared/schema";
+import type { Lesson, UserProgress } from "@shared/schema";
 import Footer from "@/components/ui/footer";
 
 export default function Lesson() {
@@ -90,6 +90,12 @@ export default function Lesson() {
     retry: 2, // Allow retries for better reliability
   });
 
+  // Fetch user progress to determine if they should see intro video
+  const { data: userProgress = [] } = useQuery({
+    queryKey: ['/api/progress', language],
+    enabled: isAuthenticated && !!language,
+  }) as { data: UserProgress[] };
+
   // Fallback: try to get lesson from stored data if API fails or if we have a notification lesson
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
   
@@ -118,7 +124,7 @@ export default function Lesson() {
 
   // Check if this is Italian course1 lesson1 and if intro video should be shown
   useEffect(() => {
-    if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1') {
+    if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1' && userProgress !== undefined) {
       // Check for reset parameter to clear localStorage
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('reset') === 'video') {
@@ -128,15 +134,28 @@ export default function Lesson() {
         window.history.replaceState({}, '', window.location.pathname);
       }
       
+      // Check if user has completed any Italian lessons
+      const hasCompletedItalianLessons = userProgress.some(p => p.completed);
       const hasSeenIntroVideo = localStorage.getItem('italian_course1_intro_shown');
-      if (!hasSeenIntroVideo) {
+      
+      // Show video if: user has no completed lessons OR if explicitly reset OR if localStorage flag not set
+      if (!hasCompletedItalianLessons) {
+        // For new learners, always show the video (clear localStorage if it exists)
+        if (hasSeenIntroVideo) {
+          localStorage.removeItem('italian_course1_intro_shown');
+          console.log('🎬 Clearing localStorage for new learner - video will show');
+        }
+        setShowIntroVideo(true);
+        console.log('🎬 Showing intro video for new Italian learner');
+      } else if (!hasSeenIntroVideo) {
+        // For returning learners who somehow don't have the localStorage flag
         setShowIntroVideo(true);
         console.log('🎬 Showing intro video for Italian Course 1');
       } else {
-        console.log('🎬 Video already seen, skipping');
+        console.log('🎬 Video already seen by experienced learner, skipping');
       }
     }
-  }, [language, courseId, lessonId]);
+  }, [language, courseId, lessonId, userProgress]);
 
   const handleContinueFromIntro = () => {
     localStorage.setItem('italian_course1_intro_shown', 'true');
