@@ -181,6 +181,16 @@ export default function Lesson() {
   const getCurrentStepData = () => {
     if (!currentLesson?.lesson) return null;
     
+    // Handle IRL video lessons
+    if (currentLesson.lesson.isIRLLesson || (currentLesson.lesson.content && currentLesson.lesson.content.videoUrl)) {
+      return {
+        type: 'irl_video',
+        videoUrl: currentLesson.lesson.content.videoUrl || '',
+        prompt: currentLesson.lesson.content.word || '',
+        expectedAnswers: currentLesson.lesson.content.expectedAnswers || []
+      };
+    }
+    
     // Handle review lessons (MCQ format)
     if (currentLesson.lesson.mode === 'mcq' && currentLesson.lesson.questions) {
       // For review lessons, treat each question as a "step"
@@ -393,7 +403,20 @@ export default function Lesson() {
 
     let correct = false;
     
-    if (stepData.type === 'review_mcq') {
+    if (stepData.type === 'irl_video') {
+      // Handle IRL video lesson text input validation
+      const userAnswer = normalizeText(selectedAnswer);
+      const expectedAnswers = stepData.expectedAnswers || [];
+      
+      // Check if user answer matches any expected answer
+      correct = expectedAnswers.some((expected: string) => {
+        const normalizedExpected = normalizeText(expected);
+        // Exact match or partial match (for flexibility)
+        return userAnswer === normalizedExpected || 
+               normalizedExpected.includes(userAnswer) ||
+               userAnswer.includes(normalizedExpected.split(' ')[0]); // Match first word
+      });
+    } else if (stepData.type === 'review_mcq') {
       // Handle review MCQ questions
       correct = selectedAnswer === stepData.answer;
     } else if (stepData.type === 'word_review') {
@@ -534,6 +557,13 @@ export default function Lesson() {
   };
 
   const handleNextStep = () => {
+    // Handle IRL video lessons (single step completion)
+    if (stepData?.type === 'irl_video') {
+      const score = isCorrect ? 100 : 50; // Give partial credit even for incorrect answers
+      completeLessonMutation.mutate(score);
+      return;
+    }
+    
     // Handle review lessons differently
     if (stepData?.isReview) {
       if (currentStep < stepData.totalQuestions) {
@@ -735,6 +765,52 @@ export default function Lesson() {
             <CardContent className="p-6">
             
             {/* Step Content */}
+            {stepData && stepData.type === 'irl_video' && (
+              <>
+                {/* IRL Video Lesson */}
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">🎬</div>
+                    <h2 className="text-2xl font-bold text-purple-700 mb-4">Real-World Challenge</h2>
+                    <p className="text-purple-600 text-lg mb-6">{stepData.prompt}</p>
+                  </div>
+                </div>
+
+                {/* Video Player */}
+                <div className="flex justify-center mb-6">
+                  <video 
+                    controls 
+                    className="w-80 h-[28rem] rounded-lg shadow-lg object-cover"
+                    style={{ aspectRatio: '9/16' }}
+                    data-testid="irl-video-player"
+                    playsInline
+                  >
+                    <source src={stepData.videoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                {/* Text Input for Response */}
+                <div className="mb-6">
+                  <label htmlFor="irl-response" className="block text-sm font-medium text-gray-700 mb-2">
+                    Your response in Italian:
+                  </label>
+                  <input
+                    id="irl-response"
+                    type="text"
+                    value={selectedAnswer}
+                    onChange={(e) => setSelectedAnswer(e.target.value)}
+                    placeholder="Type your response here..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    data-testid="irl-response-input"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Example answers: {stepData.expectedAnswers.slice(0, 2).join(', ')}
+                  </p>
+                </div>
+              </>
+            )}
+
             {stepData && stepData.type === 'review_mcq' && (
               <>
                 {/* Review MCQ Question */}
