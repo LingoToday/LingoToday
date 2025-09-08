@@ -82,8 +82,8 @@ export default function NotificationSetupOverlay({
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      // For the final step, redirect to dashboard instead of scrolling to notifications
-      window.location.href = '/';
+      // For the final step, call onClose to mark setup as seen and hide overlay
+      onClose();
     }
   };
 
