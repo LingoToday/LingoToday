@@ -182,13 +182,13 @@ export default function Lesson() {
     if (!currentLesson?.lesson) return null;
     
     // Handle IRL video lessons (check both lesson content and step content)
-    const stepData = currentLesson.lesson?.steps?.[0];
-    if (stepData?.stepType === 'irl_video' || stepData?.content?.isIRLLesson) {
+    const firstStep = currentLesson.lesson?.steps?.[0];
+    if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
       return {
         type: 'irl_video',
-        videoUrl: stepData.content.videoUrl || '',
-        prompt: stepData.content.word || '',
-        expectedAnswers: stepData.content.expectedAnswers || []
+        videoUrl: firstStep.content.videoUrl || '',
+        prompt: firstStep.content.word || '',
+        expectedAnswers: firstStep.content.expectedAnswers || []
       };
     }
     
