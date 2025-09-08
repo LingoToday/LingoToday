@@ -630,26 +630,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Add lessons with reviews at appropriate points
             for (const lesson of lessons) {
-              const wordReviewStep = lesson.steps?.find(step => step.stepType === 'word_review');
+              let lessonId: string;
+              let title: string;
               let targetPhrase = '';
+              let isIRLLesson = false;
               
-              if (wordReviewStep && wordReviewStep.content) {
-                const content = wordReviewStep.content as any;
-                if (language === 'italian') targetPhrase = content.italian || '';
-                else if (language === 'spanish') targetPhrase = content.spanish || '';
-                else if (language === 'german') targetPhrase = content.german || '';
-                else if (language === 'french') targetPhrase = content.french || '';
+              // Handle IRL lessons (lesson numbers 1000+)
+              if (lesson.lessonNumber >= 1000) {
+                const irlNumber = lesson.lessonNumber - 1000;
+                lessonId = `lesson_irl${irlNumber}`;
+                isIRLLesson = true;
+                
+                // Get IRL lesson content
+                const irlStep = lesson.steps?.find(step => step.stepType === 'irl_video');
+                if (irlStep && irlStep.content) {
+                  const content = irlStep.content as any;
+                  title = content.word || lesson.title;
+                } else {
+                  title = lesson.title;
+                }
+              } else {
+                // Handle regular lessons
+                lessonId = `lesson${lesson.lessonNumber}`;
+                const wordReviewStep = lesson.steps?.find(step => step.stepType === 'word_review');
+                
+                if (wordReviewStep && wordReviewStep.content) {
+                  const content = wordReviewStep.content as any;
+                  if (language === 'italian') targetPhrase = content.italian || '';
+                  else if (language === 'spanish') targetPhrase = content.spanish || '';
+                  else if (language === 'german') targetPhrase = content.german || '';
+                  else if (language === 'french') targetPhrase = content.french || '';
+                }
+                title = targetPhrase || lesson.title;
               }
               
               courseItems.push({
                 courseId: `course${course.courseNumber}`,
-                lessonId: `lesson${lesson.lessonNumber}`,
-                title: targetPhrase || lesson.title,
+                lessonId: lessonId,
+                title: title,
                 description: lesson.title,
                 courseTitle: course.title,
                 targetPhrase: targetPhrase,
                 isReview: false,
-                sortOrder: lesson.lessonNumber * 10 // Base order for lessons
+                isIRLLesson: isIRLLesson,
+                sortOrder: lesson.lessonNumber >= 1000 ? 
+                  ((lesson.lessonNumber - 1000) * 100 + 50) : // IRL lessons after reviews (e.g., 150, 250)  
+                  lesson.lessonNumber * 10 // Regular lessons (e.g., 10, 20, 30, 40)
               });
               
               // Check if there's a review that should come after this lesson
