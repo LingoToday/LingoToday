@@ -641,14 +641,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 lessonId = `lesson_irl${irlNumber}`;
                 isIRLLesson = true;
                 
-                // Get IRL lesson content
-                const irlStep = lesson.steps?.find(step => step.stepType === 'irl_video');
-                if (irlStep && irlStep.content) {
-                  const content = irlStep.content as any;
-                  title = content.word || lesson.title;
-                } else {
-                  title = lesson.title;
-                }
+                // For IRL lessons, always use the lesson title (e.g., "IRL Video Challenge 2")
+                title = lesson.title;
               } else {
                 // Handle regular lessons
                 lessonId = `lesson${lesson.lessonNumber}`;
