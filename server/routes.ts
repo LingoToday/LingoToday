@@ -643,6 +643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 
                 // For IRL lessons, always use the lesson title (e.g., "IRL Video Challenge 2")
                 title = lesson.title;
+                console.log(`📺 IRL Lesson - lessonNumber: ${lesson.lessonNumber}, title: "${lesson.title}", lessonId: ${lessonId}`);
               } else {
                 // Handle regular lessons
                 lessonId = `lesson${lesson.lessonNumber}`;
