@@ -773,7 +773,7 @@ export default function Dashboard() {
                             {lesson.isReview ? (
                               <Trophy className="w-3 h-3" />
                             ) : (
-                              index + 2
+                              ""
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
