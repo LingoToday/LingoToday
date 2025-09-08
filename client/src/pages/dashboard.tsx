@@ -735,9 +735,11 @@ export default function Dashboard() {
                             )}
                             <div className="text-lg font-bold">{upcomingLessons[0].title}</div>
                           </div>
-                          <div className={`text-sm ${
-                            upcomingLessons[0].isReview ? 'text-yellow-100' : 'text-purple-100'
-                          }`}>{upcomingLessons[0].description}</div>
+                          {!upcomingLessons[0].isIRLLesson && (
+                            <div className={`text-sm ${
+                              upcomingLessons[0].isReview ? 'text-yellow-100' : 'text-purple-100'
+                            }`}>{upcomingLessons[0].description}</div>
+                          )}
                         </div>
                         <Link href={
                           upcomingLessons[0].isReview
@@ -778,9 +780,11 @@ export default function Dashboard() {
                             <div className={`font-medium text-sm truncate ${
                               lesson.isReview ? 'text-yellow-800' : ''
                             }`}>{lesson.title}</div>
-                            <div className={`text-xs truncate ${
-                              lesson.isReview ? 'text-yellow-600' : 'text-gray-500'
-                            }`}>{lesson.description}</div>
+                            {!lesson.isIRLLesson && (
+                              <div className={`text-xs truncate ${
+                                lesson.isReview ? 'text-yellow-600' : 'text-gray-500'
+                              }`}>{lesson.description}</div>
+                            )}
                           </div>
                         </div>
                       ))}
