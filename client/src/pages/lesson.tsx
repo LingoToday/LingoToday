@@ -805,9 +805,14 @@ export default function Lesson() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     data-testid="irl-response-input"
                   />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Example answers: {stepData.expectedAnswers.slice(0, 2).join(', ')}
-                  </p>
+                  <details className="mt-2">
+                    <summary className="text-sm text-gray-500 cursor-pointer hover:text-gray-700 select-none">
+                      💡 Hints (click to reveal)
+                    </summary>
+                    <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-600">
+                      {stepData.expectedAnswers.join(', ')}
+                    </div>
+                  </details>
                 </div>
               </>
             )}
