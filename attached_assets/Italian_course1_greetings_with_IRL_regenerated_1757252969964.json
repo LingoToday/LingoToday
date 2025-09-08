@@ -229,7 +229,7 @@
         "title": "IRL Video Challenge 1",
         "step1": {
           "type": "video",
-          "video_url": "videos/street_or_cafe_greeting.mp4",
+          "video_url": "/attached_assets/videos/italian/beginners/street_or_cafe_greeting.mp4",
           "prompt": "You meet someone on the street in the morning. They greet you with 'Buongiorno!'. How do you reply?",
           "expected_answers": [
             "Buongiorno!",
@@ -463,7 +463,7 @@
         "title": "IRL Video Challenge 2",
         "step1": {
           "type": "video",
-          "video_url": "videos/cafe_farewell.mp4",
+          "video_url": "/attached_assets/videos/italian/beginners/cafe_farewell.mp4",
           "prompt": "A friend is leaving dinner in the evening. How do you respond to say goodbye and wish them a good evening?",
           "expected_answers": [
             "Buona serata!",

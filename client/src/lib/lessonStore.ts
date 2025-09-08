@@ -17,6 +17,7 @@ interface LessonData {
   category?: string;
   categoryOrder?: number;
   level?: string;
+  isIRLLesson?: boolean;
 }
 
 interface LessonStore {
