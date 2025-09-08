@@ -583,26 +583,44 @@ export default function Dashboard() {
                 <div className="text-right">
                   <div className="text-sm text-gray-600">
                     {(() => {
-                      const currentLevel = user.selectedLevel || 'beginner';
-                      const lessonsCompleted = stats?.lessonsCompleted || 0;
+                      // Course data with accurate lesson counts
+                      const courses = [
+                        { name: 'Greetings', totalLessons: 13 },
+                        { name: 'Introducing Yourself', totalLessons: 13 },
+                        { name: 'Essential Courtesy Phrases', totalLessons: 13 },
+                        { name: 'Numbers', totalLessons: 29 },
+                        { name: 'Days and Dates', totalLessons: 10 }
+                      ];
                       
-                      // Define lessons required for each level
-                      const levelThresholds = {
-                        beginner: { min: 0, max: 25, next: 'Intermediate' },
-                        intermediate: { min: 25, max: 75, next: 'Advanced' },
-                        advanced: { min: 75, max: 150, next: 'Expert' }
-                      };
+                      // Find current course based on progress
+                      let currentCourseIndex = 0;
+                      let currentCourseProgress = 0;
                       
-                      const currentThreshold = levelThresholds[currentLevel as keyof typeof levelThresholds] || levelThresholds.beginner;
-                      const progressInLevel = Math.max(0, lessonsCompleted - currentThreshold.min);
-                      const lessonsInLevel = currentThreshold.max - currentThreshold.min;
-                      const percentage = Math.min(100, Math.round((progressInLevel / lessonsInLevel) * 100));
-                      
-                      if (percentage >= 100) {
-                        return 'Ready to advance!';
+                      for (let i = 0; i < courses.length; i++) {
+                        const courseProgress = allProgress.filter(p => p.courseId === `course${i + 1}`);
+                        const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
+                        const total = courses[i].totalLessons;
+                        
+                        if (completed < total) {
+                          // This is the current course (not yet completed)
+                          currentCourseIndex = i;
+                          currentCourseProgress = completed;
+                          break;
+                        } else if (i === courses.length - 1) {
+                          // All courses completed
+                          return 'All courses completed!';
+                        }
                       }
                       
-                      return `${percentage}% to ${currentThreshold.next}`;
+                      const currentCourse = courses[currentCourseIndex];
+                      const nextCourse = courses[currentCourseIndex + 1];
+                      const percentage = Math.round((currentCourseProgress / currentCourse.totalLessons) * 100);
+                      
+                      if (nextCourse) {
+                        return `${percentage}% to ${nextCourse.name}`;
+                      } else {
+                        return `${percentage}% course complete`;
+                      }
                     })()}
                   </div>
                 </div>
