@@ -100,20 +100,49 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
       
       console.log(`📚 Processing ${courseId}: ${courseData.title}`);
       
-      // Lesson order within each course
-      const lessonOrder = ['lesson1', 'lesson2', 'lesson3', 'lesson4'];
+      // Get all lesson keys (including IRL lessons) and sort them naturally
+      const allLessonKeys = Object.keys(courseData.lessons).filter(key => 
+        key.startsWith('lesson') && !key.startsWith('review') // Include lesson1, lesson2, lesson_irl1, etc. but exclude reviews
+      ).sort((a, b) => {
+        // Sort regular lessons first, then IRL lessons
+        const aIsIRL = a.includes('_irl');
+        const bIsIRL = b.includes('_irl');
+        
+        if (aIsIRL !== bIsIRL) {
+          return aIsIRL ? 1 : -1; // Regular lessons first
+        }
+        
+        // Extract numbers for proper sorting
+        const aNum = parseInt(a.replace('lesson_irl', '').replace('lesson', ''));
+        const bNum = parseInt(b.replace('lesson_irl', '').replace('lesson', ''));
+        return aNum - bNum;
+      });
       
-      lessonOrder.forEach((lessonId, lessonIndex) => {
+      allLessonKeys.forEach((lessonId, lessonIndex) => {
         const lessonData = courseData.lessons[lessonId];
         if (!lessonData) return; // Skip if lesson doesn't exist
+        
+        // Check if this is an IRL video lesson
+        const isIRLLesson = lessonId.includes('_irl');
         
         // Create a standardized lesson object
         const lesson: LessonData = {
           id: `${courseId}_${lessonId}`,
           title: lessonData.title,
-          emoji: '📚',
+          emoji: isIRLLesson ? '🎬' : '📚',
           description: `${courseData.title}: ${lessonData.title}`,
-          content: {
+          content: isIRLLesson ? {
+            // IRL video lesson content
+            word: lessonData.step1?.prompt || '',
+            translation: '',
+            pronunciation: '',
+            example: '',
+            exampleTranslation: '',
+            note: lessonData.step1?.video_url || '',
+            videoUrl: lessonData.step1?.video_url || '',
+            expectedAnswers: lessonData.step1?.expected_answers || []
+          } : {
+            // Regular lesson content
             word: lessonData.items[0]?.italian || '',
             translation: lessonData.items[0]?.english || '',
             pronunciation: lessonData.items[0]?.italian || '',
@@ -121,7 +150,12 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
             exampleTranslation: lessonData.items[1]?.english || lessonData.items[0]?.english || '',
             note: lessonData.items[0]?.note || ''
           },
-          quiz: {
+          quiz: isIRLLesson ? {
+            // IRL lessons don't use traditional quiz format
+            question: '',
+            options: [],
+            correct: 0
+          } : {
             question: `What does "${lessonData.items[0]?.italian || ''}" mean?`,
             options: [
               lessonData.items[0]?.english || '',
@@ -131,12 +165,12 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
             ],
             correct: 0
           },
-          words: lessonData.items.map((item: any) => item.italian).filter(Boolean),
+          words: isIRLLesson ? [] : lessonData.items.map((item: any) => item.italian).filter(Boolean),
           week: courseIndex + 1,
           day: lessonIndex + 1,
           category: courseData.title,
-          // Fix: lessonIndex should start from 0, so lesson1 gets categoryOrder 0, lesson2 gets 1, etc.
-          categoryOrder: (courseIndex * 10) + lessonIndex
+          categoryOrder: (courseIndex * 10) + lessonIndex,
+          isIRLLesson: isIRLLesson
         };
         
         console.log(`📚 Adding lesson: ${lesson.id} (${courseData.title}: ${lessonData.title})`);
@@ -158,24 +192,49 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
       
       console.log(`📚 Processing ${courseId}: ${courseData.title}`);
       
-      // Get lesson keys and sort them naturally (lesson1, lesson2, etc.)
-      const lessonKeys = Object.keys(courseData.lessons).sort((a, b) => {
-        const numA = parseInt(a.replace('lesson', ''));
-        const numB = parseInt(b.replace('lesson', ''));
-        return numA - numB;
+      // Get all lesson keys (including IRL lessons) and sort them naturally
+      const allLessonKeys = Object.keys(courseData.lessons).filter(key => 
+        key.startsWith('lesson') && !key.startsWith('review') // Include lesson1, lesson2, lesson_irl1, etc. but exclude reviews
+      ).sort((a, b) => {
+        // Sort regular lessons first, then IRL lessons
+        const aIsIRL = a.includes('_irl');
+        const bIsIRL = b.includes('_irl');
+        
+        if (aIsIRL !== bIsIRL) {
+          return aIsIRL ? 1 : -1; // Regular lessons first
+        }
+        
+        // Extract numbers for proper sorting
+        const aNum = parseInt(a.replace('lesson_irl', '').replace('lesson', ''));
+        const bNum = parseInt(b.replace('lesson_irl', '').replace('lesson', ''));
+        return aNum - bNum;
       });
       
-      lessonKeys.forEach((lessonId, lessonIndex) => {
+      allLessonKeys.forEach((lessonId, lessonIndex) => {
         const lessonData = courseData.lessons[lessonId];
         if (!lessonData) return; // Skip if lesson doesn't exist
+        
+        // Check if this is an IRL video lesson
+        const isIRLLesson = lessonId.includes('_irl');
         
         // Create a standardized lesson object for Spanish 3-step structure
         const lesson: LessonData = {
           id: `${courseId}_${lessonId}`,
           title: lessonData.title,
-          emoji: '🇪🇸',
+          emoji: isIRLLesson ? '🎬' : '🇪🇸',
           description: `${courseData.title}: ${lessonData.title}`,
-          content: {
+          content: isIRLLesson ? {
+            // IRL video lesson content
+            word: lessonData.step1?.prompt || '',
+            translation: '',
+            pronunciation: '',
+            example: '',
+            exampleTranslation: '',
+            note: lessonData.step1?.video_url || '',
+            videoUrl: lessonData.step1?.video_url || '',
+            expectedAnswers: lessonData.step1?.expected_answers || []
+          } : {
+            // Regular Spanish lesson content
             word: lessonData.step1?.spanish || '',
             translation: lessonData.step1?.english || '',
             pronunciation: lessonData.step1?.audio || lessonData.step1?.spanish || '',
@@ -183,7 +242,12 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
             exampleTranslation: lessonData.step1?.english || '',
             note: lessonData.step1?.note || ''
           },
-          quiz: {
+          quiz: isIRLLesson ? {
+            // IRL lessons don't use traditional quiz format
+            question: '',
+            options: [],
+            correct: 0
+          } : {
             question: lessonData.step1?.mcq?.question || `What does "${lessonData.step1?.spanish || ''}" mean?`,
             options: lessonData.step1?.mcq?.options || [
               lessonData.step1?.english || '',
@@ -193,11 +257,12 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
             ],
             correct: lessonData.step1?.mcq?.options?.indexOf(lessonData.step1?.mcq?.answer) || 0
           },
-          words: [lessonData.step1?.spanish].filter(Boolean),
+          words: isIRLLesson ? [] : [lessonData.step1?.spanish].filter(Boolean),
           week: courseIndex + 1,
           day: lessonIndex + 1,
           category: courseData.title,
-          categoryOrder: (courseIndex * 100) + lessonIndex // More spacing for more lessons per course
+          categoryOrder: (courseIndex * 100) + lessonIndex, // More spacing for more lessons per course
+          isIRLLesson: isIRLLesson
         };
         
         console.log(`📚 Adding lesson: ${lesson.id} (${courseData.title}: ${lessonData.title})`);
