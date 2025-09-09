@@ -1,5 +1,13 @@
-/* Tailwind CSS (via CDN for simplicity) */
-@import url('https://cdn.tailwindcss.com/3.4.0');
+/* Basic PWA Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Import Tailwind CSS */
+@import url('https://unpkg.com/tailwindcss@3.4.0/lib/css/preflight.css');
+@import url('https://unpkg.com/tailwindcss@3.4.0/lib/css/utilities.css');
 
 /* PWA Specific Styles */
 .App {
