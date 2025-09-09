@@ -363,6 +363,40 @@
                     <div id="listeningFeedback" class="lesson-feedback hidden"></div>
                 </div>
                 
+                <!-- IRL Video Step -->
+                <div id="irlVideoStep" class="lesson-step hidden">
+                    <div id="irlVideoContainer">
+                        <video id="irlVideo" width="100%" controls style="border-radius: 12px; margin-bottom: 20px;">
+                            <source id="irlVideoSource" src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <h3 id="irlPrompt">Watch the video and answer the question</h3>
+                    <input type="text" class="typing-input" id="irlInput" placeholder="Type your answer...">
+                    <div id="irlFeedback" class="lesson-feedback hidden"></div>
+                </div>
+
+                <!-- Checkpoint Results -->
+                <div id="checkpointResults" class="lesson-step hidden">
+                    <div id="checkpointResultIcon" style="font-size: 48px; margin-bottom: 20px;">🎉</div>
+                    <h2 id="checkpointResultTitle">Checkpoint Complete!</h2>
+                    <p id="checkpointResultMessage" style="margin: 15px 0; color: #6b7280;">Great job!</p>
+                    <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Score:</span>
+                            <span id="checkpointScore">0/0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Percentage:</span>
+                            <span id="checkpointPercentage">0%</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Result:</span>
+                            <span id="checkpointPassStatus">Pass</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Lesson Complete -->
                 <div id="lessonComplete" class="lesson-step hidden">
                     <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
@@ -710,6 +744,48 @@
             document.getElementById('lessonTitle').textContent = currentLessonData.lesson.title || 'Lesson';
             document.getElementById('lessonCourse').textContent = currentLessonData.courseTitle || 'Course';
             
+            // Detect lesson type and initialize accordingly
+            if (currentLessonData.isCheckpoint) {
+                initializeCheckpointLesson();
+            } else if (currentLessonData.lesson.isIRLLesson) {
+                initializeIRLLesson();
+            } else {
+                initializeRegularLesson();
+            }
+        }
+
+        function initializeCheckpointLesson() {
+            const questions = currentLessonData.questions || [];
+            totalSteps = questions.length;
+            
+            console.log('Initializing checkpoint with', totalSteps, 'questions');
+            
+            // Setup question indicators instead of step dots
+            setupQuestionIndicators();
+            
+            // Show first question
+            showCheckpointQuestion(currentStep);
+        }
+
+        function initializeIRLLesson() {
+            totalSteps = 1; // IRL lessons are single-step
+            
+            console.log('Initializing IRL video lesson');
+            
+            // Setup minimal indicators
+            setupStepIndicators();
+            
+            // Show IRL video interface
+            showIRLVideoStep();
+        }
+
+        function initializeRegularLesson() {
+            // Determine actual steps from lesson data
+            const steps = currentLessonData.lesson.steps || [];
+            totalSteps = Math.max(steps.length, 4); // Minimum 4 steps for regular lessons
+            
+            console.log('Initializing regular lesson with', totalSteps, 'steps');
+            
             // Setup step indicators
             setupStepIndicators();
             
@@ -728,6 +804,28 @@
             }
         }
 
+        function setupQuestionIndicators() {
+            const indicator = document.getElementById('stepIndicator');
+            indicator.innerHTML = '';
+            
+            // Show "Question X of Y" text instead of dots
+            const questionText = document.createElement('div');
+            questionText.style.textAlign = 'center';
+            questionText.style.fontSize = '14px';
+            questionText.style.color = '#6b7280';
+            questionText.id = 'questionIndicator';
+            updateQuestionIndicator();
+            
+            indicator.appendChild(questionText);
+        }
+
+        function updateQuestionIndicator() {
+            const indicator = document.getElementById('questionIndicator');
+            if (indicator) {
+                indicator.textContent = `Question ${currentStep} of ${totalSteps}`;
+            }
+        }
+
         function showLessonStep(step) {
             // Hide all steps
             document.querySelectorAll('.lesson-step').forEach(el => el.classList.add('hidden'));
@@ -743,23 +841,25 @@
                 else if (index + 1 === step) dot.classList.add('active');
             });
 
-            // Show appropriate step
-            switch (step) {
-                case STEP_TYPES.WORD_REVIEW:
-                    showWordReviewStep();
-                    break;
-                case STEP_TYPES.MCQ:
-                    showMCQStep();
-                    break;
-                case STEP_TYPES.TYPING:
-                    showTypingStep();
-                    break;
-                case STEP_TYPES.LISTENING:
-                    showListeningStep();
-                    break;
-                default:
-                    showLessonComplete();
-                    break;
+            // Show appropriate step for regular lessons only
+            if (!currentLessonData.isCheckpoint && !currentLessonData.lesson.isIRLLesson) {
+                switch (step) {
+                    case STEP_TYPES.WORD_REVIEW:
+                        showWordReviewStep();
+                        break;
+                    case STEP_TYPES.MCQ:
+                        showMCQStep();
+                        break;
+                    case STEP_TYPES.TYPING:
+                        showTypingStep();
+                        break;
+                    case STEP_TYPES.LISTENING:
+                        showListeningStep();
+                        break;
+                    default:
+                        showLessonComplete();
+                        break;
+                }
             }
         }
 
@@ -767,16 +867,22 @@
             const step = document.getElementById('wordReviewStep');
             step.classList.remove('hidden');
             
-            // Get word review data from lesson
+            // Get word review data from lesson (match website structure)
             const steps = currentLessonData.lesson.steps || [];
             const wordStep = steps.find(s => s.stepType === 'word_review') || steps[0];
             
             if (wordStep?.content) {
                 const content = wordStep.content;
-                document.getElementById('wordReviewWord').textContent = content.italian || content.spanish || content.word || 'Word';
+                // Match website data field names
+                document.getElementById('wordReviewWord').textContent = content.italian || content.spanish || content.french || content.german || content.word || 'Word';
                 document.getElementById('wordReviewTranslation').textContent = content.english || content.translation || 'Translation';
                 document.getElementById('wordReviewExample').textContent = content.example_italian || content.example_spanish || content.example || '';
                 document.getElementById('wordReviewExampleTranslation').textContent = content.example_english || content.exampleTranslation || '';
+                
+                // Audio support if available
+                if (content.audio) {
+                    console.log('Audio available for word review:', content.audio);
+                }
             }
             
             // Auto-advance after 3 seconds or on tap
@@ -791,25 +897,28 @@
             const step = document.getElementById('mcqStep');
             step.classList.remove('hidden');
             
-            // Get MCQ data from lesson
+            // Clear any previous feedback
+            document.getElementById('mcqFeedback').classList.add('hidden');
+            
+            // Get MCQ data from lesson (match website structure)
             const steps = currentLessonData.lesson.steps || [];
             const mcqStep = steps.find(s => s.stepType === 'quick_check');
             
             let question = 'What does this word mean?';
             let options = ['Option A', 'Option B', 'Option C', 'Option D'];
-            let correctAnswer = 0;
+            let correctAnswer = '';
             
             if (mcqStep?.content?.mcq) {
                 const mcq = mcqStep.content.mcq;
                 question = mcq.question || question;
                 options = mcq.options || options;
-                correctAnswer = mcq.correct_answer_index || 0;
+                correctAnswer = mcq.answer || options[0]; // Website uses answer string, not index
             } else if (currentLessonData.lesson.quiz) {
                 // Fallback to lesson quiz
                 const quiz = currentLessonData.lesson.quiz;
                 question = quiz.question || question;
                 options = quiz.options || options;
-                correctAnswer = quiz.correct || 0;
+                correctAnswer = quiz.options?.[quiz.correct] || options[0];
             }
             
             document.getElementById('mcqQuestion').textContent = question;
@@ -821,23 +930,29 @@
                 const button = document.createElement('div');
                 button.className = 'mcq-option';
                 button.textContent = option;
-                button.onclick = () => selectMCQOption(index, correctAnswer, button);
+                button.onclick = () => selectMCQOption(index, correctAnswer, option, button);
                 optionsContainer.appendChild(button);
             });
         }
 
-        function selectMCQOption(selectedIndex, correctIndex, selectedElement) {
+        function selectMCQOption(selectedIndex, correctAnswer, selectedText, selectedElement) {
             // Disable all options
             document.querySelectorAll('.mcq-option').forEach(opt => {
                 opt.onclick = null;
                 opt.style.pointerEvents = 'none';
             });
             
-            // Mark correct and incorrect
+            // Mark correct and incorrect options
             const options = document.querySelectorAll('.mcq-option');
-            options[correctIndex].classList.add('correct');
+            const isCorrect = selectedText === correctAnswer;
             
-            if (selectedIndex !== correctIndex) {
+            options.forEach(opt => {
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (!isCorrect) {
                 selectedElement.classList.add('incorrect');
             }
             
@@ -845,14 +960,14 @@
             const feedback = document.getElementById('mcqFeedback');
             feedback.classList.remove('hidden');
             
-            if (selectedIndex === correctIndex) {
+            if (isCorrect) {
                 feedback.className = 'lesson-feedback feedback-correct';
                 feedback.textContent = '✅ Correct! Well done!';
-                lessonAnswers[currentStep] = { correct: true, answer: selectedIndex };
+                lessonAnswers[currentStep] = { correct: true, answer: selectedText };
             } else {
                 feedback.className = 'lesson-feedback feedback-incorrect';
-                feedback.textContent = '❌ Not quite right. The correct answer is highlighted.';
-                lessonAnswers[currentStep] = { correct: false, answer: selectedIndex };
+                feedback.textContent = `❌ Not quite right. The correct answer is: ${correctAnswer}`;
+                lessonAnswers[currentStep] = { correct: false, answer: selectedText };
             }
             
             // Auto-advance after 2 seconds
@@ -863,17 +978,22 @@
             const step = document.getElementById('typingStep');
             step.classList.remove('hidden');
             
-            // Get typing data from lesson
+            // Clear previous feedback
+            document.getElementById('typingFeedback').classList.add('hidden');
+            
+            // Get typing data from lesson (match website structure)
             const steps = currentLessonData.lesson.steps || [];
             const typingStep = steps.find(s => s.stepType === 'typing_practice');
             
             let question = 'Type the word you learned';
             let correctAnswer = 'word';
+            let alternatives = [];
             
             if (typingStep?.content) {
                 const content = typingStep.content;
-                question = content.question || content.prompt || question;
-                correctAnswer = content.correct_answer || content.italian || content.spanish || correctAnswer;
+                question = content.type_prompt || content.prompt || question;
+                correctAnswer = content.expected_answer || content.italian || content.spanish || correctAnswer;
+                alternatives = content.alt_answers || [];
             }
             
             document.getElementById('typingQuestion').textContent = question;
@@ -882,24 +1002,32 @@
             input.value = '';
             input.focus();
             
+            // Store for validation
+            input.dataset.correctAnswer = correctAnswer;
+            input.dataset.alternatives = JSON.stringify(alternatives);
+            
             // Handle input submission
             input.onkeyup = (e) => {
                 if (e.key === 'Enter') {
-                    checkTypingAnswer(input.value.trim(), correctAnswer);
+                    checkTypingAnswer(input.value.trim(), correctAnswer, alternatives);
                 }
             };
             
             // Update button to check answer
             const nextBtn = document.getElementById('lessonNextBtn');
             nextBtn.textContent = 'Check Answer';
-            nextBtn.onclick = () => checkTypingAnswer(input.value.trim(), correctAnswer);
+            nextBtn.onclick = () => checkTypingAnswer(input.value.trim(), correctAnswer, alternatives);
         }
 
-        function checkTypingAnswer(userAnswer, correctAnswer) {
+        function checkTypingAnswer(userAnswer, correctAnswer, alternatives = []) {
             const feedback = document.getElementById('typingFeedback');
             feedback.classList.remove('hidden');
             
-            const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+            // Check if answer matches main answer or any alternatives (case-insensitive)
+            const allValidAnswers = [correctAnswer, ...alternatives];
+            const isCorrect = allValidAnswers.some(valid => 
+                userAnswer.toLowerCase().trim() === valid.toLowerCase().trim()
+            );
             
             if (isCorrect) {
                 feedback.className = 'lesson-feedback feedback-correct';
@@ -924,27 +1052,36 @@
             const step = document.getElementById('listeningStep');
             step.classList.remove('hidden');
             
-            // Get listening data from lesson
+            // Clear previous feedback
+            document.getElementById('listeningFeedback').classList.add('hidden');
+            
+            // Get listening data from lesson (match website structure)
             const steps = currentLessonData.lesson.steps || [];
             const listeningStep = steps.find(s => s.stepType === 'listening_comprehension');
             
             let question = 'Listen and choose the correct meaning';
             let options = ['Option A', 'Option B', 'Option C', 'Option D'];
-            let correctAnswer = 0;
+            let correctAnswer = '';
+            let audioSentence = '';
             
             if (listeningStep?.content) {
                 const content = listeningStep.content;
-                question = content.question || question;
+                question = 'Listen to the audio and choose the correct option';
                 options = content.options || options;
-                correctAnswer = content.correct_answer_index || 0;
+                correctAnswer = content.answer || options[0]; // Website uses answer string
+                audioSentence = content.audioSentence || content.audio_sentence || '';
             }
             
             document.getElementById('listeningQuestion').textContent = question;
             
-            // Setup audio playback (simulated for now)
+            // Setup audio playback
             document.getElementById('playAudioBtn').onclick = () => {
-                // In a real app, this would play actual audio
-                alert('🔊 Audio would play here: "' + (currentLessonData.lesson.content?.word || 'ciao') + '"');
+                // For now, show the sentence (in real app, would play audio)
+                if (audioSentence) {
+                    alert(`🔊 Audio: "${audioSentence}"`);
+                } else {
+                    alert('🔊 Audio would play here');
+                }
             };
             
             const optionsContainer = document.getElementById('listeningOptions');
@@ -954,25 +1091,26 @@
                 const button = document.createElement('div');
                 button.className = 'mcq-option';
                 button.textContent = option;
-                button.onclick = () => selectListeningOption(index, correctAnswer, button);
+                button.onclick = () => selectListeningOption(index, correctAnswer, option, button);
                 optionsContainer.appendChild(button);
             });
         }
 
-        function selectListeningOption(selectedIndex, correctIndex, selectedElement) {
-            // Same logic as MCQ
-            selectMCQOption(selectedIndex, correctIndex, selectedElement);
+        function selectListeningOption(selectedIndex, correctAnswer, selectedText, selectedElement) {
+            // Use the same logic as MCQ with string comparison
+            selectMCQOption(selectedIndex, correctAnswer, selectedText, selectedElement);
             
-            // Update feedback element
+            // Update feedback element (will be overridden by MCQ feedback, but keeping for clarity)
             const feedback = document.getElementById('listeningFeedback');
             feedback.classList.remove('hidden');
             
-            if (selectedIndex === correctIndex) {
+            const isCorrect = selectedText === correctAnswer;
+            if (isCorrect) {
                 feedback.className = 'lesson-feedback feedback-correct';
                 feedback.textContent = '✅ Excellent listening!';
             } else {
                 feedback.className = 'lesson-feedback feedback-incorrect';
-                feedback.textContent = '❌ Try listening again. The correct answer is highlighted.';
+                feedback.textContent = `❌ Try listening again. The correct answer is: ${correctAnswer}`;
             }
         }
 
@@ -1008,6 +1146,7 @@
                     language: currentUser?.selectedLanguage || 'italian',
                     courseId: currentLessonData.courseId,
                     lessonId: currentLessonData.lessonId,
+                    stepNumber: totalSteps, // All steps completed
                     completed: true,
                     score: accuracy,
                     timeSpent: timeSpent,
@@ -1034,12 +1173,303 @@
             }
         }
 
-        function nextLessonStep() {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                showLessonStep(currentStep);
+        async function saveCheckpointProgress(correct, percentage, passed) {
+            try {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                
+                // Prepare answers array matching website format
+                const answers = {};
+                const questions = currentLessonData.questions || [];
+                
+                questions.forEach((question, index) => {
+                    const answerKey = index + 1;
+                    const userAnswer = lessonAnswers[answerKey];
+                    answers[index] = userAnswer?.selected || '';
+                });
+                
+                const progressData = {
+                    checkpointId: currentLessonData.checkpointNumber || 1,
+                    completed: passed,
+                    score: correct,
+                    answers: answers,
+                    timeSpent: timeSpent,
+                    completedAt: passed ? new Date().toISOString() : null
+                };
+                
+                const response = await fetch(`${API_BASE}/api/checkpoint-progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(progressData)
+                });
+                
+                if (response.ok) {
+                    console.log('Checkpoint progress saved successfully');
+                } else {
+                    console.error('Failed to save checkpoint progress');
+                }
+                
+            } catch (error) {
+                console.error('Error saving checkpoint progress:', error);
+            }
+        }
+
+        function completeCheckpoint(correct, percentage, passed) {
+            // Additional completion logic if needed
+            completeLessonAndReturn();
+        }
+
+        function completeIRLLesson() {
+            // Calculate accuracy for IRL lesson
+            const accuracy = lessonAnswers[1]?.correct ? 100 : 0;
+            
+            // Save progress using regular lesson endpoint
+            saveLessonProgress(accuracy);
+            
+            // Show completion
+            showLessonComplete();
+        }
+
+        function showCheckpointQuestion(questionIndex) {
+            const step = document.getElementById('mcqStep');
+            step.classList.remove('hidden');
+            
+            const questions = currentLessonData.questions || [];
+            const question = questions[questionIndex - 1];
+            
+            if (!question) {
+                console.error('Question not found:', questionIndex);
+                return;
+            }
+            
+            // Update progress for checkpoint
+            const progress = ((questionIndex - 1) / totalSteps) * 100;
+            document.getElementById('lessonProgressFill').style.width = `${progress}%`;
+            updateQuestionIndicator();
+            
+            document.getElementById('mcqQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('mcqOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.className = 'mcq-option';
+                button.textContent = option;
+                button.onclick = () => selectCheckpointAnswer(questionIndex, index, option, question.correctAnswer, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectCheckpointAnswer(questionIndex, selectedIndex, selectedAnswer, correctAnswer, selectedElement) {
+            // Store answer
+            lessonAnswers[questionIndex] = {
+                selected: selectedAnswer,
+                correct: selectedAnswer === correctAnswer,
+                questionId: questionIndex
+            };
+            
+            // Disable all options
+            document.querySelectorAll('.mcq-option').forEach(opt => {
+                opt.onclick = null;
+                opt.style.pointerEvents = 'none';
+            });
+            
+            // Find and mark correct option
+            const options = document.querySelectorAll('.mcq-option');
+            options.forEach(opt => {
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (selectedAnswer !== correctAnswer) {
+                selectedElement.classList.add('incorrect');
+            }
+            
+            // Show feedback
+            const feedback = document.getElementById('mcqFeedback');
+            feedback.classList.remove('hidden');
+            
+            if (selectedAnswer === correctAnswer) {
+                feedback.className = 'lesson-feedback feedback-correct';
+                feedback.textContent = '✅ Correct!';
             } else {
-                showLessonComplete();
+                feedback.className = 'lesson-feedback feedback-incorrect';
+                feedback.textContent = `❌ Incorrect. The correct answer is: ${correctAnswer}`;
+            }
+            
+            // Auto-advance after 2 seconds
+            setTimeout(() => {
+                if (questionIndex < totalSteps) {
+                    currentStep++;
+                    showCheckpointQuestion(currentStep);
+                } else {
+                    showCheckpointResults();
+                }
+            }, 2000);
+        }
+
+        function showCheckpointResults() {
+            document.querySelectorAll('.lesson-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById('checkpointResults').classList.remove('hidden');
+            
+            // Calculate score (matching website logic)
+            const questions = currentLessonData.questions || [];
+            let correct = 0;
+            
+            questions.forEach((question, index) => {
+                const answerKey = index + 1;
+                if (lessonAnswers[answerKey]?.correct) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const passed = percentage >= 70; // Match website threshold
+            
+            // Update UI
+            document.getElementById('checkpointScore').textContent = `${correct}/${questions.length}`;
+            document.getElementById('checkpointPercentage').textContent = `${percentage}%`;
+            document.getElementById('checkpointPassStatus').textContent = passed ? 'Pass' : 'Fail';
+            document.getElementById('checkpointPassStatus').style.color = passed ? '#10b981' : '#ef4444';
+            
+            if (passed) {
+                document.getElementById('checkpointResultIcon').textContent = '🎉';
+                document.getElementById('checkpointResultTitle').textContent = 'Checkpoint Passed!';
+                document.getElementById('checkpointResultMessage').textContent = 'Great work! You passed this checkpoint.';
+            } else {
+                document.getElementById('checkpointResultIcon').textContent = '😔';
+                document.getElementById('checkpointResultTitle').textContent = 'Checkpoint Failed';
+                document.getElementById('checkpointResultMessage').textContent = 'You need 70% to pass. Try again!';
+            }
+            
+            // Update progress bar
+            document.getElementById('lessonProgressFill').style.width = '100%';
+            
+            // Update button behavior
+            const nextBtn = document.getElementById('lessonNextBtn');
+            if (passed) {
+                nextBtn.textContent = 'Complete Checkpoint';
+                nextBtn.onclick = () => completeCheckpoint(correct, percentage, passed);
+            } else {
+                nextBtn.textContent = 'Retry Checkpoint';
+                nextBtn.onclick = () => retryCheckpoint();
+            }
+            
+            // Save checkpoint progress
+            saveCheckpointProgress(correct, percentage, passed);
+        }
+
+        function retryCheckpoint() {
+            // Reset checkpoint state
+            currentStep = 1;
+            lessonAnswers = {};
+            
+            // Restart checkpoint
+            setupQuestionIndicators();
+            showCheckpointQuestion(currentStep);
+        }
+
+        function showIRLVideoStep() {
+            const step = document.getElementById('irlVideoStep');
+            step.classList.remove('hidden');
+            
+            // Get IRL video data from lesson
+            const steps = currentLessonData.lesson.steps || [];
+            const irlStep = steps.find(s => s.stepType === 'irl_video');
+            
+            if (irlStep?.content) {
+                const content = irlStep.content;
+                const videoUrl = content.videoUrl || content.video_url;
+                const prompt = content.word || content.prompt || 'Watch the video and answer the question';
+                
+                document.getElementById('irlPrompt').textContent = prompt;
+                
+                if (videoUrl) {
+                    document.getElementById('irlVideoSource').src = videoUrl;
+                    document.getElementById('irlVideo').load();
+                }
+            }
+            
+            const input = document.getElementById('irlInput');
+            input.value = '';
+            input.focus();
+            
+            // Handle input submission
+            input.onkeyup = (e) => {
+                if (e.key === 'Enter') {
+                    checkIRLAnswer(input.value.trim());
+                }
+            };
+            
+            // Update button
+            const nextBtn = document.getElementById('lessonNextBtn');
+            nextBtn.textContent = 'Submit Answer';
+            nextBtn.onclick = () => checkIRLAnswer(input.value.trim());
+        }
+
+        function checkIRLAnswer(userAnswer) {
+            const steps = currentLessonData.lesson.steps || [];
+            const irlStep = steps.find(s => s.stepType === 'irl_video');
+            const expectedAnswers = irlStep?.content?.expectedAnswers || irlStep?.content?.expected_answers || [];
+            
+            // Check against expected answers (case-insensitive, partial matches)
+            let isCorrect = false;
+            
+            if (expectedAnswers.length > 0) {
+                isCorrect = expectedAnswers.some(expected => 
+                    userAnswer.toLowerCase().includes(expected.toLowerCase()) ||
+                    expected.toLowerCase().includes(userAnswer.toLowerCase())
+                );
+            } else {
+                // Fallback - consider any non-empty answer correct
+                isCorrect = userAnswer.length > 0;
+            }
+            
+            const feedback = document.getElementById('irlFeedback');
+            feedback.classList.remove('hidden');
+            
+            if (isCorrect) {
+                feedback.className = 'lesson-feedback feedback-correct';
+                feedback.textContent = '✅ Great answer!';
+                lessonAnswers[1] = { correct: true, answer: userAnswer };
+            } else {
+                feedback.className = 'lesson-feedback feedback-incorrect';
+                feedback.textContent = `❌ Try again. Expected: ${expectedAnswers.join(' or ')}`;
+                lessonAnswers[1] = { correct: false, answer: userAnswer };
+            }
+            
+            // Update button
+            const nextBtn = document.getElementById('lessonNextBtn');
+            nextBtn.textContent = 'Complete Lesson';
+            nextBtn.onclick = () => completeIRLLesson();
+            
+            // Auto-advance after 2 seconds
+            setTimeout(() => completeIRLLesson(), 2000);
+        }
+
+        function nextLessonStep() {
+            if (currentLessonData.isCheckpoint) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showCheckpointQuestion(currentStep);
+                } else {
+                    showCheckpointResults();
+                }
+            } else if (currentLessonData.lesson.isIRLLesson) {
+                // IRL lessons handled by their own completion logic
+                return;
+            } else {
+                // Regular lesson
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showLessonStep(currentStep);
+                } else {
+                    showLessonComplete();
+                }
             }
         }
 
