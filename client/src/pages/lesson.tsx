@@ -27,6 +27,8 @@ export default function Lesson() {
   const [fromNotification, setFromNotification] = useState(false);
   const [stepResults, setStepResults] = useState<{[key: number]: boolean}>({});
   const [showIntroVideo, setShowIntroVideo] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [showVideoControls, setShowVideoControls] = useState(true);
 
   // Check if user came from notification and handle lesson ID
   useEffect(() => {
@@ -778,11 +780,37 @@ export default function Lesson() {
                 {/* Video Player */}
                 <div className="flex justify-center mb-6">
                   <video 
-                    controls 
+                    controls={showVideoControls}
                     className="w-80 h-[28rem] rounded-lg shadow-lg object-cover"
-                    style={{ aspectRatio: '9/16' }}
+                    style={{ 
+                      aspectRatio: '9/16',
+                      backgroundColor: 'transparent',
+                      WebkitAppearance: 'none',
+                      WebkitTapHighlightColor: 'transparent'
+                    }}
                     data-testid="irl-video-player"
                     playsInline
+                    webkit-playsinline="true"
+                    preload="metadata"
+                    onPlay={() => {
+                      setIsVideoPlaying(true);
+                      setShowVideoControls(true);
+                    }}
+                    onPause={() => {
+                      setIsVideoPlaying(false);
+                    }}
+                    onEnded={() => {
+                      setIsVideoPlaying(false);
+                    }}
+                    onClick={() => {
+                      // Toggle controls visibility on tap (mobile)
+                      setShowVideoControls(!showVideoControls);
+                    }}
+                    onLoadedMetadata={(e) => {
+                      // Ensure video is ready and remove any default overlays
+                      const video = e.target as HTMLVideoElement;
+                      video.style.backgroundColor = 'transparent';
+                    }}
                   >
                     <source src={stepData.videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.
