@@ -440,9 +440,34 @@
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 15px;">Settings</h3>
-                <button class="button" style="background: #f3f4f6; color: #374151;" onclick="alert('Settings coming soon!')">🔔 Notifications</button>
-                <button class="button" style="background: #f3f4f6; color: #374151;" onclick="alert('Settings coming soon!')">🌍 Language Preferences</button>
+                <h3 style="margin-bottom: 15px;">Mobile Notifications</h3>
+                <p style="color: #666; margin-bottom: 15px;">Get daily lesson reminders on your mobile device</p>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <span>Status:</span>
+                    <span id="notificationStatus" style="font-weight: 600;">❌ Disabled</span>
+                </div>
+                
+                <button class="button" id="enableNotificationsBtn" onclick="requestNotificationPermission()">Enable Notifications</button>
+                <button class="button" id="disableNotificationsBtn" onclick="unsubscribeFromPush()" style="display: none; background: #ef4444;">Disable Notifications</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Learning Settings</h3>
+                <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Daily Goal:</span>
+                        <span style="font-weight: 600;">1 lesson</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Reminder Times:</span>
+                        <span style="font-weight: 600;">10 AM, 6 PM</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Language:</span>
+                        <span style="font-weight: 600;" id="selectedLanguage">Italian</span>
+                    </div>
+                </div>
             </div>
 
             <button class="button" style="background: #ef4444;" onclick="logout()">Sign Out</button>
@@ -471,7 +496,14 @@
         const loginError = document.getElementById('loginError');
 
         // Check authentication on load
-        document.addEventListener('DOMContentLoaded', checkAuth);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            
+            // Initialize push notifications after a short delay
+            setTimeout(async () => {
+                await initializePushNotifications();
+            }, 1000);
+        });
 
         async function checkAuth() {
             try {
@@ -534,6 +566,20 @@
         async function showDashboard() {
             loginScreen.classList.add('hidden');
             dashboardScreen.classList.remove('hidden');
+            
+            // Update profile language display
+            if (currentUser?.selectedLanguage) {
+                const langDisplay = document.getElementById('selectedLanguage');
+                if (langDisplay) {
+                    const languages = {
+                        'italian': 'Italian',
+                        'spanish': 'Spanish',
+                        'french': 'French',
+                        'german': 'German'
+                    };
+                    langDisplay.textContent = languages[currentUser.selectedLanguage] || currentUser.selectedLanguage;
+                }
+            }
 
             if (currentUser) {
                 document.getElementById('welcomeText').textContent = `Welcome back, ${currentUser.firstName}!`;
@@ -1026,6 +1072,259 @@
             deferredPrompt = e;
             console.log('PWA install prompt available');
         });
+
+        // Push Notification System
+        let pushSubscription = null;
+        let swRegistration = null;
+
+        // Initialize push notifications
+        async function initializePushNotifications() {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                console.log('Push notifications not supported');
+                return false;
+            }
+
+            try {
+                // Register service worker
+                swRegistration = await navigator.serviceWorker.register('/sw.js');
+                console.log('Service Worker registered:', swRegistration);
+
+                // Wait for service worker to be ready
+                await navigator.serviceWorker.ready;
+
+                // Check for existing subscription
+                pushSubscription = await swRegistration.pushManager.getSubscription();
+                
+                if (pushSubscription) {
+                    console.log('Existing push subscription found');
+                    updateNotificationStatus(true);
+                } else {
+                    console.log('No existing push subscription');
+                    updateNotificationStatus(false);
+                }
+
+                // Listen for messages from service worker
+                navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+
+                return true;
+            } catch (error) {
+                console.error('Failed to initialize push notifications:', error);
+                return false;
+            }
+        }
+
+        // Handle messages from service worker
+        function handleServiceWorkerMessage(event) {
+            console.log('Message from service worker:', event.data);
+            
+            if (event.data.type === 'NOTIFICATION_CLICK') {
+                // User clicked on notification - start lesson
+                if (event.data.action === 'start-lesson') {
+                    startNextLesson();
+                }
+            }
+        }
+
+        // Request notification permission and subscribe to push
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                alert('This browser does not support notifications');
+                return false;
+            }
+
+            // Request permission
+            const permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                console.log('Notification permission granted');
+                await subscribeToPush();
+                return true;
+            } else {
+                console.log('Notification permission denied');
+                updateNotificationStatus(false);
+                return false;
+            }
+        }
+
+        // Subscribe to push notifications
+        async function subscribeToPush() {
+            if (!swRegistration) {
+                console.error('Service worker not registered');
+                return;
+            }
+
+            try {
+                // Generate VAPID keys (in production, these should be from your backend)
+                const vapidPublicKey = 'BPwNbFyO9gGKmg8W9vCh7d4J8xTzRQMx5nB2zL8K1w4S6gA0nL9mD4R8xB5hK2Q7P3';
+                
+                const subscription = await swRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlB64ToUint8Array(vapidPublicKey)
+                });
+
+                pushSubscription = subscription;
+                console.log('Push subscription successful:', subscription);
+
+                // Send subscription to backend
+                await sendSubscriptionToBackend(subscription);
+                
+                updateNotificationStatus(true);
+                
+                // Schedule daily lesson reminders
+                scheduleNotifications();
+                
+            } catch (error) {
+                console.error('Failed to subscribe to push notifications:', error);
+                updateNotificationStatus(false);
+            }
+        }
+
+        // Send push subscription to backend
+        async function sendSubscriptionToBackend(subscription) {
+            try {
+                const response = await fetch(`${API_BASE}/api/push-subscription`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        subscription: subscription,
+                        userAgent: navigator.userAgent,
+                        platform: 'pwa'
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Push subscription sent to backend');
+                } else {
+                    console.error('Failed to send subscription to backend');
+                }
+            } catch (error) {
+                console.error('Error sending subscription to backend:', error);
+            }
+        }
+
+        // Unsubscribe from push notifications
+        async function unsubscribeFromPush() {
+            if (pushSubscription) {
+                try {
+                    await pushSubscription.unsubscribe();
+                    pushSubscription = null;
+                    updateNotificationStatus(false);
+                    console.log('Unsubscribed from push notifications');
+                    
+                    // Remove subscription from backend
+                    await fetch(`${API_BASE}/api/push-subscription`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                } catch (error) {
+                    console.error('Failed to unsubscribe:', error);
+                }
+            }
+        }
+
+        // Schedule local notifications (fallback for when push server is unavailable)
+        function scheduleNotifications() {
+            // Clear existing schedules
+            clearNotificationSchedules();
+            
+            // Schedule daily reminders at 10 AM and 6 PM
+            const reminderTimes = ['10:00', '18:00'];
+            
+            reminderTimes.forEach(time => {
+                const [hours, minutes] = time.split(':').map(Number);
+                const now = new Date();
+                const scheduledTime = new Date();
+                scheduledTime.setHours(hours, minutes, 0, 0);
+                
+                // If time has passed today, schedule for tomorrow
+                if (scheduledTime <= now) {
+                    scheduledTime.setDate(scheduledTime.getDate() + 1);
+                }
+                
+                const delay = scheduledTime.getTime() - now.getTime();
+                
+                const timeoutId = setTimeout(() => {
+                    showLocalNotification();
+                    // Schedule recurring daily notifications
+                    setInterval(showLocalNotification, 24 * 60 * 60 * 1000); // 24 hours
+                }, delay);
+                
+                // Store timeout ID for cleanup
+                if (!window.notificationTimeouts) window.notificationTimeouts = [];
+                window.notificationTimeouts.push(timeoutId);
+            });
+        }
+
+        // Show local notification
+        function showLocalNotification() {
+            if (Notification.permission === 'granted') {
+                const notification = new Notification('LingoToday', {
+                    body: '📚 Ready for your daily language lesson?',
+                    icon: '/icons/icon-192x192.png',
+                    badge: '/icons/icon-72x72.png',
+                    tag: 'lesson-reminder',
+                    requireInteraction: false,
+                    silent: false
+                });
+
+                notification.onclick = () => {
+                    window.focus();
+                    notification.close();
+                    startNextLesson();
+                };
+
+                // Auto-close after 10 seconds
+                setTimeout(() => notification.close(), 10000);
+            }
+        }
+
+        // Clear notification schedules
+        function clearNotificationSchedules() {
+            if (window.notificationTimeouts) {
+                window.notificationTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+                window.notificationTimeouts = [];
+            }
+        }
+
+        // Update notification status in UI
+        function updateNotificationStatus(enabled) {
+            const statusText = document.getElementById('notificationStatus');
+            const enableBtn = document.getElementById('enableNotificationsBtn');
+            const disableBtn = document.getElementById('disableNotificationsBtn');
+            
+            if (statusText) {
+                statusText.textContent = enabled ? '✅ Enabled' : '❌ Disabled';
+                statusText.style.color = enabled ? '#10b981' : '#ef4444';
+            }
+            
+            if (enableBtn) {
+                enableBtn.style.display = enabled ? 'none' : 'block';
+            }
+            
+            if (disableBtn) {
+                disableBtn.style.display = enabled ? 'block' : 'none';
+            }
+        }
+
+        // Helper function to convert VAPID key
+        function urlB64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
     </script>
 </body>
 </html>
