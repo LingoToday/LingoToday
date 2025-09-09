@@ -78,6 +78,16 @@
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+        .button:hover, .button:active {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        .button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
         }
         .bottom-nav {
             position: fixed;
@@ -122,6 +132,166 @@
             font-size: 16px;
         }
         .hidden { display: none; }
+        
+        /* Lesson Interface Styles */
+        .lesson-container {
+            min-height: calc(100vh - 80px);
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+        }
+        .lesson-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .lesson-progress {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .lesson-progress-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .lesson-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .lesson-step {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .lesson-word {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        .lesson-translation {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        .lesson-example {
+            font-style: italic;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        .lesson-example-translation {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .mcq-option {
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .mcq-option:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+        .mcq-option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+        .mcq-option.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+        .mcq-option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        .typing-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            margin: 20px 0;
+            background: white;
+        }
+        .typing-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .lesson-actions {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-secondary {
+            background: #6b7280;
+            flex: 1;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            flex: 2;
+        }
+        .lesson-feedback {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .feedback-correct {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .feedback-incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+        .step-dot.active {
+            background: #3b82f6;
+        }
+        .step-dot.completed {
+            background: #10b981;
+        }
     </style>
 </head>
 <body>
@@ -146,6 +316,76 @@
             
             <div style="text-align: center; margin-top: 20px;">
                 <p style="color: #666; font-size: 14px;">💡 Tap "Add to Home Screen" to install</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Screen -->
+    <div id="lessonScreen" class="hidden">
+        <div class="lesson-container">
+            <div class="lesson-header">
+                <div class="lesson-progress">
+                    <div class="lesson-progress-fill" id="lessonProgressFill"></div>
+                </div>
+                <div class="step-indicator" id="stepIndicator"></div>
+                <h3 id="lessonTitle">Loading lesson...</h3>
+                <p id="lessonCourse">Course</p>
+            </div>
+            
+            <div class="lesson-content">
+                <!-- Word Review Step -->
+                <div id="wordReviewStep" class="lesson-step hidden">
+                    <div class="lesson-word" id="wordReviewWord">Ciao</div>
+                    <div class="lesson-translation" id="wordReviewTranslation">Hello</div>
+                    <div class="lesson-example" id="wordReviewExample">Ciao, come stai?</div>
+                    <div class="lesson-example-translation" id="wordReviewExampleTranslation">Hello, how are you?</div>
+                </div>
+                
+                <!-- MCQ Step -->
+                <div id="mcqStep" class="lesson-step hidden">
+                    <h3 id="mcqQuestion">What does "ciao" mean?</h3>
+                    <div class="mcq-options" id="mcqOptions"></div>
+                    <div id="mcqFeedback" class="lesson-feedback hidden"></div>
+                </div>
+                
+                <!-- Typing Step -->
+                <div id="typingStep" class="lesson-step hidden">
+                    <h3 id="typingQuestion">Type the Italian word for "hello"</h3>
+                    <input type="text" class="typing-input" id="typingInput" placeholder="Type your answer...">
+                    <div id="typingFeedback" class="lesson-feedback hidden"></div>
+                </div>
+                
+                <!-- Listening Step -->
+                <div id="listeningStep" class="lesson-step hidden">
+                    <h3 id="listeningQuestion">Listen and choose the correct meaning</h3>
+                    <button class="button" id="playAudioBtn">🔊 Play Audio</button>
+                    <div class="mcq-options" id="listeningOptions"></div>
+                    <div id="listeningFeedback" class="lesson-feedback hidden"></div>
+                </div>
+                
+                <!-- Lesson Complete -->
+                <div id="lessonComplete" class="lesson-step hidden">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
+                    <h2>Lesson Complete!</h2>
+                    <p style="margin: 15px 0; color: #6b7280;">Great job! You've completed this lesson.</p>
+                    <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Words learned:</span>
+                            <span id="wordsLearnedCount">5</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Accuracy:</span>
+                            <span id="lessonAccuracy">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-actions">
+                <div class="action-buttons">
+                    <button class="button btn-secondary" id="lessonBackBtn" onclick="goBackToDashboard()">Back</button>
+                    <button class="button btn-primary" id="lessonNextBtn" onclick="nextLessonStep()">Continue</button>
+                </div>
             </div>
         </div>
     </div>
@@ -182,7 +422,7 @@
                         <p style="color: #666; font-size: 14px; margin-top: 5px;">Complete your next lesson</p>
                     </div>
                 </div>
-                <button class="button" onclick="alert('Lesson feature coming soon!')">Start Lesson</button>
+                <button class="button" onclick="startNextLesson()">Start Lesson</button>
             </div>
 
             <div class="card">
@@ -350,6 +590,432 @@
                 dashboardScreen.classList.add('hidden');
                 loginScreen.classList.remove('hidden');
             }
+        }
+
+        // Lesson System Variables
+        let currentLessonData = null;
+        let currentStep = 1;
+        let totalSteps = 4;
+        let lessonAnswers = {};
+        let startTime = null;
+
+        // Lesson step types
+        const STEP_TYPES = {
+            WORD_REVIEW: 1,
+            MCQ: 2,
+            TYPING: 3,
+            LISTENING: 4
+        };
+
+        // Start next lesson
+        async function startNextLesson() {
+            try {
+                showLessonScreen();
+                
+                // Get next lesson from API
+                const response = await fetch(`${API_BASE}/api/next-lesson`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch next lesson');
+                }
+
+                const lessonInfo = await response.json();
+                
+                if (lessonInfo.completed) {
+                    alert('Congratulations! You\'ve completed all available lessons!');
+                    return;
+                }
+
+                // Fetch full lesson data
+                const lessonResponse = await fetch(`${API_BASE}/api/courses/${lessonInfo.courseId}/${lessonInfo.lessonId}`, {
+                    credentials: 'include'
+                });
+
+                if (!lessonResponse.ok) {
+                    throw new Error('Failed to fetch lesson data');
+                }
+
+                currentLessonData = await lessonResponse.json();
+                console.log('Loaded lesson:', currentLessonData);
+                
+                initializeLesson();
+                
+            } catch (error) {
+                console.error('Error starting lesson:', error);
+                alert('Failed to load lesson. Please try again.');
+                goBackToDashboard();
+            }
+        }
+
+        function initializeLesson() {
+            if (!currentLessonData?.lesson) {
+                console.error('No lesson data available');
+                return;
+            }
+
+            // Reset lesson state
+            currentStep = 1;
+            lessonAnswers = {};
+            startTime = Date.now();
+
+            // Update lesson header
+            document.getElementById('lessonTitle').textContent = currentLessonData.lesson.title || 'Lesson';
+            document.getElementById('lessonCourse').textContent = currentLessonData.courseTitle || 'Course';
+            
+            // Setup step indicators
+            setupStepIndicators();
+            
+            // Show first step
+            showLessonStep(currentStep);
+        }
+
+        function setupStepIndicators() {
+            const indicator = document.getElementById('stepIndicator');
+            indicator.innerHTML = '';
+            
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.createElement('div');
+                dot.className = `step-dot ${i === currentStep ? 'active' : ''}`;
+                indicator.appendChild(dot);
+            }
+        }
+
+        function showLessonStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.lesson-step').forEach(el => el.classList.add('hidden'));
+            
+            // Update progress
+            const progress = ((step - 1) / totalSteps) * 100;
+            document.getElementById('lessonProgressFill').style.width = `${progress}%`;
+            
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.className = 'step-dot';
+                if (index + 1 < step) dot.classList.add('completed');
+                else if (index + 1 === step) dot.classList.add('active');
+            });
+
+            // Show appropriate step
+            switch (step) {
+                case STEP_TYPES.WORD_REVIEW:
+                    showWordReviewStep();
+                    break;
+                case STEP_TYPES.MCQ:
+                    showMCQStep();
+                    break;
+                case STEP_TYPES.TYPING:
+                    showTypingStep();
+                    break;
+                case STEP_TYPES.LISTENING:
+                    showListeningStep();
+                    break;
+                default:
+                    showLessonComplete();
+                    break;
+            }
+        }
+
+        function showWordReviewStep() {
+            const step = document.getElementById('wordReviewStep');
+            step.classList.remove('hidden');
+            
+            // Get word review data from lesson
+            const steps = currentLessonData.lesson.steps || [];
+            const wordStep = steps.find(s => s.stepType === 'word_review') || steps[0];
+            
+            if (wordStep?.content) {
+                const content = wordStep.content;
+                document.getElementById('wordReviewWord').textContent = content.italian || content.spanish || content.word || 'Word';
+                document.getElementById('wordReviewTranslation').textContent = content.english || content.translation || 'Translation';
+                document.getElementById('wordReviewExample').textContent = content.example_italian || content.example_spanish || content.example || '';
+                document.getElementById('wordReviewExampleTranslation').textContent = content.example_english || content.exampleTranslation || '';
+            }
+            
+            // Auto-advance after 3 seconds or on tap
+            const autoAdvance = setTimeout(() => nextLessonStep(), 3000);
+            step.onclick = () => {
+                clearTimeout(autoAdvance);
+                nextLessonStep();
+            };
+        }
+
+        function showMCQStep() {
+            const step = document.getElementById('mcqStep');
+            step.classList.remove('hidden');
+            
+            // Get MCQ data from lesson
+            const steps = currentLessonData.lesson.steps || [];
+            const mcqStep = steps.find(s => s.stepType === 'quick_check');
+            
+            let question = 'What does this word mean?';
+            let options = ['Option A', 'Option B', 'Option C', 'Option D'];
+            let correctAnswer = 0;
+            
+            if (mcqStep?.content?.mcq) {
+                const mcq = mcqStep.content.mcq;
+                question = mcq.question || question;
+                options = mcq.options || options;
+                correctAnswer = mcq.correct_answer_index || 0;
+            } else if (currentLessonData.lesson.quiz) {
+                // Fallback to lesson quiz
+                const quiz = currentLessonData.lesson.quiz;
+                question = quiz.question || question;
+                options = quiz.options || options;
+                correctAnswer = quiz.correct || 0;
+            }
+            
+            document.getElementById('mcqQuestion').textContent = question;
+            
+            const optionsContainer = document.getElementById('mcqOptions');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.className = 'mcq-option';
+                button.textContent = option;
+                button.onclick = () => selectMCQOption(index, correctAnswer, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectMCQOption(selectedIndex, correctIndex, selectedElement) {
+            // Disable all options
+            document.querySelectorAll('.mcq-option').forEach(opt => {
+                opt.onclick = null;
+                opt.style.pointerEvents = 'none';
+            });
+            
+            // Mark correct and incorrect
+            const options = document.querySelectorAll('.mcq-option');
+            options[correctIndex].classList.add('correct');
+            
+            if (selectedIndex !== correctIndex) {
+                selectedElement.classList.add('incorrect');
+            }
+            
+            // Show feedback
+            const feedback = document.getElementById('mcqFeedback');
+            feedback.classList.remove('hidden');
+            
+            if (selectedIndex === correctIndex) {
+                feedback.className = 'lesson-feedback feedback-correct';
+                feedback.textContent = '✅ Correct! Well done!';
+                lessonAnswers[currentStep] = { correct: true, answer: selectedIndex };
+            } else {
+                feedback.className = 'lesson-feedback feedback-incorrect';
+                feedback.textContent = '❌ Not quite right. The correct answer is highlighted.';
+                lessonAnswers[currentStep] = { correct: false, answer: selectedIndex };
+            }
+            
+            // Auto-advance after 2 seconds
+            setTimeout(() => nextLessonStep(), 2000);
+        }
+
+        function showTypingStep() {
+            const step = document.getElementById('typingStep');
+            step.classList.remove('hidden');
+            
+            // Get typing data from lesson
+            const steps = currentLessonData.lesson.steps || [];
+            const typingStep = steps.find(s => s.stepType === 'typing_practice');
+            
+            let question = 'Type the word you learned';
+            let correctAnswer = 'word';
+            
+            if (typingStep?.content) {
+                const content = typingStep.content;
+                question = content.question || content.prompt || question;
+                correctAnswer = content.correct_answer || content.italian || content.spanish || correctAnswer;
+            }
+            
+            document.getElementById('typingQuestion').textContent = question;
+            
+            const input = document.getElementById('typingInput');
+            input.value = '';
+            input.focus();
+            
+            // Handle input submission
+            input.onkeyup = (e) => {
+                if (e.key === 'Enter') {
+                    checkTypingAnswer(input.value.trim(), correctAnswer);
+                }
+            };
+            
+            // Update button to check answer
+            const nextBtn = document.getElementById('lessonNextBtn');
+            nextBtn.textContent = 'Check Answer';
+            nextBtn.onclick = () => checkTypingAnswer(input.value.trim(), correctAnswer);
+        }
+
+        function checkTypingAnswer(userAnswer, correctAnswer) {
+            const feedback = document.getElementById('typingFeedback');
+            feedback.classList.remove('hidden');
+            
+            const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+            
+            if (isCorrect) {
+                feedback.className = 'lesson-feedback feedback-correct';
+                feedback.textContent = '✅ Perfect! You typed it correctly!';
+                lessonAnswers[currentStep] = { correct: true, answer: userAnswer };
+            } else {
+                feedback.className = 'lesson-feedback feedback-incorrect';
+                feedback.textContent = `❌ Close! The correct answer is "${correctAnswer}"`;
+                lessonAnswers[currentStep] = { correct: false, answer: userAnswer };
+            }
+            
+            // Reset button
+            const nextBtn = document.getElementById('lessonNextBtn');
+            nextBtn.textContent = 'Continue';
+            nextBtn.onclick = () => nextLessonStep();
+            
+            // Auto-advance after 2 seconds
+            setTimeout(() => nextLessonStep(), 2000);
+        }
+
+        function showListeningStep() {
+            const step = document.getElementById('listeningStep');
+            step.classList.remove('hidden');
+            
+            // Get listening data from lesson
+            const steps = currentLessonData.lesson.steps || [];
+            const listeningStep = steps.find(s => s.stepType === 'listening_comprehension');
+            
+            let question = 'Listen and choose the correct meaning';
+            let options = ['Option A', 'Option B', 'Option C', 'Option D'];
+            let correctAnswer = 0;
+            
+            if (listeningStep?.content) {
+                const content = listeningStep.content;
+                question = content.question || question;
+                options = content.options || options;
+                correctAnswer = content.correct_answer_index || 0;
+            }
+            
+            document.getElementById('listeningQuestion').textContent = question;
+            
+            // Setup audio playback (simulated for now)
+            document.getElementById('playAudioBtn').onclick = () => {
+                // In a real app, this would play actual audio
+                alert('🔊 Audio would play here: "' + (currentLessonData.lesson.content?.word || 'ciao') + '"');
+            };
+            
+            const optionsContainer = document.getElementById('listeningOptions');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.className = 'mcq-option';
+                button.textContent = option;
+                button.onclick = () => selectListeningOption(index, correctAnswer, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectListeningOption(selectedIndex, correctIndex, selectedElement) {
+            // Same logic as MCQ
+            selectMCQOption(selectedIndex, correctIndex, selectedElement);
+            
+            // Update feedback element
+            const feedback = document.getElementById('listeningFeedback');
+            feedback.classList.remove('hidden');
+            
+            if (selectedIndex === correctIndex) {
+                feedback.className = 'lesson-feedback feedback-correct';
+                feedback.textContent = '✅ Excellent listening!';
+            } else {
+                feedback.className = 'lesson-feedback feedback-incorrect';
+                feedback.textContent = '❌ Try listening again. The correct answer is highlighted.';
+            }
+        }
+
+        function showLessonComplete() {
+            document.getElementById('lessonComplete').classList.remove('hidden');
+            
+            // Calculate accuracy
+            const totalQuestions = Object.keys(lessonAnswers).length;
+            const correctAnswers = Object.values(lessonAnswers).filter(a => a.correct).length;
+            const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 100;
+            
+            document.getElementById('wordsLearnedCount').textContent = '3'; // Estimated
+            document.getElementById('lessonAccuracy').textContent = `${accuracy}%`;
+            
+            // Update progress
+            document.getElementById('lessonProgressFill').style.width = '100%';
+            document.querySelectorAll('.step-dot').forEach(dot => dot.className = 'step-dot completed');
+            
+            // Update button
+            const nextBtn = document.getElementById('lessonNextBtn');
+            nextBtn.textContent = 'Complete Lesson';
+            nextBtn.onclick = () => completeLessonAndReturn();
+            
+            // Save progress
+            saveLessonProgress(accuracy);
+        }
+
+        async function saveLessonProgress(accuracy) {
+            try {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000); // seconds
+                
+                const progressData = {
+                    language: currentUser?.selectedLanguage || 'italian',
+                    courseId: currentLessonData.courseId,
+                    lessonId: currentLessonData.lessonId,
+                    completed: true,
+                    score: accuracy,
+                    timeSpent: timeSpent,
+                    completedAt: new Date().toISOString()
+                };
+                
+                const response = await fetch(`${API_BASE}/api/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(progressData)
+                });
+                
+                if (response.ok) {
+                    console.log('Lesson progress saved successfully');
+                } else {
+                    console.error('Failed to save lesson progress');
+                }
+                
+            } catch (error) {
+                console.error('Error saving lesson progress:', error);
+            }
+        }
+
+        function nextLessonStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showLessonStep(currentStep);
+            } else {
+                showLessonComplete();
+            }
+        }
+
+        function completeLessonAndReturn() {
+            goBackToDashboard();
+            // Refresh dashboard data to show updated progress
+            loadDashboardData();
+        }
+
+        function goBackToDashboard() {
+            document.getElementById('lessonScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            
+            // Reset lesson state
+            currentLessonData = null;
+            currentStep = 1;
+            lessonAnswers = {};
+        }
+
+        function showLessonScreen() {
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('lessonScreen').classList.remove('hidden');
         }
 
         // PWA Installation
