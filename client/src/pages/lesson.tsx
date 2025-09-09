@@ -755,6 +755,8 @@ export default function Lesson() {
               <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
               {stepData?.isReview ? (
                 <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
+              ) : stepData?.type === 'irl_video' ? (
+                null
               ) : (
                 <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
               )}
@@ -1169,6 +1171,8 @@ export default function Lesson() {
                     {completeLessonMutation.isPending ? 'Saving Progress...' : 
                      stepData?.isReview ? (
                        currentStep < stepData.totalQuestions ? `Next Question (${currentStep + 1}/${stepData.totalQuestions})` : 'Complete Review'
+                     ) : stepData?.type === 'irl_video' ? (
+                       'Complete Challenge'
                      ) : (
                        currentStep < 4 ? `Next Step (${currentStep + 1}/4)` : 'Complete Lesson'
                      )}
