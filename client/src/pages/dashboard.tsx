@@ -667,7 +667,7 @@ export default function Dashboard() {
             {(!isDailySessionActive || ((stats?.lessonsCompleted || 0) === 0)) && (
               <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-blue-900 mb-2">
                         Start Today's Learning Session
@@ -678,7 +678,7 @@ export default function Dashboard() {
                     </div>
                     <Button 
                       onClick={handleStartDailySession}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 w-full sm:w-auto"
                       data-testid="start-daily-session-button"
                     >
                       <Play className="w-4 h-4 mr-2" />
