@@ -1,0 +1,83 @@
+/* Tailwind CSS (via CDN for simplicity) */
+@import url('https://cdn.tailwindcss.com/3.4.0');
+
+/* PWA Specific Styles */
+.App {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .App {
+    -webkit-appearance: none;
+  }
+}
+
+/* Prevent zoom on inputs on iOS */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  font-size: 16px !important;
+}
+
+/* Custom scrollbar for mobile */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Smooth animations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Safe area support for notched devices */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* App-like feel */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb;
+  overscroll-behavior: none;
+}
+
+/* Remove default button styles on mobile */
+button {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  outline: none;
+}
+
+/* Hide address bar on mobile when in standalone mode */
+@media all and (display-mode: standalone) {
+  body {
+    overflow-x: hidden;
+  }
+}
