@@ -292,6 +292,68 @@
         .step-dot.completed {
             background: #10b981;
         }
+
+        /* Registration Flow Styles */
+        .language-option, .level-option {
+            width: 100%;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .language-option:hover, .level-option:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+        .language-option.selected, .level-option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+        .flag {
+            font-size: 24px;
+            min-width: 30px;
+        }
+        .language-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .level-option {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+        .level-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .level-description {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .field-error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .back-button {
+            background: none;
+            border: none;
+            color: #6b7280;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            color: #374151;
+        }
     </style>
 </head>
 <body>
@@ -315,7 +377,146 @@
             </div>
             
             <div style="text-align: center; margin-top: 20px;">
-                <p style="color: #666; font-size: 14px;">💡 Tap "Add to Home Screen" to install</p>
+                <p style="color: #666; font-size: 14px;">New to LingoToday? <a href="#" onclick="showLanguageSelection()" style="color: #3b82f6; text-decoration: none;">Create an account</a></p>
+                <p style="color: #666; font-size: 14px; margin-top: 10px;">💡 Tap "Add to Home Screen" to install</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Selection Screen -->
+    <div id="languageScreen" class="hidden">
+        <div class="login-form">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="logo">📚</div>
+                <h2>Choose Your Language</h2>
+                <p style="color: #666; margin-top: 10px;">Which language would you like to learn?</p>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="language-option" onclick="selectLanguage('italian', 'Italian', '🇮🇹')">
+                        <span class="flag">🇮🇹</span>
+                        <span class="language-name">Italian</span>
+                    </button>
+                    <button class="language-option" onclick="selectLanguage('spanish', 'Spanish', '🇪🇸')">
+                        <span class="flag">🇪🇸</span>
+                        <span class="language-name">Spanish</span>
+                    </button>
+                    <button class="language-option" onclick="selectLanguage('french', 'French', '🇫🇷')">
+                        <span class="flag">🇫🇷</span>
+                        <span class="language-name">French</span>
+                    </button>
+                    <button class="language-option" onclick="selectLanguage('german', 'German', '🇩🇪')">
+                        <span class="flag">🇩🇪</span>
+                        <span class="language-name">German</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="showLogin()">← Back to Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Selection Screen -->
+    <div id="levelScreen" class="hidden">
+        <div class="login-form">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="logo">📚</div>
+                <h2>Choose Your Level</h2>
+                <p style="color: #666; margin-top: 10px;">What's your current level in <span id="selectedLanguageName">Italian</span>?</p>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="level-option" onclick="selectLevel('beginner', 'Beginner')">
+                        <div class="level-title">Beginner</div>
+                        <div class="level-description">New to the language or know just a few words</div>
+                    </button>
+                    <button class="level-option" onclick="selectLevel('intermediate', 'Intermediate')">
+                        <div class="level-title">Intermediate</div>
+                        <div class="level-description">Can have basic conversations and understand simple texts</div>
+                    </button>
+                    <button class="level-option" onclick="selectLevel('advanced', 'Advanced')">
+                        <div class="level-title">Advanced</div>
+                        <div class="level-description">Comfortable with complex conversations and grammar</div>
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="showLanguageSelection()">← Back to Language Selection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waitlist Screen -->
+    <div id="waitlistScreen" class="hidden">
+        <div class="login-form">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="logo">📚</div>
+                <h2>Coming Soon!</h2>
+                <p style="color: #666; margin-top: 10px;">Our <span id="waitlistLanguage">Italian</span> course for <span id="waitlistLevel">Intermediate</span> learners isn't available yet</p>
+            </div>
+
+            <div class="card" style="background: #fef3c7; border: 1px solid #f59e0b;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="color: #92400e; margin-bottom: 10px;">Get Notified When Ready!</h3>
+                    <p style="color: #92400e; font-size: 14px;">Enter your email to be notified when this course launches</p>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <input type="email" id="waitlistEmail" class="input" placeholder="Enter your email address"
+                           style="border: 1px solid #f59e0b; font-size: 16px;">
+                </div>
+                <button class="button" onclick="submitWaitlist()" id="waitlistBtn">Join Waitlist</button>
+                
+                <div id="waitlistError" class="field-error hidden" style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 10px;"></div>
+                <div id="waitlistSuccess" class="hidden" style="background: #dcfce7; color: #166534; padding: 10px; border-radius: 6px; margin-top: 10px;"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="showLevelSelection()">← Back to Level Selection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Screen -->
+    <div id="registrationScreen" class="hidden">
+        <div class="login-form">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="logo">📚</div>
+                <h2>Create Your Account</h2>
+                <p style="color: #666; margin-top: 10px;">Start learning <span id="registerLanguageName">Italian</span> at <span id="registerLevelName">Beginner</span> level</p>
+            </div>
+
+            <div class="card">
+                <form id="registrationForm">
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" id="firstNameInput" class="input" placeholder="First Name" required style="font-size: 16px;">
+                        <div id="firstNameError" class="field-error hidden"></div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input type="email" id="registerEmailInput" class="input" placeholder="Email Address" required style="font-size: 16px;">
+                        <div id="emailRegisterError" class="field-error hidden"></div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input type="password" id="registerPasswordInput" class="input" placeholder="Password (minimum 6 characters)" required style="font-size: 16px;">
+                        <div id="passwordRegisterError" class="field-error hidden"></div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <input type="password" id="confirmPasswordInput" class="input" placeholder="Confirm Password" required style="font-size: 16px;">
+                        <div id="confirmPasswordError" class="field-error hidden"></div>
+                    </div>
+                    <button type="submit" class="button" id="registerBtn">Create Account</button>
+                </form>
+                
+                <div id="registerError" class="field-error hidden" style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 10px;"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="showLevelSelection()">← Back to Level Selection</button>
             </div>
         </div>
     </div>
@@ -1754,6 +1955,294 @@
                 outputArray[i] = rawData.charCodeAt(i);
             }
             return outputArray;
+        }
+
+        // Registration Flow Variables
+        let selectedLanguage = '';
+        let selectedLanguageData = { name: '', flag: '' };
+        let selectedLevel = '';
+        let selectedLevelData = { title: '' };
+
+        // Screen Navigation Functions
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('languageScreen').classList.add('hidden');
+            document.getElementById('levelScreen').classList.add('hidden');
+            document.getElementById('waitlistScreen').classList.add('hidden');
+            document.getElementById('registrationScreen').classList.add('hidden');
+        }
+
+        function showLanguageSelection() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('languageScreen').classList.remove('hidden');
+            document.getElementById('levelScreen').classList.add('hidden');
+            document.getElementById('waitlistScreen').classList.add('hidden');
+            document.getElementById('registrationScreen').classList.add('hidden');
+        }
+
+        function showLevelSelection() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('languageScreen').classList.add('hidden');
+            document.getElementById('levelScreen').classList.remove('hidden');
+            document.getElementById('waitlistScreen').classList.add('hidden');
+            document.getElementById('registrationScreen').classList.add('hidden');
+        }
+
+        function showWaitlist() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('languageScreen').classList.add('hidden');
+            document.getElementById('levelScreen').classList.add('hidden');
+            document.getElementById('waitlistScreen').classList.remove('hidden');
+            document.getElementById('registrationScreen').classList.add('hidden');
+        }
+
+        function showRegistration() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('languageScreen').classList.add('hidden');
+            document.getElementById('levelScreen').classList.add('hidden');
+            document.getElementById('waitlistScreen').classList.add('hidden');
+            document.getElementById('registrationScreen').classList.remove('hidden');
+        }
+
+        // Language Selection
+        function selectLanguage(code, name, flag) {
+            selectedLanguage = code;
+            selectedLanguageData = { name, flag };
+            
+            // Update UI
+            document.getElementById('selectedLanguageName').textContent = name;
+            document.getElementById('waitlistLanguage').textContent = name;
+            document.getElementById('registerLanguageName').textContent = name;
+            
+            // Visual selection feedback
+            document.querySelectorAll('.language-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.language-option').classList.add('selected');
+            
+            // Auto-advance to level selection after short delay
+            setTimeout(() => {
+                showLevelSelection();
+            }, 500);
+        }
+
+        // Level Selection
+        function selectLevel(level, title) {
+            selectedLevel = level;
+            selectedLevelData = { title };
+            
+            // Update UI
+            document.getElementById('waitlistLevel').textContent = title;
+            document.getElementById('registerLevelName').textContent = title;
+            
+            // Visual selection feedback
+            document.querySelectorAll('.level-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.level-option').classList.add('selected');
+            
+            // Determine next screen based on level
+            setTimeout(() => {
+                if (level === 'intermediate' || level === 'advanced') {
+                    showWaitlist();
+                } else {
+                    showRegistration();
+                }
+            }, 500);
+        }
+
+        // Waitlist Submission
+        async function submitWaitlist() {
+            const email = document.getElementById('waitlistEmail').value.trim();
+            const submitBtn = document.getElementById('waitlistBtn');
+            const errorDiv = document.getElementById('waitlistError');
+            const successDiv = document.getElementById('waitlistSuccess');
+            
+            // Clear previous messages
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            
+            // Validation
+            if (!email) {
+                errorDiv.textContent = 'Email is required';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                errorDiv.textContent = 'Please enter a valid email address';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding to Waitlist...';
+            
+            try {
+                const response = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        language: selectedLanguage,
+                        level: selectedLevel,
+                    }),
+                });
+                
+                if (response.ok) {
+                    successDiv.textContent = '✅ Great! We\'ll notify you when the course is ready.';
+                    successDiv.classList.remove('hidden');
+                    document.getElementById('waitlistEmail').value = '';
+                } else {
+                    const error = await response.json();
+                    errorDiv.textContent = error.message || 'Something went wrong. Please try again.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error. Please check your connection and try again.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Join Waitlist';
+            }
+        }
+
+        // Registration Form Submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const registrationForm = document.getElementById('registrationForm');
+            if (registrationForm) {
+                registrationForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const firstName = document.getElementById('firstNameInput').value.trim();
+                    const email = document.getElementById('registerEmailInput').value.trim();
+                    const password = document.getElementById('registerPasswordInput').value;
+                    const confirmPassword = document.getElementById('confirmPasswordInput').value;
+                    const submitBtn = document.getElementById('registerBtn');
+                    const errorDiv = document.getElementById('registerError');
+                    
+                    // Clear previous errors
+                    clearRegisterErrors();
+                    errorDiv.classList.add('hidden');
+                    
+                    // Validation
+                    let hasErrors = false;
+                    
+                    if (!firstName) {
+                        showFieldError('firstNameError', 'First name is required');
+                        hasErrors = true;
+                    }
+                    
+                    if (!email) {
+                        showFieldError('emailRegisterError', 'Email is required');
+                        hasErrors = true;
+                    } else if (!/\S+@\S+\.\S+/.test(email)) {
+                        showFieldError('emailRegisterError', 'Please enter a valid email');
+                        hasErrors = true;
+                    }
+                    
+                    if (password.length < 6) {
+                        showFieldError('passwordRegisterError', 'Password must be at least 6 characters');
+                        hasErrors = true;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showFieldError('confirmPasswordError', 'Passwords do not match');
+                        hasErrors = true;
+                    }
+                    
+                    if (hasErrors) return;
+                    
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Creating Account...';
+                    
+                    try {
+                        const response = await fetch('/api/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                firstName: firstName,
+                                email: email,
+                                password: password,
+                                selectedLanguage: selectedLanguage,
+                                selectedLevel: selectedLevel,
+                            }),
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            // Auto-login after successful registration
+                            const loginResponse = await fetch('/api/auth/login', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    email: email,
+                                    password: password,
+                                }),
+                            });
+                            
+                            if (loginResponse.ok) {
+                                // Success! Load the dashboard
+                                location.reload();
+                            } else {
+                                // Registration successful but login failed
+                                errorDiv.textContent = 'Account created successfully! Please sign in.';
+                                errorDiv.style.background = '#dcfce7';
+                                errorDiv.style.color = '#166534';
+                                errorDiv.classList.remove('hidden');
+                                setTimeout(() => {
+                                    showLogin();
+                                }, 2000);
+                            }
+                        } else {
+                            if (data.errors) {
+                                // Handle field-specific validation errors
+                                data.errors.forEach((error) => {
+                                    const field = error.path?.[0];
+                                    if (field === 'email') {
+                                        showFieldError('emailRegisterError', error.message);
+                                    } else if (field === 'password') {
+                                        showFieldError('passwordRegisterError', error.message);
+                                    } else if (field === 'firstName') {
+                                        showFieldError('firstNameError', error.message);
+                                    }
+                                });
+                            } else {
+                                errorDiv.textContent = data.message || 'Registration failed. Please try again.';
+                                errorDiv.classList.remove('hidden');
+                            }
+                        }
+                    } catch (error) {
+                        errorDiv.textContent = 'Network error. Please check your connection and try again.';
+                        errorDiv.classList.remove('hidden');
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Create Account';
+                    }
+                });
+            }
+        });
+
+        // Helper Functions
+        function showFieldError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
+            }
+        }
+
+        function clearRegisterErrors() {
+            ['firstNameError', 'emailRegisterError', 'passwordRegisterError', 'confirmPasswordError'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = '';
+                    element.classList.add('hidden');
+                }
+            });
         }
     </script>
 </body>
