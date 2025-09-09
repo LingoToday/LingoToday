@@ -276,11 +276,14 @@ export class DatabaseStorage implements IStorage {
                 .where(eq(checkpoints.courseId, course[0].id))
                 .orderBy(checkpoints.checkpointNumber);
               
-              // Create proper lesson sequence: lesson1-4, review1, lesson5-8, review2, etc.
-              const lessonIds: string[] = [];
-              let lessonIndex = 0;
+              // Separate regular lessons from IRL lessons
+              const regularLessons = courseLessons.filter(lesson => lesson.lessonNumber < 1000);
+              const irlLessons = courseLessons.filter(lesson => lesson.lessonNumber >= 1000);
               
-              for (const lesson of courseLessons) {
+              // Create proper lesson sequence: lesson1-4, review1, lesson_irl1, lesson5-8, review2, lesson_irl2, etc.
+              const lessonIds: string[] = [];
+              
+              for (const lesson of regularLessons) {
                 lessonIds.push(`lesson${lesson.lessonNumber}`);
                 
                 // After every 4 lessons, check if there's a corresponding review
@@ -289,6 +292,13 @@ export class DatabaseStorage implements IStorage {
                   const correspondingCheckpoint = courseCheckpoints.find((cp: any) => cp.checkpointNumber === reviewNumber);
                   if (correspondingCheckpoint) {
                     lessonIds.push(`review${reviewNumber}`);
+                    
+                    // Add corresponding IRL lesson after review
+                    // lesson_irl1 after review1, lesson_irl2 after review2, etc.
+                    const correspondingIRL = irlLessons.find(irl => irl.lessonNumber === 1000 + reviewNumber);
+                    if (correspondingIRL) {
+                      lessonIds.push(`lesson_irl${reviewNumber}`);
+                    }
                   }
                 }
               }

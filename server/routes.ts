@@ -1895,6 +1895,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userProgress = await storage.getUserProgress(userId, language);
       const completedLessons = userProgress.filter((p: any) => p.completed).length;
       
+      // Get user's next lesson to determine their current course progress
+      const nextLesson = await storage.getNextLesson(userId, language);
+      
+      // If user has completed all lessons, don't show any checkpoints
+      if (!nextLesson) {
+        return res.json({ availableCheckpoints: [], totalCompletedLessons: completedLessons });
+      }
+      
+      // Extract current course number from next lesson
+      const currentCourseNumber = parseInt(nextLesson.courseId.replace('course', ''));
+      
       // Get all courses for this language
       const skillLevel = await storage.getSkillLevelByCode('beginner');
       if (!skillLevel) {
@@ -1906,8 +1917,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const availableCheckpoints = [];
       
-      // For each course, check if there are incomplete checkpoints that the user is eligible for
+      // Only check courses at or before the user's current progress
+      // Don't show checkpoints from courses the user has already progressed beyond
       for (const course of courses) {
+        // Skip courses that the user has already progressed beyond
+        if (course.courseNumber > currentCourseNumber) {
+          continue;
+        }
+        
+        // For the current course, only show checkpoints if the user is still working on lessons in that course
+        // If user is on a different course, skip checkpoints from previous courses entirely
+        if (course.courseNumber < currentCourseNumber) {
+          continue;
+        }
+        
         // Get checkpoints for this course (these are JSON imported)
         const courseCheckpoints = await storage.getCheckpoints(course.id);
         
