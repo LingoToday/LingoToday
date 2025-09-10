@@ -48,7 +48,11 @@ export default function HomeScreen({ route, navigation }) {
   };
 
   const handleStartLesson = () => {
-    Alert.alert('Coming Soon', 'Lesson interface will be implemented next!');
+    navigation.navigate('Lesson', {
+      courseId: 'course1',
+      lessonId: 'lesson1',
+      user: user
+    });
   };
 
   if (isLoading) {
