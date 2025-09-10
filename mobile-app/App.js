@@ -11,6 +11,9 @@ import {
   ActivityIndicator 
 } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
+import LanguageSelectionScreen from './src/screens/LanguageSelectionScreen';
+import LevelSelectionScreen from './src/screens/LevelSelectionScreen';
+import RegistrationFormScreen from './src/screens/RegistrationFormScreen';
 
 export default function App() {
   const [email, setEmail] = useState('');
@@ -18,7 +21,9 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [showRegistration, setShowRegistration] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState('login'); // 'login', 'language', 'level', 'form'
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState('');
 
   const API_BASE_URL = 'http://localhost:5000'; // Change to your computer's IP for device testing
 
@@ -60,12 +65,84 @@ export default function App() {
     setUser(null);
     setEmail('');
     setPassword('');
+    setRegistrationStep('login');
+    setSelectedLanguage('');
+    setSelectedLevel('');
+  };
+
+  const handleStartRegistration = () => {
+    setRegistrationStep('language');
+  };
+
+  const handleLanguageSelect = (language) => {
+    setSelectedLanguage(language);
+    setRegistrationStep('level');
+  };
+
+  const handleLevelSelect = (level) => {
+    setSelectedLevel(level);
+    setRegistrationStep('form');
+  };
+
+  const handleRegistrationComplete = (newUser) => {
+    setUser(newUser);
+    setIsLoggedIn(true);
+    setRegistrationStep('login');
+    setSelectedLanguage('');
+    setSelectedLevel('');
+  };
+
+  const handleBackToLogin = () => {
+    setRegistrationStep('login');
+    setSelectedLanguage('');
+    setSelectedLevel('');
+  };
+
+  const handleBackToLanguage = () => {
+    setRegistrationStep('language');
+    setSelectedLevel('');
+  };
+
+  const handleBackToLevel = () => {
+    setRegistrationStep('level');
   };
 
   if (isLoggedIn) {
     return <AppNavigator user={user} />;
   }
 
+  // Registration flow
+  if (registrationStep === 'language') {
+    return (
+      <LanguageSelectionScreen
+        onLanguageSelect={handleLanguageSelect}
+        onBack={handleBackToLogin}
+      />
+    );
+  }
+
+  if (registrationStep === 'level') {
+    return (
+      <LevelSelectionScreen
+        language={selectedLanguage}
+        onLevelSelect={handleLevelSelect}
+        onBack={handleBackToLanguage}
+      />
+    );
+  }
+
+  if (registrationStep === 'form') {
+    return (
+      <RegistrationFormScreen
+        language={selectedLanguage}
+        level={selectedLevel}
+        onRegistrationComplete={handleRegistrationComplete}
+        onBack={handleBackToLevel}
+      />
+    );
+  }
+
+  // Login screen
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>
@@ -104,7 +181,7 @@ export default function App() {
 
           <TouchableOpacity 
             style={styles.secondaryButton} 
-            onPress={() => setShowRegistration(true)}
+            onPress={handleStartRegistration}
           >
             <Text style={styles.secondaryButtonText}>Create Account</Text>
           </TouchableOpacity>
