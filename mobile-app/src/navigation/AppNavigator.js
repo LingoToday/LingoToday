@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text } from 'react-native';
 
 // Import screens
@@ -11,7 +10,6 @@ import LessonScreen from '../screens/LessonScreen';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 // Tab Icons
 const TabIcon = ({ name, focused }) => {
@@ -40,59 +38,36 @@ const TabIcon = ({ name, focused }) => {
   );
 };
 
-// Home Stack Navigator
-function HomeStack({ user }) {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen 
-        name="HomeMain" 
-        component={HomeScreen}
-        initialParams={{ user }}
-      />
-      <Stack.Screen 
-        name="Lesson" 
-        component={LessonScreen}
-      />
-    </Stack.Navigator>
-  );
-}
-
-// Main Tab Navigator
-function MainTabs({ user }) {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused }) => (
-          <TabIcon name={route.name} focused={focused} />
-        ),
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopColor: '#e5e7eb',
-          borderTopWidth: 1,
-          height: 80,
-          paddingBottom: 10,
-        },
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen 
-        name="Home" 
-        children={() => <HomeStack user={user} />}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen}
-        initialParams={{ user }}
-      />
-    </Tab.Navigator>
-  );
-}
-
 export default function AppNavigator({ user }) {
   return (
     <NavigationContainer>
-      <MainTabs user={user} />
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused }) => (
+            <TabIcon name={route.name} focused={focused} />
+          ),
+          tabBarShowLabel: false,
+          tabBarStyle: {
+            backgroundColor: '#ffffff',
+            borderTopColor: '#e5e7eb',
+            borderTopWidth: 1,
+            height: 80,
+            paddingBottom: 10,
+          },
+          headerShown: false,
+        })}
+      >
+        <Tab.Screen 
+          name="Home" 
+          component={HomeScreen}
+          initialParams={{ user }}
+        />
+        <Tab.Screen 
+          name="Profile" 
+          component={ProfileScreen}
+          initialParams={{ user }}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
