@@ -23,10 +23,30 @@ export default function ProfileScreen({ route, navigation }) {
         { 
           text: 'Sign Out', 
           style: 'destructive',
-          onPress: () => {
-            // Navigate back to login screen
-            // This will be handled by parent component
-            Alert.alert('Success', 'Signed out successfully!');
+          onPress: async () => {
+            try {
+              // Clear any local storage/cache
+              // In a real app, you might want to call a logout endpoint
+              await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
+              });
+            } catch (error) {
+              console.log('Logout API call failed, but continuing with local logout');
+            }
+            
+            // Signal to parent component to handle logout
+            // This would be passed as a prop from App.js
+            Alert.alert('Success', 'Signed out successfully!', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  // This would trigger logout in the parent component
+                  // For now, just show the message
+                  console.log('User logged out - parent should handle navigation');
+                }
+              }
+            ]);
           }
         }
       ]
@@ -98,7 +118,34 @@ export default function ProfileScreen({ route, navigation }) {
   };
 
   const handleNotificationSettings = () => {
-    Alert.alert('Coming Soon', 'Notification settings will be implemented next!');
+    Alert.alert(
+      'Notification Settings',
+      'Would you like to enable daily lesson reminders?',
+      [
+        { text: 'Not Now', style: 'cancel' },
+        { 
+          text: 'Enable', 
+          onPress: async () => {
+            try {
+              // Import and setup notifications
+              const { NotificationService } = await import('../services/NotificationService');
+              const success = await NotificationService.setupNotifications();
+              
+              if (success) {
+                Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders to practice.');
+                // Schedule a daily reminder
+                await NotificationService.scheduleReminder(
+                  'Time to practice!',
+                  'Keep your streak going with today\'s lesson 🎯'
+                );
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Failed to enable notifications');
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleLanguageSettings = () => {

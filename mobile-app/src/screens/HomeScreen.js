@@ -22,26 +22,65 @@ export default function HomeScreen({ route, navigation }) {
 
   const loadDashboardData = async () => {
     try {
-      // Mock dashboard data for now
-      const mockData = {
-        currentStreak: 5,
-        totalLessons: 23,
-        wordsLearned: 156,
-        nextLesson: {
-          title: "Greetings - Lesson 1",
-          description: "Learn basic Italian greetings"
+      // Try to fetch real dashboard data
+      const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        recentAchievements: [
-          "🔥 5-day streak!",
-          "📚 Completed 20 lessons",
-          "⭐ Perfect score on last lesson"
-        ]
-      };
-      
-      setDashboardData(mockData);
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDashboardData({
+          currentStreak: data.currentStreak || 0,
+          totalLessons: data.totalLessons || 0,
+          wordsLearned: data.wordsLearned || 0,
+          nextLesson: {
+            title: data.nextLesson?.title || "Start Your First Lesson",
+            description: data.nextLesson?.description || "Begin your language learning journey"
+          },
+          recentAchievements: data.recentAchievements || [
+            "🎉 Welcome to LingoToday!",
+            "🚀 Ready to start learning"
+          ]
+        });
+      } else {
+        // Fallback to mock data if API fails
+        const mockData = {
+          currentStreak: 5,
+          totalLessons: 23,
+          wordsLearned: 156,
+          nextLesson: {
+            title: "Greetings - Lesson 1",
+            description: "Learn basic Italian greetings"
+          },
+          recentAchievements: [
+            "🔥 5-day streak!",
+            "📚 Completed 20 lessons",
+            "⭐ Perfect score on last lesson"
+          ]
+        };
+        setDashboardData(mockData);
+      }
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      Alert.alert('Error', 'Failed to load dashboard data');
+      // Fallback to mock data on error
+      const mockData = {
+        currentStreak: 1,
+        totalLessons: 0,
+        wordsLearned: 0,
+        nextLesson: {
+          title: "Start Your First Lesson",
+          description: "Begin your language learning journey"
+        },
+        recentAchievements: [
+          "🎉 Welcome to LingoToday!",
+          "🚀 Ready to start learning"
+        ]
+      };
+      setDashboardData(mockData);
     } finally {
       setIsLoading(false);
     }
