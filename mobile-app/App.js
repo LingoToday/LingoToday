@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator 
 } from 'react-native';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   const API_BASE_URL = 'http://localhost:5000'; // Change to your computer's IP for device testing
 
@@ -61,40 +63,7 @@ export default function App() {
   };
 
   if (isLoggedIn) {
-    return (
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>LingoToday</Text>
-          <Text style={styles.welcome}>Welcome back, {user?.firstName}!</Text>
-        </View>
-
-        <View style={styles.dashboardContainer}>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>🎯 Today's Goal</Text>
-            <Text style={styles.cardText}>Complete your next lesson</Text>
-            <TouchableOpacity style={styles.primaryButton}>
-              <Text style={styles.primaryButtonText}>Start Lesson</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>📊 Your Progress</Text>
-            <Text style={styles.cardText}>Track your learning journey</Text>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>🔔 Notifications</Text>
-            <Text style={styles.cardText}>Manage your learning reminders</Text>
-          </View>
-
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutButtonText}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
-
-        <StatusBar style="auto" />
-      </ScrollView>
-    );
+    return <AppNavigator user={user} />;
   }
 
   return (
@@ -131,6 +100,13 @@ export default function App() {
             ) : (
               <Text style={styles.primaryButtonText}>Sign In</Text>
             )}
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.secondaryButton} 
+            onPress={() => setShowRegistration(true)}
+          >
+            <Text style={styles.secondaryButtonText}>Create Account</Text>
           </TouchableOpacity>
         </View>
 
@@ -199,6 +175,20 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+    marginTop: 12,
+  },
+  secondaryButtonText: {
+    color: '#3b82f6',
     fontSize: 16,
     fontWeight: '600',
   },
