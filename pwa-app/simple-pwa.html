@@ -354,6 +354,30 @@
         .back-button:hover {
             color: #374151;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -705,6 +729,12 @@
                 </div>
             </div>
 
+            <div class="card" style="border: 1px solid #ef4444; background: #fef2f2;">
+                <h3 style="margin-bottom: 15px; color: #dc2626;">⚠️ Danger Zone</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Permanently delete your account and all learning data. This action cannot be undone.</p>
+                <button class="button" style="background: #dc2626; border: 1px solid #dc2626;" onclick="showDeleteAccountDialog()">Delete Account</button>
+            </div>
+
             <button class="button" style="background: #ef4444;" onclick="logout()">Sign Out</button>
         </div>
 
@@ -717,6 +747,37 @@
                 <span class="nav-icon">👤</span>
                 <div class="nav-label">Profile</div>
             </button>
+        </div>
+    </div>
+
+    <!-- Account Deletion Confirmation Dialog -->
+    <div id="deleteAccountModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 48px; color: #dc2626; margin-bottom: 15px;">⚠️</div>
+                <h2 style="color: #dc2626; margin-bottom: 10px;">Delete Account</h2>
+                <p style="color: #666; font-size: 14px;">This will permanently delete your account and all learning progress. This action cannot be undone.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Enter your password to confirm:</label>
+                    <input type="password" id="deletePasswordInput" class="input" placeholder="Your current password" style="font-size: 16px;">
+                    <div id="deletePasswordError" class="field-error hidden"></div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #374151;">
+                        <input type="checkbox" id="deleteConfirmCheckbox" style="margin: 0;">
+                        I understand this action cannot be undone
+                    </label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="button" style="flex: 1; background: #6b7280;" onclick="closeDeleteAccountDialog()">Cancel</button>
+                <button class="button" style="flex: 1; background: #dc2626;" onclick="confirmAccountDeletion()" id="confirmDeleteBtn">Delete Forever</button>
+            </div>
         </div>
     </div>
 
@@ -2243,6 +2304,88 @@
                     element.classList.add('hidden');
                 }
             });
+        }
+
+        // Account Deletion Functions
+        function showDeleteAccountDialog() {
+            const modal = document.getElementById('deleteAccountModal');
+            modal.classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('deletePasswordInput').value = '';
+            document.getElementById('deleteConfirmCheckbox').checked = false;
+            document.getElementById('deletePasswordError').classList.add('hidden');
+        }
+
+        function closeDeleteAccountDialog() {
+            const modal = document.getElementById('deleteAccountModal');
+            modal.classList.add('hidden');
+        }
+
+        async function confirmAccountDeletion() {
+            const password = document.getElementById('deletePasswordInput').value.trim();
+            const confirmed = document.getElementById('deleteConfirmCheckbox').checked;
+            const errorDiv = document.getElementById('deletePasswordError');
+            const submitBtn = document.getElementById('confirmDeleteBtn');
+            
+            // Clear previous errors
+            errorDiv.classList.add('hidden');
+            
+            // Validation
+            if (!password) {
+                errorDiv.textContent = 'Password is required to delete your account';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (!confirmed) {
+                errorDiv.textContent = 'Please confirm you understand this action cannot be undone';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Deleting...';
+            
+            try {
+                const response = await fetch('/api/auth/delete-account', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        password: password
+                    }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Account deleted successfully
+                    alert('Your account has been permanently deleted.');
+                    
+                    // Clear all local storage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    
+                    // Redirect to login screen
+                    closeDeleteAccountDialog();
+                    showLogin();
+                    
+                    // Reset current user
+                    currentUser = null;
+                } else {
+                    // Handle error
+                    errorDiv.textContent = data.message || 'Failed to delete account. Please try again.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error. Please check your connection and try again.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Delete Forever';
+            }
         }
     </script>
 </body>

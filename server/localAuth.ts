@@ -177,4 +177,71 @@ export function setupLocalRoutes(app: Express, passport: any) {
       });
     })(req, res, next);
   });
+
+  // Delete account endpoint
+  app.delete('/api/auth/delete-account', async (req, res) => {
+    try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized'
+        });
+      }
+
+      const { password } = req.body;
+      const currentUser = req.user as any;
+
+      // Validation
+      if (!password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password is required to delete account'
+        });
+      }
+
+      // Get the current user's data
+      const userId = currentUser.claims.sub;
+      const users = await storage.getUserByEmail(currentUser.claims.email);
+      const user = users.find((u: any) => u.id === userId && u.authProvider === 'local');
+
+      if (!user || !user.password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Account not found or not a local account'
+        });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid password'
+        });
+      }
+
+      // Delete all user data
+      await storage.deleteUser(userId);
+
+      // Logout the user
+      req.logout((err) => {
+        if (err) {
+          console.error('Logout error during account deletion:', err);
+        }
+      });
+
+      res.json({
+        success: true,
+        message: 'Account deleted successfully'
+      });
+
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to delete account'
+      });
+    }
+  });
 }

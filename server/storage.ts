@@ -51,6 +51,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User[]>;
   getAllUsers(): Promise<User[]>;
   upsertUser(user: UpsertUser): Promise<User>;
+  deleteUser(id: string): Promise<void>;
   
   // User settings operations
   getUserSettings(userId: string): Promise<UserSettings | undefined>;
@@ -161,6 +162,17 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    // Delete related data first (due to foreign key constraints)
+    await db.delete(checkpointProgress).where(eq(checkpointProgress.userId, id));
+    await db.delete(userProgress).where(eq(userProgress.userId, id));
+    await db.delete(userStats).where(eq(userStats.userId, id));
+    await db.delete(userSettings).where(eq(userSettings.userId, id));
+    
+    // Finally delete the user
+    await db.delete(users).where(eq(users.id, id));
   }
 
   // User settings operations
