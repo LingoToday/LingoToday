@@ -178,6 +178,7 @@ export default function Lesson() {
     apiLessonKeys: apiLessonData ? Object.keys(apiLessonData) : 'none',
     showIntroVideo
   });
+  
 
   // Get current step data
   const getCurrentStepData = () => {

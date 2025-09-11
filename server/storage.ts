@@ -822,13 +822,19 @@ export class DatabaseStorage implements IStorage {
         });
 
         if (isIRLLesson) {
-          // Handle IRL video lesson structure
-          const step1 = lesson.step1;
+          // Handle IRL video lesson structure - support both old (step1) and new (steps array) format
+          const stepData = lesson.steps?.[0] || lesson.step1;
+          if (!stepData) {
+            console.warn(`Skipping IRL lesson ${lessonKey} - no step data found`);
+            continue;
+          }
+
           const irlContent = {
             isIRLLesson: true,
-            videoUrl: step1.video_url,
-            word: step1.prompt, // Store prompt as word for consistency
-            expectedAnswers: step1.expected_answers
+            videoUrl: stepData.video_url,
+            word: stepData.prompt, // Store prompt as word for consistency
+            expectedAnswers: stepData.expected_answers,
+            answerPrompt: stepData.answer_prompt || '' // Add the new answer_prompt field
           };
 
           await this.createLessonStep({
