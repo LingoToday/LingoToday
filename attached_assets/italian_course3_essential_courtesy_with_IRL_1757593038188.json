@@ -248,7 +248,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/cafe_thank_you.mp4",
+            "video_url": "videos/italian_beginners_course3/cafe_thank_you.mp4",
             "prompt": "At a café, the server places your coffee on the table and smiles.",
             "answer_prompt": "Reply: 'Thank you very much.'",
             "expected_answers": [
@@ -503,7 +503,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/get_attention_formal.mp4",
+            "video_url": "videos/italian_beginners_course3/get_attention_formal.mp4",
             "prompt": "You need to politely get a staff member’s attention in a shop.",
             "answer_prompt": "Reply politely: 'Excuse me.'",
             "expected_answers": [
@@ -1100,7 +1100,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/apology_response.mp4",
+            "video_url": "videos/italian_beginners_course3/apology_response.mp4",
             "prompt": "Someone bumps into you and apologizes.",
             "answer_prompt": "Reply: 'No problem.'",
             "expected_answers": [
