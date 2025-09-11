@@ -135,43 +135,46 @@ export default function Lesson() {
     }
   }, [notificationLessonId, lessonError, lesson, language, courseId, lessonId]);
 
-  // Check if this is Italian course1 lesson1 and if intro video should be shown
+  // Check if this is Italian course lesson1 and if intro video should be shown
   useEffect(() => {
-    if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1' && userProgress !== undefined) {
+    if (language === 'italian' && lessonId === 'lesson1' && (courseId === 'course1' || courseId === 'course2' || courseId === 'course3') && userProgress !== undefined) {
+      const storageKey = `italian_${courseId}_intro_shown`;
+      
       // Check for reset parameter to clear localStorage
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('reset') === 'video') {
-        localStorage.removeItem('italian_course1_intro_shown');
+        localStorage.removeItem(storageKey);
         console.log('🎬 Video localStorage cleared - video will show');
         // Clean the URL
         window.history.replaceState({}, '', window.location.pathname);
       }
       
-      // Check if user has completed any Italian lessons
-      const hasCompletedItalianLessons = userProgress.some(p => p.completed);
-      const hasSeenIntroVideo = localStorage.getItem('italian_course1_intro_shown');
+      // Check if user has completed any Italian lessons for this specific course
+      const hasCompletedCourseProgress = userProgress.some(p => p.courseId === courseId && p.completed);
+      const hasSeenIntroVideo = localStorage.getItem(storageKey);
       
-      // Show video if: user has no completed lessons OR if explicitly reset OR if localStorage flag not set
-      if (!hasCompletedItalianLessons) {
-        // For new learners, always show the video (clear localStorage if it exists)
+      // Show video if: user has no completed lessons for this course OR if explicitly reset OR if localStorage flag not set
+      if (!hasCompletedCourseProgress) {
+        // For new learners to this course, always show the video (clear localStorage if it exists)
         if (hasSeenIntroVideo) {
-          localStorage.removeItem('italian_course1_intro_shown');
-          console.log('🎬 Clearing localStorage for new learner - video will show');
+          localStorage.removeItem(storageKey);
+          console.log(`🎬 Clearing localStorage for new ${courseId} learner - video will show`);
         }
         setShowIntroVideo(true);
-        console.log('🎬 Showing intro video for new Italian learner');
+        console.log(`🎬 Showing intro video for new Italian ${courseId} learner`);
       } else if (!hasSeenIntroVideo) {
         // For returning learners who somehow don't have the localStorage flag
         setShowIntroVideo(true);
-        console.log('🎬 Showing intro video for Italian Course 1');
+        console.log(`🎬 Showing intro video for Italian ${courseId}`);
       } else {
-        console.log('🎬 Video already seen by experienced learner, skipping');
+        console.log(`🎬 Video already seen by experienced ${courseId} learner, skipping`);
       }
     }
   }, [language, courseId, lessonId, userProgress]);
 
   const handleContinueFromIntro = () => {
-    localStorage.setItem('italian_course1_intro_shown', 'true');
+    const storageKey = `italian_${courseId}_intro_shown`;
+    localStorage.setItem(storageKey, 'true');
     setShowIntroVideo(false);
   };
 
@@ -733,13 +736,15 @@ export default function Lesson() {
           </div>
         )}
 
-        {/* Italian Course 1 Intro Video */}
+        {/* Italian Course Intro Video */}
         {showIntroVideo && (
           <div className="mb-6">
             <Card className="shadow-lg">
               <CardContent className="p-8 text-center">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Welcome to Italian Beginners Course!
+                  {courseId === 'course1' ? 'Welcome to Italian Beginners Course!' :
+                   courseId === 'course2' ? 'Welcome to Italian Beginners Course 2!' :
+                   courseId === 'course3' ? 'Welcome to Italian Beginners Course 3!' : 'Welcome to Italian Beginners Course!'}
                 </h2>
                 <div className="flex justify-center mb-6">
                   <video 
@@ -749,7 +754,12 @@ export default function Lesson() {
                     className="w-96 h-[28rem] rounded-lg shadow-lg"
                     data-testid="italian-course-intro-video"
                   >
-                    <source src="/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4" type="video/mp4" />
+                    <source src={
+                      courseId === 'course1' ? '/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4' :
+                      courseId === 'course2' ? '/attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV' :
+                      courseId === 'course3' ? '/attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV' :
+                      '/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4'
+                    } type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
