@@ -134,14 +134,15 @@ export function processLessonData(apiData: any, language: string): LessonData[] 
           description: `${courseData.title}: ${lessonData.title}`,
           content: isIRLLesson ? {
             // IRL video lesson content
-            word: lessonData.step1?.prompt || '',
+            word: lessonData.steps?.[0]?.prompt || lessonData.step1?.prompt || '',
             translation: '',
             pronunciation: '',
             example: '',
             exampleTranslation: '',
-            note: lessonData.step1?.video_url || '',
-            videoUrl: lessonData.step1?.video_url || '',
-            expectedAnswers: lessonData.step1?.expected_answers || []
+            note: lessonData.steps?.[0]?.video_url || lessonData.step1?.video_url || '',
+            videoUrl: lessonData.steps?.[0]?.video_url || lessonData.step1?.video_url || '',
+            expectedAnswers: lessonData.steps?.[0]?.expected_answers || lessonData.step1?.expected_answers || [],
+            answerPrompt: lessonData.steps?.[0]?.answer_prompt || ''
           } : {
             // Regular lesson content
             word: lessonData.items[0]?.italian || '',

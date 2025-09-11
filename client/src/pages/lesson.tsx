@@ -190,7 +190,19 @@ export default function Lesson() {
         type: 'irl_video',
         videoUrl: firstStep.content.videoUrl || '',
         prompt: firstStep.content.word || '',
+        answerPrompt: firstStep.content.answerPrompt || '',
         expectedAnswers: firstStep.content.expectedAnswers || []
+      };
+    }
+    
+    // Handle locally stored IRL lessons (fallback without steps array)
+    if (currentLesson.isIRLLesson) {
+      return {
+        type: 'irl_video',
+        videoUrl: currentLesson.content?.videoUrl || '',
+        prompt: currentLesson.content?.word || '',
+        answerPrompt: currentLesson.content?.answerPrompt || '',
+        expectedAnswers: currentLesson.content?.expectedAnswers || []
       };
     }
     
@@ -821,6 +833,11 @@ export default function Lesson() {
 
                 {/* Text Input for Response */}
                 <div className="mb-6">
+                  {stepData.answerPrompt && (
+                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-blue-700 text-sm font-medium">{stepData.answerPrompt}</p>
+                    </div>
+                  )}
                   <label htmlFor="irl-response" className="block text-sm font-medium text-gray-700 mb-2">
                     Your response in Italian:
                   </label>
