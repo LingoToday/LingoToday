@@ -86,8 +86,19 @@ export default function Lesson() {
     }
   }, [fromNotification]);
 
+  // Convert language code to full name for API
+  const getFullLanguageName = (lang: string) => {
+    const langMap: { [key: string]: string } = {
+      'it': 'italian',
+      'es': 'spanish',
+      'de': 'german',
+      'fr': 'french'
+    };
+    return langMap[lang] || lang;
+  };
+
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
-    queryKey: ["/api/courses", language, courseId, lessonId],
+    queryKey: ["/api/courses", getFullLanguageName(language || ''), courseId, lessonId],
     enabled: isAuthenticated && !!language && !!courseId && !!lessonId, // Always enable API query, we'll decide later which to use
     retry: 2, // Allow retries for better reliability
   });

@@ -1340,6 +1340,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const irlStep = lessonWithSteps.steps.find(step => step.stepType === 'irl_video');
           if (irlStep) {
             const content = irlStep.content as any;
+            
+            // Fix video URL by adding /attached_assets/ prefix
+            const fixedContent = {
+              ...content,
+              videoUrl: content.videoUrl && !content.videoUrl.startsWith('/attached_assets/') 
+                ? `/attached_assets/${content.videoUrl}` 
+                : content.videoUrl
+            };
+            
+            const fixedSteps = lessonWithSteps.steps.map(step => {
+              if (step.stepType === 'irl_video') {
+                const stepContent = step.content as any;
+                return {
+                  ...step,
+                  content: {
+                    ...stepContent,
+                    videoUrl: stepContent.videoUrl && !stepContent.videoUrl.startsWith('/attached_assets/') 
+                      ? `/attached_assets/${stepContent.videoUrl}` 
+                      : stepContent.videoUrl
+                  }
+                };
+              }
+              return step;
+            });
+            
             return res.json({
               courseId,
               courseTitle: courseInfo?.title || 'Course',
@@ -1347,9 +1372,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lessonId,
               lesson: {
                 title: lessonWithSteps.title,
-                steps: lessonWithSteps.steps,
+                steps: fixedSteps,
                 isIRLLesson: true,
-                content: content
+                content: fixedContent
               }
             });
           }
