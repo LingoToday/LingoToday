@@ -228,7 +228,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/party_introduction.mp4",
+            "video_url": "videos/italian_beginners_course2/party_introduction.mp4",
             "prompt": "You meet someone on the street. They ask your name: 'Come ti chiami?'.",
             "answer_prompt": "Reply by introducing yourself: 'My name is'",
             "expected_answers": [
@@ -464,7 +464,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/where_are_you_from.mp4",
+            "video_url": "videos/italian_beginners_course2/where_are_you_from.mp4",
             "prompt": "A new friend asks where you are from: 'Di dove sei?'.",
             "answer_prompt": "Reply by saying you are from Rome.",
             "expected_answers": [
@@ -870,7 +870,7 @@
         "steps": [
           {
             "type": "video",
-            "video_url": "videos/first_meeting_farewell.mp4",
+            "video_url": "videos/italian_beginners_course2/first_meeting_farewell.mp4",
             "prompt": "You’re finishing a first conversation after meeting someone new. They say: 'Piacere di conoscerti! Come stai?'.",
             "answer_prompt": "Reply: 'I’m well, thanks. And you?'",
             "expected_answers": [
