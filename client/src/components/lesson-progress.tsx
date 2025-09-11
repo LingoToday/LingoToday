@@ -22,37 +22,28 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
 
   useEffect(() => {
-    // Define the course structure mapping course IDs to category names and totals
-    const courseMapping = [
-      { courseId: "course1", name: "Greetings", emoji: "👋", level: "A1", totalLessons: 13, order: 1 },
-      { courseId: "course2", name: "Introducing Yourself", emoji: "🙋", level: "A1", totalLessons: 13, order: 2 },
-      { courseId: "course3", name: "Essential Courtesy Phrases", emoji: "🙏", level: "A1", totalLessons: 14, order: 3 },
-      { courseId: "course4", name: "Numbers", emoji: "🔢", level: "A1", totalLessons: 6, order: 4 },
-      { courseId: "course5", name: "Time and Date", emoji: "⏰", level: "A1", totalLessons: 13, order: 5 },
-      { courseId: "course6", name: "Family and People", emoji: "👨‍👩‍👧‍👦", level: "A1", totalLessons: 11, order: 6 },
-      { courseId: "course7", name: "Colors & Adjectives", emoji: "🎨", level: "A1", totalLessons: 12, order: 7 },
-      { courseId: "course8", name: "Weather and Seasons", emoji: "🌤️", level: "A1", totalLessons: 13, order: 8 },
-      { courseId: "course9", name: "Food and Drinks", emoji: "🍝", level: "A1", totalLessons: 14, order: 9 },
-      { courseId: "course10", name: "Directions and Places", emoji: "📍", level: "A1", totalLessons: 12, order: 10 },
-      { courseId: "course11", name: "Shopping", emoji: "🛒", level: "A1", totalLessons: 12, order: 11 },
-      { courseId: "course12", name: "Likes and Dislikes", emoji: "❤️", level: "A1", totalLessons: 11, order: 12 },
-      { courseId: "course13", name: "Basic Grammar", emoji: "📚", level: "A1", totalLessons: 22, order: 13 }
-    ];
-
     // Get user progress data and calculate actual progress based on database records
     const getProgressFromAPI = async () => {
       try {
-        const response = await fetch('/api/progress/italian', { credentials: 'same-origin' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Fetch dynamic course mapping with correct lesson counts
+        const courseMappingResponse = await fetch('/api/course-mapping/it', { credentials: 'same-origin' });
+        if (!courseMappingResponse.ok) {
+          throw new Error(`HTTP error! status: ${courseMappingResponse.status}`);
         }
-        const progressData = await response.json();
+        const courseMapping = await courseMappingResponse.json();
+        
+        // Fetch user progress data
+        const progressResponse = await fetch('/api/progress/italian', { credentials: 'same-origin' });
+        if (!progressResponse.ok) {
+          throw new Error(`HTTP error! status: ${progressResponse.status}`);
+        }
+        const progressData = await progressResponse.json();
         
         // Calculate progress for each course based on actual database progress
         const progress: CategoryProgress[] = [];
         let hasUncompletedCategory = false;
 
-        courseMapping.forEach(course => {
+        courseMapping.forEach((course: any) => {
           // Count completed lessons in this course from the database progress
           const completedInCategory = progressData.filter((p: any) => 
             p.courseId === course.courseId && p.completed === true
@@ -94,11 +85,28 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
           categoryMap.get(categoryName)!.lessons.push(lesson);
         });
 
+        // Fallback hardcoded mapping (old values for safety)
+        const fallbackCourseMapping = [
+          { courseId: "course1", name: "Greetings", emoji: "👋", level: "A1", totalLessons: 20, order: 1 },
+          { courseId: "course2", name: "Introducing Yourself", emoji: "🙋", level: "A1", totalLessons: 20, order: 2 },
+          { courseId: "course3", name: "Essential Courtesy Phrases", emoji: "🙏", level: "A1", totalLessons: 21, order: 3 },
+          { courseId: "course4", name: "Numbers", emoji: "🔢", level: "A1", totalLessons: 41, order: 4 },
+          { courseId: "course5", name: "Time and Date", emoji: "⏰", level: "A1", totalLessons: 49, order: 5 },
+          { courseId: "course6", name: "Family and People", emoji: "👨‍👩‍👧‍👦", level: "A1", totalLessons: 44, order: 6 },
+          { courseId: "course7", name: "Colors & Adjectives", emoji: "🎨", level: "A1", totalLessons: 29, order: 7 },
+          { courseId: "course8", name: "Weather and Seasons", emoji: "🌤️", level: "A1", totalLessons: 24, order: 8 },
+          { courseId: "course9", name: "Food and Drinks", emoji: "🍝", level: "A1", totalLessons: 29, order: 9 },
+          { courseId: "course10", name: "Directions and Places", emoji: "📍", level: "A1", totalLessons: 28, order: 10 },
+          { courseId: "course11", name: "Shopping", emoji: "🛒", level: "A1", totalLessons: 13, order: 11 },
+          { courseId: "course12", name: "Likes and Dislikes", emoji: "❤️", level: "A1", totalLessons: 14, order: 12 },
+          { courseId: "course13", name: "Basic Grammar", emoji: "📚", level: "A1", totalLessons: 29, order: 13 }
+        ];
+
         // Calculate progress for each course (fallback method)
         const progress: CategoryProgress[] = [];
         let hasUncompletedCategory = false;
 
-        courseMapping.forEach(course => {
+        fallbackCourseMapping.forEach(course => {
           const categoryData = categoryMap.get(course.name);
           const actualLessons = categoryData ? categoryData.lessons : [];
           

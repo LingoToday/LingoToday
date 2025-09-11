@@ -2396,6 +2396,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get course mapping for progress component - provides correct lesson counts including IRL and reviews
+  app.get('/api/course-mapping/:languageCode', async (req, res) => {
+    try {
+      const { languageCode } = req.params;
+      
+      // Get language by code
+      const language = await storage.getLanguageByCode(languageCode);
+      if (!language) {
+        return res.status(404).json({ message: `Language '${languageCode}' not found` });
+      }
+      
+      // Get beginner skill level (assuming that's what we need for the learning path)
+      const beginnerLevel = await storage.getSkillLevelByCode('beginner');
+      if (!beginnerLevel) {
+        return res.status(404).json({ message: "Beginner skill level not found" });
+      }
+      
+      // Get courses with relations for this language and skill level
+      const courses = await storage.getCoursesWithRelations(language.id, beginnerLevel.id);
+      
+      // Create the mapping in the format expected by the frontend
+      const courseMapping = courses.map(course => {
+        const lessonCount = course.lessons.length;
+        const checkpointCount = course.checkpoints.length;
+        const totalLessons = lessonCount + checkpointCount;
+        
+        // Define emojis for each course based on common patterns
+        const emojiMap: { [key: string]: string } = {
+          'Greetings': '👋',
+          'Introducing Yourself': '🙋',
+          'Essential Courtesy Phrases': '🙏',
+          'Numbers': '🔢',
+          'Time and Date': '⏰',
+          'Days, Months, Seasons': '⏰',
+          'Telling Time': '⏰',
+          'Family and People': '👨‍👩‍👧‍👦',
+          'Colors & Adjectives': '🎨',
+          'Describing Things – Colors & Adjectives': '🎨',
+          'Weather and Seasons': '🌤️',
+          'Weather': '🌤️',
+          'Food and Drinks': '🍝',
+          'Food & Drink': '🍝',
+          'Food and Drink': '🍝',
+          'Directions and Places': '📍',
+          'Shopping': '🛒',
+          'Likes and Dislikes': '❤️',
+          'Expressing Likes and Dislikes': '❤️',
+          'Basic Grammar': '📚',
+          'Basic Grammar Essentials': '📚',
+          'Travel Basics': '✈️',
+          'At a Restaurant': '🍽️',
+          'Noun Gender & Articles': '📖',
+          'Courtesy Phrases': '🙏'
+        };
+        
+        return {
+          courseId: `course${course.courseNumber}`,
+          name: course.title,
+          emoji: (emojiMap as any)[course.title] || '📚',
+          level: 'A1',
+          totalLessons,
+          order: course.courseNumber
+        };
+      }).sort((a, b) => a.order - b.order);
+      
+      res.json(courseMapping);
+    } catch (error) {
+      console.error("Error fetching course mapping:", error);
+      res.status(500).json({ message: "Failed to fetch course mapping" });
+    }
+  });
+
   // Admin route - get user metrics data
   app.get('/api/admin/user-metrics', async (req, res) => {
     try {
