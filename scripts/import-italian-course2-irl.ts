@@ -6,7 +6,7 @@ async function importItalianCourse2WithIRL() {
   try {
     console.log('🚀 Starting import of Italian Course 2 with IRL video lessons...');
 
-    const filePath = path.join(process.cwd(), 'attached_assets', 'italian_course2_introductions_with_IRL_1757587162137.json');
+    const filePath = path.join(process.cwd(), '..', 'attached_assets', 'italian_course2_introductions_with_IRL_1757587162137.json');
     
     if (!fs.existsSync(filePath)) {
       console.error('❌ Course file not found:', filePath);
