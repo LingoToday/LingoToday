@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle, Lock, BarChart3 } from "lucide-react";
 import { useState } from "react";
-import Analytics from "@/pages/analytics";
+import AnalyticsPage from "@/pages/analytics";
 
 interface Course {
   id: number;
@@ -653,7 +653,7 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Analytics />
+            <AnalyticsPage />
           </TabsContent>
 
           <TabsContent value="user-metrics">
