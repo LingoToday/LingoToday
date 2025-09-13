@@ -1,49 +1,79 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { DashboardData, CourseStats } from '../types';
 
-// Use the backend API URL - in development this would be localhost
-const API_BASE_URL = __DEV__ ? 'http://localhost:5000' : 'https://your-production-url.com';
+// Dynamic API base URL detection for different device types
+function getApiBaseUrl(): string {
+  if (!__DEV__) {
+    return 'https://your-production-url.com';
+  }
+  
+  // Development environment - detect device type
+  if (Platform.OS === 'web') {
+    return 'http://localhost:5000';
+  }
+  
+  // For React Native apps in development
+  if (Platform.OS === 'android') {
+    // Android emulator uses 10.0.2.2 to access host machine's localhost
+    // For real Android devices, you'll need your computer's IP address
+    // You can find it with: ipconfig (Windows) or ifconfig (Mac/Linux)
+    return 'http://10.0.2.2:5000';
+  }
+  
+  if (Platform.OS === 'ios') {
+    // iOS simulator can use localhost
+    // For real iOS devices, you'll need your computer's IP address
+    return 'http://localhost:5000';
+  }
+  
+  return 'http://localhost:5000';
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 export class ApiClient {
-  private async getSessionCookie(): Promise<string | null> {
+  private async getAuthToken(): Promise<string | null> {
     try {
-      return await AsyncStorage.getItem('sessionCookie');
+      return await SecureStore.getItemAsync('authToken');
     } catch (error) {
-      console.error('Error getting session cookie:', error);
+      console.error('Error getting auth token:', error);
       return null;
     }
   }
 
-  private async setSessionCookie(cookie: string): Promise<void> {
+  private async setAuthToken(token: string): Promise<void> {
     try {
-      await AsyncStorage.setItem('sessionCookie', cookie);
+      await SecureStore.setItemAsync('authToken', token);
     } catch (error) {
-      console.error('Error setting session cookie:', error);
+      console.error('Error setting auth token:', error);
+    }
+  }
+
+  private async removeAuthToken(): Promise<void> {
+    try {
+      await SecureStore.deleteItemAsync('authToken');
+    } catch (error) {
+      console.error('Error removing auth token:', error);
     }
   }
 
   private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const sessionCookie = await this.getSessionCookie();
+    const authToken = await this.getAuthToken();
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string>),
     };
 
-    if (sessionCookie) {
-      headers['Cookie'] = sessionCookie;
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers,
     });
-
-    // Store session cookie if provided in response
-    const setCookie = response.headers.get('set-cookie');
-    if (setCookie) {
-      await this.setSessionCookie(setCookie);
-    }
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
@@ -54,22 +84,42 @@ export class ApiClient {
 
   // Authentication
   async login(email: string, password: string) {
-    return this.makeRequest('/api/auth/login', {
+    const response = await this.makeRequest('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    
+    // Store the JWT token if login was successful
+    if (response.token) {
+      await this.setAuthToken(response.token);
+    }
+    
+    return response;
   }
 
   async register(email: string, password: string, firstName?: string, lastName?: string) {
-    return this.makeRequest('/api/auth/register', {
+    const response = await this.makeRequest('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, password, firstName, lastName }),
     });
+    
+    // Store the JWT token if registration was successful
+    if (response.token) {
+      await this.setAuthToken(response.token);
+    }
+    
+    return response;
   }
 
   async logout() {
-    await this.makeRequest('/api/auth/logout', { method: 'POST' });
-    await AsyncStorage.removeItem('sessionCookie');
+    try {
+      // Don't call server logout for token-based auth, just remove the token
+      await this.removeAuthToken();
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Always remove token even if there's an error
+      await this.removeAuthToken();
+    }
   }
 
   async getCurrentUser() {

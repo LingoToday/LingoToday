@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 import type { Express } from "express";
 import { z } from "zod";
+import { generateJWTToken } from "./jwtAuth";
 
 // Registration schema
 export const registerSchema = z.object({
@@ -104,6 +105,15 @@ export function setupLocalRoutes(app: Express, passport: any) {
       const userData = registerSchema.parse(req.body);
       const user = await registerUser(userData);
       
+      // Generate JWT token for mobile clients
+      const token = generateJWTToken({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName || '',
+        authProvider: 'local',
+      });
+
       res.status(201).json({
         success: true,
         message: 'User registered successfully',
@@ -112,7 +122,8 @@ export function setupLocalRoutes(app: Express, passport: any) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName || '',
-        }
+        },
+        token: token // JWT token for mobile authentication
       });
     } catch (error) {
       console.error('Registration error:', error);
@@ -164,6 +175,15 @@ export function setupLocalRoutes(app: Express, passport: any) {
           });
         }
         
+        // Generate JWT token for mobile clients
+        const token = generateJWTToken({
+          id: user.claims.sub,
+          email: user.claims.email,
+          firstName: user.claims.first_name,
+          lastName: user.claims.last_name,
+          authProvider: 'local',
+        });
+
         res.json({
           success: true,
           message: 'Login successful',
@@ -172,7 +192,8 @@ export function setupLocalRoutes(app: Express, passport: any) {
             email: user.claims.email,
             firstName: user.claims.first_name,
             lastName: user.claims.last_name,
-          }
+          },
+          token: token // JWT token for mobile authentication
         });
       });
     })(req, res, next);
