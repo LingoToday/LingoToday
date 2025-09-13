@@ -1,29 +1,44 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { DashboardData, CourseStats } from '../types';
 
-// Dynamic API base URL detection for different device types
+// Enhanced API base URL detection with Expo Constants
 function getApiBaseUrl(): string {
+  // Production environment
   if (!__DEV__) {
     return 'https://your-production-url.com';
   }
   
-  // Development environment - detect device type
+  // Development environment - check for custom API URL in app config
+  const customApiUrl = Constants.expoConfig?.extra?.apiUrl;
+  if (customApiUrl) {
+    return customApiUrl;
+  }
+  
+  // Development environment - detect device type and use appropriate localhost
   if (Platform.OS === 'web') {
     return 'http://localhost:5000';
   }
   
-  // For React Native apps in development
+  // Get development machine IP from Expo Constants for physical devices
+  const debuggerHost = Constants.expoConfig?.hostUri?.split(':')[0];
+  
   if (Platform.OS === 'android') {
     // Android emulator uses 10.0.2.2 to access host machine's localhost
-    // For real Android devices, you'll need your computer's IP address
-    // You can find it with: ipconfig (Windows) or ifconfig (Mac/Linux)
+    // For real Android devices, use the debugger host IP if available
+    if (debuggerHost && !debuggerHost.includes('localhost') && !debuggerHost.includes('127.0.0.1')) {
+      return `http://${debuggerHost}:5000`;
+    }
     return 'http://10.0.2.2:5000';
   }
   
   if (Platform.OS === 'ios') {
     // iOS simulator can use localhost
-    // For real iOS devices, you'll need your computer's IP address
+    // For real iOS devices, use the debugger host IP if available
+    if (debuggerHost && !debuggerHost.includes('localhost') && !debuggerHost.includes('127.0.0.1')) {
+      return `http://${debuggerHost}:5000`;
+    }
     return 'http://localhost:5000';
   }
   

@@ -20,7 +20,12 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // Tab Icons
-const TabIcon = ({ name, focused }) => {
+interface TabIconProps {
+  name: string;
+  focused: boolean;
+}
+
+const TabIcon = ({ name, focused }: TabIconProps) => {
   const getIcon = () => {
     switch (name) {
       case 'Dashboard':
@@ -104,7 +109,14 @@ function AuthStackNavigator() {
 }
 
 // Main App Navigator
-export default function AppNavigator({ isAuthenticated, user }) {
+interface AppNavigatorProps {
+  isAuthenticated: boolean;
+  user?: {
+    completedOnboarding?: boolean;
+  } | null;
+}
+
+export default function AppNavigator({ isAuthenticated, user }: AppNavigatorProps) {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
