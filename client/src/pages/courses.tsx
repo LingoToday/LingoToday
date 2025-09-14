@@ -236,7 +236,7 @@ export default function Courses() {
               </Link>
               
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">{(user as any)?.firstName || 'User'}</span>
                 <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
                   Logout
                 </Button>
@@ -318,7 +318,7 @@ export default function Courses() {
 
           {/* Courses Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {courses && (Object.entries(courses) as [string, any][]).map(([courseId, course]) => (
+            {courses && (Object.entries(courses as Record<string, any>) as [string, any][]).map(([courseId, course]) => (
               <Card key={courseId} className="border border-gray-200 dark:border-gray-700" data-testid={`card-course-${courseId}`}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -464,7 +464,7 @@ export default function Courses() {
                 </Link>
                 
                 <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{user?.firstName || 'User'}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{(user as any)?.firstName || 'User'}</span>
                   <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
                     Logout
                   </Button>
