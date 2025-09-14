@@ -244,6 +244,7 @@ export default function Lesson() {
                           detectedGender === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
                           '/attached_assets/videos/lesson1_hi_neutral.mp4';
           
+          
           return {
             type: 'video_choice',
             videoUrl: videoUrl,
@@ -1014,12 +1015,7 @@ export default function Lesson() {
               </>
             )}
 
-            {stepData && stepData.type === 'video_choice' && (() => {
-              console.log('🎬 VIDEO_CHOICE Step Data:', stepData);
-              console.log('🎬 Video URL:', stepData.videoUrl);
-              console.log('🎬 User gender detected as:', user?.firstName ? detectGender(user.firstName) : 'unknown');
-              return true;
-            })() && (
+            {stepData && stepData.type === 'video_choice' && (
               <>
                 {/* Gender-based Video Choice Step */}
                 <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
@@ -1039,9 +1035,6 @@ export default function Lesson() {
                     className="w-96 h-[28rem] rounded-lg shadow-lg object-cover"
                     style={{ aspectRatio: '9/16' }}
                     data-testid="lesson-step-video"
-                    onLoadStart={() => console.log('🎬 Video loading started:', stepData.videoUrl)}
-                    onCanPlay={() => console.log('🎬 Video can play:', stepData.videoUrl)}
-                    onError={(e) => console.error('🎬 Video error:', e, stepData.videoUrl)}
                   >
                     <source src={stepData.videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.
