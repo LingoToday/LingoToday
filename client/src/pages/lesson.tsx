@@ -15,6 +15,7 @@ import { getLessonById } from "@/lib/lessonStore";
 import { resetNotificationCooldown } from "@/lib/notifications";
 import type { Lesson, UserProgress } from "@shared/schema";
 import Footer from "@/components/ui/footer";
+import { selectVideoByGender, detectGender } from "@shared/genderDetection";
 
 export default function Lesson() {
   const { language, courseId, lessonId } = useParams();
@@ -108,6 +109,12 @@ export default function Lesson() {
     queryKey: ['/api/progress', language],
     enabled: isAuthenticated && !!language,
   }) as { data: UserProgress[] };
+
+  // Fetch user data for gender detection and tier access
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/user'],
+    enabled: isAuthenticated,
+  }) as { data: any };
 
   // Fallback: try to get lesson from stored data if API fails or if we have a notification lesson
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
@@ -219,6 +226,90 @@ export default function Lesson() {
         answerPrompt: currentLesson.content?.answerPrompt || '',
         expectedAnswers: currentLesson.content?.expectedAnswers || []
       };
+    }
+
+    // Handle API lessons with steps array (new structure from database)
+    if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
+      const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
+      
+      if (currentStepData) {
+        // Handle video_choice step type (gender-based videos)
+        if (currentStepData.stepType === 'video_choice') {
+          const videoOptions = currentStepData.content.options || [];
+          
+          // Get user's first name for gender detection
+          const userFirstName = userData?.firstName || '';
+          const selectedVideo = selectVideoByGender(userFirstName, videoOptions);
+          
+          return {
+            type: 'video_choice',
+            videoUrl: selectedVideo?.video_url || '',
+            prompt: currentStepData.content.prompt || '',
+            answerPrompt: selectedVideo?.answer_prompt || '',
+            expectedAnswers: selectedVideo?.expected_answers || [],
+            videoOptions,
+            tier: 'free',
+            selectedGender: userData?.firstName ? detectGender(userData.firstName) : 'neutral'
+          };
+        }
+        
+        // Handle pro_video step type (tier-restricted videos)
+        if (currentStepData.stepType === 'pro_video') {
+          const requiredTier = currentStepData.content.requiredTier || [];
+          const userTier = userData?.priceTier || 'free';
+          
+          // Check if user has pro access
+          const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+          
+          return {
+            type: 'pro_video',
+            videoUrl: currentStepData.content.video_url || '',
+            prompt: currentStepData.content.prompt || '',
+            answerPrompt: currentStepData.content.answer_prompt || '',
+            expectedAnswers: currentStepData.content.expected_answers || [],
+            hasAccess,
+            requiredTier
+          };
+        }
+        
+        // Handle other API step types
+        if (currentStepData.stepType === 'word_review') {
+          return {
+            type: 'word_review',
+            word: currentStepData.content.italian || '',
+            translation: currentStepData.content.english || '',
+            audio: currentStepData.content.audio || '',
+            note: currentStepData.content.note || ''
+          };
+        }
+        
+        if (currentStepData.stepType === 'quick_check') {
+          return {
+            type: 'quick_check',
+            question: currentStepData.content.mcq?.question || '',
+            options: currentStepData.content.mcq?.options || [],
+            answer: currentStepData.content.mcq?.answer || ''
+          };
+        }
+        
+        if (currentStepData.stepType === 'typing') {
+          return {
+            type: 'type',
+            prompt: currentStepData.content.type_prompt || '',
+            expected: currentStepData.content.expected_answer || '',
+            alternatives: currentStepData.content.alt_answers || []
+          };
+        }
+        
+        if (currentStepData.stepType === 'comprehension') {
+          return {
+            type: 'audio',
+            audioSentence: currentStepData.content.audio_sentence || '',
+            options: currentStepData.content.options || [],
+            answer: currentStepData.content.answer || ''
+          };
+        }
+      }
     }
     
     // Handle review lessons (MCQ format)
@@ -446,6 +537,32 @@ export default function Lesson() {
                normalizedExpected.includes(userAnswer) ||
                userAnswer.includes(normalizedExpected.split(' ')[0]); // Match first word
       });
+    } else if (stepData.type === 'video_choice') {
+      // Handle gender-based video choice - check against expected answers
+      const userAnswer = normalizeText(selectedAnswer);
+      const expectedAnswers = stepData.expectedAnswers || [];
+      
+      correct = expectedAnswers.some((expected: string) => {
+        const normalizedExpected = normalizeText(expected);
+        return userAnswer === normalizedExpected || 
+               normalizedExpected.includes(userAnswer) ||
+               userAnswer.includes(normalizedExpected.split(' ')[0]);
+      });
+    } else if (stepData.type === 'pro_video') {
+      // Handle pro video step
+      if (selectedAnswer === 'skip') {
+        correct = true; // Allow skipping for non-pro users
+      } else {
+        const userAnswer = normalizeText(selectedAnswer);
+        const expectedAnswers = stepData.expectedAnswers || [];
+        
+        correct = expectedAnswers.some((expected: string) => {
+          const normalizedExpected = normalizeText(expected);
+          return userAnswer === normalizedExpected || 
+                 normalizedExpected.includes(userAnswer) ||
+                 userAnswer.includes(normalizedExpected.split(' ')[0]);
+        });
+      }
     } else if (stepData.type === 'review_mcq') {
       // Handle review MCQ questions
       correct = selectedAnswer === stepData.answer;
@@ -881,6 +998,138 @@ export default function Lesson() {
                     </div>
                   </details>
                 </div>
+              </>
+            )}
+
+            {stepData && stepData.type === 'video_choice' && (
+              <>
+                {/* Gender-based Video Choice Step */}
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">🎬</div>
+                    <h2 className="text-2xl font-bold text-green-700 mb-4">Watch and Respond</h2>
+                    <p className="text-green-600 text-lg mb-6">{stepData.prompt}</p>
+                  </div>
+                </div>
+
+                {/* Video Player */}
+                <div className="flex justify-center mb-6">
+                  <video 
+                    controls 
+                    className="w-full max-w-md rounded-lg shadow-lg"
+                    data-testid="lesson-step-video"
+                  >
+                    <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                {/* Response Input */}
+                <div className="mb-4">
+                  <p className="text-gray-700 mb-2 font-medium">{stepData.answerPrompt}</p>
+                  <input
+                    type="text"
+                    value={selectedAnswer}
+                    onChange={(e) => setSelectedAnswer(e.target.value)}
+                    placeholder="Type your response in Italian..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    data-testid="video-response-input"
+                    disabled={showResult}
+                  />
+                </div>
+              </>
+            )}
+
+            {stepData && stepData.type === 'pro_video' && (
+              <>
+                {/* Pro Video Step */}
+                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">⭐</div>
+                    <h2 className="text-2xl font-bold text-yellow-700 mb-4">Pro Video Lesson</h2>
+                    <p className="text-yellow-600 text-lg mb-6">{stepData.prompt}</p>
+                  </div>
+                </div>
+
+                {/* Video Player or Upgrade Prompt */}
+                {stepData.hasAccess ? (
+                  <>
+                    <div className="flex justify-center mb-6">
+                      <video 
+                        controls 
+                        className="w-full max-w-md rounded-lg shadow-lg"
+                        data-testid="pro-lesson-video"
+                      >
+                        <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+
+                    {/* Response Input for Pro Users */}
+                    <div className="mb-4">
+                      <p className="text-gray-700 mb-2 font-medium">{stepData.answerPrompt}</p>
+                      <input
+                        type="text"
+                        value={selectedAnswer}
+                        onChange={(e) => setSelectedAnswer(e.target.value)}
+                        placeholder="Type your response in Italian..."
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        data-testid="pro-video-response-input"
+                        disabled={showResult}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  /* Upgrade to Pro UI */
+                  <div className="text-center">
+                    <div className="relative inline-block mb-6">
+                      <video 
+                        className="w-full max-w-md rounded-lg shadow-lg blur-md opacity-50"
+                        data-testid="blurred-pro-video"
+                      >
+                        <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                      </video>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+                          🔒 Pro Content
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-6">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">Upgrade to Pro Learner</h3>
+                      <p className="text-gray-600 mb-4">
+                        Unlock premium video lessons with native speakers to accelerate your learning!
+                      </p>
+                      <Button 
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
+                        data-testid="upgrade-to-pro-button"
+                        onClick={() => {
+                          // TODO: Open payment modal when Stripe is set up
+                          toast({
+                            title: "Upgrade Available",
+                            description: "Payment system will be available soon. Please check back later!",
+                          });
+                        }}
+                      >
+                        ⭐ Upgrade to Pro - Unlock All Videos
+                      </Button>
+                    </div>
+                    
+                    {/* Allow skipping for now */}
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedAnswer('skip');
+                        handleStepSubmit();
+                      }}
+                      className="mt-4"
+                      data-testid="skip-pro-video-button"
+                    >
+                      Skip This Video (Continue with Free Content)
+                    </Button>
+                  </div>
+                )}
               </>
             )}
 

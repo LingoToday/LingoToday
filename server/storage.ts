@@ -860,8 +860,40 @@ export class DatabaseStorage implements IStorage {
             { stepNumber: 1, stepType: 'word_review', content: wordReviewContent },
             { stepNumber: 2, stepType: 'quick_check', content: quickCheckContent },
             { stepNumber: 3, stepType: 'typing', content: lesson.step2 },
-            { stepNumber: 4, stepType: 'comprehension', content: lesson.step3 },
           ];
+
+          // Handle step 4 - check if it's a video step or traditional comprehension
+          if (lesson.step4) {
+            if (lesson.step4.type === 'video_choice') {
+              // Gender-based video choice step
+              steps.push({ 
+                stepNumber: 4, 
+                stepType: 'video_choice', 
+                content: lesson.step4 
+              });
+            } else if (lesson.step4.type === 'video' && lesson.step4.requiredTier) {
+              // Pro tier video step
+              steps.push({ 
+                stepNumber: 4, 
+                stepType: 'pro_video', 
+                content: lesson.step4 
+              });
+            } else {
+              // Fallback to comprehension if step4 doesn't have expected video structure
+              steps.push({ 
+                stepNumber: 4, 
+                stepType: 'comprehension', 
+                content: lesson.step3 
+              });
+            }
+          } else {
+            // Traditional comprehension step
+            steps.push({ 
+              stepNumber: 4, 
+              stepType: 'comprehension', 
+              content: lesson.step3 
+            });
+          }
 
           for (const step of steps) {
             await this.createLessonStep({

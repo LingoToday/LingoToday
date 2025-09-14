@@ -186,6 +186,28 @@ export const step4ContentSchema = z.object({
   answer: z.string(),
 });
 
+// Video Choice Content (for gender-based video selection)
+export const videoChoiceContentSchema = z.object({
+  type: z.literal('video_choice'),
+  prompt: z.string(),
+  options: z.array(z.object({
+    label: z.string(), // 'Male', 'Female', 'Neutral'
+    video_url: z.string(),
+    answer_prompt: z.string(),
+    expected_answers: z.array(z.string()),
+  })),
+});
+
+// Pro Video Content (for tier-restricted videos)
+export const proVideoContentSchema = z.object({
+  type: z.literal('video'),
+  video_url: z.string(),
+  requiredTier: z.array(z.string()),
+  prompt: z.string(),
+  answer_prompt: z.string(),
+  expected_answers: z.array(z.string()),
+});
+
 // Insert schemas
 export const insertLanguageSchema = createInsertSchema(languages).omit({
   id: true,

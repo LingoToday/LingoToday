@@ -567,13 +567,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(404).json({ message: "Lesson not found" });
         }
         
+        // Get user tier for access control
+        const userId = req.user.claims?.sub || req.user.id;
+        const user = await storage.getUser(userId);
+        const userTier = user?.priceTier || 'free';
+        const isProUser = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+        
         // Convert to expected format
         const lessonData: any = {
           title: lesson.title
         };
         
         lesson.steps.forEach(step => {
-          lessonData[`step${step.stepNumber}`] = step.content;
+          let stepContent: any = step.content;
+          
+          // Security: Filter pro video content for non-pro users
+          if (step.stepType === 'pro_video' && !isProUser) {
+            // Remove video URL for non-pro users to prevent unauthorized access
+            stepContent = {
+              ...(step.content as any),
+              video_url: '', // Remove actual video URL
+              isRestricted: true, // Flag for frontend to show upgrade prompt
+              requiredTier: (step.content as any)?.requiredTier || []
+            };
+          }
+          
+          lessonData[`step${step.stepNumber}`] = stepContent;
         });
         
         res.json({
