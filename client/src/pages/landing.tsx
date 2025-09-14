@@ -498,7 +498,7 @@ export default function Landing() {
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Streak insurance + "super reminders"</span>
+                      <span className="text-gray-600 text-sm">Early access to mobile app features</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
