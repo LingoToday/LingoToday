@@ -20,6 +20,51 @@ import fs from "fs";
 import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Helper function to sanitize lesson content based on user tier
+  const sanitizeLessonForTier = (userTier: string, lessonSteps: any[]): any[] => {
+    const isProUser = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+    
+    return lessonSteps.map(step => {
+      if (step.stepType === 'pro_video' && !isProUser) {
+        // Remove video URL for non-pro users to prevent unauthorized access
+        return {
+          ...step,
+          content: {
+            ...(step.content as any),
+            video_url: '', // Remove actual video URL
+            isRestricted: true, // Flag for frontend to show upgrade prompt
+            requiredTier: (step.content as any)?.requiredTier || []
+          }
+        };
+      }
+      return step;
+    });
+  };
+
+  // Helper function to sanitize step content when steps are in key-value format (step1, step2, etc.)
+  const sanitizeLessonDataForTier = (userTier: string, lessonData: any): any => {
+    const isProUser = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+    const sanitizedData = { ...lessonData };
+    
+    // Check each property that might be a step
+    Object.keys(sanitizedData).forEach(key => {
+      if (key.startsWith('step') && sanitizedData[key]) {
+        const stepContent = sanitizedData[key];
+        // Check if this is a pro_video step (assuming stepType might be in the content)
+        if (stepContent.stepType === 'pro_video' && !isProUser) {
+          sanitizedData[key] = {
+            ...stepContent,
+            video_url: '', // Remove actual video URL
+            isRestricted: true, // Flag for frontend to show upgrade prompt
+            requiredTier: stepContent.requiredTier || []
+          };
+        }
+      }
+    });
+    
+    return sanitizedData;
+  };
+
   // Setup Replit authentication system
   const { setupAuth, isAuthenticated } = await import("./replitAuth");
   await setupAuth(app);
@@ -1127,6 +1172,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let lesson;
       if (withSteps) {
         lesson = await storage.getLessonWithSteps(id);
+        
+        // Apply security sanitization for steps with pro content
+        if (lesson && lesson.steps) {
+          const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+          let userTier = 'free';
+          if (userId) {
+            const user = await storage.getUser(userId);
+            userTier = user?.priceTier || 'free';
+          }
+          
+          // Sanitize lesson steps to protect pro content
+          lesson.steps = sanitizeLessonForTier(userTier, lesson.steps);
+        }
       } else {
         lesson = await storage.getLesson(id);
       }
@@ -1163,7 +1221,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const lessonId = parseInt(req.params.lessonId);
       const steps = await storage.getLessonSteps(lessonId);
-      res.json(steps);
+      
+      // Apply security sanitization to protect pro content
+      const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+      let userTier = 'free';
+      if (userId) {
+        const user = await storage.getUser(userId);
+        userTier = user?.priceTier || 'free';
+      }
+      
+      // Sanitize steps to protect pro content
+      const sanitizedSteps = sanitizeLessonForTier(userTier, steps);
+      res.json(sanitizedSteps);
     } catch (error) {
       console.error("Error fetching lesson steps:", error);
       res.status(500).json({ message: "Failed to fetch lesson steps" });
@@ -1399,6 +1468,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
+        // Get user tier for access control
+        const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+        let userTier = 'free';
+        if (userId) {
+          const user = await storage.getUser(userId);
+          userTier = user?.priceTier || 'free';
+        }
+        
+        // Apply sanitization to protect pro content
+        const sanitizedSteps = sanitizeLessonForTier(userTier, lessonWithSteps.steps || []);
+
         // Convert the database steps to the expected frontend format
         const lesson = {
           title: lessonWithSteps.title,
@@ -1411,9 +1491,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           quiz: null as any
         };
 
-        // Process the steps to build the lesson data
+        // Process the sanitized steps to build the lesson data
         const allSteps: any = {};
-        for (const step of lessonWithSteps.steps) {
+        for (const step of sanitizedSteps) {
           if (step.stepType === 'word_review') {
             // New 4-step structure: word review step
             const content = step.content as any;
@@ -1490,6 +1570,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
               options: content.options,
               answer: content.answer
             };
+          } else if (step.stepType === 'video_choice') {
+            // New video step: gender-based video selection
+            const content = step.content as any;
+            allSteps.video_choice = {
+              type: 'video_choice',
+              stepType: 'video_choice',
+              prompt: content.prompt,
+              options: content.options
+            };
+          } else if (step.stepType === 'pro_video') {
+            // New video step: pro-tier restricted video
+            const content = step.content as any;
+            allSteps.pro_video = {
+              type: 'pro_video',
+              stepType: 'pro_video',
+              video_url: content.video_url,
+              prompt: content.prompt,
+              requiredTier: content.requiredTier,
+              isRestricted: content.isRestricted || false
+            };
           } else if (step.stepType === 'introduction') {
             // Old 3-step structure: introduction step (contains both word review and MCQ)
             const content = step.content as any;
@@ -1546,9 +1646,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
               quiz: {}
             };
             
-            // Convert steps to old format
+            // Convert steps to old format with proper access control
             const allSteps: any = {};
-            dbLesson.steps?.forEach(step => {
+            
+            // Get user tier for sanitization
+            const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+            let userTier = 'free';
+            if (userId) {
+              const user = await storage.getUser(userId);
+              userTier = user?.priceTier || 'free';
+            }
+            
+            // Apply sanitization to protect pro content
+            const sanitizedSteps = sanitizeLessonForTier(userTier, dbLesson.steps || []);
+            
+            sanitizedSteps.forEach(step => {
               allSteps[`step${step.stepNumber}`] = step.content;
             });
             
