@@ -19,7 +19,7 @@ import { selectVideoByGender, detectGender } from "@shared/genderDetection";
 
 export default function Lesson() {
   const { language, courseId, lessonId } = useParams();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
@@ -241,9 +241,15 @@ export default function Lesson() {
           const userFirstName = userData?.firstName || '';
           const selectedVideo = selectVideoByGender(userFirstName, videoOptions);
           
+          // Normalize video URL to absolute path
+          const rawVideoUrl = selectedVideo?.video_url || '';
+          const videoUrl = rawVideoUrl.startsWith('/attached_assets/') 
+            ? rawVideoUrl 
+            : `/attached_assets/${rawVideoUrl.replace(/^\/?/, '')}`;
+          
           return {
             type: 'video_choice',
-            videoUrl: selectedVideo?.video_url || '',
+            videoUrl: videoUrl,
             prompt: currentStepData.content.prompt || '',
             answerPrompt: selectedVideo?.answer_prompt || '',
             expectedAnswers: selectedVideo?.expected_answers || [],
@@ -1012,7 +1018,12 @@ export default function Lesson() {
               </>
             )}
 
-            {stepData && stepData.type === 'video_choice' && (
+            {stepData && stepData.type === 'video_choice' && (() => {
+              console.log('🎬 VIDEO_CHOICE Step Data:', stepData);
+              console.log('🎬 Video URL:', stepData.videoUrl);
+              console.log('🎬 User gender detected as:', user?.firstName ? detectGender(user.firstName) : 'unknown');
+              return true;
+            })() && (
               <>
                 {/* Gender-based Video Choice Step */}
                 <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
@@ -1028,9 +1039,13 @@ export default function Lesson() {
                   <video 
                     controls 
                     autoPlay
+                    muted
                     className="w-96 h-[28rem] rounded-lg shadow-lg object-cover"
                     style={{ aspectRatio: '9/16' }}
                     data-testid="lesson-step-video"
+                    onLoadStart={() => console.log('🎬 Video loading started:', stepData.videoUrl)}
+                    onCanPlay={() => console.log('🎬 Video can play:', stepData.videoUrl)}
+                    onError={(e) => console.error('🎬 Video error:', e, stepData.videoUrl)}
                   >
                     <source src={stepData.videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.
