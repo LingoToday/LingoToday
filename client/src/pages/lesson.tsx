@@ -235,25 +235,21 @@ export default function Lesson() {
       if (currentStepData) {
         // Handle video_choice step type (gender-based videos)
         if (currentStepData.stepType === 'video_choice') {
-          const videoOptions = currentStepData.content.options || [];
-          
           // Get user's first name for gender detection
           const userFirstName = userData?.firstName || '';
-          const selectedVideo = selectVideoByGender(userFirstName, videoOptions);
+          const detectedGender = detectGender(userFirstName);
           
-          // Normalize video URL to absolute path
-          const rawVideoUrl = selectedVideo?.video_url || '';
-          const videoUrl = rawVideoUrl.startsWith('/attached_assets/') 
-            ? rawVideoUrl 
-            : `/attached_assets/${rawVideoUrl.replace(/^\/?/, '')}`;
+          // Direct video URL mapping (like intro videos)
+          const videoUrl = detectedGender === 'male' ? '/attached_assets/videos/lesson1_hi_male.mp4' :
+                          detectedGender === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
+                          '/attached_assets/videos/lesson1_hi_neutral.mp4';
           
           return {
             type: 'video_choice',
             videoUrl: videoUrl,
             prompt: currentStepData.content.prompt || '',
-            answerPrompt: selectedVideo?.answer_prompt || '',
-            expectedAnswers: selectedVideo?.expected_answers || [],
-            videoOptions,
+            answerPrompt: "Reply: 'Hi!'",
+            expectedAnswers: ["Ciao!", "Ciao"],
             tier: 'free',
             selectedGender: userData?.firstName ? detectGender(userData.firstName) : 'neutral'
           };

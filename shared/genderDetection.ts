@@ -85,7 +85,9 @@ export function detectGender(firstName: string): 'male' | 'female' | 'neutral' {
  * @returns The selected video option or the neutral option as fallback
  */
 export function selectVideoByGender(firstName: string, videoOptions: Array<{label: string, video_url: string, answer_prompt: string, expected_answers: string[]}>) {
+  console.log('🎯 selectVideoByGender called with:', { firstName, videoOptions });
   const detectedGender = detectGender(firstName);
+  console.log('🎯 detectedGender:', detectedGender);
   
   // Try to find exact match
   const genderMapping = {
@@ -95,7 +97,10 @@ export function selectVideoByGender(firstName: string, videoOptions: Array<{labe
   };
   
   const targetLabel = genderMapping[detectedGender];
+  console.log('🎯 targetLabel:', targetLabel);
+  console.log('🎯 available labels:', videoOptions.map(opt => opt.label));
   const selectedOption = videoOptions.find(option => option.label === targetLabel);
+  console.log('🎯 selectedOption:', selectedOption);
   
   // If no exact match, fallback to neutral, then first option
   if (selectedOption) {
