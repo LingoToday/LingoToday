@@ -490,7 +490,7 @@ export default function Landing() {
                     
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Multiple video & scenario based lessons per day</span>
+                      <span className="text-gray-600 text-sm">Full access to all video & scenario based lessons</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
