@@ -1104,56 +1104,6 @@ export default function Lesson() {
               </>
             )}
 
-            {/* Simple Step 4 Video - Hardcoded for lesson1 like intro videos */}
-            {currentStep === 4 && lesson && lessonId === 'lesson1' && courseId === 'course1' && (
-              <>
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
-                  <div className="text-center">
-                    <h3 className="text-xl font-semibold text-green-800 mb-4" data-testid="text-prompt">
-                      Watch and reply appropriately: 'Hi / Bye'.
-                    </h3>
-                    
-                    <video
-                      controls
-                      playsInline
-                      muted
-                      autoPlay
-                      className="w-96 h-[28rem] rounded-lg shadow-lg mx-auto mb-6"
-                      data-testid="lesson-step4-video"
-                    >
-                      <source src={
-                        user?.firstName && detectGender(user.firstName) === 'male' ? '/attached_assets/videos/lesson1_hi_male.mp4' :
-                        user?.firstName && detectGender(user.firstName) === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
-                        '/attached_assets/videos/lesson1_hi_neutral.mp4'
-                      } type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-
-                    {/* Answer Input */}
-                    <div className="flex flex-col space-y-4">
-                      <p className="text-green-700 font-medium" data-testid="text-answer-prompt">
-                        Reply: 'Hi!'
-                      </p>
-                      <input
-                        type="text"
-                        value={selectedAnswer}
-                        onChange={(e) => setSelectedAnswer(e.target.value)}
-                        placeholder="Type your answer here..."
-                        className="px-4 py-2 border rounded-lg text-center max-w-md mx-auto"
-                        data-testid="input-answer"
-                      />
-                      <Button 
-                        onClick={handleStepSubmit} 
-                        className="max-w-md mx-auto"
-                        data-testid="button-submit-answer"
-                      >
-                        Submit Answer
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
 
 
             {stepData && stepData.type === 'pro_video' && (
