@@ -34,7 +34,7 @@ const internationalNames: GenderData = {
     'Fernando', 'Diego', 'Miguel', 'Jorge', 'Luis', 'Manuel', 'José', 'Pablo', 'Rafael'
   ],
   female: [
-    'Alexandra', 'Amanda', 'Andrea', 'Angela', 'Anna', 'Ashley', 'Barbara', 'Betty',
+    'Alexandra', 'Amanda', 'Andrea', 'Angela', 'Anna', 'Annie', 'Ashley', 'Barbara', 'Betty',
     'Carol', 'Catherine', 'Christine', 'Deborah', 'Dorothy', 'Elizabeth', 'Emily', 'Helen',
     'Jennifer', 'Jessica', 'Karen', 'Laura', 'Linda', 'Lisa', 'Margaret', 'Maria', 'Mary',
     'Michelle', 'Nancy', 'Patricia', 'Rebecca', 'Ruth', 'Sandra', 'Sarah', 'Sharon', 'Susan',

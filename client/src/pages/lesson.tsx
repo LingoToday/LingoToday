@@ -1027,10 +1027,12 @@ export default function Lesson() {
                 <div className="flex justify-center mb-6">
                   <video 
                     controls 
-                    className="w-full max-w-md rounded-lg shadow-lg"
+                    autoPlay
+                    className="w-96 h-[28rem] rounded-lg shadow-lg object-cover"
+                    style={{ aspectRatio: '9/16' }}
                     data-testid="lesson-step-video"
                   >
-                    <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                    <source src={stepData.videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
