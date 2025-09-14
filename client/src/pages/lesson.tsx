@@ -231,10 +231,13 @@ export default function Lesson() {
     // Handle API lessons with steps array (new structure from database)
     if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
       const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
+      console.log('🎯 Step Debug - step:', currentStep, 'stepData:', currentStepData?.stepType, 'allStepTypes:', currentLesson.lesson.steps.map(s => `${s.stepNumber}:${s.stepType}`));
       
       if (currentStepData) {
         // Handle video_choice step type (gender-based videos)
         if (currentStepData.stepType === 'video_choice') {
+          console.log('🎬 VIDEO_CHOICE TRIGGERED - entered new logic');
+          console.log('🎬 User data:', userData?.firstName, 'detected gender:', detectGender(userData?.firstName || ''));
           // Get user's first name for gender detection
           const userFirstName = userData?.firstName || '';
           const detectedGender = detectGender(userFirstName);
