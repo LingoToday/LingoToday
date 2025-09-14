@@ -507,10 +507,7 @@ export default function Landing() {
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                       <span className="text-gray-600 text-sm">Custom lesson notifications</span>
                     </li>
-                    <li className="flex items-center gap-3">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Mobile app for continuous learning</span>
-                    </li>
+                    
                   </ul>
                   
                   <Button 
