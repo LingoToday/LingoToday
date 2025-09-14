@@ -202,6 +202,26 @@ export default function Lesson() {
   
 
   // Get current step data
+  // Helper to normalize asset URLs consistently
+  const normalizeAssetUrl = (url: string): string => {
+    if (!url) return '';
+    
+    // Already correct format
+    if (url.startsWith('/attached_assets/')) return url;
+    
+    // Missing leading slash
+    if (url.startsWith('attached_assets/')) return '/' + url;
+    
+    // Fix /videos/ paths to use attached_assets
+    if (url.startsWith('/videos/')) return '/attached_assets' + url;
+    
+    // Other absolute paths (leave as-is)
+    if (url.startsWith('/')) return url;
+    
+    // Relative asset filename
+    return '/attached_assets/' + url;
+  };
+
   const getCurrentStepData = () => {
     if (!currentLesson?.lesson) return null;
     
@@ -228,6 +248,58 @@ export default function Lesson() {
       };
     }
 
+    // Normalize legacy lesson format (step1, step2, step3, step4) to steps[] array
+    if (!currentLesson.lesson?.steps && currentLesson.lesson?.step1) {
+      console.log('🔄 Normalizing legacy 4-step format to steps[]');
+      const normalizedSteps = [];
+      
+      // Map legacy steps to normalized format
+      for (let i = 1; i <= 4; i++) {
+        const stepKey = `step${i}`;
+        const stepData = currentLesson.lesson[stepKey];
+        if (stepData) {
+          let stepType = 'unknown';
+          let content = stepData;
+          
+          // Determine step type based on step data structure
+          if (stepData.type) {
+            if (stepData.type === 'video_choice') {
+              stepType = 'video_choice';
+            } else if (stepData.type === 'video') {
+              stepType = 'pro_video';
+              // Normalize video step to pro_video format
+              content = {
+                video_url: stepData.video_url || '',
+                prompt: stepData.prompt || '',
+                answer_prompt: stepData.answer_prompt || '',
+                expected_answers: stepData.expected_answers || [],
+                requiredTier: stepData.requiredTier || ['pro']
+              };
+            }
+          } else {
+            // Infer step type from content structure
+            if (stepData.italian && stepData.english) {
+              stepType = 'word_review';
+            } else if (stepData.type_prompt || stepData.expectedAnswer) {
+              stepType = 'typing';
+            } else if (stepData.audio_sentence || stepData.options) {
+              stepType = 'comprehension';
+            }
+          }
+          
+          normalizedSteps.push({
+            stepNumber: i,
+            stepType: stepType,
+            content: content
+          });
+        }
+      }
+      
+      // Add normalized steps to lesson object
+      currentLesson.lesson.steps = normalizedSteps;
+      console.log('✅ Normalized steps:', normalizedSteps.map(s => `${s.stepNumber}:${s.stepType}`));
+    }
+
     // Handle API lessons with steps array (new structure from database)
     if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
       const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
@@ -237,25 +309,39 @@ export default function Lesson() {
         // Handle video_choice step type (gender-based videos)
         if (currentStepData.stepType === 'video_choice') {
           console.log('🎬 VIDEO_CHOICE TRIGGERED - entered new logic');
-          console.log('🎬 User data:', userData?.firstName, 'detected gender:', detectGender(userData?.firstName || ''));
-          // Get user's first name for gender detection
           const userFirstName = userData?.firstName || '';
           const detectedGender = detectGender(userFirstName);
+          console.log('🎬 User data:', userFirstName, 'detected gender:', detectedGender);
           
-          // Direct video URL mapping (like intro videos)
-          const videoUrl = detectedGender === 'male' ? '/attached_assets/videos/lesson1_hi_male.mp4' :
-                          detectedGender === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
-                          '/attached_assets/videos/lesson1_hi_neutral.mp4';
+          // Find the appropriate video option based on detected gender
+          const options = currentStepData.content.options || [];
+          let selectedOption: any = null;
           
+          // Try to match gender-specific option
+          if (detectedGender === 'male') {
+            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'male');
+          } else if (detectedGender === 'female') {
+            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
+          }
+          
+          // Fallback to neutral if no gender match found
+          if (!selectedOption) {
+            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
+          }
+          
+          // Normalize video URL using robust helper
+          const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
+          
+          console.log('🎬 Selected option:', selectedOption?.label, 'videoUrl:', videoUrl);
           
           return {
             type: 'video_choice',
             videoUrl: videoUrl,
             prompt: currentStepData.content.prompt || '',
-            answerPrompt: "Reply: 'Hi!'",
-            expectedAnswers: ["Ciao!", "Ciao"],
+            answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
+            expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
             tier: 'free',
-            selectedGender: userData?.firstName ? detectGender(userData.firstName) : 'neutral'
+            selectedGender: detectedGender
           };
         }
         
@@ -269,7 +355,7 @@ export default function Lesson() {
           
           return {
             type: 'pro_video',
-            videoUrl: currentStepData.content.video_url || '',
+            videoUrl: normalizeAssetUrl(currentStepData.content.video_url || ''),
             prompt: currentStepData.content.prompt || '',
             answerPrompt: currentStepData.content.answer_prompt || '',
             expectedAnswers: currentStepData.content.expected_answers || [],
