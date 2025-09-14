@@ -388,7 +388,18 @@ export default function Lesson() {
           alternatives: [missingLetters.toLowerCase(), missingLetters.toUpperCase()]
         };
       } else if (currentStep === 4) {
-        // Step 4: Audio comprehension - use JSON step3 data
+        // Step 4: Check for new database lesson structure with video_choice
+        if (currentLesson.lesson.steps && currentLesson.lesson.steps.video_choice) {
+          const videoChoiceStep = currentLesson.lesson.steps.video_choice;
+          return {
+            type: 'video_choice',
+            stepType: 'video_choice',
+            prompt: videoChoiceStep.prompt || '',
+            options: videoChoiceStep.options || []
+          };
+        }
+        
+        // Step 4: Audio comprehension - use JSON step3 data (legacy format)
         const step3Data = currentLesson.lesson.step3;
         if (step3Data) {
           return {
