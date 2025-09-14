@@ -487,10 +487,7 @@ export default function Landing() {
                   </div>
                   
                   <ul className="space-y-3 mb-8 text-left">
-                    <li className="flex items-center gap-3">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Learn around your interests</span>
-                    </li>
+                    
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                       <span className="text-gray-600 text-sm">Multiple video & scenario based lessons per day</span>
