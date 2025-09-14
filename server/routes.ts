@@ -27,10 +27,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const videoUrlFields = ['video_url', 'videoUrl', 'videoSrc', 'src', 'url', 'sources', 'thumbnails', 'poster'];
     const sanitized = { ...obj };
     
-    // Remove all video URL fields
+    // Remove all video URL fields while preserving types
     videoUrlFields.forEach(field => {
-      if (sanitized[field]) {
-        sanitized[field] = '';
+      if (sanitized[field] !== undefined) {
+        const value = sanitized[field];
+        // Preserve types: arrays become empty arrays, objects become empty objects, strings become empty strings
+        if (Array.isArray(value)) {
+          sanitized[field] = [];
+        } else if (value && typeof value === 'object') {
+          sanitized[field] = {};
+        } else {
+          sanitized[field] = '';
+        }
       }
     });
     
@@ -58,24 +66,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Check if content requires pro tier access
-  const requiresProAccess = (content: any): boolean => {
-    if (!content) return false;
+  const requiresProAccess = (obj: any): boolean => {
+    if (!obj) return false;
     
-    // Check content.requiredTier
-    const contentTiers = normalizeTiers(content.requiredTier);
-    if (contentTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
+    // Check direct requiredTier (step-level)
+    const directTiers = normalizeTiers(obj.requiredTier);
+    if (directTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
       return true;
     }
     
-    // Check step-level requiredTier (for direct step objects)  
-    const stepTiers = normalizeTiers(content.requiredTier);
-    if (stepTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
-      return true;
+    // Check nested content.requiredTier (content-level)  
+    if (obj.content) {
+      const contentTiers = normalizeTiers(obj.content.requiredTier);
+      if (contentTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
+        return true;
+      }
     }
     
     // Check if any options require pro access (for video_choice steps)
-    if (content.options && Array.isArray(content.options)) {
-      return content.options.some((option: any) => requiresProAccess(option));
+    if (obj.options && Array.isArray(obj.options)) {
+      return obj.options.some((option: any) => requiresProAccess(option));
     }
     
     return false;
@@ -144,10 +154,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Handle lesson step properties (step1, step2, etc.)
       Object.keys(sanitizedLesson.lesson).forEach(key => {
         if (key.startsWith('step') && sanitizedLesson.lesson[key]) {
-          sanitizedLesson.lesson[key] = sanitizeStep({
-            content: sanitizedLesson.lesson[key],
-            stepType: sanitizedLesson.lesson[key].stepType
-          }).content;
+          // Preserve all step metadata including requiredTier for proper security checking
+          const originalStep = sanitizedLesson.lesson[key];
+          const sanitizedStep = sanitizeStep({
+            content: originalStep,
+            stepType: originalStep.stepType,
+            requiredTier: originalStep.requiredTier
+          });
+          sanitizedLesson.lesson[key] = sanitizedStep.content;
         }
       });
       
@@ -1591,6 +1605,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             lesson.content.note = content.note;
             allSteps.word_review = {
               type: 'word_review',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
               word: content.italian,
               translation: content.english,
               audio: content.audio,
@@ -1607,6 +1623,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             };
             allSteps.quick_check = {
               type: 'quick_check',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
               question: mcq.question,
               options: mcq.options,
               answer: mcq.answer
@@ -1645,6 +1663,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             allSteps.typing_practice = {
               type: 'type',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
               prompt: fillInPrompt,
               expected: missingLetters,
               alternatives: content.alternatives || []
@@ -1654,6 +1674,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const content = step.content as any;
             allSteps.listening_comprehension = {
               type: 'audio',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
               audioSentence: content.audioSentence,
               options: content.options,
               answer: content.answer
@@ -1663,7 +1685,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const content = step.content as any;
             allSteps.video_choice = {
               type: 'video_choice',
-              stepType: 'video_choice',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
               prompt: content.prompt,
               options: content.options
             };
@@ -1672,10 +1695,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const content = step.content as any;
             allSteps.pro_video = {
               type: 'pro_video',
-              stepType: 'pro_video',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier || content.requiredTier,
               video_url: content.video_url,
               prompt: content.prompt,
-              requiredTier: content.requiredTier,
               isRestricted: content.isRestricted || false
             };
           } else if (step.stepType === 'introduction') {
