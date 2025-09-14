@@ -1073,7 +1073,7 @@ export default function Lesson() {
                         className="w-full max-w-md rounded-lg shadow-lg"
                         data-testid="pro-lesson-video"
                       >
-                        <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                        <source src={stepData.videoUrl} type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
                     </div>
@@ -1100,7 +1100,7 @@ export default function Lesson() {
                         className="w-full max-w-md rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
-                        <source src={`/attached_assets/${stepData.videoUrl}`} type="video/mp4" />
+                        <source src={stepData.videoUrl} type="video/mp4" />
                       </video>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
