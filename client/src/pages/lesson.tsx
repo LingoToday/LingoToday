@@ -1155,47 +1155,6 @@ export default function Lesson() {
               </>
             )}
 
-            {stepData && stepData.type === 'video_choice' && (
-              <>
-                {/* Old complex video choice logic - will be bypassed by simple logic above */}
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
-                  <div className="text-center">
-                    <div className="text-3xl mb-4">🎬</div>
-                    <h2 className="text-2xl font-bold text-green-700 mb-4">Watch and Respond</h2>
-                    <p className="text-green-600 text-lg mb-6">{stepData.prompt}</p>
-                  </div>
-                </div>
-
-                {/* Video Player */}
-                <div className="flex justify-center mb-6">
-                  <video 
-                    controls 
-                    autoPlay
-                    muted
-                    className="w-96 h-[28rem] rounded-lg shadow-lg object-cover"
-                    style={{ aspectRatio: '9/16' }}
-                    data-testid="lesson-step-video"
-                  >
-                    <source src={stepData.videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-
-                {/* Response Input */}
-                <div className="mb-4">
-                  <p className="text-gray-700 mb-2 font-medium">{stepData.answerPrompt}</p>
-                  <input
-                    type="text"
-                    value={selectedAnswer}
-                    onChange={(e) => setSelectedAnswer(e.target.value)}
-                    placeholder="Type your response in Italian..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    data-testid="video-response-input"
-                    disabled={showResult}
-                  />
-                </div>
-              </>
-            )}
 
             {stepData && stepData.type === 'pro_video' && (
               <>
