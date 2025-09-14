@@ -1104,8 +1104,8 @@ export default function Lesson() {
               </>
             )}
 
-            {/* Simple Step 4 Video - Gender-based like intro videos */}
-            {currentStep === 4 && lesson && lesson.lesson?.step4?.type === 'video_choice' && (
+            {/* Simple Step 4 Video - Hardcoded for lesson1 like intro videos */}
+            {currentStep === 4 && lesson && lessonId === 'lesson1' && courseId === 'course1' && (
               <>
                 <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
                   <div className="text-center">
