@@ -1143,7 +1143,7 @@ export default function Lesson() {
                         data-testid="input-answer"
                       />
                       <Button 
-                        onClick={handleAnswerSubmit} 
+                        onClick={handleStepSubmit} 
                         className="max-w-md mx-auto"
                         data-testid="button-submit-answer"
                       >
