@@ -623,11 +623,37 @@ export default function Lesson() {
   };
 
   const handleStepSubmit = () => {
-    if (!stepData) return;
-
     let correct = false;
     
-    if (stepData.type === 'irl_video') {
+    // Special case for Step 4 Video (lesson1 course1) - read validation from JSON
+    if (currentStep === 4 && lessonId === 'lesson1' && courseId === 'course1' && lesson) {
+      const userAnswer = normalizeText(selectedAnswer);
+      // Get expected answers from step4 JSON data
+      const step4Data = lesson.lesson.step4;
+      let expectedAnswers = [];
+      
+      if (step4Data && step4Data.options) {
+        // Get expected answers from the first option (they're all the same)
+        expectedAnswers = step4Data.options[0]?.expected_answers || [];
+      }
+      
+      console.log('🎬 Step 4 validation:', {
+        userAnswer,
+        expectedAnswers,
+        step4Data: step4Data ? 'found' : 'missing'
+      });
+      
+      correct = expectedAnswers.some((expected: string) => {
+        const normalizedExpected = normalizeText(expected);
+        return userAnswer === normalizedExpected || 
+               normalizedExpected.includes(userAnswer) ||
+               userAnswer.includes(normalizedExpected.split(' ')[0]);
+      });
+    }
+    else if (!stepData) {
+      return;
+    }
+    else if (stepData.type === 'irl_video') {
       // Handle IRL video lesson text input validation
       const userAnswer = normalizeText(selectedAnswer);
       const expectedAnswers = stepData.expectedAnswers || [];
@@ -1105,6 +1131,56 @@ export default function Lesson() {
             )}
 
 
+            {/* Step 4 Video - Free for lesson1, uses JSON validation */}
+            {currentStep === 4 && lesson && lessonId === 'lesson1' && courseId === 'course1' && (
+              <>
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <h3 className="text-xl font-semibold text-green-800 mb-4" data-testid="text-prompt">
+                      Watch and reply appropriately: 'Hi / Bye'.
+                    </h3>
+                    
+                    <video
+                      controls
+                      playsInline
+                      muted
+                      autoPlay
+                      className="w-96 h-[28rem] rounded-lg shadow-lg mx-auto mb-6"
+                      data-testid="lesson-step4-video"
+                    >
+                      <source src={
+                        user?.firstName && detectGender(user.firstName) === 'male' ? '/attached_assets/videos/lesson1_hi_male.mp4' :
+                        user?.firstName && detectGender(user.firstName) === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
+                        '/attached_assets/videos/lesson1_hi_neutral.mp4'
+                      } type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+
+                    {/* Answer Input */}
+                    <div className="flex flex-col space-y-4">
+                      <p className="text-green-700 font-medium" data-testid="text-answer-prompt">
+                        Reply: 'Hi!'
+                      </p>
+                      <input
+                        type="text"
+                        value={selectedAnswer}
+                        onChange={(e) => setSelectedAnswer(e.target.value)}
+                        placeholder="Type your answer here..."
+                        className="px-4 py-2 border rounded-lg text-center max-w-md mx-auto"
+                        data-testid="input-answer"
+                      />
+                      <Button 
+                        onClick={handleStepSubmit} 
+                        className="max-w-md mx-auto"
+                        data-testid="button-submit-answer"
+                      >
+                        Submit Answer
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             {stepData && stepData.type === 'pro_video' && (
               <>
