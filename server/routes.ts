@@ -20,49 +20,150 @@ import fs from "fs";
 import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Helper function to sanitize lesson content based on user tier
-  const sanitizeLessonForTier = (userTier: string, lessonSteps: any[]): any[] => {
+  // Comprehensive helper to remove all video/media URLs from an object
+  const stripVideoUrls = (obj: any): any => {
+    if (!obj || typeof obj !== 'object') return obj;
+    
+    const videoUrlFields = ['video_url', 'videoUrl', 'videoSrc', 'src', 'url', 'sources', 'thumbnails', 'poster'];
+    const sanitized = { ...obj };
+    
+    // Remove all video URL fields
+    videoUrlFields.forEach(field => {
+      if (sanitized[field]) {
+        sanitized[field] = '';
+      }
+    });
+    
+    // Add restriction flag
+    sanitized.isRestricted = true;
+    
+    // Recursively sanitize nested objects and arrays
+    Object.keys(sanitized).forEach(key => {
+      if (Array.isArray(sanitized[key])) {
+        sanitized[key] = sanitized[key].map((item: any) => stripVideoUrls(item));
+      } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
+        sanitized[key] = stripVideoUrls(sanitized[key]);
+      }
+    });
+    
+    return sanitized;
+  };
+
+  // Helper to normalize tier values to array format
+  const normalizeTiers = (value: any): string[] => {
+    if (!value) return [];
+    if (typeof value === 'string') return [value];
+    if (Array.isArray(value)) return value;
+    return [];
+  };
+
+  // Check if content requires pro tier access
+  const requiresProAccess = (content: any): boolean => {
+    if (!content) return false;
+    
+    // Check content.requiredTier
+    const contentTiers = normalizeTiers(content.requiredTier);
+    if (contentTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
+      return true;
+    }
+    
+    // Check step-level requiredTier (for direct step objects)  
+    const stepTiers = normalizeTiers(content.requiredTier);
+    if (stepTiers.some(tier => tier === 'pro' || tier === 'pro-monthly' || tier === 'pro-yearly')) {
+      return true;
+    }
+    
+    // Check if any options require pro access (for video_choice steps)
+    if (content.options && Array.isArray(content.options)) {
+      return content.options.some((option: any) => requiresProAccess(option));
+    }
+    
+    return false;
+  };
+
+  // Comprehensive sanitization function for any lesson data
+  const sanitizeResponse = (userTier: string, payload: any): any => {
+    if (!payload) return payload;
+    
     const isProUser = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
     
-    return lessonSteps.map(step => {
-      if (step.stepType === 'pro_video' && !isProUser) {
-        // Remove video URL for non-pro users to prevent unauthorized access
+    // Helper to sanitize a single step
+    const sanitizeStep = (step: any): any => {
+      if (!step) return step;
+      
+      // Check if this step or its content requires pro access
+      const stepRequiresPro = step.stepType === 'pro_video' || 
+                              requiresProAccess(step.content) ||
+                              requiresProAccess(step);
+      
+      if (stepRequiresPro && !isProUser) {
+        return {
+          ...step,
+          content: stripVideoUrls(step.content || {}),
+          // Preserve tier requirements for frontend to show upgrade prompt
+          requiredTier: step.content?.requiredTier || step.requiredTier || ['pro']
+        };
+      }
+      
+      // For video_choice steps, sanitize individual options that require pro
+      if (step.stepType === 'video_choice' && step.content?.options) {
+        const sanitizedOptions = step.content.options.map((option: any) => {
+          if (requiresProAccess(option) && !isProUser) {
+            return stripVideoUrls(option);
+          }
+          return option;
+        });
+        
         return {
           ...step,
           content: {
-            ...(step.content as any),
-            video_url: '', // Remove actual video URL
-            isRestricted: true, // Flag for frontend to show upgrade prompt
-            requiredTier: (step.content as any)?.requiredTier || []
+            ...step.content,
+            options: sanitizedOptions
           }
         };
       }
+      
       return step;
-    });
-  };
-
-  // Helper function to sanitize step content when steps are in key-value format (step1, step2, etc.)
-  const sanitizeLessonDataForTier = (userTier: string, lessonData: any): any => {
-    const isProUser = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
-    const sanitizedData = { ...lessonData };
+    };
     
-    // Check each property that might be a step
-    Object.keys(sanitizedData).forEach(key => {
-      if (key.startsWith('step') && sanitizedData[key]) {
-        const stepContent = sanitizedData[key];
-        // Check if this is a pro_video step (assuming stepType might be in the content)
-        if (stepContent.stepType === 'pro_video' && !isProUser) {
-          sanitizedData[key] = {
-            ...stepContent,
-            video_url: '', // Remove actual video URL
-            isRestricted: true, // Flag for frontend to show upgrade prompt
-            requiredTier: stepContent.requiredTier || []
-          };
-        }
+    // Handle different payload structures
+    if (Array.isArray(payload)) {
+      // Array of steps
+      return payload.map(sanitizeStep);
+    }
+    
+    if (payload.lesson) {
+      // Lesson with nested data
+      const sanitizedLesson = { ...payload };
+      
+      // Handle lesson.steps array
+      if (sanitizedLesson.lesson.steps && Array.isArray(sanitizedLesson.lesson.steps)) {
+        sanitizedLesson.lesson.steps = sanitizedLesson.lesson.steps.map(sanitizeStep);
       }
-    });
+      
+      // Handle lesson step properties (step1, step2, etc.)
+      Object.keys(sanitizedLesson.lesson).forEach(key => {
+        if (key.startsWith('step') && sanitizedLesson.lesson[key]) {
+          sanitizedLesson.lesson[key] = sanitizeStep({
+            content: sanitizedLesson.lesson[key],
+            stepType: sanitizedLesson.lesson[key].stepType
+          }).content;
+        }
+      });
+      
+      return sanitizedLesson;
+    }
     
-    return sanitizedData;
+    if (payload.steps) {
+      // Direct steps property
+      return {
+        ...payload,
+        steps: payload.steps.map(sanitizeStep)
+      };
+    }
+    
+    // Handle as single step
+    return sanitizeStep(payload);
   };
 
   // Setup Replit authentication system
@@ -624,28 +725,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         lesson.steps.forEach(step => {
-          let stepContent: any = step.content;
-          
-          // Security: Filter pro video content for non-pro users
-          if (step.stepType === 'pro_video' && !isProUser) {
-            // Remove video URL for non-pro users to prevent unauthorized access
-            stepContent = {
-              ...(step.content as any),
-              video_url: '', // Remove actual video URL
-              isRestricted: true, // Flag for frontend to show upgrade prompt
-              requiredTier: (step.content as any)?.requiredTier || []
-            };
-          }
-          
-          lessonData[`step${step.stepNumber}`] = stepContent;
+          lessonData[`step${step.stepNumber}`] = step.content;
         });
+        
+        // Apply comprehensive security sanitization
+        const sanitizedLessonData = sanitizeResponse(userTier, { lesson: lessonData });
         
         res.json({
           courseId: nextLesson.courseId,
           courseTitle: course.title,
           courseDescription: course.description,
           lessonId: nextLesson.lessonId,
-          lesson: lessonData
+          lesson: sanitizedLessonData.lesson
         });
       } else {
         res.status(404).json({ message: "Language not supported for course structure" });
@@ -1173,7 +1264,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (withSteps) {
         lesson = await storage.getLessonWithSteps(id);
         
-        // Apply security sanitization for steps with pro content
+        // Apply comprehensive security sanitization for pro content
         if (lesson && lesson.steps) {
           const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
           let userTier = 'free';
@@ -1182,8 +1273,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userTier = user?.priceTier || 'free';
           }
           
-          // Sanitize lesson steps to protect pro content
-          lesson.steps = sanitizeLessonForTier(userTier, lesson.steps);
+          // Apply comprehensive sanitization to protect pro content
+          lesson = sanitizeResponse(userTier, lesson);
         }
       } else {
         lesson = await storage.getLesson(id);
@@ -1222,7 +1313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const lessonId = parseInt(req.params.lessonId);
       const steps = await storage.getLessonSteps(lessonId);
       
-      // Apply security sanitization to protect pro content
+      // Apply comprehensive security sanitization to protect pro content
       const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
       let userTier = 'free';
       if (userId) {
@@ -1230,8 +1321,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userTier = user?.priceTier || 'free';
       }
       
-      // Sanitize steps to protect pro content
-      const sanitizedSteps = sanitizeLessonForTier(userTier, steps);
+      // Apply comprehensive sanitization to protect pro content
+      const sanitizedSteps = sanitizeResponse(userTier, steps);
       res.json(sanitizedSteps);
     } catch (error) {
       console.error("Error fetching lesson steps:", error);
@@ -1476,9 +1567,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userTier = user?.priceTier || 'free';
         }
         
-        // Apply sanitization to protect pro content
-        const sanitizedSteps = sanitizeLessonForTier(userTier, lessonWithSteps.steps || []);
-
         // Convert the database steps to the expected frontend format
         const lesson = {
           title: lessonWithSteps.title,
@@ -1491,9 +1579,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           quiz: null as any
         };
 
-        // Process the sanitized steps to build the lesson data
+        // Process the steps to build the lesson data
         const allSteps: any = {};
-        for (const step of sanitizedSteps) {
+        for (const step of lessonWithSteps.steps) {
           if (step.stepType === 'word_review') {
             // New 4-step structure: word review step
             const content = step.content as any;
@@ -1619,13 +1707,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const courses = await storage.getCoursesWithRelations(languageRecord?.id, skillLevelRec?.id);
         const course = courses.find(c => c.courseNumber === courseNumber);
 
-        res.json({
+        // Apply comprehensive security sanitization
+        const responsePayload = {
           courseId,
           courseTitle: course?.title || 'Course',
           courseDescription: course?.description || '',
           lessonId,
           lesson
-        });
+        };
+        const sanitizedResponse = sanitizeResponse(userTier, responsePayload);
+
+        res.json(sanitizedResponse);
       } else {
         // Try to use database for other languages too
         let languageCode = language;
@@ -1657,10 +1749,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               userTier = user?.priceTier || 'free';
             }
             
-            // Apply sanitization to protect pro content
-            const sanitizedSteps = sanitizeLessonForTier(userTier, dbLesson.steps || []);
-            
-            sanitizedSteps.forEach(step => {
+            // Convert steps to lesson format
+            dbLesson.steps?.forEach(step => {
               allSteps[`step${step.stepNumber}`] = step.content;
             });
             
@@ -1674,13 +1764,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const courses = await storage.getCoursesWithRelations(languageRecord?.id, skillLevel?.id);
             const course = courses.find(c => c.courseNumber === courseNumber);
             
-            return res.json({
+            // Apply comprehensive security sanitization
+            const responsePayload = {
               courseId,
               courseTitle: course?.title || 'Course',
               courseDescription: course?.description || '',
               lessonId,
               lesson
-            });
+            };
+            const sanitizedResponse = sanitizeResponse(userTier, responsePayload);
+            
+            return res.json(sanitizedResponse);
           }
         }
         
