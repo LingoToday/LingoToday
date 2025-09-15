@@ -30,11 +30,16 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     
     while (attempts < maxAttempts) {
       try {
-        const response = await apiRequest("GET", "/api/subscription-status");
-        const data = await response.json();
+        const response = await fetch("/api/subscription-status", {
+          method: "GET",
+          cache: "no-store" // Prevent 304 responses that cause JSON parsing issues
+        });
         
-        if (data.isProUser) {
-          return true; // Webhook processed successfully
+        if (response.status === 200) {
+          const data = await response.json();
+          if (data.isProUser) {
+            return true; // Webhook processed successfully
+          }
         }
         
         // Wait 5 seconds before next check
@@ -61,11 +66,21 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setProcessingStage('payment');
 
     try {
+      // Submit payment element validation first
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        toast({
+          title: "Payment Failed",
+          description: submitError.message,
+          variant: "destructive",
+        });
+        setProcessingStage('idle');
+        return;
+      }
+
       const { error } = await stripe.confirmPayment({
         elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/dashboard`,
-        },
+        redirect: 'if_required' // Stay in SPA, don't redirect
       });
 
       if (error) {
@@ -143,12 +158,34 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
         }
       }
     } catch (err) {
+      // Don't treat exceptions as hard failures - start processing flow instead
+      console.error('Payment confirmation threw exception:', err);
+      
+      setProcessingStage('activating');
       toast({
-        title: "Payment Error", 
-        description: "An unexpected error occurred during payment processing.",
-        variant: "destructive",
+        title: "Processing Payment",
+        description: "Confirming your payment, please wait...",
+        className: "border-orange-200 bg-orange-50 text-orange-800"
       });
-      setProcessingStage('idle');
+
+      // Poll for webhook confirmation even after exception
+      const webhookSuccess = await pollSubscriptionStatus();
+      
+      if (webhookSuccess) {
+        await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+        toast({
+          title: "Welcome to Pro Learner!",
+          description: "Your subscription is now active. You have access to all premium videos.",
+        });
+        onSuccess();
+      } else {
+        toast({
+          title: "Payment Status Unclear",
+          description: "We're unable to confirm your payment status right now. Please check your account or contact support if needed.",
+          variant: "destructive",
+        });
+        setProcessingStage('idle');
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -192,7 +229,7 @@ export default function Subscribe() {
 
   useEffect(() => {
     // If user is already pro, redirect to dashboard
-    if (subscriptionStatus?.isProUser) {
+    if (subscriptionStatus && subscriptionStatus.isProUser) {
       toast({
         title: "Already Subscribed",
         description: "You're already a Pro Learner! Redirecting to dashboard...",
@@ -223,7 +260,7 @@ export default function Subscribe() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [subscriptionStatus?.isProUser, setLocation, toast]);
+  }, [subscriptionStatus, setLocation, toast]);
 
   const handleSuccess = () => {
     setLocation('/dashboard');
