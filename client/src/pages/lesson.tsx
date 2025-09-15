@@ -1309,7 +1309,7 @@ export default function Lesson() {
                     <div className="flex justify-center mb-6">
                       <video 
                         controls 
-                        className="w-full max-w-md rounded-lg shadow-lg"
+                        className="w-80 h-52 rounded-lg shadow-lg object-contain"
                         data-testid="pro-lesson-video"
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
@@ -1339,7 +1339,7 @@ export default function Lesson() {
                         autoPlay
                         muted
                         loop
-                        className="w-full max-w-sm rounded-lg shadow-lg blur-md opacity-50"
+                        className="w-72 h-48 rounded-lg shadow-lg blur-md opacity-50 object-contain"
                         data-testid="blurred-pro-video"
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
