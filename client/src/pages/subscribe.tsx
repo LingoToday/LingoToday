@@ -222,7 +222,7 @@ export default function Subscribe() {
   const { toast } = useToast();
 
   // Check if user is already a pro member
-  const { data: subscriptionStatus } = useQuery({
+  const { data: subscriptionStatus } = useQuery<{isProUser: boolean; status: string}>({
     queryKey: ['/api/subscription-status'],
     staleTime: 30000, // 30 seconds
   });
