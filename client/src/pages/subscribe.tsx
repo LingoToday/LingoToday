@@ -185,9 +185,6 @@ export default function Subscribe() {
           <CardTitle className="text-2xl font-bold text-gray-800">
             Upgrade to Pro Learner
           </CardTitle>
-          <CardDescription className="text-lg">
-            Unlock premium video lessons with native speakers
-          </CardDescription>
         </CardHeader>
         
         <CardContent className="space-y-6">
