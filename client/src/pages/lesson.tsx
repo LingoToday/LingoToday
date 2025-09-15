@@ -1290,7 +1290,7 @@ export default function Lesson() {
                 {/* Pro Video Step */}
                 <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-6 mb-6">
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold text-yellow-700 mb-4">Pro Learner Video Lesson</h2>
+                    <h2 className="text-2xl font-bold mb-4 text-[#000000]">Pro Learner Video Lesson</h2>
                     <p className="text-yellow-600 text-lg mb-6">{stepData.prompt}</p>
                   </div>
                 </div>
@@ -1337,9 +1337,19 @@ export default function Lesson() {
                         <source src={stepData.videoUrl} type="video/mp4" />
                       </video>
                       <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-40 rounded-lg">
-                        <div className="bg-black bg-opacity-70 text-white px-6 py-3 rounded-lg font-semibold">
-                          🔒 Pro Content
-                        </div>
+                        <Button 
+                          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
+                          data-testid="upgrade-to-pro-button"
+                          onClick={() => {
+                            // TODO: Open payment modal when Stripe is set up
+                            toast({
+                              title: "Upgrade Available",
+                              description: "Payment system will be available soon. Please check back later!",
+                            });
+                          }}
+                        >
+                          ⭐ Upgrade to Pro - Unlock All Videos
+                        </Button>
                       </div>
                     </div>
                     
