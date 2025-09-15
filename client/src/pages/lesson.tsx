@@ -765,22 +765,8 @@ export default function Lesson() {
       const userAnswer = normalizeText(selectedAnswer);
       const expectedAnswers = stepData.expectedAnswers || [];
       
-      console.log('🔍 Video choice validation details:', { 
-        selectedAnswer, 
-        userAnswer, 
-        expectedAnswers,
-        stepDataType: stepData.type
-      });
-      
       correct = expectedAnswers.some((expected: string) => {
         const normalizedExpected = normalizeText(expected);
-        console.log('🔍 Checking answer:', { 
-          expected, 
-          normalizedExpected,
-          exactMatch: userAnswer === normalizedExpected,
-          includesUser: normalizedExpected.includes(userAnswer),
-          userIncludesFirst: userAnswer.includes(normalizedExpected.split(' ')[0])
-        });
         return userAnswer === normalizedExpected || 
                normalizedExpected.includes(userAnswer) ||
                userAnswer.includes(normalizedExpected.split(' ')[0]);
@@ -1373,6 +1359,85 @@ export default function Lesson() {
                     </Button>
                   </div>
                 )}
+              </>
+            )}
+
+            {stepData && stepData.type === 'video_choice' && (
+              <>
+                {/* Video Choice Step */}
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <h2 className="font-bold mb-4 text-[#000000] text-[18px]">Video Lesson</h2>
+                    <p className="text-green-600 text-lg mb-6">{stepData.prompt}</p>
+                  </div>
+                </div>
+
+                {/* Video Player */}
+                <div className="flex justify-center mb-6">
+                  <video 
+                    controls 
+                    autoPlay
+                    muted
+                    className="w-72 h-[28rem] rounded-lg shadow-lg"
+                    data-testid="video-choice-video"
+                  >
+                    <source src={stepData.videoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                {/* Response Input */}
+                <div className="mb-4">
+                  <p className="text-gray-700 mb-2 font-medium text-center">{stepData.answerPrompt}</p>
+                  <div className="flex flex-col items-center space-y-4">
+                    <input
+                      type="text"
+                      value={selectedAnswer}
+                      onChange={(e) => setSelectedAnswer(e.target.value)}
+                      placeholder="Type your response in Italian..."
+                      className="w-full max-w-md p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-center"
+                      data-testid="video-choice-response-input"
+                      disabled={showResult}
+                    />
+                    
+                    {!showResult ? (
+                      <Button 
+                        onClick={handleStepSubmit}
+                        disabled={!selectedAnswer || !selectedAnswer.trim()}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                        data-testid="video-choice-submit-button"
+                      >
+                        Submit Answer
+                      </Button>
+                    ) : (
+                      <div className={`p-4 rounded-lg mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                        <div className="flex items-center justify-center">
+                          <Check className={`h-5 w-5 mr-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}`} />
+                          <span className={`font-medium ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                            {isCorrect ? 'Correct! Well done!' : 'Incorrect'}
+                          </span>
+                        </div>
+                        {!isCorrect && (
+                          <p className="mt-2 text-sm text-red-700 text-center">
+                            The correct answer is: <strong>{stepData.expectedAnswers?.[0] || 'Ciao!'}</strong>
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    
+                    {showResult && (
+                      <Button 
+                        onClick={handleNextStep}
+                        disabled={completeLessonMutation.isPending}
+                        className={`px-8 py-3 text-white ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                        data-testid="video-choice-next-button"
+                      >
+                        {completeLessonMutation.isPending ? 'Saving Progress...' : 
+                         currentStep < 4 ? `Next Step (${currentStep + 1}/4)` : 'Complete Lesson'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </>
             )}
 
