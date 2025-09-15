@@ -1362,17 +1362,18 @@ export default function Lesson() {
                     
                     
                     
-                    {/* Allow skipping for now */}
+                    {/* Skip video and complete lesson */}
                     <Button 
                       variant="outline"
                       onClick={() => {
-                        setSelectedAnswer('skip');
-                        handleStepSubmit();
+                        // Complete the lesson with a reasonable score (75% since they're skipping the video)
+                        completeLessonMutation.mutate(75);
                       }}
+                      disabled={completeLessonMutation.isPending}
                       className="mt-4"
                       data-testid="skip-pro-video-button"
                     >
-                      Skip This Video (Continue with Free Content)
+                      {completeLessonMutation.isPending ? 'Completing Lesson...' : 'Skip This Video (Continue with Free Content)'}
                     </Button>
                   </div>
                 )}
