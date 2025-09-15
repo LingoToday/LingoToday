@@ -1296,9 +1296,9 @@ export default function Lesson() {
             {stepData && stepData.type === 'pro_video' && (
               <>
                 {/* Pro Video Step */}
-                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-6 mb-6">
+                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-4 mb-6">
                   <div className="text-center">
-                    <p className="text-lg mb-6 font-semibold text-[#000000]">You meet a new friend on the street.</p>
+                    <p className="text-lg mb-6 font-semibold text-[#000000]">{stepData.prompt}</p>
                   </div>
                 </div>
 
