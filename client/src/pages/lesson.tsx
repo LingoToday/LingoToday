@@ -1341,11 +1341,7 @@ export default function Lesson() {
                           className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
                           data-testid="upgrade-to-pro-button"
                           onClick={() => {
-                            // TODO: Open payment modal when Stripe is set up
-                            toast({
-                              title: "Upgrade Available",
-                              description: "Payment system will be available soon. Please check back later!",
-                            });
+                            setLocation('/subscribe');
                           }}
                         >
                           ⭐ Upgrade to Pro - Unlock All Videos
@@ -1360,13 +1356,9 @@ export default function Lesson() {
                       </p>
                       <Button 
                         className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
-                        data-testid="upgrade-to-pro-button"
+                        data-testid="upgrade-to-pro-main-button"
                         onClick={() => {
-                          // TODO: Open payment modal when Stripe is set up
-                          toast({
-                            title: "Upgrade Available",
-                            description: "Payment system will be available soon. Please check back later!",
-                          });
+                          setLocation('/subscribe');
                         }}
                       >
                         ⭐ Upgrade to Pro - Unlock All Videos
