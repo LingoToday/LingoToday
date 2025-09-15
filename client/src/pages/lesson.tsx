@@ -1355,7 +1355,7 @@ export default function Lesson() {
                             setLocation('/subscribe');
                           }}
                         >
-                          ⭐ Upgrade to Pro - Unlock All Videos
+                          Upgrade & Unlock All Videos
                         </Button>
                       </div>
                     </div>
