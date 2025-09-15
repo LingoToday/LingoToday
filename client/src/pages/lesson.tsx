@@ -1552,7 +1552,7 @@ export default function Lesson() {
                    stepData.type === 'irl_video' ? '' :
                    stepData.type === 'learn' ? 'Quick Check' :
                    stepData.type === 'type' ? 'Fill in the Blank' :
-                   'Listen and Choose'}
+                   ''}
                 </h3>
 
                 {stepData.type === 'review_mcq' && (
