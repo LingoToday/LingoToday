@@ -1360,21 +1360,7 @@ export default function Lesson() {
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">Upgrade to Pro Learner</h3>
-                      <p className="text-gray-600 mb-4">
-                        Unlock premium video lessons with native speakers to accelerate your learning!
-                      </p>
-                      <Button 
-                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
-                        data-testid="upgrade-to-pro-main-button"
-                        onClick={() => {
-                          setLocation('/subscribe');
-                        }}
-                      >
-                        ⭐ Upgrade to Pro - Unlock All Videos
-                      </Button>
-                    </div>
+                    
                     
                     {/* Allow skipping for now */}
                     <Button 
