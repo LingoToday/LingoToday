@@ -16,7 +16,7 @@ export default function Desktop() {
   
   const prices = {
     GBP: {
-      monthly: '£3.99',
+      monthly: '£2.49',
       yearly: '£14.99',
       savings: '£33'
     },

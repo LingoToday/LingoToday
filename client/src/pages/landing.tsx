@@ -16,7 +16,7 @@ export default function Landing() {
   const prices = {
     GBP: {
       pro: {
-        monthly: '£4.99',
+        monthly: '£2.49',
         yearly: '£39.99'
       },
       plus: {

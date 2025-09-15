@@ -2896,7 +2896,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           price_data: {
             currency: 'gbp',
             product: 'prod_T3gAKNxpv7izg3', // Your existing product ID
-            unit_amount: 499, // £4.99 per month in pence
+            unit_amount: 249, // £2.49 per month in pence
             recurring: {
               interval: 'month'
             }

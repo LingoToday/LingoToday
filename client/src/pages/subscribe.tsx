@@ -81,7 +81,7 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
           </>
         ) : (
           <>
-            Subscribe for £4.99/month
+            Subscribe for £2.49/month
           </>
         )}
       </Button>
@@ -213,7 +213,7 @@ export default function Subscribe() {
 
           {/* Pricing */}
           <div className="text-center py-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
-            <div className="text-3xl font-bold text-gray-800">£4.99</div>
+            <div className="text-3xl font-bold text-gray-800">£2.49</div>
             <div className="text-sm text-gray-600">per month</div>
           </div>
 
