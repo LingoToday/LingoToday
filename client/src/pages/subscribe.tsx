@@ -200,10 +200,6 @@ export default function Subscribe() {
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-              Native speaker pronunciation guides
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
               Cancel anytime
             </div>
           </div>
