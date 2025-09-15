@@ -2894,11 +2894,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customer: customerId,
         items: [{
           price_data: {
-            currency: 'usd',
-            product: {
-              name: 'Pro Learner Subscription',
-            },
-            unit_amount: 999, // $9.99 per month
+            currency: 'gbp',
+            product: 'prod_T3gAKNxpv7izg3', // Your existing product ID
+            unit_amount: 499, // £4.99 per month in pence
             recurring: {
               interval: 'month'
             }
