@@ -2847,6 +2847,199 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe webhook endpoint - Use raw body parser for webhook signature verification
+  app.post('/api/webhooks/stripe', 
+    (req, res, next) => {
+      if (req.headers['content-type'] === 'application/json') {
+        // Parse raw body for webhook signature verification
+        let body = '';
+        req.on('data', chunk => {
+          body += chunk.toString();
+        });
+        req.on('end', () => {
+          (req as any).rawBody = body;
+          next();
+        });
+      } else {
+        next();
+      }
+    },
+    async (req, res) => {
+      const sig = req.headers['stripe-signature'];
+      const rawBody = (req as any).rawBody;
+
+      try {
+        // Verify webhook signature - critical for security
+        let event;
+        try {
+          if (!process.env.STRIPE_WEBHOOK_SECRET) {
+            console.warn('⚠️ STRIPE_WEBHOOK_SECRET not configured - webhook verification disabled');
+            event = JSON.parse(rawBody);
+          } else {
+            event = stripe.webhooks.constructEvent(rawBody, sig as string, process.env.STRIPE_WEBHOOK_SECRET);
+          }
+        } catch (err: any) {
+          console.error('❌ Webhook signature verification failed:', err.message);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+        }
+
+        console.log(`🎣 Received verified Stripe webhook: ${event.type}`);
+
+        // Helper function to find user by customer ID efficiently
+        const findUserByCustomerId = async (customerId: string) => {
+          try {
+            const allUsers = await storage.getAllUsers();
+            return allUsers.find(u => u.stripeCustomerId === customerId);
+          } catch (error) {
+            console.error('Error finding user by customer ID:', error);
+            return null;
+          }
+        };
+
+        // Helper function to update user subscription status
+        const updateUserTier = async (user: any, subscription: any) => {
+          try {
+            // Update user's subscription ID if needed
+            if (subscription.id && user.stripeSubscriptionId !== subscription.id) {
+              await storage.updateUserStripeSubscriptionId(user.id, subscription.id);
+              console.log(`📝 Updated subscription ID for user ${user.id}: ${subscription.id}`);
+            }
+            
+            // Determine tier based on subscription status
+            const activeStatuses = ['active', 'trialing'];
+            const inactiveStatuses = ['canceled', 'cancelled', 'unpaid', 'past_due', 'incomplete_expired'];
+            
+            if (activeStatuses.includes(subscription.status)) {
+              await storage.updateUserPriceTier(user.id, 'pro-monthly');
+              console.log(`✅ User ${user.id} upgraded to pro-monthly (status: ${subscription.status})`);
+            } else if (inactiveStatuses.includes(subscription.status)) {
+              await storage.updateUserPriceTier(user.id, 'n/a');
+              console.log(`❌ User ${user.id} downgraded to free tier (status: ${subscription.status})`);
+            } else {
+              console.log(`ℹ️ No tier change for user ${user.id} with status: ${subscription.status}`);
+            }
+          } catch (error) {
+            console.error(`Error updating user ${user.id} tier:`, error);
+          }
+        };
+
+        switch (event.type) {
+          case 'checkout.session.completed': {
+            const session = event.data.object;
+            console.log(`💳 Checkout session completed: ${session.id}`);
+            
+            // Handle subscription checkouts
+            if (session.mode === 'subscription' && session.customer && session.subscription) {
+              const user = await findUserByCustomerId(session.customer as string);
+              
+              if (user) {
+                // Retrieve the full subscription object from Stripe
+                try {
+                  const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+                  await updateUserTier(user, subscription);
+                  console.log(`✅ Processed checkout.session.completed for user ${user.id}`);
+                } catch (error) {
+                  console.error('Error retrieving subscription from checkout session:', error);
+                }
+              } else {
+                console.warn(`⚠️ No user found for customer ${session.customer} in checkout.session.completed`);
+              }
+            }
+            break;
+          }
+
+          case 'customer.subscription.created':
+          case 'customer.subscription.updated': {
+            const subscription = event.data.object;
+            console.log(`🔄 Subscription ${event.type}: ${subscription.id} (status: ${subscription.status})`);
+            
+            const user = await findUserByCustomerId(subscription.customer as string);
+            
+            if (user) {
+              await updateUserTier(user, subscription);
+              console.log(`✅ Processed ${event.type} for user ${user.id}`);
+            } else {
+              console.warn(`⚠️ No user found for customer ${subscription.customer} in ${event.type}`);
+            }
+            break;
+          }
+
+          case 'customer.subscription.deleted': {
+            const subscription = event.data.object;
+            console.log(`❌ Subscription deleted: ${subscription.id}`);
+            
+            const user = await findUserByCustomerId(subscription.customer as string);
+            
+            if (user) {
+              await storage.updateUserPriceTier(user.id, 'n/a');
+              console.log(`✅ User ${user.id} downgraded to free tier (subscription deleted)`);
+            } else {
+              console.warn(`⚠️ No user found for customer ${subscription.customer} in subscription.deleted`);
+            }
+            break;
+          }
+
+          case 'invoice.payment_succeeded': {
+            const invoice = event.data.object;
+            console.log(`💰 Invoice payment succeeded: ${invoice.id}`);
+            
+            // Handle subscription invoice payments
+            if (invoice.subscription && invoice.customer) {
+              const user = await findUserByCustomerId(invoice.customer as string);
+              
+              if (user) {
+                try {
+                  // Retrieve the subscription to get current status
+                  const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+                  await updateUserTier(user, subscription);
+                  console.log(`✅ Processed invoice.payment_succeeded for user ${user.id}`);
+                } catch (error) {
+                  console.error('Error retrieving subscription from invoice:', error);
+                }
+              } else {
+                console.warn(`⚠️ No user found for customer ${invoice.customer} in invoice.payment_succeeded`);
+              }
+            }
+            break;
+          }
+
+          case 'invoice.payment_failed': {
+            const invoice = event.data.object;
+            console.log(`💸 Invoice payment failed: ${invoice.id}`);
+            
+            if (invoice.subscription && invoice.customer) {
+              const user = await findUserByCustomerId(invoice.customer as string);
+              
+              if (user) {
+                try {
+                  // Retrieve subscription to check if it's past due
+                  const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+                  if (subscription.status === 'past_due' || subscription.status === 'unpaid') {
+                    await storage.updateUserPriceTier(user.id, 'n/a');
+                    console.log(`❌ User ${user.id} downgraded due to payment failure`);
+                  }
+                } catch (error) {
+                  console.error('Error handling failed payment:', error);
+                }
+              }
+            }
+            break;
+          }
+
+          default:
+            console.log(`🤷 Unhandled webhook event type: ${event.type}`);
+        }
+
+        // Always respond with 200 for successful processing
+        res.status(200).json({ received: true });
+      } catch (error: any) {
+        console.error('❌ Webhook processing error:', error);
+        // Return 400 for processing errors so Stripe retries
+        return res.status(400).send(`Webhook Error: ${error.message}`);
+      }
+    }
+  );
+
   // Stripe subscription routes
   app.post('/api/create-subscription', isAuthenticated, async (req: any, res) => {
     try {
@@ -2931,27 +3124,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeSubscriptionId) {
-        return res.json({ isProUser: false, status: 'inactive' });
+        console.log(`⚠️ User ${userId} has no subscription ID`);
+        return res.json({ isProUser: false, status: 'no_subscription' });
       }
 
+      console.log(`🔍 Checking subscription ${user.stripeSubscriptionId} for user ${userId}`);
       const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
       const isProUser = subscription.status === 'active';
       
+      console.log(`📊 Subscription status: ${subscription.status}, isProUser: ${isProUser}`);
+      
       // Update user's price tier based on subscription status
-      if (isProUser && user.priceTier === 'n/a') {
+      if (isProUser && (user.priceTier === 'n/a' || !user.priceTier)) {
         await storage.updateUserPriceTier(userId, 'pro-monthly');
-      } else if (!isProUser && user.priceTier.startsWith('pro-')) {
+        console.log(`✅ Updated user ${userId} to pro-monthly tier`);
+      } else if (!isProUser && user.priceTier && user.priceTier.startsWith('pro-')) {
         await storage.updateUserPriceTier(userId, 'n/a');
+        console.log(`❌ Downgraded user ${userId} to free tier`);
       }
 
       res.json({
         isProUser,
         status: subscription.status,
-        currentPeriodEnd: subscription.current_period_end
+        currentPeriodEnd: subscription.current_period_end,
+        subscriptionId: subscription.id
       });
     } catch (error: any) {
-      console.error('Error checking subscription status:', error);
-      res.json({ isProUser: false, status: 'error' });
+      console.error('❌ Error checking subscription status:', error);
+      res.json({ isProUser: false, status: 'error', error: error.message });
+    }
+  });
+
+  // Manual subscription refresh endpoint for debugging
+  app.post('/api/refresh-subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeSubscriptionId) {
+        return res.json({ 
+          success: false, 
+          message: 'No subscription found',
+          user: { hasSubscriptionId: !!user?.stripeSubscriptionId }
+        });
+      }
+
+      console.log(`🔄 Manual refresh for user ${userId}, subscription ${user.stripeSubscriptionId}`);
+      
+      // Force fetch from Stripe
+      const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+      
+      console.log(`📊 Current subscription status: ${subscription.status}`);
+      
+      // Force update based on current status
+      if (subscription.status === 'active') {
+        await storage.updateUserPriceTier(userId, 'pro-monthly');
+        console.log(`✅ Force updated user ${userId} to pro-monthly`);
+      }
+      
+      res.json({ 
+        success: true, 
+        subscriptionStatus: subscription.status,
+        isActive: subscription.status === 'active',
+        updated: subscription.status === 'active'
+      });
+    } catch (error: any) {
+      console.error('❌ Error refreshing subscription:', error);
+      res.json({ success: false, error: error.message });
     }
   });
 
