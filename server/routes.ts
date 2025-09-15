@@ -178,7 +178,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             stepType: originalStep.stepType,
             requiredTier: originalStep.requiredTier
           });
-          sanitizedLesson.lesson[key] = sanitizedStep.content;
+          // Preserve all step fields, not just content
+          sanitizedLesson.lesson[key] = {
+            ...originalStep,
+            ...sanitizedStep.content
+          };
         }
       });
       
