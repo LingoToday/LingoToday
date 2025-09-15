@@ -1325,13 +1325,16 @@ export default function Lesson() {
                   <div className="text-center">
                     <div className="relative inline-block mb-6">
                       <video 
+                        autoPlay
+                        muted
+                        loop
                         className="w-full max-w-md rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
                       </video>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-40 rounded-lg">
+                        <div className="bg-black bg-opacity-70 text-white px-6 py-3 rounded-lg font-semibold">
                           🔒 Pro Content
                         </div>
                       </div>
