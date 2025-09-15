@@ -1329,9 +1329,10 @@ export default function Lesson() {
                   <div className="text-center">
                     <div className="relative inline-block mb-6">
                       <video 
+                        autoPlay
                         muted
                         loop
-                        className="w-full max-w-sm h-48 rounded-lg shadow-lg blur-md opacity-50"
+                        className="w-full max-w-md rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
