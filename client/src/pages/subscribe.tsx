@@ -107,7 +107,13 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
           const webhookSuccess = await pollSubscriptionStatus();
           
           if (webhookSuccess) {
-            await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+            ]);
             toast({
               title: "Welcome to Pro Learner!",
               description: "Your subscription is now active. You have access to all premium videos.",
@@ -135,8 +141,14 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
         const webhookSuccess = await pollSubscriptionStatus();
         
         if (webhookSuccess) {
-          // Invalidate subscription status to refresh user data
-          await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+          // Invalidate all queries that depend on user's pro status
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/courses'] }), // All lesson data
+            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }), // Dashboard data
+            queryClient.invalidateQueries({ queryKey: ['/api/progress'] }), // User progress
+          ]);
           
           toast({
             title: "Welcome to Pro Learner!",
@@ -152,8 +164,14 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
             variant: "default",
           });
           
-          // Still invalidate queries and redirect - user might already be upgraded
-          await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+          // Still invalidate queries and redirect - user might already be upgraded  
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+          ]);
           onSuccess();
         }
       }
@@ -172,7 +190,13 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
       const webhookSuccess = await pollSubscriptionStatus();
       
       if (webhookSuccess) {
-        await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+        ]);
         toast({
           title: "Welcome to Pro Learner!",
           description: "Your subscription is now active. You have access to all premium videos.",
