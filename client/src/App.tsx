@@ -19,6 +19,7 @@ import CourseManager from "@/pages/course-manager";
 import CourseTest from "@/pages/course-test";
 import LessonExample from "@/pages/lesson-example";
 import { CheckpointPage } from "@/pages/checkpoint";
+import Subscribe from "@/pages/subscribe";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import FAQPage from "@/pages/faq";
@@ -82,6 +83,7 @@ function Router() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
+          <Route path="/subscribe" component={Subscribe} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/courses" component={Courses} />
           <Route path="/courses/:language" component={Courses} />
