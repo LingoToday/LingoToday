@@ -53,6 +53,11 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   deleteUser(id: string): Promise<void>;
   
+  // Stripe operations
+  updateUserStripeCustomerId(userId: string, customerId: string): Promise<User>;
+  updateUserStripeSubscriptionId(userId: string, subscriptionId: string): Promise<User>;
+  updateUserPriceTier(userId: string, priceTier: string): Promise<User>;
+  
   // User settings operations
   getUserSettings(userId: string): Promise<UserSettings | undefined>;
   upsertUserSettings(settings: InsertUserSettings): Promise<UserSettings>;
@@ -173,6 +178,34 @@ export class DatabaseStorage implements IStorage {
     
     // Finally delete the user
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  // Stripe operations
+  async updateUserStripeCustomerId(userId: string, customerId: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ stripeCustomerId: customerId, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async updateUserStripeSubscriptionId(userId: string, subscriptionId: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ stripeSubscriptionId: subscriptionId, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async updateUserPriceTier(userId: string, priceTier: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ priceTier, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
   }
 
   // User settings operations

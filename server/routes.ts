@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupOAuthStrategies, setupOAuthRoutes } from './googleAuth';
+import Stripe from "stripe";
 import { 
   insertUserSettingsSchema, 
   insertUserProgressSchema, 
@@ -18,6 +19,14 @@ import {
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
+
+// Initialize Stripe
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Comprehensive helper to remove all video/media URLs from an object
@@ -2811,6 +2820,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user metrics:", error);
       res.status(500).json({ message: "Failed to fetch user metrics" });
+    }
+  });
+
+  // Stripe subscription routes
+  app.post('/api/create-subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      let user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if user already has an active subscription
+      if (user.stripeSubscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+        
+        if (subscription.status === 'active') {
+          const invoice = await stripe.invoices.retrieve(subscription.latest_invoice as string, {
+            expand: ['payment_intent']
+          });
+          
+          return res.json({
+            subscriptionId: subscription.id,
+            clientSecret: (invoice.payment_intent as any)?.client_secret,
+            status: subscription.status
+          });
+        }
+      }
+      
+      if (!user.email) {
+        return res.status(400).json({ message: 'No user email on file' });
+      }
+
+      // Create or get Stripe customer
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : undefined,
+        });
+        customerId = customer.id;
+        await storage.updateUserStripeCustomerId(userId, customerId);
+      }
+
+      // Create subscription with Pro Learner pricing
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Pro Learner Subscription',
+              description: 'Unlock premium video lessons with native speakers'
+            },
+            unit_amount: 999, // $9.99 per month
+            recurring: {
+              interval: 'month'
+            }
+          }
+        }],
+        payment_behavior: 'default_incomplete',
+        payment_settings: {
+          save_default_payment_method: 'on_subscription'
+        },
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      // Update user with subscription ID
+      await storage.updateUserStripeSubscriptionId(userId, subscription.id);
+
+      const invoice = subscription.latest_invoice as any;
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: invoice.payment_intent?.client_secret,
+        status: subscription.status
+      });
+    } catch (error: any) {
+      console.error('Error creating subscription:', error);
+      res.status(500).json({ message: 'Error creating subscription: ' + error.message });
+    }
+  });
+
+  // Check subscription status
+  app.get('/api/subscription-status', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeSubscriptionId) {
+        return res.json({ isProUser: false, status: 'inactive' });
+      }
+
+      const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+      const isProUser = subscription.status === 'active';
+      
+      // Update user's price tier based on subscription status
+      if (isProUser && user.priceTier === 'n/a') {
+        await storage.updateUserPriceTier(userId, 'pro-monthly');
+      } else if (!isProUser && user.priceTier.startsWith('pro-')) {
+        await storage.updateUserPriceTier(userId, 'n/a');
+      }
+
+      res.json({
+        isProUser,
+        status: subscription.status,
+        currentPeriodEnd: subscription.current_period_end
+      });
+    } catch (error: any) {
+      console.error('Error checking subscription status:', error);
+      res.json({ isProUser: false, status: 'error' });
     }
   });
 
