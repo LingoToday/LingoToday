@@ -590,24 +590,35 @@ export default function Lesson() {
     
     // First try new format with named steps
     if (currentLesson.lesson.steps) {
-      const stepMapping = {
+      // Dynamic step mapping - figure out what step types are actually available
+      const availableSteps = Object.keys(currentLesson.lesson.steps);
+      const staticMapping = {
         1: 'word_review',
         2: 'typing', 
-        3: 'comprehension',
-        4: 'pro_video'
+        3: 'comprehension'
       };
-      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
-      console.log('🔧 Step mapping debug:', {
+      
+      let stepName;
+      if (currentStep <= 3) {
+        stepName = staticMapping[currentStep as keyof typeof staticMapping];
+      } else if (currentStep === 4) {
+        // For step 4, dynamically detect what type it is
+        stepName = availableSteps.find(step => 
+          step === 'pro_video' || step === 'video_choice' || step === 'comprehension'
+        );
+      }
+      
+      console.log('🔧 Object-based step mapping:', {
         currentStep,
         stepName,
         hasSteps: !!currentLesson.lesson.steps,
-        stepKeys: Object.keys(currentLesson.lesson.steps),
+        stepKeys: availableSteps,
         hasTargetStep: stepName && !!currentLesson.lesson.steps[stepName]
       });
       
       if (stepName && currentLesson.lesson.steps[stepName]) {
         stepData = currentLesson.lesson.steps[stepName];
-        console.log('🔧 Found step in new format:', { currentStep, stepName, stepData });
+        console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
       }
     }
     
