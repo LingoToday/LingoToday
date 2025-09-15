@@ -1344,7 +1344,10 @@ export default function Lesson() {
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
                       </video>
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-40 rounded-lg">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 bg-opacity-40 rounded-lg">
+                        <p className="text-white text-center font-semibold mb-4 px-4">
+                          Unlock Pro Learner video lessons to accelerate your learning! <span className="line-through">£4.99</span> £2.49/month
+                        </p>
                         <Button 
                           className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
                           data-testid="upgrade-to-pro-button"
