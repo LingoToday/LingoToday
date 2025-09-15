@@ -1142,7 +1142,7 @@ export default function Lesson() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">{currentLesson?.lesson?.title || 'Lesson'}</h1>
+              <h1 className="font-semibold text-gray-900 text-[18px]">{currentLesson?.lesson?.title || 'Lesson'}</h1>
               <p className="text-gray-600">{courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}</p>
               {stepData?.isReview ? (
                 <p className="text-sm text-gray-500">Question {currentStep} of {stepData.totalQuestions}</p>
