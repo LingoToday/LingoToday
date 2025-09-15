@@ -116,9 +116,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
                               requiresProAccess(step);
       
       if (stepRequiresPro && !isProUser) {
+        const sanitizedContent = stripVideoUrls(step.content || {});
+        // Preserve important fields that should be visible even for non-pro users
+        if (step.content?.answerPrompt) {
+          sanitizedContent.answerPrompt = step.content.answerPrompt;
+        }
+        if (step.content?.prompt) {
+          sanitizedContent.prompt = step.content.prompt;
+        }
         return {
           ...step,
-          content: stripVideoUrls(step.content || {}),
+          content: sanitizedContent,
           // Preserve tier requirements for frontend to show upgrade prompt
           requiredTier: step.content?.requiredTier || step.requiredTier || ['pro']
         };
