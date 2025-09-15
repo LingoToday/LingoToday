@@ -21,6 +21,34 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
+
+  // Poll subscription status until webhook upgrades account
+  const pollSubscriptionStatus = async (): Promise<boolean> => {
+    let attempts = 0;
+    const maxAttempts = 60; // 5 minutes max (5 seconds * 60)
+    
+    while (attempts < maxAttempts) {
+      try {
+        const response = await apiRequest("GET", "/api/subscription-status");
+        const data = await response.json();
+        
+        if (data.isProUser) {
+          return true; // Webhook processed successfully
+        }
+        
+        // Wait 5 seconds before next check
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attempts++;
+      } catch (error) {
+        console.error('Error checking subscription status:', error);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attempts++;
+      }
+    }
+    
+    return false; // Timeout - webhook didn't arrive in time
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +58,7 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     }
 
     setIsProcessing(true);
+    setProcessingStage('payment');
 
     try {
       const { error } = await stripe.confirmPayment({
@@ -40,26 +69,86 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
       });
 
       if (error) {
-        toast({
-          title: "Payment Failed",
-          description: error.message,
-          variant: "destructive",
-        });
+        // Only show immediate failure for definitive client-side errors
+        const isDefinitiveFailure = error.type === 'card_error' || 
+                                   error.type === 'validation_error' ||
+                                   error.type === 'invalid_request_error';
+        
+        if (isDefinitiveFailure) {
+          toast({
+            title: "Payment Failed",
+            description: error.message,
+            variant: "destructive",
+          });
+          setProcessingStage('idle');
+        } else {
+          // For ambiguous errors, wait for webhook confirmation
+          setProcessingStage('activating');
+          toast({
+            title: "Finalizing Payment",
+            description: "Please wait while we confirm your payment...",
+          });
+
+          const webhookSuccess = await pollSubscriptionStatus();
+          
+          if (webhookSuccess) {
+            await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+            toast({
+              title: "Welcome to Pro Learner!",
+              description: "Your subscription is now active. You have access to all premium videos.",
+            });
+            onSuccess();
+          } else {
+            toast({
+              title: "Payment Status Unclear",
+              description: "We're unable to confirm your payment status right now. Please check your account or contact support if needed.",
+              variant: "destructive",
+            });
+            setProcessingStage('idle');
+          }
+        }
       } else {
+        // Payment confirmed by Stripe - now wait for webhook
+        setProcessingStage('activating');
+        
         toast({
           title: "Payment Successful",
-          description: "Welcome to Pro Learner! You now have access to all premium videos.",
+          description: "Activating your Pro subscription...",
         });
-        // Invalidate subscription status to refresh user data
-        await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
-        onSuccess();
+
+        // Poll subscription status until webhook upgrades account
+        const webhookSuccess = await pollSubscriptionStatus();
+        
+        if (webhookSuccess) {
+          // Invalidate subscription status to refresh user data
+          await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+          
+          toast({
+            title: "Welcome to Pro Learner!",
+            description: "Your subscription is now active. You have access to all premium videos.",
+          });
+          
+          onSuccess();
+        } else {
+          // Webhook didn't arrive in time
+          toast({
+            title: "Payment Processed",
+            description: "Your payment was successful. If you don't see Pro features immediately, please refresh the page in a few minutes.",
+            variant: "default",
+          });
+          
+          // Still invalidate queries and redirect - user might already be upgraded
+          await queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+          onSuccess();
+        }
       }
     } catch (err) {
       toast({
-        title: "Payment Error",
+        title: "Payment Error", 
         description: "An unexpected error occurred during payment processing.",
         variant: "destructive",
       });
+      setProcessingStage('idle');
     } finally {
       setIsProcessing(false);
     }
@@ -77,7 +166,7 @@ const SubscribeForm = ({ onSuccess }: { onSuccess: () => void }) => {
         {isProcessing ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing Payment...
+            {processingStage === 'payment' ? 'Processing Payment...' : 'Activating Subscription...'}
           </>
         ) : (
           <>
