@@ -275,6 +275,13 @@ export default function Lesson() {
                 expected_answers: stepData.expected_answers || [],
                 requiredTier: stepData.requiredTier || ['pro']
               };
+              console.log('🎬 Pro Video Step Found:', {
+                lessonId,
+                currentStep,
+                stepType,
+                content,
+                originalStepData: stepData
+              });
             }
           } else {
             // Infer step type from content structure
@@ -521,8 +528,29 @@ export default function Lesson() {
     }
     
     // Handle old lesson format (with step1, step2, step3 properties) - fallback for compatibility
-    const stepKey = `step${currentStep}`;
-    const stepData = currentLesson.lesson[stepKey];
+    // But also check for new lesson format with named steps
+    let stepData = null;
+    
+    // First try new format with named steps
+    if (currentLesson.lesson.steps) {
+      const stepMapping = {
+        1: 'word_review',
+        2: 'typing', 
+        3: 'comprehension',
+        4: 'pro_video'
+      };
+      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+      if (stepName && currentLesson.lesson.steps[stepName]) {
+        stepData = currentLesson.lesson.steps[stepName];
+        console.log('🔧 Found step in new format:', { currentStep, stepName, stepData });
+      }
+    }
+    
+    // Fallback to old format
+    if (!stepData) {
+      const stepKey = `step${currentStep}`;
+      stepData = currentLesson.lesson[stepKey];
+    }
     
     if (!stepData) return null;
 
@@ -558,6 +586,19 @@ export default function Lesson() {
   };
 
   const stepData = getCurrentStepData();
+  
+  // Debug logging for lesson 2 step 4
+  if (lessonId === 'lesson2' && currentStep === 4) {
+    console.log('🔍 Lesson 2 Step 4 Debug:', {
+      lessonId,
+      currentStep,
+      hasLesson: !!lesson,
+      stepData,
+      step4Data: lesson?.lesson?.step4,
+      allStepKeys: lesson?.lesson ? Object.keys(lesson.lesson) : 'no lesson.lesson'
+    });
+    console.log('🔍 Full Lesson 2 Data:', lesson);
+  }
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
