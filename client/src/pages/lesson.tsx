@@ -1,4 +1,4 @@
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -21,6 +21,7 @@ export default function Lesson() {
   const { language, courseId, lessonId } = useParams();
   const { isAuthenticated, isLoading, user } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showResult, setShowResult] = useState(false);
@@ -115,6 +116,13 @@ export default function Lesson() {
     queryKey: ['/api/auth/user'],
     enabled: isAuthenticated,
   }) as { data: any };
+
+  // Fetch subscription status to check if user is pro
+  const { data: subscriptionStatus } = useQuery({
+    queryKey: ['/api/subscription-status'],
+    enabled: isAuthenticated,
+    staleTime: 30000, // 30 seconds
+  }) as { data: { isProUser: boolean; status: string } | undefined };
 
   // Fallback: try to get lesson from stored data if API fails or if we have a notification lesson
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);

@@ -1587,7 +1587,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let userTier = 'free';
         if (userId) {
           const user = await storage.getUser(userId);
-          userTier = user?.priceTier || 'free';
+          
+          // Check live Stripe subscription status for pro access
+          if (user?.stripeSubscriptionId) {
+            try {
+              const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+              if (subscription.status === 'active') {
+                userTier = 'pro-monthly';
+                // Update stored price tier if needed
+                if (user.priceTier !== 'pro-monthly') {
+                  await storage.updateUserPriceTier(userId, 'pro-monthly');
+                }
+              } else {
+                // Subscription is not active, ensure price tier reflects this
+                if (user.priceTier.startsWith('pro-')) {
+                  await storage.updateUserPriceTier(userId, 'n/a');
+                }
+              }
+            } catch (error) {
+              console.error('Error checking subscription status:', error);
+              // Fall back to stored price tier
+              userTier = user?.priceTier || 'free';
+            }
+          } else {
+            userTier = user?.priceTier || 'free';
+          }
         }
         
         // Convert the database steps to the expected frontend format
