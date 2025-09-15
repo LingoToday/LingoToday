@@ -628,19 +628,24 @@ export default function Lesson() {
     // Special case for Step 4 Video (lesson1 course1) - read validation from JSON
     if (currentStep === 4 && lessonId === 'lesson1' && courseId === 'course1' && lesson) {
       const userAnswer = normalizeText(selectedAnswer);
-      // Get expected answers from step4 JSON data
-      const step4Data = lesson.lesson.step4;
       let expectedAnswers = [];
       
-      if (step4Data && step4Data.options) {
-        // Get expected answers from the first option (they're all the same)
-        expectedAnswers = step4Data.options[0]?.expected_answers || [];
+      // Try multiple possible paths for expected answers
+      if (lesson?.lesson?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.lesson.step4.options[0].expected_answers;
+      } else if (lesson?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.step4.options[0].expected_answers;
+      } else if (lesson?.content?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.content.step4.options[0].expected_answers;
+      } else {
+        // Fallback to hardcoded values that match the JSON
+        expectedAnswers = ["Ciao!", "Ciao"];
       }
       
       console.log('🎬 Step 4 validation:', {
         userAnswer,
         expectedAnswers,
-        step4Data: step4Data ? 'found' : 'missing'
+        lessonKeys: lesson ? Object.keys(lesson) : 'no lesson'
       });
       
       correct = expectedAnswers.some((expected: string) => {
