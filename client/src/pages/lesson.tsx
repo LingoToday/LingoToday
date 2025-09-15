@@ -602,10 +602,14 @@ export default function Lesson() {
       if (currentStep <= 3) {
         stepName = staticMapping[currentStep as keyof typeof staticMapping];
       } else if (currentStep === 4) {
-        // For step 4, dynamically detect what type it is - check video_choice first since it's more common
-        stepName = availableSteps.find(step => 
-          step === 'video_choice' || step === 'pro_video' || step === 'comprehension'
-        );
+        // For step 4, dynamically detect what type it is - prioritize video_choice
+        if (availableSteps.includes('video_choice')) {
+          stepName = 'video_choice';
+        } else if (availableSteps.includes('pro_video')) {
+          stepName = 'pro_video';
+        } else if (availableSteps.includes('comprehension')) {
+          stepName = 'comprehension';
+        }
       }
       
       console.log('🔧 Object-based step mapping:', {
@@ -1553,8 +1557,8 @@ export default function Lesson() {
               </>
             )}
             
-            {/* Quiz Section - exclude pro_video steps as they handle their own submission, but include video_choice */}
-            {stepData && stepData.type !== 'pro_video' && (
+            {/* Quiz Section - exclude video steps as they handle their own submission */}
+            {stepData && stepData.type !== 'pro_video' && stepData.type !== 'video_choice' && (
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-4">
                   {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
