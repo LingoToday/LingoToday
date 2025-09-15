@@ -1744,6 +1744,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               requiredTier: step.requiredTier || content.requiredTier,
               video_url: content.video_url,
               prompt: content.prompt,
+              answer_prompt: content.answer_prompt || content.answerPrompt || '',
+              expected_answers: content.expected_answers || content.expectedAnswers || [],
               isRestricted: content.isRestricted || false
             };
           } else if (step.stepType === 'introduction') {
