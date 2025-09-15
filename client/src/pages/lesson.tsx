@@ -744,37 +744,7 @@ export default function Lesson() {
   const handleStepSubmit = () => {
     let correct = false;
     
-    // Special case for Step 4 Video (lesson1 course1) - read validation from JSON
-    if (currentStep === 4 && lessonId === 'lesson1' && courseId === 'course1' && lesson) {
-      const userAnswer = normalizeText(selectedAnswer);
-      let expectedAnswers = [];
-      
-      // Try multiple possible paths for expected answers
-      if (lesson?.lesson?.step4?.options?.[0]?.expected_answers) {
-        expectedAnswers = lesson.lesson.step4.options[0].expected_answers;
-      } else if (lesson?.step4?.options?.[0]?.expected_answers) {
-        expectedAnswers = lesson.step4.options[0].expected_answers;
-      } else if (lesson?.content?.step4?.options?.[0]?.expected_answers) {
-        expectedAnswers = lesson.content.step4.options[0].expected_answers;
-      } else {
-        // Fallback to hardcoded values that match the JSON
-        expectedAnswers = ["Ciao!", "Ciao"];
-      }
-      
-      console.log('🎬 Step 4 validation:', {
-        userAnswer,
-        expectedAnswers,
-        lessonKeys: lesson ? Object.keys(lesson) : 'no lesson'
-      });
-      
-      correct = expectedAnswers.some((expected: string) => {
-        const normalizedExpected = normalizeText(expected);
-        return userAnswer === normalizedExpected || 
-               normalizedExpected.includes(userAnswer) ||
-               userAnswer.includes(normalizedExpected.split(' ')[0]);
-      });
-    }
-    else if (!stepData) {
+    if (!stepData) {
       return;
     }
     else if (stepData.type === 'irl_video') {
@@ -795,8 +765,22 @@ export default function Lesson() {
       const userAnswer = normalizeText(selectedAnswer);
       const expectedAnswers = stepData.expectedAnswers || [];
       
+      console.log('🔍 Video choice validation details:', { 
+        selectedAnswer, 
+        userAnswer, 
+        expectedAnswers,
+        stepDataType: stepData.type
+      });
+      
       correct = expectedAnswers.some((expected: string) => {
         const normalizedExpected = normalizeText(expected);
+        console.log('🔍 Checking answer:', { 
+          expected, 
+          normalizedExpected,
+          exactMatch: userAnswer === normalizedExpected,
+          includesUser: normalizedExpected.includes(userAnswer),
+          userIncludesFirst: userAnswer.includes(normalizedExpected.split(' ')[0])
+        });
         return userAnswer === normalizedExpected || 
                normalizedExpected.includes(userAnswer) ||
                userAnswer.includes(normalizedExpected.split(' ')[0]);
