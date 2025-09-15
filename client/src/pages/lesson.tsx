@@ -336,9 +336,13 @@ export default function Lesson() {
           // Check if user has pro access
           const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
           
+          // Temporary fix: use existing video file for demo since lesson2.mp4 doesn't exist
+          const videoUrl = stepData.content?.video_url || stepData.video_url || '';
+          const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
+          
           return {
             type: 'pro_video',
-            videoUrl: normalizeAssetUrl(stepData.content?.video_url || stepData.video_url || ''),
+            videoUrl: normalizeAssetUrl(fallbackVideoUrl),
             prompt: stepData.content?.prompt || stepData.prompt || '',
             answerPrompt: stepData.content?.answer_prompt || stepData.answer_prompt || '',
             expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
