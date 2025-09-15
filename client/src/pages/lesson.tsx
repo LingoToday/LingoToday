@@ -1122,7 +1122,7 @@ export default function Lesson() {
                 </div>
                 <Button 
                   onClick={handleContinueFromIntro}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-[14px]"
                   data-testid="continue-from-intro-button"
                 >
                   Continue to Lesson
