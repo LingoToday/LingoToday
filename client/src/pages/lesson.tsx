@@ -317,24 +317,13 @@ export default function Lesson() {
 
     // Handle API lessons with steps object (object with named keys like word_review, pro_video)
     if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
-      const availableSteps = Object.keys(currentLesson.lesson.steps);
-      let stepName;
-      
-      // Dynamic step mapping based on what's actually available
-      if (currentStep === 1) {
-        stepName = availableSteps.includes('word_review') ? 'word_review' : null;
-      } else if (currentStep === 2) {
-        stepName = availableSteps.includes('quick_check') ? 'quick_check' : 
-                  availableSteps.includes('typing') ? 'typing' : null;
-      } else if (currentStep === 3) {
-        stepName = availableSteps.includes('comprehension') ? 'comprehension' :
-                  availableSteps.includes('typing') ? 'typing' : null;
-      } else if (currentStep === 4) {
-        // Prioritize video_choice over pro_video for step 4
-        stepName = availableSteps.includes('video_choice') ? 'video_choice' :
-                  availableSteps.includes('pro_video') ? 'pro_video' :
-                  availableSteps.includes('comprehension') ? 'comprehension' : null;
-      }
+      const stepMapping = {
+        1: 'word_review',
+        2: 'typing', 
+        3: 'comprehension',
+        4: 'pro_video'
+      };
+      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
       console.log('🔧 Object-based step mapping:', {
         currentStep,
         stepName,
@@ -346,34 +335,6 @@ export default function Lesson() {
       if (stepName && currentLesson.lesson.steps[stepName]) {
         const stepData = currentLesson.lesson.steps[stepName];
         console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
-        
-        // Handle video_choice step type (gender-based video selection)
-        if (stepData.stepType === 'video_choice' || stepData.type === 'video_choice') {
-          // User can select video based on gender preference
-          const selectedGender = localStorage.getItem('selectedGender') || 'neutral';
-          const detectedGender = selectedGender.toLowerCase();
-          
-          // Find the video option that matches user's gender preference
-          const options = stepData.content?.options || stepData.options || [];
-          const selectedOption = options.find((opt: any) => 
-            opt.label.toLowerCase() === detectedGender
-          ) || options.find((opt: any) => 
-            opt.label.toLowerCase() === 'neutral'
-          ) || options[0];
-          
-          if (selectedOption) {
-            const videoUrl = normalizeAssetUrl(selectedOption.video_url || '');
-            return {
-              type: 'video_choice',
-              videoUrl: videoUrl,
-              prompt: stepData.content?.prompt || stepData.prompt || '',
-              answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
-              expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
-              tier: 'free',
-              selectedGender: detectedGender
-            };
-          }
-        }
         
         // Handle pro_video step type (tier-restricted videos)
         if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
@@ -624,11 +585,37 @@ export default function Lesson() {
     }
     
     // Handle old lesson format (with step1, step2, step3 properties) - fallback for compatibility
+    // But also check for new lesson format with named steps
     let stepData = null;
     
-    // Fallback to old format if not handled by object-based steps above
-    const stepKey = `step${currentStep}`;
-    stepData = currentLesson.lesson[stepKey];
+    // First try new format with named steps
+    if (currentLesson.lesson.steps) {
+      const stepMapping = {
+        1: 'word_review',
+        2: 'typing', 
+        3: 'comprehension',
+        4: 'pro_video'
+      };
+      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+      console.log('🔧 Step mapping debug:', {
+        currentStep,
+        stepName,
+        hasSteps: !!currentLesson.lesson.steps,
+        stepKeys: Object.keys(currentLesson.lesson.steps),
+        hasTargetStep: stepName && !!currentLesson.lesson.steps[stepName]
+      });
+      
+      if (stepName && currentLesson.lesson.steps[stepName]) {
+        stepData = currentLesson.lesson.steps[stepName];
+        console.log('🔧 Found step in new format:', { currentStep, stepName, stepData });
+      }
+    }
+    
+    // Fallback to old format
+    if (!stepData) {
+      const stepKey = `step${currentStep}`;
+      stepData = currentLesson.lesson[stepKey];
+    }
     
     if (!stepData) return null;
 
@@ -744,7 +731,37 @@ export default function Lesson() {
   const handleStepSubmit = () => {
     let correct = false;
     
-    if (!stepData) {
+    // Special case for Step 4 Video (lesson1 course1) - read validation from JSON
+    if (currentStep === 4 && lessonId === 'lesson1' && courseId === 'course1' && lesson) {
+      const userAnswer = normalizeText(selectedAnswer);
+      let expectedAnswers = [];
+      
+      // Try multiple possible paths for expected answers
+      if (lesson?.lesson?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.lesson.step4.options[0].expected_answers;
+      } else if (lesson?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.step4.options[0].expected_answers;
+      } else if (lesson?.content?.step4?.options?.[0]?.expected_answers) {
+        expectedAnswers = lesson.content.step4.options[0].expected_answers;
+      } else {
+        // Fallback to hardcoded values that match the JSON
+        expectedAnswers = ["Ciao!", "Ciao"];
+      }
+      
+      console.log('🎬 Step 4 validation:', {
+        userAnswer,
+        expectedAnswers,
+        lessonKeys: lesson ? Object.keys(lesson) : 'no lesson'
+      });
+      
+      correct = expectedAnswers.some((expected: string) => {
+        const normalizedExpected = normalizeText(expected);
+        return userAnswer === normalizedExpected || 
+               normalizedExpected.includes(userAnswer) ||
+               userAnswer.includes(normalizedExpected.split(' ')[0]);
+      });
+    }
+    else if (!stepData) {
       return;
     }
     else if (stepData.type === 'irl_video') {
@@ -1362,85 +1379,6 @@ export default function Lesson() {
               </>
             )}
 
-            {stepData && stepData.type === 'video_choice' && (
-              <>
-                {/* Video Choice Step */}
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
-                  <div className="text-center">
-                    <h2 className="font-bold mb-4 text-[#000000] text-[18px]">Video Lesson</h2>
-                    <p className="text-green-600 text-lg mb-6">{stepData.prompt}</p>
-                  </div>
-                </div>
-
-                {/* Video Player */}
-                <div className="flex justify-center mb-6">
-                  <video 
-                    controls 
-                    autoPlay
-                    muted
-                    className="w-72 h-[28rem] rounded-lg shadow-lg"
-                    data-testid="video-choice-video"
-                  >
-                    <source src={stepData.videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-
-                {/* Response Input */}
-                <div className="mb-4">
-                  <p className="text-gray-700 mb-2 font-medium text-center">{stepData.answerPrompt}</p>
-                  <div className="flex flex-col items-center space-y-4">
-                    <input
-                      type="text"
-                      value={selectedAnswer}
-                      onChange={(e) => setSelectedAnswer(e.target.value)}
-                      placeholder="Type your response in Italian..."
-                      className="w-full max-w-md p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-center"
-                      data-testid="video-choice-response-input"
-                      disabled={showResult}
-                    />
-                    
-                    {!showResult ? (
-                      <Button 
-                        onClick={handleStepSubmit}
-                        disabled={!selectedAnswer || !selectedAnswer.trim()}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                        data-testid="video-choice-submit-button"
-                      >
-                        Submit Answer
-                      </Button>
-                    ) : (
-                      <div className={`p-4 rounded-lg mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                        <div className="flex items-center justify-center">
-                          <Check className={`h-5 w-5 mr-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}`} />
-                          <span className={`font-medium ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                            {isCorrect ? 'Correct! Well done!' : 'Incorrect'}
-                          </span>
-                        </div>
-                        {!isCorrect && (
-                          <p className="mt-2 text-sm text-red-700 text-center">
-                            The correct answer is: <strong>{stepData.expectedAnswers?.[0] || 'Ciao!'}</strong>
-                          </p>
-                        )}
-                      </div>
-                    )}
-                    
-                    {showResult && (
-                      <Button 
-                        onClick={handleNextStep}
-                        disabled={completeLessonMutation.isPending}
-                        className={`px-8 py-3 text-white ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
-                        data-testid="video-choice-next-button"
-                      >
-                        {completeLessonMutation.isPending ? 'Saving Progress...' : 
-                         currentStep < 4 ? `Next Step (${currentStep + 1}/4)` : 'Complete Lesson'}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-
             {stepData && stepData.type === 'review_mcq' && (
               <>
                 {/* Review MCQ Question */}
@@ -1604,8 +1542,8 @@ export default function Lesson() {
               </>
             )}
             
-            {/* Quiz Section - exclude video steps as they handle their own submission */}
-            {stepData && stepData.type !== 'pro_video' && stepData.type !== 'video_choice' && (
+            {/* Quiz Section */}
+            {stepData && (
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-4">
                   {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
