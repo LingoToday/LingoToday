@@ -2895,9 +2895,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         items: [{
           price_data: {
             currency: 'usd',
-            product_data: {
+            product: {
               name: 'Pro Learner Subscription',
-              description: 'Unlock premium video lessons with native speakers'
             },
             unit_amount: 999, // $9.99 per month
             recurring: {
