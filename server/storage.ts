@@ -905,11 +905,16 @@ export class DatabaseStorage implements IStorage {
                 content: lesson.step4 
               });
             } else if (lesson.step4.type === 'video' && lesson.step4.requiredTier) {
-              // Pro tier video step
+              // Pro tier video step - add field mapping for answer_prompt
+              const proVideoContent = {
+                ...lesson.step4,
+                answerPrompt: lesson.step4.answer_prompt || '',
+                expectedAnswers: lesson.step4.expected_answers || []
+              };
               steps.push({ 
                 stepNumber: 4, 
                 stepType: 'pro_video', 
-                content: lesson.step4 
+                content: proVideoContent 
               });
             } else {
               // Fallback to comprehension if step4 doesn't have expected video structure
