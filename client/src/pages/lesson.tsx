@@ -317,13 +317,24 @@ export default function Lesson() {
 
     // Handle API lessons with steps object (object with named keys like word_review, pro_video)
     if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
-      const stepMapping = {
-        1: 'word_review',
-        2: 'typing', 
-        3: 'comprehension',
-        4: 'pro_video'
-      };
-      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+      const availableSteps = Object.keys(currentLesson.lesson.steps);
+      let stepName;
+      
+      // Dynamic step mapping based on what's actually available
+      if (currentStep === 1) {
+        stepName = availableSteps.includes('word_review') ? 'word_review' : null;
+      } else if (currentStep === 2) {
+        stepName = availableSteps.includes('quick_check') ? 'quick_check' : 
+                  availableSteps.includes('typing') ? 'typing' : null;
+      } else if (currentStep === 3) {
+        stepName = availableSteps.includes('comprehension') ? 'comprehension' :
+                  availableSteps.includes('typing') ? 'typing' : null;
+      } else if (currentStep === 4) {
+        // Prioritize video_choice over pro_video for step 4
+        stepName = availableSteps.includes('video_choice') ? 'video_choice' :
+                  availableSteps.includes('pro_video') ? 'pro_video' :
+                  availableSteps.includes('comprehension') ? 'comprehension' : null;
+      }
       console.log('🔧 Object-based step mapping:', {
         currentStep,
         stepName,
@@ -335,6 +346,34 @@ export default function Lesson() {
       if (stepName && currentLesson.lesson.steps[stepName]) {
         const stepData = currentLesson.lesson.steps[stepName];
         console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
+        
+        // Handle video_choice step type (gender-based video selection)
+        if (stepData.stepType === 'video_choice' || stepData.type === 'video_choice') {
+          // User can select video based on gender preference
+          const selectedGender = localStorage.getItem('selectedGender') || 'neutral';
+          const detectedGender = selectedGender.toLowerCase();
+          
+          // Find the video option that matches user's gender preference
+          const options = stepData.content?.options || stepData.options || [];
+          const selectedOption = options.find((opt: any) => 
+            opt.label.toLowerCase() === detectedGender
+          ) || options.find((opt: any) => 
+            opt.label.toLowerCase() === 'neutral'
+          ) || options[0];
+          
+          if (selectedOption) {
+            const videoUrl = normalizeAssetUrl(selectedOption.video_url || '');
+            return {
+              type: 'video_choice',
+              videoUrl: videoUrl,
+              prompt: stepData.content?.prompt || stepData.prompt || '',
+              answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
+              expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
+              tier: 'free',
+              selectedGender: detectedGender
+            };
+          }
+        }
         
         // Handle pro_video step type (tier-restricted videos)
         if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
@@ -585,52 +624,11 @@ export default function Lesson() {
     }
     
     // Handle old lesson format (with step1, step2, step3 properties) - fallback for compatibility
-    // But also check for new lesson format with named steps
     let stepData = null;
     
-    // First try new format with named steps
-    if (currentLesson.lesson.steps) {
-      // Dynamic step mapping - figure out what step types are actually available
-      const availableSteps = Object.keys(currentLesson.lesson.steps);
-      const staticMapping = {
-        1: 'word_review',
-        2: 'typing', 
-        3: 'comprehension'
-      };
-      
-      let stepName;
-      if (currentStep <= 3) {
-        stepName = staticMapping[currentStep as keyof typeof staticMapping];
-      } else if (currentStep === 4) {
-        // For step 4, dynamically detect what type it is - prioritize video_choice
-        if (availableSteps.includes('video_choice')) {
-          stepName = 'video_choice';
-        } else if (availableSteps.includes('pro_video')) {
-          stepName = 'pro_video';
-        } else if (availableSteps.includes('comprehension')) {
-          stepName = 'comprehension';
-        }
-      }
-      
-      console.log('🔧 Object-based step mapping:', {
-        currentStep,
-        stepName,
-        hasSteps: !!currentLesson.lesson.steps,
-        stepKeys: availableSteps,
-        hasTargetStep: stepName && !!currentLesson.lesson.steps[stepName]
-      });
-      
-      if (stepName && currentLesson.lesson.steps[stepName]) {
-        stepData = currentLesson.lesson.steps[stepName];
-        console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
-      }
-    }
-    
-    // Fallback to old format
-    if (!stepData) {
-      const stepKey = `step${currentStep}`;
-      stepData = currentLesson.lesson[stepKey];
-    }
+    // Fallback to old format if not handled by object-based steps above
+    const stepKey = `step${currentStep}`;
+    stepData = currentLesson.lesson[stepKey];
     
     if (!stepData) return null;
 
