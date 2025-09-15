@@ -1542,8 +1542,8 @@ export default function Lesson() {
               </>
             )}
             
-            {/* Quiz Section */}
-            {stepData && (
+            {/* Quiz Section - exclude video_choice and pro_video steps as they handle their own submission */}
+            {stepData && stepData.type !== 'video_choice' && stepData.type !== 'pro_video' && (
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-4">
                   {stepData.type === 'review_mcq' ? 'Choose the correct answer' :
