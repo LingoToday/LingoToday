@@ -1298,7 +1298,7 @@ export default function Lesson() {
                 {/* Pro Video Step */}
                 <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-6 mb-6">
                   <div className="text-center">
-                    <p className="text-yellow-600 text-lg mb-6">{stepData.prompt}</p>
+                    <p className="text-lg mb-6 font-semibold text-[#000000]">You meet a new friend on the street.</p>
                   </div>
                 </div>
 
