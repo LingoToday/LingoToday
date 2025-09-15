@@ -1332,7 +1332,7 @@ export default function Lesson() {
                         autoPlay
                         muted
                         loop
-                        className="w-full max-w-md rounded-lg shadow-lg blur-md opacity-50"
+                        className="w-full max-w-sm rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
                         <source src={stepData.videoUrl} type="video/mp4" />
