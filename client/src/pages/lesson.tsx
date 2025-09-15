@@ -307,6 +307,51 @@ export default function Lesson() {
       console.log('✅ Normalized steps:', normalizedSteps.map(s => `${s.stepNumber}:${s.stepType}`));
     }
 
+    // Handle API lessons with steps object (object with named keys like word_review, pro_video)
+    if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+      const stepMapping = {
+        1: 'word_review',
+        2: 'typing', 
+        3: 'comprehension',
+        4: 'pro_video'
+      };
+      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+      console.log('🔧 Object-based step mapping:', {
+        currentStep,
+        stepName,
+        hasSteps: !!currentLesson.lesson.steps,
+        stepKeys: Object.keys(currentLesson.lesson.steps),
+        hasTargetStep: stepName && !!currentLesson.lesson.steps[stepName]
+      });
+      
+      if (stepName && currentLesson.lesson.steps[stepName]) {
+        const stepData = currentLesson.lesson.steps[stepName];
+        console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
+        
+        // Handle pro_video step type (tier-restricted videos)
+        if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
+          const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
+          const userTier = userData?.priceTier || 'free';
+          
+          // Check if user has pro access
+          const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+          
+          return {
+            type: 'pro_video',
+            videoUrl: normalizeAssetUrl(stepData.content?.video_url || stepData.video_url || ''),
+            prompt: stepData.content?.prompt || stepData.prompt || '',
+            answerPrompt: stepData.content?.answer_prompt || stepData.answer_prompt || '',
+            expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
+            hasAccess,
+            requiredTier
+          };
+        }
+        
+        // Handle other step types for object format
+        // (Add more step type handling here if needed)
+      }
+    }
+
     // Handle API lessons with steps array (new structure from database)
     if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
       const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
@@ -540,6 +585,14 @@ export default function Lesson() {
         4: 'pro_video'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+      console.log('🔧 Step mapping debug:', {
+        currentStep,
+        stepName,
+        hasSteps: !!currentLesson.lesson.steps,
+        stepKeys: Object.keys(currentLesson.lesson.steps),
+        hasTargetStep: stepName && !!currentLesson.lesson.steps[stepName]
+      });
+      
       if (stepName && currentLesson.lesson.steps[stepName]) {
         stepData = currentLesson.lesson.steps[stepName];
         console.log('🔧 Found step in new format:', { currentStep, stepName, stepData });
