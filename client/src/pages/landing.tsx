@@ -539,7 +539,7 @@ export default function Landing() {
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">"Netflix Mode" → short stories / dialogues with interactive quizzes</span>
+                      <span className="text-gray-600 text-sm">Learn with a interactive AI character</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -547,7 +547,7 @@ export default function Landing() {
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Join our tribe with a free t-shirt</span>
+                      <span className="text-gray-600 text-sm">Choose your video learning character</span>
                     </li>
                   </ul>
                   
