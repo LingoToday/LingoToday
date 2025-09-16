@@ -482,7 +482,10 @@ export default function Landing() {
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Pro</h3>
                   <div className="mb-6">
-                    <span className="text-3xl font-bold text-gray-900">{prices[currency].pro.monthly}</span>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-lg text-gray-400 line-through">{currency === 'GBP' ? '£4.99' : '$9.99'}</span>
+                      <span className="text-3xl font-bold text-gray-900">{prices[currency].pro.monthly}</span>
+                    </div>
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
                   
@@ -491,10 +494,6 @@ export default function Landing() {
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                       <span className="text-gray-600 text-sm">Full access to all video & scenario based lessons</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">Offline mode</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
