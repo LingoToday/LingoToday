@@ -20,8 +20,8 @@ export default function Landing() {
         yearly: '£39.99'
       },
       plus: {
-        monthly: '£8.99',
-        yearly: '£79.99'
+        monthly: '£16.99',
+        yearly: '£149.99'
       }
     },
     USD: {
@@ -30,8 +30,8 @@ export default function Landing() {
         yearly: '$59.99'
       },
       plus: {
-        monthly: '$12.99',
-        yearly: '$119.99'
+        monthly: '$24.99',
+        yearly: '$219.99'
       }
     }
   };
