@@ -383,7 +383,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson6.mp4",
+          "video_url": "videos/lesson6_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -432,7 +432,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson7.mp4",
+          "video_url": "videos/lesson7_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -481,7 +481,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson8.mp4",
+          "video_url": "videos/lesson8_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -606,7 +606,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson9.mp4",
+          "video_url": "videos/lesson9_pro.MP4",
           "requiredTier": [
             "pro"
           ],
@@ -656,7 +656,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson10.mp4",
+          "video_url": "videos/lesson10_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -705,7 +705,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson11.mp4",
+          "video_url": "videos/lesson11_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -755,7 +755,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson12.mp4",
+          "video_url": "videos/lesson12_pro.MOV",
           "requiredTier": [
             "pro"
           ],
@@ -880,7 +880,7 @@
         },
         "step4": {
           "type": "video",
-          "video_url": "videos/lesson13.mp4",
+          "video_url": "videos/lesson13_pro.MOV",
           "requiredTier": [
             "pro"
           ],
