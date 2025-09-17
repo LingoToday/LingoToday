@@ -102,19 +102,24 @@ export default function Account() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex justify-between items-center py-3 sm:py-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               <Link href="/dashboard">
-                <Button variant="ghost" size="sm" data-testid="back-to-dashboard">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Dashboard
+                <Button variant="ghost" size="sm" data-testid="back-to-dashboard" className="flex-shrink-0">
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline ml-2">Back to Dashboard</span>
                 </Button>
               </Link>
-              <h1 className="text-xl font-semibold text-gray-900">Account Settings</h1>
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">Account Settings</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{user.firstName || 'User'}</span>
-              <Button variant="ghost" size="sm" onClick={() => window.location.href = "/api/logout"}>
+            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+              <span className="text-xs sm:text-sm text-gray-600 hidden sm:inline">{user.firstName || 'User'}</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => window.location.href = "/api/logout"}
+                className="text-xs sm:text-sm"
+              >
                 Logout
               </Button>
             </div>
