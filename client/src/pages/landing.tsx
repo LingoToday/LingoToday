@@ -317,7 +317,7 @@ export default function Landing() {
                     <p className="text-sm text-gray-500">Continuous Learning Anywhere</p>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">Take LingoToday beyond your desk. Our mobile app keeps your learning streak alive so your progress never pauses.</p>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">Coming soon! Take LingoToday beyond your desk. Our mobile app keeps your learning streak alive so your progress never pauses.</p>
                 <div className="relative rounded-lg overflow-hidden">
                   <img 
                     src={mobileAppImage} 
