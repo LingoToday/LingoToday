@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
-import { ArrowLeft, User, Mail, Calendar, BookOpen, Award, Globe } from 'lucide-react';
+import { ArrowLeft, User, Mail, Calendar, BookOpen, Award, Globe, Crown } from 'lucide-react';
 import { format } from 'date-fns';
 
 // Type definitions
@@ -166,10 +166,18 @@ export default function Account() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Authentication Provider</label>
-                  <Badge variant="secondary" className="mt-1">
-                    {user.authProvider?.charAt(0).toUpperCase() + user.authProvider?.slice(1) || 'Local'}
-                  </Badge>
+                  <label className="text-sm font-medium text-gray-600">Learning Tier</label>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Crown className="w-4 h-4 text-amber-600" />
+                    <Badge 
+                      variant={getLearningTier(user.priceTier) === 'Free' ? 'secondary' : 'default'}
+                      className={`${getLearningTier(user.priceTier) === 'Pro' ? 'bg-blue-600 text-white' : 
+                        getLearningTier(user.priceTier) === 'Plus' ? 'bg-purple-600 text-white' : ''}`}
+                      data-testid="learning-tier"
+                    >
+                      {getLearningTier(user.priceTier)}
+                    </Badge>
+                  </div>
                 </div>
               </div>
             </CardContent>
