@@ -16,6 +16,7 @@ interface User {
   selectedLevel?: string;
   completedOnboarding?: boolean;
   authProvider?: string;
+  priceTier?: string;
   createdAt?: string;
 }
 
@@ -42,6 +43,20 @@ function getLanguageDisplayName(code: string): string {
     korean: 'Korean',
   };
   return languages[code.toLowerCase()] || code.charAt(0).toUpperCase() + code.slice(1);
+}
+
+// Helper function to get learning tier from price tier
+function getLearningTier(priceTier?: string): string {
+  if (!priceTier || priceTier === 'n/a' || priceTier === 'free-trial') {
+    return 'Free';
+  }
+  if (priceTier.startsWith('pro-')) {
+    return 'Pro';
+  }
+  if (priceTier.startsWith('plus-')) {
+    return 'Plus';
+  }
+  return 'Free';
 }
 
 export default function Account() {
