@@ -79,7 +79,7 @@ export default function Landing() {
             
             <div className="mb-8 max-w-3xl lg:max-w-none">
               <div className="text-xl text-gray-600 space-y-4">
-                <p>Micro lessons delivered by notifications to your laptop or phone. Using official CEFR course structures.</p>
+                <p>Text, audio, video, and two way AI character conversations using official CEFR course structures.</p>
               </div>
             </div>
             
