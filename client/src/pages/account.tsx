@@ -102,17 +102,21 @@ export default function Account() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-3 sm:py-4">
-            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+          <div className="relative flex items-center py-3 sm:py-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm" data-testid="back-to-dashboard" className="flex-shrink-0">
                   <ArrowLeft className="w-4 h-4" />
                   <span className="hidden sm:inline ml-2">Back to Dashboard</span>
                 </Button>
               </Link>
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">Account Settings</h1>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+            
+            <div className="absolute left-1/2 transform -translate-x-1/2">
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900">Account Settings</h1>
+            </div>
+            
+            <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
               <span className="text-xs sm:text-sm text-gray-600 hidden sm:inline">{user.firstName || 'User'}</span>
               <Button 
                 variant="ghost" 
