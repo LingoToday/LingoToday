@@ -68,8 +68,38 @@ export default function Onboarding() {
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   
+  // Function to clear onboarding state (for testing/reset)
+  const clearOnboardingState = () => {
+    localStorage.removeItem('lingoToday_onboarding_temp');
+    localStorage.removeItem('lingoToday_onboarding');
+    setCurrentScreen(0);
+    setSelectedLanguage('');
+    setSelectedLevel('');
+    setSelectedLearningStyle('');
+    setNotificationsEnabled(false);
+    console.log('🧹 Onboarding state cleared');
+  };
+  
+  // Dev helper: Clear onboarding on Ctrl+Shift+R
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        clearOnboardingState();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeydown);
+    return () => window.removeEventListener('keydown', handleKeydown);
+  }, []);
+  
   // Load from localStorage on mount
   useEffect(() => {
+    // Clear onboarding state immediately (for testing)
+    clearOnboardingState();
+    
+    // Normally would load from localStorage, but we're clearing for fresh start
+    /*
     const saved = localStorage.getItem('lingoToday_onboarding_temp');
     if (saved) {
       try {
@@ -83,6 +113,7 @@ export default function Onboarding() {
         console.error('Error loading onboarding data:', error);
       }
     }
+    */
   }, []);
   
   // Save to localStorage whenever data changes
