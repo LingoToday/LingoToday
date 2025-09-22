@@ -1,113 +1,142 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft, Star } from "lucide-react";
+import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft, Star, Smartphone, Monitor, RotateCcw, Bell, BellOff, Calendar, Video, Zap, Target, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import Footer from "@/components/ui/footer";
+import { useStripe, Elements, PaymentElement, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { useQuery } from '@tanstack/react-query';
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 const languages = [
   { code: 'italian', name: 'Italian', flag: '🇮🇹' },
   { code: 'spanish', name: 'Spanish', flag: '🇪🇸' },
-  { code: 'french', name: 'French', flag: '🇫🇷' },
   { code: 'german', name: 'German', flag: '🇩🇪' },
+  { code: 'french', name: 'French', flag: '🇫🇷' },
 ];
 
 const levels = [
   { 
     value: 'beginner', 
     title: 'Beginner', 
-    description: 'New to the language or know just a few words' 
+    description: "I'm starting fresh" 
   },
   { 
     value: 'intermediate', 
     title: 'Intermediate', 
-    description: 'Can have basic conversations and understand simple texts' 
+    description: 'I can hold conversations, but want to level up' 
   },
   { 
-    value: 'advanced', 
-    title: 'Advanced', 
-    description: 'Comfortable with complex conversations and grammar' 
+    value: 'expert', 
+    title: 'Expert', 
+    description: 'I want fluency and polish' 
   },
 ];
 
+const learningStyles = [
+  {
+    value: 'mobile',
+    title: 'Mobile App',
+    icon: '📱',
+    description: 'Learn on the go, anytime'
+  },
+  {
+    value: 'desktop',
+    title: 'Desktop',
+    icon: '💻',
+    description: 'Learn at your desk in quick daily bursts'
+  },
+  {
+    value: 'both',
+    title: 'Both',
+    icon: '🔄',
+    description: 'Seamless sync across devices'
+  }
+];
+
+// Load Stripe
+if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+}
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
 export default function Onboarding() {
+  const [currentScreen, setCurrentScreen] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
-  const [showUnavailable, setShowUnavailable] = useState(false);
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
-  const [emailError, setEmailError] = useState('');
+  const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   
-  // Email registration states
+  // Registration data
   const [registerData, setRegisterData] = useState({
     firstName: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+
+  const totalScreens = 7;
+
+  const nextScreen = () => {
+    if (currentScreen < totalScreens - 1) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentScreen(currentScreen + 1);
+        setIsTransitioning(false);
+      }, 150);
+    }
+  };
+
+  const canContinueFromScreen = (screen: number) => {
+    switch (screen) {
+      case 0: return selectedLanguage !== '';
+      case 1: return selectedLevel !== '';
+      case 2: return selectedLearningStyle !== '';
+      case 3: return registerData.firstName.trim() && registerData.email.trim() && registerData.password.length >= 6;
+      case 4: return true; // Notifications screen always allows continue
+      case 5: return true; // Learning plan screen
+      case 6: return true; // Payment screen
+      default: return false;
+    }
+  };
 
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
-    // Reset level and unavailable state when language changes
-    setSelectedLevel('');
-    setShowUnavailable(false);
   };
 
   const handleLevelSelect = (level: string) => {
     setSelectedLevel(level);
-    if (level === 'intermediate' || level === 'advanced') {
-      setShowUnavailable(true);
-      setEmailSubmitted(false); // Reset email submission state
-    } else {
-      setShowUnavailable(false);
-    }
   };
 
-  const handleEmailSubmit = async () => {
-    if (!email.trim()) {
-      setEmailError('Email is required');
-      return;
-    }
-    
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError('Please enter a valid email address');
-      return;
-    }
+  const handleLearningStyleSelect = (style: string) => {
+    setSelectedLearningStyle(style);
+  };
 
-    setIsSubmitting(true);
-    setEmailError('');
-
-    try {
-      const response = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          language: selectedLanguage,
-          level: selectedLevel,
-        }),
-      });
-
-      if (response.ok) {
-        setEmailSubmitted(true);
-      } else {
-        const error = await response.json();
-        setEmailError(error.message || 'Something went wrong. Please try again.');
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      try {
+        const permission = await Notification.requestPermission();
+        setNotificationsEnabled(permission === 'granted');
+        return permission === 'granted';
+      } catch (error) {
+        console.error('Error requesting notification permission:', error);
+        setNotificationsEnabled(false);
+        return false;
       }
-    } catch (error) {
-      setEmailError('Network error. Please check your connection and try again.');
-    } finally {
-      setIsSubmitting(false);
     }
+    return false;
   };
-
-
 
   const handleRegister = async () => {
     // Clear previous errors
@@ -115,11 +144,10 @@ export default function Onboarding() {
     
     // Validation
     const errors: Record<string, string> = {};
-    if (!registerData.firstName.trim()) errors.firstName = 'First name is required';
+    if (!registerData.firstName.trim()) errors.firstName = 'Name is required';
     if (!registerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
     if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
-    if (registerData.password !== registerData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
     
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
@@ -148,6 +176,8 @@ export default function Onboarding() {
         const onboardingData = {
           language: selectedLanguage,
           level: selectedLevel,
+          learningStyle: selectedLearningStyle,
+          notifications: notificationsEnabled,
           completedOnboarding: true
         };
         localStorage.setItem('lingoToday_onboarding', JSON.stringify(onboardingData));
@@ -163,12 +193,10 @@ export default function Onboarding() {
         });
 
         if (loginResponse.ok) {
-          // Clear any stored onboarding data since it's now saved to user profile
-          localStorage.removeItem('lingoToday_onboarding');
-          window.location.href = '/';
+          setRegistrationComplete(true);
+          toast({ title: 'Account created successfully!' });
         } else {
-          // Registration successful but login failed, redirect to login page
-          window.location.href = '/?registered=true';
+          setRegisterErrors({ general: 'Registration successful but login failed. Please try signing in.' });
         }
       } else {
         if (data.errors) {
@@ -198,440 +226,477 @@ export default function Onboarding() {
 
   const selectedLanguageData = languages.find(l => l.code === selectedLanguage);
   const selectedLevelData = levels.find(l => l.value === selectedLevel);
+  const selectedLearningStyleData = learningStyles.find(l => l.value === selectedLearningStyle);
 
-  const canProceed = selectedLanguage && selectedLevel && !showUnavailable;
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 0:
+        return <LanguageSelectionScreen 
+          selectedLanguage={selectedLanguage} 
+          onLanguageSelect={handleLanguageSelect}
+          languages={languages}
+        />;
+      case 1:
+        return <LevelSelectionScreen 
+          selectedLevel={selectedLevel} 
+          onLevelSelect={handleLevelSelect}
+          levels={levels}
+        />;
+      case 2:
+        return <LearningStyleScreen 
+          selectedStyle={selectedLearningStyle} 
+          onStyleSelect={handleLearningStyleSelect}
+          styles={learningStyles}
+        />;
+      case 3:
+        return <RegistrationScreen 
+          registerData={registerData}
+          registerErrors={registerErrors}
+          isRegistering={isRegistering}
+          onInputChange={handleRegisterInputChange}
+          onRegister={handleRegister}
+          registrationComplete={registrationComplete}
+        />;
+      case 4:
+        return <NotificationScreen 
+          notificationsEnabled={notificationsEnabled}
+          onRequestPermission={requestNotificationPermission}
+        />;
+      case 5:
+        return <LearningPlanScreen 
+          selectedLanguage={selectedLanguageData}
+          selectedLevel={selectedLevelData}
+          selectedStyle={selectedLearningStyleData}
+        />;
+      case 6:
+        return <PaymentScreen />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="w-full max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link 
-            href="/"
-            data-testid="button-back-home"
-          >
-            <Button 
-              variant="ghost" 
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 p-0"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Globe className="text-white text-sm" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="w-full max-w-2xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {/* Progress bar */}
+        <div className="mb-8">
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentScreen + 1) / totalScreens) * 100}%` }}
+            />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Start Your Learning Journey
-          </h2>
-          <p className="text-gray-600 text-sm sm:text-base">
-            Quick setup - takes less than 2 minutes
+          <p className="text-sm text-gray-600 mt-2 text-center">
+            Step {currentScreen + 1} of {totalScreens}
           </p>
         </div>
 
-        {/* Testimonials */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg p-4 shadow-sm border" data-testid="testimonial-sarah">
-              <div className="flex items-center gap-1 mb-2">
-                {[1,2,3,4,5].map((star) => (
-                  <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-                "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday..."
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium text-blue-700">SM</span>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-gray-900">Paul Martinez</div>
-                  <div className="text-xs text-gray-500">Product Manager, London</div>
-                </div>
-              </div>
-            </div>
+        {/* Screen container with slide animation */}
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 transform translate-x-4' : 'opacity-100 transform translate-x-0'}`}>
+          {renderScreen()}
+        </div>
 
-            <div className="bg-white rounded-lg p-4 shadow-sm border" data-testid="testimonial-anna">
-              <div className="flex items-center gap-1 mb-2">
-                {[1,2,3,4,5].map((star) => (
-                  <Star key={star} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-                "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!"
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium text-purple-700">AL</span>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-gray-900">Anna Liu</div>
-                  <div className="text-xs text-gray-500">Software Engineer, London</div>
-                </div>
-              </div>
-            </div>
+        {/* Continue button */}
+        {currentScreen < 6 && (
+          <div className="mt-8 flex justify-center">
+            <Button
+              onClick={nextScreen}
+              disabled={!canContinueFromScreen(currentScreen) || isTransitioning}
+              className="px-8 py-3 text-lg font-medium"
+              data-testid={`button-continue-${currentScreen}`}
+            >
+              Continue
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
-        </div>
-
-        <div className="space-y-6">
-          {/* Step 1: Language Selection */}
-          <Card className="bg-white shadow-lg border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                  1
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Which language would you like to learn?
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Choose your target language to get started
-                  </p>
-                </div>
-                {selectedLanguage && (
-                  <CheckCircle className="w-6 h-6 text-green-600 ml-auto" />
-                )}
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {languages.map((language) => (
-                  <button
-                    key={language.code}
-                    onClick={() => handleLanguageSelect(language.code)}
-                    className={`p-4 text-left border-2 rounded-lg transition-colors ${
-                      selectedLanguage === language.code
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-primary hover:bg-primary/5'
-                    }`}
-                    data-testid={`button-language-${language.code}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{language.flag}</span>
-                      <span className="font-medium text-gray-900">{language.name}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Step 2: Level Selection */}
-          <Card className={`bg-white shadow-lg border-0 ${!selectedLanguage ? 'opacity-50' : ''}`}>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
-                  selectedLanguage ? 'bg-primary' : 'bg-gray-400'
-                }`}>
-                  2
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    What's your current level?
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {selectedLanguageData ? `For ${selectedLanguageData.name}` : 'Select a language first'}
-                  </p>
-                </div>
-                {selectedLevel && (
-                  <CheckCircle className="w-6 h-6 text-green-600 ml-auto" />
-                )}
-              </div>
-              
-              <div className="space-y-3">
-                {levels.map((level) => (
-                  <button
-                    key={level.value}
-                    onClick={() => selectedLanguage && handleLevelSelect(level.value)}
-                    disabled={!selectedLanguage}
-                    className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${
-                      selectedLevel === level.value
-                        ? 'border-primary bg-primary/5'
-                        : selectedLanguage
-                        ? 'border-gray-200 hover:border-primary hover:bg-primary/5'
-                        : 'border-gray-100 cursor-not-allowed'
-                    }`}
-                    data-testid={`button-level-${level.value}`}
-                  >
-                    <div className="font-medium text-gray-900 mb-1 text-sm sm:text-base">{level.title}</div>
-                    <div className="text-xs sm:text-sm text-gray-600">{level.description}</div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Step 3: Unavailable Level Warning (if needed) */}
-          {showUnavailable && (
-            <Alert className="border-orange-200 bg-orange-50">
-              <AlertCircle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-700">
-                <strong>Coming Soon for {selectedLevelData?.title} Learners:</strong><br />
-                Our {selectedLanguageData?.name} course for {selectedLevelData?.title.toLowerCase()} learners 
-                isn't available yet, but an interactive course will be coming soon!
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Step 3: Ready to Start */}
-          {selectedLanguage && selectedLevel && !showUnavailable && (
-            <Card className="bg-white shadow-lg border-0">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Ready to Start Learning?
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Sign in with Replit to start your 5-day free trial
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Your Preferences:</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <span>Language:</span>
-                        <span className="font-medium">{selectedLanguageData?.name} {selectedLanguageData?.flag}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>Level:</span>
-                        <span className="font-medium">{selectedLevelData?.title}</span>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  {/* Email Registration Form */}
-                  <div className="space-y-4">
-                    <div className="text-center">
-                      <h4 className="font-medium text-gray-900 mb-3 text-sm sm:text-base">Sign up with Email</h4>
-                    </div>
-
-                    {registerErrors.general && (
-                      <Alert className="border-red-200 bg-red-50">
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-700 text-sm">
-                          {registerErrors.general}
-                        </AlertDescription>
-                      </Alert>
-                    )}
-
-                    <div>
-                      <Label htmlFor="firstName" className="text-sm sm:text-base">First Name</Label>
-                      <Input
-                        id="firstName"
-                        type="text"
-                        placeholder="Enter your first name"
-                        value={registerData.firstName}
-                        onChange={(e) => handleRegisterInputChange('firstName', e.target.value)}
-                        className={`text-sm sm:text-base ${registerErrors.firstName ? 'border-red-500' : ''}`}
-                        data-testid="input-firstName"
-                      />
-                      {registerErrors.firstName && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.firstName}</p>}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="register-email" className="text-sm sm:text-base">Email Address</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="register-email"
-                          type="email"
-                          placeholder="Enter your email address"
-                          className={`pl-10 text-sm sm:text-base ${registerErrors.email ? 'border-red-500' : ''}`}
-                          value={registerData.email}
-                          onChange={(e) => handleRegisterInputChange('email', e.target.value)}
-                          data-testid="input-register-email"
-                        />
-                      </div>
-                      {registerErrors.email && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.email}</p>}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="password"
-                          type="password"
-                          placeholder="Choose a secure password"
-                          className={`pl-10 text-sm sm:text-base ${registerErrors.password ? 'border-red-500' : ''}`}
-                          value={registerData.password}
-                          onChange={(e) => handleRegisterInputChange('password', e.target.value)}
-                          data-testid="input-password"
-                        />
-                      </div>
-                      {registerErrors.password && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.password}</p>}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          placeholder="Confirm your password"
-                          className={`pl-10 text-sm sm:text-base ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
-                          value={registerData.confirmPassword}
-                          onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
-                          data-testid="input-confirmPassword"
-                        />
-                      </div>
-                      {registerErrors.confirmPassword && <p className="text-red-500 text-xs sm:text-sm mt-1">{registerErrors.confirmPassword}</p>}
-                    </div>
-
-                    <Button 
-                      onClick={handleRegister}
-                      disabled={isRegistering}
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 text-sm sm:text-base"
-                      data-testid="button-register"
-                    >
-                      {isRegistering ? 'Creating Account...' : 'Create Account & Start Learning'}
-                    </Button>
-
-                    <p className="text-xs text-gray-500 text-center leading-relaxed">
-                      By creating an account, you agree to our{' '}
-                      <Link href="/terms" className="text-primary underline">Terms of Service</Link>{' '}
-                      and{' '}
-                      <Link href="/privacy" className="text-primary underline">Privacy Policy</Link>.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Email Form for Unavailable Levels */}
-          {showUnavailable && !emailSubmitted && (
-            <Card className="bg-white shadow-lg border-0">
-              <CardContent className="p-6">
-                <div className="text-center mb-6">
-                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
-                    Get Notified When Ready
-                  </h3>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    We'll email you as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course launches.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="waitlist-email" className="text-sm sm:text-base">Email Address</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="waitlist-email"
-                        type="email"
-                        placeholder="Enter your email address"
-                        className="pl-10 text-sm sm:text-base"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          setEmailError(''); // Clear error on input
-                        }}
-                        data-testid="input-waitlist-email"
-                      />
-                    </div>
-                    {emailError && <p className="text-red-500 text-xs sm:text-sm mt-1">{emailError}</p>}
-                  </div>
-
-                  <Button
-                    onClick={handleEmailSubmit}
-                    disabled={isSubmitting}
-                    className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base"
-                    data-testid="button-waitlist"
-                  >
-                    {isSubmitting ? 'Adding to Waitlist...' : 'Notify Me When Ready'}
-                  </Button>
-
-                  <div className="space-y-3 pt-4 border-t">
-                    <p className="text-xs sm:text-sm text-gray-600 text-center">
-                      Or start with a different level:
-                    </p>
-                    <Button
-                      onClick={() => handleLevelSelect('beginner')}
-                      variant="outline"
-                      className="w-full text-sm sm:text-base"
-                      data-testid="button-beginner-alternative"
-                    >
-                      Try Beginner Level Instead
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      onClick={() => window.location.href = '/'}
-                      className="w-full text-sm sm:text-base"
-                      data-testid="button-back-homepage"
-                    >
-                      Back to Homepage
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Success Message for Email Submission */}
-          {showUnavailable && emailSubmitted && (
-            <Card className="bg-white shadow-lg border-0 border-green-200">
-              <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
-                      You're on the list!
-                    </h3>
-                    <p className="text-gray-600 text-sm sm:text-base mb-4 break-words">
-                      We'll email you at <strong className="break-all">{email}</strong> as soon as the {selectedLevelData?.title.toLowerCase()} {selectedLanguageData?.name} course is ready.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 pt-4 border-t">
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Want to start learning now?
-                    </p>
-                    <Button
-                      onClick={() => handleLevelSelect('beginner')}
-                      className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base"
-                      data-testid="button-try-beginner"
-                    >
-                      Try Beginner Level
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      onClick={() => window.location.href = '/'}
-                      className="w-full text-sm sm:text-base"
-                      data-testid="button-back-home-success"
-                    >
-                      Back to Homepage
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+        )}
       </div>
-      <Footer />
     </div>
   );
 }
+
+// Screen Components
+const LanguageSelectionScreen = ({ selectedLanguage, onLanguageSelect, languages }: {
+  selectedLanguage: string;
+  onLanguageSelect: (language: string) => void;
+  languages: { code: string; name: string; flag: string; }[];
+}) => (
+  <div className="text-center">
+    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      Pick your language to master
+    </h1>
+    <p className="text-gray-600 mb-8 text-lg">
+      Learn with science backed micro lessons, designed for your day.
+    </p>
+    
+    <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+      {languages.map((language) => (
+        <button
+          key={language.code}
+          onClick={() => onLanguageSelect(language.code)}
+          className={`p-6 text-center border-2 rounded-xl transition-all transform hover:scale-105 ${
+            selectedLanguage === language.code
+              ? 'border-primary bg-primary/10 shadow-lg'
+              : 'border-gray-200 hover:border-primary hover:bg-primary/5'
+          }`}
+          data-testid={`button-language-${language.code}`}
+        >
+          <div className="text-4xl mb-2">{language.flag}</div>
+          <div className="font-semibold text-gray-900">{language.name}</div>
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+const LevelSelectionScreen = ({ selectedLevel, onLevelSelect, levels }: {
+  selectedLevel: string;
+  onLevelSelect: (level: string) => void;
+  levels: { value: string; title: string; description: string; }[];
+}) => (
+  <div className="text-center">
+    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      What's your starting point?
+    </h1>
+    <p className="text-gray-600 mb-8 text-lg">
+      Your plan will adapt to your current skill level.
+    </p>
+    
+    <div className="space-y-4 max-w-lg mx-auto">
+      {levels.map((level) => (
+        <button
+          key={level.value}
+          onClick={() => onLevelSelect(level.value)}
+          className={`w-full p-6 text-left border-2 rounded-xl transition-all ${
+            selectedLevel === level.value
+              ? 'border-primary bg-primary/10 shadow-lg'
+              : 'border-gray-200 hover:border-primary hover:bg-primary/5'
+          }`}
+          data-testid={`button-level-${level.value}`}
+        >
+          <div className="font-bold text-xl text-gray-900 mb-2">{level.title}</div>
+          <div className="text-gray-600 text-base">"{level.description}"</div>
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+const LearningStyleScreen = ({ selectedStyle, onStyleSelect, styles }: {
+  selectedStyle: string;
+  onStyleSelect: (style: string) => void;
+  styles: { value: string; title: string; icon: string; description: string; }[];
+}) => (
+  <div className="text-center">
+    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      Where will you learn?
+    </h1>
+    <p className="text-gray-600 mb-8 text-lg">
+      LingoToday works everywhere—your progress follows you.
+    </p>
+    
+    <div className="space-y-4 max-w-lg mx-auto">
+      {styles.map((style) => (
+        <button
+          key={style.value}
+          onClick={() => onStyleSelect(style.value)}
+          className={`w-full p-6 text-left border-2 rounded-xl transition-all flex items-center space-x-4 ${
+            selectedStyle === style.value
+              ? 'border-primary bg-primary/10 shadow-lg'
+              : 'border-gray-200 hover:border-primary hover:bg-primary/5'
+          }`}
+          data-testid={`button-style-${style.value}`}
+        >
+          <div className="text-3xl">{style.icon}</div>
+          <div>
+            <div className="font-bold text-xl text-gray-900 mb-1">{style.title}</div>
+            <div className="text-gray-600">"{style.description}"</div>
+          </div>
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+const RegistrationScreen = ({ 
+  registerData, 
+  registerErrors, 
+  isRegistering, 
+  onInputChange, 
+  onRegister,
+  registrationComplete
+}: {
+  registerData: { firstName: string; email: string; password: string; };
+  registerErrors: Record<string, string>;
+  isRegistering: boolean;
+  onInputChange: (field: string, value: string) => void;
+  onRegister: () => void;
+  registrationComplete: boolean;
+}) => {
+  if (registrationComplete) {
+    return (
+      <div className="text-center">
+        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Account Created! 
+        </h1>
+        <p className="text-gray-600 text-lg">
+          You're all set to begin your learning journey.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Create your free account
+      </h1>
+      <p className="text-gray-600 mb-8 text-lg">
+        Start in under 30 seconds. No card required now.
+      </p>
+      
+      {registerErrors.general && (
+        <Alert className="border-red-200 bg-red-50 mb-6">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-700">
+            {registerErrors.general}
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <div className="space-y-4 max-w-md mx-auto text-left">
+        <div>
+          <Label htmlFor="firstName">Name</Label>
+          <Input
+            id="firstName"
+            type="text"
+            placeholder="Enter your name"
+            value={registerData.firstName}
+            onChange={(e) => onInputChange('firstName', e.target.value)}
+            className={registerErrors.firstName ? 'border-red-500' : ''}
+            data-testid="input-firstName"
+          />
+          {registerErrors.firstName && <p className="text-red-500 text-sm mt-1">{registerErrors.firstName}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter your email address"
+            value={registerData.email}
+            onChange={(e) => onInputChange('email', e.target.value)}
+            className={registerErrors.email ? 'border-red-500' : ''}
+            data-testid="input-email"
+          />
+          {registerErrors.email && <p className="text-red-500 text-sm mt-1">{registerErrors.email}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="Choose a secure password"
+            value={registerData.password}
+            onChange={(e) => onInputChange('password', e.target.value)}
+            className={registerErrors.password ? 'border-red-500' : ''}
+            data-testid="input-password"
+          />
+          {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
+        </div>
+
+        <Button 
+          onClick={onRegister}
+          disabled={isRegistering}
+          className="w-full mt-6"
+          data-testid="button-register"
+        >
+          {isRegistering ? 'Creating Account...' : 'Create Account'}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const NotificationScreen = ({ 
+  notificationsEnabled, 
+  onRequestPermission 
+}: {
+  notificationsEnabled: boolean;
+  onRequestPermission: () => Promise<boolean>;
+}) => {
+  const [hasRequested, setHasRequested] = useState(false);
+  
+  const handleEnableNotifications = async () => {
+    setHasRequested(true);
+    await onRequestPermission();
+  };
+
+  if (hasRequested) {
+    return (
+      <div className="text-center">
+        <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${
+          notificationsEnabled ? 'bg-green-100' : 'bg-yellow-100'
+        }`}>
+          {notificationsEnabled ? (
+            <Bell className="w-8 h-8 text-green-600" />
+          ) : (
+            <BellOff className="w-8 h-8 text-yellow-600" />
+          )}
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {notificationsEnabled ? 'Notifications Enabled!' : 'No Problem!'}
+        </h1>
+        <p className="text-gray-600 text-lg">
+          {notificationsEnabled 
+            ? "We'll send gentle reminders to keep you on track." 
+            : "You can always enable notifications later in settings."}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center">
+      <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
+        <Bell className="w-8 h-8 text-primary" />
+      </div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Stay on track with gentle nudges
+      </h1>
+      <p className="text-gray-600 mb-8 text-lg">
+        We'll remind you at the perfect moments so you never miss a lesson.
+      </p>
+      
+      <div className="space-y-3 max-w-sm mx-auto">
+        <Button
+          onClick={handleEnableNotifications}
+          className="w-full py-3 text-lg"
+          data-testid="button-enable-notifications"
+        >
+          Enable Notifications
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const LearningPlanScreen = ({ 
+  selectedLanguage, 
+  selectedLevel, 
+  selectedStyle 
+}: {
+  selectedLanguage?: { name: string; flag: string; };
+  selectedLevel?: { title: string; };
+  selectedStyle?: { title: string; icon: string; };
+}) => (
+  <div className="text-center">
+    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      Your Learning Plan is Ready 🎉
+    </h1>
+    <p className="text-gray-600 mb-8 text-lg">
+      Your personalised plan is here
+    </p>
+    
+    {/* Timeline */}
+    <div className="bg-white rounded-xl p-6 shadow-sm mb-6 text-left">
+      <div className="space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">1</div>
+          <span className="text-gray-900 font-medium">In 1 month → You'll hold everyday conversations</span>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">2</div>
+          <span className="text-gray-900 font-medium">In 2 months → You'll navigate confidently abroad</span>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">3</div>
+          <span className="text-gray-900 font-medium">In 3 months → You'll have real back-and-forth conversation</span>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">4+</div>
+          <span className="text-gray-900 font-medium">In 4 months + → You'll speak naturally and confidently in most situation</span>
+        </div>
+      </div>
+    </div>
+    
+    {/* Features */}
+    <div className="bg-white rounded-xl p-6 shadow-sm mb-8 text-left">
+      <h3 className="font-bold text-lg mb-4 text-gray-900">Features Highlight:</h3>
+      <div className="space-y-3">
+        {[
+          "✅ Micro-lessons that fit your lifestyle",
+          "✅ Smart reminders to stay consistent without pressure", 
+          "✅ Desktop + mobile sync so you can learn anywhere",
+          "✅ Real-world videos: Practice in video scenes like cafés, shops, and travel moments",
+          "✅ Backed by proven methods (spaced repetition & retrieval practice)"
+        ].map((feature, index) => (
+          <div key={index} className="text-gray-700">{feature}</div>
+        ))}
+      </div>
+    </div>
+    
+    <Button 
+      className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
+      data-testid="button-start-trial"
+    >
+      🔵 Start Free Trial
+      <span className="block text-sm font-normal mt-1">(5-day free trial, cancel anytime)</span>
+    </Button>
+  </div>
+);
+
+// Payment Screen Component (simplified version - full Stripe integration would need Elements wrapper)
+const PaymentScreen = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentScreenContent />
+    </Elements>
+  );
+};
+
+const PaymentScreenContent = () => {
+  const [, setLocation] = useLocation();
+  
+  const handleStartTrial = () => {
+    // Redirect to existing subscribe page which has full Stripe integration
+    setLocation('/subscribe');
+  };
+  
+  return (
+    <div className="text-center">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Start Your Free Trial
+      </h1>
+      <p className="text-gray-600 mb-8 text-lg">
+        Complete payment setup to begin your 5-day free trial
+      </p>
+      
+      <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+        <div className="text-2xl font-bold text-primary mb-2">5-Day Free Trial</div>
+        <div className="text-gray-600 mb-4">Then $19.99/month, cancel anytime</div>
+        <div className="text-sm text-gray-500">
+          • Full access to all languages<br/>
+          • Unlimited lessons and practice<br/>
+          • Progress tracking and analytics<br/>
+          • Mobile and desktop sync
+        </div>
+      </div>
+      
+      <Button 
+        onClick={handleStartTrial}
+        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
+        data-testid="button-complete-payment"
+      >
+        Complete Payment Setup
+      </Button>
+      
+      <p className="text-xs text-gray-500 mt-4">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </div>
+  );
+};
