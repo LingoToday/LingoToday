@@ -429,7 +429,7 @@ const RegistrationScreen = ({
   registerData: { firstName: string; email: string; password: string; };
   registerErrors: Record<string, string>;
   isRegistering: boolean;
-  onInputChange: (field: string, value: string) => void;
+  onInputChange: (field: keyof typeof registerData, value: string) => void;
   onRegister: () => void;
   registrationComplete: boolean;
 }) => {
