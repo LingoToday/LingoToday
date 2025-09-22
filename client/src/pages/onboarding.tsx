@@ -7,8 +7,6 @@ import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, Arrow
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link, useLocation } from "wouter";
 import Footer from "@/components/ui/footer";
-import { useStripe, Elements, PaymentElement, useElements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -59,12 +57,6 @@ const learningStyles = [
   }
 ];
 
-// Load Stripe
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
 export default function Onboarding() {
   const [currentScreen, setCurrentScreen] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -72,6 +64,41 @@ export default function Onboarding() {
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('lingoToday_onboarding_temp');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.language) setSelectedLanguage(data.language);
+        if (data.level) setSelectedLevel(data.level);
+        if (data.learningStyle) setSelectedLearningStyle(data.learningStyle);
+        if (data.notifications !== undefined) setNotificationsEnabled(data.notifications);
+        if (data.currentScreen !== undefined) setCurrentScreen(data.currentScreen);
+      } catch (error) {
+        console.error('Error loading onboarding data:', error);
+      }
+    }
+  }, []);
+  
+  // Save to localStorage whenever data changes
+  const saveToLocalStorage = () => {
+    const data = {
+      language: selectedLanguage,
+      level: selectedLevel,
+      learningStyle: selectedLearningStyle,
+      notifications: notificationsEnabled,
+      currentScreen
+    };
+    localStorage.setItem('lingoToday_onboarding_temp', JSON.stringify(data));
+  };
+  
+  useEffect(() => {
+    if (selectedLanguage || selectedLevel || selectedLearningStyle) {
+      saveToLocalStorage();
+    }
+  }, [selectedLanguage, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
   
   // Registration data
   const [registerData, setRegisterData] = useState({
@@ -127,8 +154,18 @@ export default function Onboarding() {
     if ('Notification' in window) {
       try {
         const permission = await Notification.requestPermission();
-        setNotificationsEnabled(permission === 'granted');
-        return permission === 'granted';
+        const granted = permission === 'granted';
+        setNotificationsEnabled(granted);
+        // Update localStorage immediately after permission is resolved
+        const data = {
+          language: selectedLanguage,
+          level: selectedLevel,
+          learningStyle: selectedLearningStyle,
+          notifications: granted,
+          currentScreen
+        };
+        localStorage.setItem('lingoToday_onboarding_temp', JSON.stringify(data));
+        return granted;
       } catch (error) {
         console.error('Error requesting notification permission:', error);
         setNotificationsEnabled(false);
@@ -166,6 +203,8 @@ export default function Onboarding() {
           password: registerData.password,
           selectedLanguage: selectedLanguage,
           selectedLevel: selectedLevel,
+          learningStyle: selectedLearningStyle,
+          notificationsEnabled: notificationsEnabled,
         }),
       });
 
@@ -195,6 +234,16 @@ export default function Onboarding() {
         if (loginResponse.ok) {
           setRegistrationComplete(true);
           toast({ title: 'Account created successfully!' });
+          // Clear temporary localStorage and save final preferences
+          const finalData = {
+            language: selectedLanguage,
+            level: selectedLevel,
+            learningStyle: selectedLearningStyle,
+            notifications: notificationsEnabled,
+            completedOnboarding: true
+          };
+          localStorage.setItem('lingoToday_onboarding', JSON.stringify(finalData));
+          localStorage.removeItem('lingoToday_onboarding_temp');
           // Auto-advance to next screen after a brief delay
           setTimeout(() => {
             nextScreen();
@@ -643,26 +692,12 @@ const LearningPlanScreen = ({
       </div>
     </div>
     
-    <Button 
-      className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
-      data-testid="button-start-trial"
-    >
-      🔵 Start Free Trial
-      <span className="block text-sm font-normal mt-1">(5-day free trial, cancel anytime)</span>
-    </Button>
+    {/* Remove confusing button - user should use Continue */}
   </div>
 );
 
-// Payment Screen Component (simplified version - full Stripe integration would need Elements wrapper)
+// Payment Screen Component - simplified redirect to existing payment flow
 const PaymentScreen = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <PaymentScreenContent />
-    </Elements>
-  );
-};
-
-const PaymentScreenContent = () => {
   const [, setLocation] = useLocation();
   
   const handleStartTrial = () => {

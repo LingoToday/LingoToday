@@ -13,6 +13,8 @@ export const registerSchema = z.object({
   lastName: z.string().optional(),
   selectedLanguage: z.string().optional(),
   selectedLevel: z.string().optional(),
+  learningStyle: z.string().optional(),
+  notificationsEnabled: z.boolean().optional(),
 });
 
 export type RegisterRequest = z.infer<typeof registerSchema>;
@@ -62,7 +64,7 @@ export function setupLocalAuth(passport: any) {
 
 // Register user function
 export async function registerUser(userData: RegisterRequest) {
-  const { email, password, firstName, lastName, selectedLanguage, selectedLevel } = userData;
+  const { email, password, firstName, lastName, selectedLanguage, selectedLevel, learningStyle, notificationsEnabled } = userData;
   
   // Check if user already exists with local auth
   const existingUsers = await storage.getUserByEmail(email);
