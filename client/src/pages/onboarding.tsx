@@ -390,7 +390,7 @@ export default function Onboarding() {
             <Button
               onClick={nextScreen}
               disabled={!canContinueFromScreen(currentScreen) || isTransitioning}
-              className="px-8 py-4 text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-lg disabled:opacity-50"
+              className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg disabled:opacity-50"
               data-testid={`button-continue-${currentScreen}`}
             >
               Continue
