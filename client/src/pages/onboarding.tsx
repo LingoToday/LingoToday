@@ -767,7 +767,7 @@ const LearningPlanScreen = ({
         
         {/* Small text underneath */}
         <div className="text-center mt-3">
-          <span className="text-gray-500 text-sm">5 days free trial then $19.99/month</span>
+          <span className="text-gray-500 text-sm">5 days free trial then £2.49/month</span>
         </div>
       </div>
     </div>
@@ -1120,7 +1120,7 @@ const PaymentScreen = () => {
       <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
         <div className="text-xl font-bold text-primary mb-2">💎 Pro Learner</div>
         <div className="text-gray-700 mb-2">5-Day Free Trial</div>
-        <div className="text-2xl font-bold text-gray-900 mb-1">$19.99/month</div>
+        <div className="text-2xl font-bold text-gray-900 mb-1">£2.49/month</div>
         <div className="text-sm text-gray-600 mb-3">Cancel anytime</div>
         <div className="space-y-1 text-sm text-gray-700">
           <div>• Full access to all languages</div>
