@@ -665,9 +665,6 @@ const LearningPlanScreen = ({
     <h1 className="text-3xl font-bold text-gray-900 mb-2">
       Your Learning Plan is Ready 🎉
     </h1>
-    <p className="text-gray-600 mb-8 text-lg">
-      Your personalised plan is here
-    </p>
     
     {/* Timeline */}
     <div className="bg-white rounded-xl p-6 shadow-sm mb-6 text-left">
