@@ -266,7 +266,6 @@ export default function Onboarding() {
         });
 
         if (loginResponse.ok) {
-          setRegistrationComplete(true);
           toast({ title: 'Account created successfully!' });
           // Clear temporary localStorage and save final preferences
           const finalData = {
@@ -278,10 +277,8 @@ export default function Onboarding() {
           };
           localStorage.setItem('lingoToday_onboarding', JSON.stringify(finalData));
           localStorage.removeItem('lingoToday_onboarding_temp');
-          // Auto-advance to next screen after a brief delay
-          setTimeout(() => {
-            nextScreen();
-          }, 1500);
+          // Auto-advance to next screen immediately
+          nextScreen();
         } else {
           setRegisterErrors({ general: 'Registration successful but login failed. Please try signing in.' });
         }
@@ -342,7 +339,6 @@ export default function Onboarding() {
           isRegistering={isRegistering}
           onInputChange={handleRegisterInputChange}
           onRegister={handleRegister}
-          registrationComplete={registrationComplete}
         />;
       case 4:
         return <NotificationScreen 
@@ -511,31 +507,14 @@ const RegistrationScreen = ({
   registerErrors, 
   isRegistering, 
   onInputChange, 
-  onRegister,
-  registrationComplete
+  onRegister
 }: {
   registerData: { firstName: string; email: string; password: string; };
   registerErrors: Record<string, string>;
   isRegistering: boolean;
   onInputChange: (field: keyof typeof registerData, value: string) => void;
   onRegister: () => void;
-  registrationComplete: boolean;
-}) => {
-  if (registrationComplete) {
-    return (
-      <div className="text-center">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Account Created! 
-        </h1>
-        <p className="text-gray-600 text-lg">
-          You're all set to begin your learning journey.
-        </p>
-      </div>
-    );
-  }
-
-  return (
+}) => (
     <div className="text-center">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">
         Create your free account
@@ -607,7 +586,6 @@ const RegistrationScreen = ({
       </div>
     </div>
   );
-};
 
 const NotificationScreen = ({ 
   notificationsEnabled, 
