@@ -384,8 +384,8 @@ export default function Onboarding() {
           {renderScreen()}
         </div>
 
-        {/* Continue button - hide on registration and payment screens */}
-        {currentScreen < 6 && !(currentScreen === 3 && !registrationComplete) && (
+        {/* Continue button - hide on registration, payment, and learning plan screens */}
+        {currentScreen < 6 && !(currentScreen === 3 && !registrationComplete) && currentScreen !== 5 && (
           <div className="mt-8 flex justify-center">
             <Button
               onClick={nextScreen}
