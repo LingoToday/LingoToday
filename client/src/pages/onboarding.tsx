@@ -748,16 +748,28 @@ const LearningPlanScreen = ({
       </div>
     </div>
     
-    {/* Start Free Trial Button */}
-    <div className="mt-8">
-      <Button 
-        onClick={onStartTrial}
-        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
-        data-testid="button-start-trial"
-      >
-        🔥 Start Your Free Trial
-        <span className="block text-sm font-normal mt-1">(5-day free trial, cancel anytime)</span>
-      </Button>
+    {/* Start Free Trial Section */}
+    <div className="mt-8 space-y-4">
+      {/* No Payment Due Now text */}
+      <div className="text-center">
+        <span className="text-gray-700 font-medium">✓ No Payment Due Now. Cancel Anytime</span>
+      </div>
+      
+      {/* Start Free Trial Button */}
+      <div>
+        <Button 
+          onClick={onStartTrial}
+          className="w-full py-4 text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-lg"
+          data-testid="button-start-trial"
+        >
+          Start Free Trial
+        </Button>
+        
+        {/* Small text underneath */}
+        <div className="text-center mt-3">
+          <span className="text-gray-500 text-sm">5 days free trial then $19.99/month</span>
+        </div>
+      </div>
     </div>
   </div>
 );
