@@ -663,7 +663,7 @@ const LearningPlanScreen = ({
 }) => (
   <div className="text-center">
     <h1 className="text-3xl font-bold text-gray-900 mb-2">
-      Your Learning Plan is Ready 🎉
+      Your Learning Plan is Ready
     </h1>
     
     {/* Timeline */}
