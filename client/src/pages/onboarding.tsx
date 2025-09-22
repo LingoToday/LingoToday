@@ -195,6 +195,10 @@ export default function Onboarding() {
         if (loginResponse.ok) {
           setRegistrationComplete(true);
           toast({ title: 'Account created successfully!' });
+          // Auto-advance to next screen after a brief delay
+          setTimeout(() => {
+            nextScreen();
+          }, 1500);
         } else {
           setRegisterErrors({ general: 'Registration successful but login failed. Please try signing in.' });
         }
@@ -296,8 +300,8 @@ export default function Onboarding() {
           {renderScreen()}
         </div>
 
-        {/* Continue button */}
-        {currentScreen < 6 && (
+        {/* Continue button - hide on registration screen unless registration is complete */}
+        {currentScreen < 6 && !(currentScreen === 3 && !registrationComplete) && (
           <div className="mt-8 flex justify-center">
             <Button
               onClick={nextScreen}
