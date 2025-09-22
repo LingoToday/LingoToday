@@ -7,9 +7,12 @@ import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, Arrow
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link, useLocation } from "wouter";
 import Footer from "@/components/ui/footer";
+import { useStripe, Elements, PaymentElement, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const languages = [
   { code: 'italian', name: 'Italian', flag: '🇮🇹' },
@@ -320,6 +323,7 @@ export default function Onboarding() {
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
+          onStartTrial={nextScreen}
         />;
       case 6:
         return <PaymentScreen />;
@@ -349,7 +353,7 @@ export default function Onboarding() {
           {renderScreen()}
         </div>
 
-        {/* Continue button - hide on registration screen unless registration is complete */}
+        {/* Continue button - hide on registration and payment screens */}
         {currentScreen < 6 && !(currentScreen === 3 && !registrationComplete) && (
           <div className="mt-8 flex justify-center">
             <Button
@@ -640,11 +644,13 @@ const NotificationScreen = ({
 const LearningPlanScreen = ({ 
   selectedLanguage, 
   selectedLevel, 
-  selectedStyle 
+  selectedStyle,
+  onStartTrial
 }: {
   selectedLanguage?: { name: string; flag: string; };
   selectedLevel?: { title: string; };
   selectedStyle?: { title: string; icon: string; };
+  onStartTrial: () => void;
 }) => (
   <div className="text-center">
     <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -711,50 +717,392 @@ const LearningPlanScreen = ({
       </div>
     </div>
     
-    {/* Remove confusing button - user should use Continue */}
+    {/* Start Free Trial Button */}
+    <div className="mt-8">
+      <Button 
+        onClick={onStartTrial}
+        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
+        data-testid="button-start-trial"
+      >
+        🔥 Start Your Free Trial
+        <span className="block text-sm font-normal mt-1">(5-day free trial, cancel anytime)</span>
+      </Button>
+    </div>
   </div>
 );
 
-// Payment Screen Component - simplified redirect to existing payment flow
+// Load Stripe (moved from module level to avoid crash)
+let stripePromise: Promise<any> | null = null;
+const getStripePromise = () => {
+  if (!stripePromise) {
+    if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+      console.error('Missing Stripe public key');
+      return null;
+    }
+    stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  }
+  return stripePromise;
+};
+
+// Stripe Payment Form Component
+const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
+
+  // Poll subscription status until webhook upgrades account
+  const pollSubscriptionStatus = async (): Promise<boolean> => {
+    let attempts = 0;
+    const maxAttempts = 60; // 5 minutes max (5 seconds * 60)
+    
+    while (attempts < maxAttempts) {
+      try {
+        const response = await fetch("/api/subscription-status", {
+          method: "GET",
+          cache: "no-store" // Prevent 304 responses that cause JSON parsing issues
+        });
+        
+        if (response.status === 200) {
+          const data = await response.json();
+          if (data.isProUser) {
+            return true; // Webhook processed successfully
+          }
+        }
+        
+        // Wait 5 seconds before next check
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attempts++;
+      } catch (error) {
+        console.error('Error checking subscription status:', error);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attempts++;
+      }
+    }
+    
+    return false; // Timeout - webhook didn't arrive in time
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+    setProcessingStage('payment');
+
+    try {
+      // Submit payment element validation first
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        toast({
+          title: "Payment Failed",
+          description: submitError.message,
+          variant: "destructive",
+        });
+        setProcessingStage('idle');
+        return;
+      }
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required' // Stay in SPA, don't redirect
+      });
+
+      if (error) {
+        // Only show immediate failure for definitive client-side errors
+        const isDefinitiveFailure = error.type === 'card_error' || 
+                                   error.type === 'validation_error' ||
+                                   error.type === 'invalid_request_error';
+        
+        if (isDefinitiveFailure) {
+          toast({
+            title: "Payment Failed",
+            description: error.message,
+            variant: "destructive",
+          });
+          setProcessingStage('idle');
+        } else {
+          // For ambiguous errors, wait for webhook confirmation
+          setProcessingStage('activating');
+          toast({
+            title: "Finalizing Payment",
+            description: "Please wait while we confirm your payment...",
+          });
+
+          const webhookSuccess = await pollSubscriptionStatus();
+          
+          if (webhookSuccess) {
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+              queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+            ]);
+            toast({
+              title: "Welcome to Pro Learner!",
+              description: "Your subscription is now active. You have access to all premium content.",
+            });
+            onSuccess();
+          } else {
+            toast({
+              title: "Payment Status Unclear",
+              description: "We're unable to confirm your payment status right now. Please check your account or contact support if needed.",
+              variant: "destructive",
+            });
+            setProcessingStage('idle');
+          }
+        }
+      } else {
+        // Payment succeeded immediately
+        setProcessingStage('activating');
+        toast({
+          title: "Payment Successful!",
+          description: "Activating your Pro Learner subscription...",
+        });
+
+        const webhookSuccess = await pollSubscriptionStatus();
+        
+        if (webhookSuccess) {
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+          ]);
+          toast({
+            title: "Welcome to Pro Learner!",
+            description: "Your subscription is now active. You have access to all premium content.",
+          });
+          onSuccess();
+        } else {
+          toast({
+            title: "Payment Successful, Activation Pending",
+            description: "Your payment was processed successfully. Account activation may take a few minutes.",
+          });
+          setProcessingStage('idle');
+        }
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast({
+        title: "Payment Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+      setProcessingStage('idle');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const getButtonText = () => {
+    if (processingStage === 'payment') return 'Processing Payment...';
+    if (processingStage === 'activating') return 'Activating Account...';
+    return 'Complete Payment';
+  };
+
+  const getButtonIcon = () => {
+    if (isProcessing) return <Loader2 className="mr-2 h-4 w-4 animate-spin" />;
+    return null;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-white rounded-xl p-6 shadow-sm">
+        <PaymentElement
+          options={{
+            layout: "accordion",
+            paymentMethodOrder: ['card', 'apple_pay', 'google_pay']
+          }}
+        />
+      </div>
+      
+      <Button
+        type="submit"
+        disabled={!stripe || !elements || isProcessing}
+        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90 disabled:opacity-50"
+        data-testid="button-complete-payment"
+      >
+        {getButtonIcon()}
+        {getButtonText()}
+      </Button>
+      
+      <p className="text-xs text-gray-500 text-center">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </form>
+  );
+};
+
+// Payment Screen Component with full Stripe integration
 const PaymentScreen = () => {
   const [, setLocation] = useLocation();
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   
-  const handleStartTrial = () => {
-    // Redirect to existing subscribe page which has full Stripe integration
-    setLocation('/subscribe');
+  // Create payment intent on mount
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        // First check if user is authenticated
+        const authResponse = await fetch('/api/auth/user', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (!authResponse.ok) {
+          throw new Error('User not authenticated. Please complete registration first.');
+        }
+        
+        const response = await fetch('/api/create-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            priceId: 'price_1QEgdmAjBOdJlg0mMNGqgHkh' // Pro Learner price ID
+          }),
+        });
+        
+        if (response.status === 401) {
+          throw new Error('Please complete your account registration first.');
+        }
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || 'Failed to create subscription');
+        }
+        
+        const data = await response.json();
+        setClientSecret(data.clientSecret);
+      } catch (err) {
+        console.error('Error creating payment intent:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to initialize payment. Please try again.';
+        setError(errorMessage);
+        toast({
+          title: "Payment Setup Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    createPaymentIntent();
+  }, [toast]);
+  
+  const handleSuccess = () => {
+    toast({
+      title: "🎉 Welcome to LingoToday Pro!",
+      description: "Your subscription is active. You now have access to all premium features.",
+    });
+    // Redirect to dashboard after successful payment
+    setTimeout(() => {
+      setLocation('/dashboard');
+    }, 2000);
   };
   
+  const stripePromiseInstance = getStripePromise();
+  
+  if (!stripePromiseInstance) {
+    return (
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Payment Unavailable</h1>
+        <p className="text-gray-600">Payment system is currently unavailable. Please try again later.</p>
+      </div>
+    );
+  }
+  
+  if (loading) {
+    return (
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Setting up Payment</h1>
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2 text-gray-600">Loading payment form...</span>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error || !clientSecret) {
+    const isAuthError = error?.includes('authenticated') || error?.includes('registration');
+    
+    return (
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {isAuthError ? 'Registration Required' : 'Payment Setup Failed'}
+        </h1>
+        <p className="text-gray-600 mb-4">{error || 'Unable to setup payment'}</p>
+        <div className="space-y-3">
+          {isAuthError && (
+            <Button 
+              onClick={() => setLocation('/onboarding')} 
+              className="w-full px-6 py-2 bg-primary hover:bg-primary/90"
+            >
+              Complete Registration
+            </Button>
+          )}
+          <Button 
+            onClick={() => window.location.reload()} 
+            variant={isAuthError ? "outline" : "default"}
+            className="w-full px-6 py-2"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
   return (
-    <div className="text-center">
+    <div className="text-center max-w-md mx-auto">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">
-        Start Your Free Trial
+        Complete Your Subscription
       </h1>
-      <p className="text-gray-600 mb-8 text-lg">
-        Complete payment setup to begin your 5-day free trial
+      <p className="text-gray-600 mb-6 text-lg">
+        Start your 5-day free trial now
       </p>
       
-      <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
-        <div className="text-2xl font-bold text-primary mb-2">5-Day Free Trial</div>
-        <div className="text-gray-600 mb-4">Then $19.99/month, cancel anytime</div>
-        <div className="text-sm text-gray-500">
-          • Full access to all languages<br/>
-          • Unlimited lessons and practice<br/>
-          • Progress tracking and analytics<br/>
-          • Mobile and desktop sync
+      <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
+        <div className="text-xl font-bold text-primary mb-2">💎 Pro Learner</div>
+        <div className="text-gray-700 mb-2">5-Day Free Trial</div>
+        <div className="text-2xl font-bold text-gray-900 mb-1">$19.99/month</div>
+        <div className="text-sm text-gray-600 mb-3">Cancel anytime</div>
+        <div className="space-y-1 text-sm text-gray-700">
+          <div>• Full access to all languages</div>
+          <div>• Unlimited lessons and practice</div>
+          <div>• Progress tracking and analytics</div>
+          <div>• Premium video content</div>
+          <div>• Mobile and desktop sync</div>
         </div>
       </div>
       
-      <Button 
-        onClick={handleStartTrial}
-        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90"
-        data-testid="button-complete-payment"
+      <Elements 
+        stripe={stripePromiseInstance} 
+        options={{
+          clientSecret,
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#0F172A',
+              borderRadius: '8px',
+            },
+          },
+        }}
       >
-        Complete Payment Setup
-      </Button>
-      
-      <p className="text-xs text-gray-500 mt-4">
-        By continuing, you agree to our Terms of Service and Privacy Policy.
-      </p>
+        <StripePaymentForm onSuccess={handleSuccess} />
+      </Elements>
     </div>
   );
 };
