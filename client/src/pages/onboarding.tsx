@@ -656,22 +656,41 @@ const LearningPlanScreen = ({
     
     {/* Timeline */}
     <div className="bg-white rounded-xl p-6 shadow-sm mb-6 text-left">
-      <div className="space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">1</div>
-          <span className="text-gray-900 font-medium">In 1 month → You'll hold everyday conversations</span>
+      <div className="space-y-6">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">💬</span>
+          </div>
+          <div className="flex-1 pt-1">
+            <span className="text-gray-900 font-semibold text-lg leading-relaxed">In 1 month → You'll hold everyday conversations</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">2</div>
-          <span className="text-gray-900 font-medium">In 2 months → You'll navigate confidently abroad</span>
+        
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">✈️</span>
+          </div>
+          <div className="flex-1 pt-1">
+            <span className="text-gray-900 font-semibold text-lg leading-relaxed">In 2 months → You'll navigate confidently abroad</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">3</div>
-          <span className="text-gray-900 font-medium">In 3 months → You'll have real back-and-forth conversation</span>
+        
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">🗣️</span>
+          </div>
+          <div className="flex-1 pt-1">
+            <span className="text-gray-900 font-semibold text-lg leading-relaxed">In 3 months → You'll have real back-and-forth conversation</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">4+</div>
-          <span className="text-gray-900 font-medium">In 4 months + → You'll speak naturally and confidently in most situation</span>
+        
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">🌟</span>
+          </div>
+          <div className="flex-1 pt-1">
+            <span className="text-gray-900 font-semibold text-lg leading-relaxed">In 4 months + → You'll speak naturally and confidently in most situation</span>
+          </div>
         </div>
       </div>
     </div>
