@@ -697,7 +697,7 @@ const LearningPlanScreen = ({
     
     {/* Features */}
     <div className="bg-white rounded-xl p-6 shadow-sm mb-8 text-left">
-      <h3 className="font-bold text-lg mb-4 text-gray-900">Features Highlight:</h3>
+      <h3 className="font-bold text-lg mb-4 text-gray-900">Take advantage of:</h3>
       <div className="space-y-3">
         {[
           "✅ Micro-lessons that fit your lifestyle",
