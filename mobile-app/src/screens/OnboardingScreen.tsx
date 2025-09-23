@@ -448,14 +448,14 @@ const styles = StyleSheet.create({
   nextButton: {
     flex: 2,
     backgroundColor: '#3b82f6',
-    padding: 16,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 25,
     alignItems: 'center',
   },
   nextButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   disabledButton: {
     backgroundColor: '#94a3b8',
