@@ -578,7 +578,7 @@ const RegistrationScreen = ({
         <Button 
           onClick={onRegister}
           disabled={isRegistering}
-          className="w-full mt-6"
+          className="w-full mt-6 bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full disabled:opacity-50"
           data-testid="button-register"
         >
           {isRegistering ? 'Creating Account...' : 'Create Account'}
