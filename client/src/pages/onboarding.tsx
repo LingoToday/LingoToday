@@ -584,6 +584,20 @@ const RegistrationScreen = ({
           {isRegistering ? 'Creating Account...' : 'Create Account'}
         </Button>
       </div>
+      
+      {/* Privacy Policy and Terms text */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <p className="text-xs text-gray-600 text-center max-w-2xl mx-auto leading-relaxed">
+          By creating an account, you indicate that you have read and agreed to the{' '}
+          <Link href="/privacy" className="underline text-gray-700 hover:text-primary">
+            Privacy Policy
+          </Link>
+          {' '}and{' '}
+          <Link href="/terms" className="underline text-gray-700 hover:text-primary">
+            Terms of Use
+          </Link>
+        </p>
+      </div>
     </div>
   );
 
