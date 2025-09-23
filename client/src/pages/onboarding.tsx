@@ -520,7 +520,7 @@ const RegistrationScreen = ({
         Create your free account
       </h1>
       <p className="text-gray-600 mb-8 text-lg">
-        Start in under 30 seconds. No card required now.
+        Let's set up your account and get you learning!
       </p>
       
       {registerErrors.general && (
