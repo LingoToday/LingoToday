@@ -7,7 +7,7 @@ import { DashboardData, CourseStats } from '../types';
 function getApiBaseUrl(): string {
   // Production environment
   if (!__DEV__) {
-    return 'https://your-production-url.com';
+    return 'https://languagemate.replit.app';
   }
   
   // Development environment - check for custom API URL in app config
