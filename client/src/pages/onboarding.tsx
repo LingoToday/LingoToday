@@ -750,7 +750,7 @@ const LearningPlanScreen = ({
       <div>
         <Button 
           onClick={onStartTrial}
-          className="w-full py-4 text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-lg"
+          className="w-full bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
           data-testid="button-start-trial"
         >
           Start Free Trial
