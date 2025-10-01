@@ -1,0 +1,481 @@
+{
+  "course4": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Learn key politeness phrases for everyday situations in German. Covers formal and informal contexts and multiple uses of words like 'bitte'.",
+    "lessons": {
+      "lesson1": {
+        "title": "Yes",
+        "step1": {
+          "german": "Ja",
+          "english": "Yes",
+          "audio": "Ja",
+          "note": "Simple agreement. Pronounced like 'yah'.",
+          "mcq": {
+            "question": "How do you say 'Yes' in German?",
+            "options": [
+              "Ja",
+              "Nein",
+              "Bitte",
+              "Danke"
+            ],
+            "answer": "Ja"
+          }
+        },
+        "step2": {
+          "type_prompt": "__ = Yes",
+          "expected_answer": "Ja",
+          "alt_answers": [
+            "ja"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ja",
+          "options": [
+            "Yes",
+            "No",
+            "Please",
+            "Thank you"
+          ],
+          "answer": "Yes"
+        }
+      },
+      "lesson2": {
+        "title": "No",
+        "step1": {
+          "german": "Nein",
+          "english": "No",
+          "audio": "Nein",
+          "note": "Negation or disagreement.",
+          "mcq": {
+            "question": "How do you say 'No' in German?",
+            "options": [
+              "Ja",
+              "Nein",
+              "Bitte",
+              "Danke"
+            ],
+            "answer": "Nein"
+          }
+        },
+        "step2": {
+          "type_prompt": "____ = No",
+          "expected_answer": "Nein",
+          "alt_answers": [
+            "nein"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Nein",
+          "options": [
+            "No",
+            "Yes",
+            "Please",
+            "Thank you"
+          ],
+          "answer": "No"
+        }
+      },
+      "lesson3": {
+        "title": "Please / You're welcome",
+        "step1": {
+          "german": "Bitte",
+          "english": "Please / You're welcome",
+          "audio": "Bitte",
+          "note": "Also means 'here you go' when handing something over.",
+          "mcq": {
+            "question": "Which word can mean both 'Please' and 'You're welcome'?",
+            "options": [
+              "Danke",
+              "Bitte",
+              "Entschuldigung",
+              "Ja"
+            ],
+            "answer": "Bitte"
+          }
+        },
+        "step2": {
+          "type_prompt": "_____ = Please / You're welcome",
+          "expected_answer": "Bitte",
+          "alt_answers": [
+            "bitte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Bitte",
+          "options": [
+            "Please / You're welcome",
+            "Thank you",
+            "Excuse me",
+            "Yes"
+          ],
+          "answer": "Please / You're welcome"
+        }
+      },
+      "lesson4": {
+        "title": "Thank you",
+        "step1": {
+          "german": "Danke",
+          "english": "Thank you",
+          "audio": "Danke",
+          "note": "More formal: 'Danke schön' or 'Vielen Dank'.",
+          "mcq": {
+            "question": "How do you say 'Thank you' in German?",
+            "options": [
+              "Bitte",
+              "Danke",
+              "Ja",
+              "Nein"
+            ],
+            "answer": "Danke"
+          }
+        },
+        "step2": {
+          "type_prompt": "_____ = Thank you",
+          "expected_answer": "Danke",
+          "alt_answers": [
+            "danke"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Danke",
+          "options": [
+            "Thank you",
+            "Please",
+            "Yes",
+            "No"
+          ],
+          "answer": "Thank you"
+        }
+      },
+      "lesson5": {
+        "title": "Excuse me / Sorry",
+        "step1": {
+          "german": "Entschuldigung",
+          "english": "Excuse me / Sorry",
+          "audio": "Entschuldigung",
+          "note": "Use to apologise or get someone's attention.",
+          "mcq": {
+            "question": "Which word can you use to apologise or get attention?",
+            "options": [
+              "Bitte",
+              "Entschuldigung",
+              "Danke",
+              "Ja"
+            ],
+            "answer": "Entschuldigung"
+          }
+        },
+        "step2": {
+          "type_prompt": "Entschu__igung = Excuse me / Sorry",
+          "expected_answer": "Entschuldigung",
+          "alt_answers": [
+            "entschuldigung"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Entschuldigung",
+          "options": [
+            "Excuse me / Sorry",
+            "Please",
+            "Thank you",
+            "No"
+          ],
+          "answer": "Excuse me / Sorry"
+        }
+      },
+      "lesson6": {
+        "title": "Excuse me (formal)",
+        "step1": {
+          "german": "Entschuldigen Sie",
+          "english": "Excuse me (formal)",
+          "audio": "Entschuldigen Sie",
+          "note": "Polite request or interruption in formal settings.",
+          "mcq": {
+            "question": "What is the formal version of 'Excuse me'?",
+            "options": [
+              "Entschuldigen Sie",
+              "Entschuldigung",
+              "Bitte",
+              "Danke"
+            ],
+            "answer": "Entschuldigen Sie"
+          }
+        },
+        "step2": {
+          "type_prompt": "Entschuldigen __ = Excuse me (formal)",
+          "expected_answer": "Entschuldigen Sie",
+          "alt_answers": [
+            "entschuldigen Sie",
+            "Entschuldigen sie"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Entschuldigen Sie",
+          "options": [
+            "Excuse me (formal)",
+            "Please",
+            "Thank you",
+            "No"
+          ],
+          "answer": "Excuse me (formal)"
+        }
+      },
+      "lesson7": {
+        "title": "Pardon (formal)",
+        "step1": {
+          "german": "Verzeihung",
+          "english": "Pardon (formal)",
+          "audio": "Verzeihung",
+          "note": "More formal or old-fashioned than 'Entschuldigung'.",
+          "mcq": {
+            "question": "Which is a more formal or old-fashioned apology?",
+            "options": [
+              "Verzeihung",
+              "Bitte",
+              "Danke",
+              "Ja"
+            ],
+            "answer": "Verzeihung"
+          }
+        },
+        "step2": {
+          "type_prompt": "Verzeih__g = Pardon (formal)",
+          "expected_answer": "Verzeihung",
+          "alt_answers": [
+            "verzeihung"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Verzeihung",
+          "options": [
+            "Pardon (formal)",
+            "Excuse me",
+            "Please",
+            "Thank you"
+          ],
+          "answer": "Pardon (formal)"
+        }
+      },
+      "lesson8": {
+        "title": "Do you speak English? (formal)",
+        "step1": {
+          "german": "Sprechen Sie Englisch?",
+          "english": "Do you speak English? (formal)",
+          "audio": "Sprechen Sie Englisch?",
+          "note": "Use 'Sie' for polite/formal address.",
+          "mcq": {
+            "question": "Which is the formal way to ask if someone speaks English?",
+            "options": [
+              "Sprichst du Englisch?",
+              "Sprechen Sie Englisch?",
+              "Du sprichst Englisch?",
+              "Englisch sprechen Sie?"
+            ],
+            "answer": "Sprechen Sie Englisch?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sprechen __ Englisch? (formal)",
+          "expected_answer": "Sprechen Sie Englisch?",
+          "alt_answers": [
+            "sprechen Sie Englisch?",
+            "Sprechen sie Englisch?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sprechen Sie Englisch?",
+          "options": [
+            "Do you speak English? (formal)",
+            "Do you speak German?",
+            "Can you repeat that?",
+            "I don't understand"
+          ],
+          "answer": "Do you speak English? (formal)"
+        }
+      },
+      "lesson9": {
+        "title": "Do you speak English? (informal)",
+        "step1": {
+          "german": "Sprichst du Englisch?",
+          "english": "Do you speak English? (informal)",
+          "audio": "Sprichst du Englisch?",
+          "note": "Use 'du' for friends or peers.",
+          "mcq": {
+            "question": "Which is the informal way to ask if someone speaks English?",
+            "options": [
+              "Sprichst du Englisch?",
+              "Sprechen Sie Englisch?",
+              "Du sprechen Englisch?",
+              "Englisch sprichst du?"
+            ],
+            "answer": "Sprichst du Englisch?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sprichst __ Englisch? (informal)",
+          "expected_answer": "Sprichst du Englisch?",
+          "alt_answers": [
+            "sprichst du Englisch?",
+            "Sprichst Du Englisch?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sprichst du Englisch?",
+          "options": [
+            "Do you speak English? (informal)",
+            "Do you speak German?",
+            "Can you repeat that?",
+            "I don't understand"
+          ],
+          "answer": "Do you speak English? (informal)"
+        }
+      },
+      "lesson10": {
+        "title": "I don’t understand",
+        "step1": {
+          "german": "Ich verstehe nicht",
+          "english": "I don’t understand",
+          "audio": "Ich verstehe nicht",
+          "note": "Useful when you want someone to repeat or simplify.",
+          "mcq": {
+            "question": "How do you say 'I don’t understand'?",
+            "options": [
+              "Ich weiß nicht",
+              "Ich verstehe nicht",
+              "Ich spreche nicht",
+              "Ich komme nicht"
+            ],
+            "answer": "Ich verstehe nicht"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich vers__he nicht = I don’t understand",
+          "expected_answer": "Ich verstehe nicht",
+          "alt_answers": [
+            "ich verstehe nicht"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich verstehe nicht",
+          "options": [
+            "I don’t understand",
+            "I don’t know",
+            "I speak a little German",
+            "Please repeat that"
+          ],
+          "answer": "I don’t understand"
+        }
+      },
+      "lesson11": {
+        "title": "I don’t know",
+        "step1": {
+          "german": "Ich weiß nicht",
+          "english": "I don’t know",
+          "audio": "Ich weiß nicht",
+          "note": "ß = 'ss'.",
+          "mcq": {
+            "question": "How do you say 'I don’t know'?",
+            "options": [
+              "Ich weiß nicht",
+              "Ich kenne nicht",
+              "Ich habe nicht",
+              "Ich spreche nicht"
+            ],
+            "answer": "Ich weiß nicht"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich w__ß nicht = I don’t know",
+          "expected_answer": "Ich weiß nicht",
+          "alt_answers": [
+            "Ich weiss nicht",
+            "ich weiß nicht"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich weiß nicht",
+          "options": [
+            "I don’t know",
+            "I don’t understand",
+            "I speak a little German",
+            "Please repeat that"
+          ],
+          "answer": "I don’t know"
+        }
+      },
+      "lesson12": {
+        "title": "I speak a little German",
+        "step1": {
+          "german": "Ich spreche ein bisschen Deutsch",
+          "english": "I speak a little German",
+          "audio": "Ich spreche ein bisschen Deutsch",
+          "note": "Soft 'ch' in 'spreche'.",
+          "mcq": {
+            "question": "How do you say 'I speak a little German'?",
+            "options": [
+              "Ich spreche ein bisschen Deutsch",
+              "Ich spreche viel Deutsch",
+              "Ich verstehe Deutsch",
+              "Ich bin Deutsch"
+            ],
+            "answer": "Ich spreche ein bisschen Deutsch"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich spreche ein b__sschen Deutsch = I speak a little German",
+          "expected_answer": "Ich spreche ein bisschen Deutsch",
+          "alt_answers": [
+            "ich spreche ein bisschen Deutsch"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich spreche ein bisschen Deutsch",
+          "options": [
+            "I speak a little German",
+            "I speak a lot of German",
+            "I don’t speak German",
+            "I understand German"
+          ],
+          "answer": "I speak a little German"
+        }
+      },
+      "lesson13": {
+        "title": "Can you repeat that, please? (formal)",
+        "step1": {
+          "german": "Können Sie das bitte wiederholen?",
+          "english": "Can you repeat that, please? (formal)",
+          "audio": "Können Sie das bitte wiederholen?",
+          "note": "Use 'Sie' for politeness.",
+          "mcq": {
+            "question": "Which is the formal way to ask someone to repeat something?",
+            "options": [
+              "Kannst du das bitte wiederholen?",
+              "Können Sie das bitte wiederholen?",
+              "Sprechen Sie Englisch?",
+              "Ich verstehe nicht"
+            ],
+            "answer": "Können Sie das bitte wiederholen?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Können Sie das bitte w__derholen? = Can you repeat that, please? (formal)",
+          "expected_answer": "Können Sie das bitte wiederholen?",
+          "alt_answers": [
+            "koennen Sie das bitte wiederholen?",
+            "können Sie das bitte wiederholen?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Können Sie das bitte wiederholen?",
+          "options": [
+            "Can you repeat that, please? (formal)",
+            "Do you speak English?",
+            "I don’t understand",
+            "I speak a little German"
+          ],
+          "answer": "Can you repeat that, please? (formal)"
+        }
+      }
+    }
+  }
+}

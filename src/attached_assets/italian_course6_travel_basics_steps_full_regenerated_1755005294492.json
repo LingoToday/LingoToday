@@ -1,0 +1,1266 @@
+{
+  "course6": {
+    "title": "Travel Basics",
+    "description": "Essential phrases for navigating travel: asking directions, buying tickets, using transport, making reservations, and emergency needs. Each lesson is a short micro-burst with step1 (introduction), step2 (typing recall), step3 (listening comprehension).",
+    "lessons": {
+      "lesson1": {
+        "title": "Where is...?",
+        "step1": {
+          "italian": "Dov'è ...?",
+          "english": "Where is ...?",
+          "audio": "Dov'è ...?",
+          "note": "Use to ask for a location. Add the place after 'Dov'è'. Example: Dov'è la stazione?",
+          "mcq": {
+            "question": "Which phrase means 'Where is ...?'?",
+            "options": [
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?",
+              "Dov'è la metropolitana?"
+            ],
+            "answer": "Dov'è ...?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è .__?  = Where is ...?",
+          "expected_answer": "Dov'è ...?",
+          "alt_answers": [
+            "dov'è ...?",
+            "Dov'è ...?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dov'è ...?",
+          "options": [
+            "Where is ...?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where is ...?"
+        }
+      },
+      "lesson2": {
+        "title": "Where is the station?",
+        "step1": {
+          "italian": "Dov'è la stazione?",
+          "english": "Where is the station?",
+          "audio": "Dov'è la stazione?",
+          "note": "Common when asking for train or metro stations.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the station?'?",
+            "options": [
+              "Dov'è la stazione?",
+              "Dov'è ...?",
+              "Dov'è la fermata dell'autobus?",
+              "Dov'è la metropolitana?"
+            ],
+            "answer": "Dov'è la stazione?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è la s_______?  = Where is the station?",
+          "expected_answer": "Dov'è la stazione?",
+          "alt_answers": [
+            "dov'è la stazione?",
+            "Dov'è la stazione?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dov'è la stazione?",
+          "options": [
+            "Where is the station?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where is the station?"
+        }
+      },
+      "lesson3": {
+        "title": "Where is the bus stop?",
+        "step1": {
+          "italian": "Dov'è la fermata dell'autobus?",
+          "english": "Where is the bus stop?",
+          "audio": "Dov'è la fermata dell'autobus?",
+          "note": "'Fermata' means stop. Use for city or long-distance buses.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the bus stop?'?",
+            "options": [
+              "Dov'è la fermata dell'autobus?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la metropolitana?"
+            ],
+            "answer": "Dov'è la fermata dell'autobus?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è la f_____a d___________?  = Where is the bus stop?",
+          "expected_answer": "Dov'è la fermata dell'autobus?",
+          "alt_answers": [
+            "dov'è la fermata dell'autobus?",
+            "Dov'è la fermata dell'autobus?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dov'è la fermata dell'autobus?",
+          "options": [
+            "Where is the bus stop?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where is the bus stop?"
+        }
+      },
+      "lesson4": {
+        "title": "Where is the metro?",
+        "step1": {
+          "italian": "Dov'è la metropolitana?",
+          "english": "Where is the metro?",
+          "audio": "Dov'è la metropolitana?",
+          "note": "Used in cities with underground rail systems. 'Metro' is common too.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the metro?'?",
+            "options": [
+              "Dov'è la metropolitana?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Dov'è la metropolitana?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è la m____________?  = Where is the metro?",
+          "expected_answer": "Dov'è la metropolitana?",
+          "alt_answers": [
+            "dov'è la metropolitana?",
+            "Dov'è la metropolitana?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dov'è la metropolitana?",
+          "options": [
+            "Where is the metro?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where is the metro?"
+        }
+      },
+      "lesson5": {
+        "title": "Where is the airport?",
+        "step1": {
+          "italian": "Dov'è l'aeroporto?",
+          "english": "Where is the airport?",
+          "audio": "Dov'è l'aeroporto?",
+          "note": "Used when seeking airports. 'l'' is used before a vowel.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the airport?'?",
+            "options": [
+              "Dov'è l'aeroporto?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Dov'è l'aeroporto?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è l__________?  = Where is the airport?",
+          "expected_answer": "Dov'è l'aeroporto?",
+          "alt_answers": [
+            "dov'è l'aeroporto?",
+            "Dov'è l'aeroporto?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dov'è l'aeroporto?",
+          "options": [
+            "Where is the airport?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where is the airport?"
+        }
+      },
+      "lesson6": {
+        "title": "Left",
+        "step1": {
+          "italian": "sinistra",
+          "english": "Left",
+          "audio": "sinistra",
+          "note": "Direction word, often heard in navigation.",
+          "mcq": {
+            "question": "Which phrase means 'Left'?",
+            "options": [
+              "sinistra",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "sinistra"
+          }
+        },
+        "step2": {
+          "type_prompt": "s______a  = Left",
+          "expected_answer": "sinistra",
+          "alt_answers": [
+            "sinistra",
+            "Sinistra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sinistra",
+          "options": [
+            "Left",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Left"
+        }
+      },
+      "lesson7": {
+        "title": "Right",
+        "step1": {
+          "italian": "destra",
+          "english": "Right",
+          "audio": "destra",
+          "note": "Direction word, often heard in navigation.",
+          "mcq": {
+            "question": "Which phrase means 'Right'?",
+            "options": [
+              "destra",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "destra"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____a  = Right",
+          "expected_answer": "destra",
+          "alt_answers": [
+            "destra",
+            "Destra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "destra",
+          "options": [
+            "Right",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Right"
+        }
+      },
+      "lesson8": {
+        "title": "Straight ahead",
+        "step1": {
+          "italian": "dritto",
+          "english": "Straight ahead",
+          "audio": "dritto",
+          "note": "Also said as 'sempre dritto' (keep straight).",
+          "mcq": {
+            "question": "Which phrase means 'Straight ahead'?",
+            "options": [
+              "dritto",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "dritto"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____o  = Straight ahead",
+          "expected_answer": "dritto",
+          "alt_answers": [
+            "dritto",
+            "Dritto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dritto",
+          "options": [
+            "Straight ahead",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Straight ahead"
+        }
+      },
+      "lesson9": {
+        "title": "Near",
+        "step1": {
+          "italian": "vicino",
+          "english": "Near",
+          "audio": "vicino",
+          "note": "Indicates proximity.",
+          "mcq": {
+            "question": "Which phrase means 'Near'?",
+            "options": [
+              "vicino",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "vicino"
+          }
+        },
+        "step2": {
+          "type_prompt": "v____o  = Near",
+          "expected_answer": "vicino",
+          "alt_answers": [
+            "vicino",
+            "Vicino"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vicino",
+          "options": [
+            "Near",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Near"
+        }
+      },
+      "lesson10": {
+        "title": "Far",
+        "step1": {
+          "italian": "lontano",
+          "english": "Far",
+          "audio": "lontano",
+          "note": "Indicates distance.",
+          "mcq": {
+            "question": "Which phrase means 'Far'?",
+            "options": [
+              "lontano",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "lontano"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____o  = Far",
+          "expected_answer": "lontano",
+          "alt_answers": [
+            "lontano",
+            "Lontano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lontano",
+          "options": [
+            "Far",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Far"
+        }
+      },
+      "lesson11": {
+        "title": "Here",
+        "step1": {
+          "italian": "qui",
+          "english": "Here",
+          "audio": "qui",
+          "note": "Indicates current position.",
+          "mcq": {
+            "question": "Which phrase means 'Here'?",
+            "options": [
+              "qui",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "qui"
+          }
+        },
+        "step2": {
+          "type_prompt": "q_i  = Here",
+          "expected_answer": "qui",
+          "alt_answers": [
+            "qui",
+            "Qui"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "qui",
+          "options": [
+            "Here",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Here"
+        }
+      },
+      "lesson12": {
+        "title": "There",
+        "step1": {
+          "italian": "lì",
+          "english": "There",
+          "audio": "lì",
+          "note": "Indicates another location.",
+          "mcq": {
+            "question": "Which phrase means 'There'?",
+            "options": [
+              "lì",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "lì"
+          }
+        },
+        "step2": {
+          "type_prompt": "lì  = There",
+          "expected_answer": "lì",
+          "alt_answers": [
+            "lì",
+            "Lì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lì",
+          "options": [
+            "There",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "There"
+        }
+      },
+      "lesson13": {
+        "title": "A taxi, please",
+        "step1": {
+          "italian": "Un taxi, per favore.",
+          "english": "A taxi, please.",
+          "audio": "Un taxi, per favore.",
+          "note": "Quick polite request for a taxi.",
+          "mcq": {
+            "question": "Which phrase means 'A taxi, please.'?",
+            "options": [
+              "Un taxi, per favore.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Un taxi, per favore."
+          }
+        },
+        "step2": {
+          "type_prompt": "Un t___, p_r f_____.  = A taxi, please.",
+          "expected_answer": "Un taxi, per favore.",
+          "alt_answers": [
+            "un taxi, per favore.",
+            "Un taxi, per favore."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Un taxi, per favore.",
+          "options": [
+            "A taxi, please.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "A taxi, please."
+        }
+      },
+      "lesson14": {
+        "title": "I need a taxi",
+        "step1": {
+          "italian": "Ho bisogno di un taxi.",
+          "english": "I need a taxi.",
+          "audio": "Ho bisogno di un taxi.",
+          "note": "'Ho bisogno di' means 'I need'.",
+          "mcq": {
+            "question": "Which phrase means 'I need a taxi.'?",
+            "options": [
+              "Ho bisogno di un taxi.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Ho bisogno di un taxi."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ho b_____o di un t___.  = I need a taxi.",
+          "expected_answer": "Ho bisogno di un taxi.",
+          "alt_answers": [
+            "ho bisogno di un taxi.",
+            "Ho bisogno di un taxi."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ho bisogno di un taxi.",
+          "options": [
+            "I need a taxi.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "I need a taxi."
+        }
+      },
+      "lesson15": {
+        "title": "A ticket, please",
+        "step1": {
+          "italian": "Un biglietto, per favore.",
+          "english": "A ticket, please.",
+          "audio": "Un biglietto, per favore.",
+          "note": "Used at ticket counters or machines.",
+          "mcq": {
+            "question": "Which phrase means 'A ticket, please.'?",
+            "options": [
+              "Un biglietto, per favore.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Un biglietto, per favore."
+          }
+        },
+        "step2": {
+          "type_prompt": "Un b________, p_r f_____.  = A ticket, please.",
+          "expected_answer": "Un biglietto, per favore.",
+          "alt_answers": [
+            "un biglietto, per favore.",
+            "Un biglietto, per favore."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Un biglietto, per favore.",
+          "options": [
+            "A ticket, please.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "A ticket, please."
+        }
+      },
+      "lesson16": {
+        "title": "How much is a ticket?",
+        "step1": {
+          "italian": "Quanto costa un biglietto?",
+          "english": "How much is a ticket?",
+          "audio": "Quanto costa un biglietto?",
+          "note": "Start price questions with 'Quanto costa...?'.",
+          "mcq": {
+            "question": "Which phrase means 'How much is a ticket?'?",
+            "options": [
+              "Quanto costa un biglietto?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Quanto costa un biglietto?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q____o c___a un b________?  = How much is a ticket?",
+          "expected_answer": "Quanto costa un biglietto?",
+          "alt_answers": [
+            "quanto costa un biglietto?",
+            "Quanto costa un biglietto?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quanto costa un biglietto?",
+          "options": [
+            "How much is a ticket?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "How much is a ticket?"
+        }
+      },
+      "lesson17": {
+        "title": "One ticket to __, please",
+        "step1": {
+          "italian": "Un biglietto per __, per favore.",
+          "english": "One ticket to __, please.",
+          "audio": "Un biglietto per __, per favore.",
+          "note": "Replace __ with destination.",
+          "mcq": {
+            "question": "Which phrase means 'One ticket to __, please.'?",
+            "options": [
+              "Un biglietto per __, per favore.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Un biglietto per __, per favore."
+          }
+        },
+        "step2": {
+          "type_prompt": "Un b_______o p_r __, p_r f_____.  = One ticket to __, please.",
+          "expected_answer": "Un biglietto per __, per favore.",
+          "alt_answers": [
+            "un biglietto per __, per favore.",
+            "Un biglietto per __, per favore."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Un biglietto per __, per favore.",
+          "options": [
+            "One ticket to __, please.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "One ticket to __, please."
+        }
+      },
+      "lesson18": {
+        "title": "Return ticket",
+        "step1": {
+          "italian": "Andata e ritorno",
+          "english": "Return ticket",
+          "audio": "Andata e ritorno",
+          "note": "Round-trip ticket.",
+          "mcq": {
+            "question": "Which phrase means 'Return ticket'?",
+            "options": [
+              "Andata e ritorno",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Andata e ritorno"
+          }
+        },
+        "step2": {
+          "type_prompt": "A____a e r_____o  = Return ticket",
+          "expected_answer": "Andata e ritorno",
+          "alt_answers": [
+            "andata e ritorno",
+            "Andata e ritorno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Andata e ritorno",
+          "options": [
+            "Return ticket",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Return ticket"
+        }
+      },
+      "lesson19": {
+        "title": "One way ticket",
+        "step1": {
+          "italian": "Solo andata",
+          "english": "One way ticket",
+          "audio": "Solo andata",
+          "note": "Single journey ticket.",
+          "mcq": {
+            "question": "Which phrase means 'One way ticket'?",
+            "options": [
+              "Solo andata",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Solo andata"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o a____a  = One way ticket",
+          "expected_answer": "Solo andata",
+          "alt_answers": [
+            "solo andata",
+            "Solo andata"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Solo andata",
+          "options": [
+            "One way ticket",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "One way ticket"
+        }
+      },
+      "lesson20": {
+        "title": "Which platform?",
+        "step1": {
+          "italian": "Quale binario?",
+          "english": "Which platform?",
+          "audio": "Quale binario?",
+          "note": "'Binario' means platform/track for trains.",
+          "mcq": {
+            "question": "Which phrase means 'Which platform?'?",
+            "options": [
+              "Quale binario?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Quale binario?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q___e b______?  = Which platform?",
+          "expected_answer": "Quale binario?",
+          "alt_answers": [
+            "quale binario?",
+            "Quale binario?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quale binario?",
+          "options": [
+            "Which platform?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Which platform?"
+        }
+      },
+      "lesson21": {
+        "title": "Which stop?",
+        "step1": {
+          "italian": "Quale fermata?",
+          "english": "Which stop?",
+          "audio": "Quale fermata?",
+          "note": "'Fermata' is a stop for buses or trams.",
+          "mcq": {
+            "question": "Which phrase means 'Which stop?'?",
+            "options": [
+              "Quale fermata?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Quale fermata?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q___e f______?  = Which stop?",
+          "expected_answer": "Quale fermata?",
+          "alt_answers": [
+            "quale fermata?",
+            "Quale fermata?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quale fermata?",
+          "options": [
+            "Which stop?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Which stop?"
+        }
+      },
+      "lesson22": {
+        "title": "Where does this train go?",
+        "step1": {
+          "italian": "Dove va questo treno?",
+          "english": "Where does this train go?",
+          "audio": "Dove va questo treno?",
+          "note": "Ask for the train's destination.",
+          "mcq": {
+            "question": "Which phrase means 'Where does this train go?'?",
+            "options": [
+              "Dove va questo treno?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Dove va questo treno?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D__e va q____o t____?  = Where does this train go?",
+          "expected_answer": "Dove va questo treno?",
+          "alt_answers": [
+            "dove va questo treno?",
+            "Dove va questo treno?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Dove va questo treno?",
+          "options": [
+            "Where does this train go?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Where does this train go?"
+        }
+      },
+      "lesson23": {
+        "title": "Does it stop at __?",
+        "step1": {
+          "italian": "Si ferma a __?",
+          "english": "Does it stop at __?",
+          "audio": "Si ferma a __?",
+          "note": "Replace __ with your stop.",
+          "mcq": {
+            "question": "Which phrase means 'Does it stop at __?'?",
+            "options": [
+              "Si ferma a __?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Si ferma a __?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Si f___a a __?  = Does it stop at __?",
+          "expected_answer": "Si ferma a __?",
+          "alt_answers": [
+            "si ferma a __?",
+            "Si ferma a __?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Si ferma a __?",
+          "options": [
+            "Does it stop at __?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Does it stop at __?"
+        }
+      },
+      "lesson24": {
+        "title": "What time does it leave?",
+        "step1": {
+          "italian": "A che ora parte?",
+          "english": "What time does it leave?",
+          "audio": "A che ora parte?",
+          "note": "Used for departures.",
+          "mcq": {
+            "question": "Which phrase means 'What time does it leave?'?",
+            "options": [
+              "A che ora parte?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "A che ora parte?"
+          }
+        },
+        "step2": {
+          "type_prompt": "A c_e o_a p____?  = What time does it leave?",
+          "expected_answer": "A che ora parte?",
+          "alt_answers": [
+            "a che ora parte?",
+            "A che ora parte?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "A che ora parte?",
+          "options": [
+            "What time does it leave?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "What time does it leave?"
+        }
+      },
+      "lesson25": {
+        "title": "What time does it arrive?",
+        "step1": {
+          "italian": "A che ora arriva?",
+          "english": "What time does it arrive?",
+          "audio": "A che ora arriva?",
+          "note": "Used for arrivals.",
+          "mcq": {
+            "question": "Which phrase means 'What time does it arrive?'?",
+            "options": [
+              "A che ora arriva?",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "A che ora arriva?"
+          }
+        },
+        "step2": {
+          "type_prompt": "A c_e o_a a_____?  = What time does it arrive?",
+          "expected_answer": "A che ora arriva?",
+          "alt_answers": [
+            "a che ora arriva?",
+            "A che ora arriva?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "A che ora arriva?",
+          "options": [
+            "What time does it arrive?",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "What time does it arrive?"
+        }
+      },
+      "lesson26": {
+        "title": "On time",
+        "step1": {
+          "italian": "In orario",
+          "english": "On time",
+          "audio": "In orario",
+          "note": "Means punctual; opposite of 'in ritardo'.",
+          "mcq": {
+            "question": "Which phrase means 'On time'?",
+            "options": [
+              "In orario",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "In orario"
+          }
+        },
+        "step2": {
+          "type_prompt": "In o____o  = On time",
+          "expected_answer": "In orario",
+          "alt_answers": [
+            "in orario",
+            "In orario"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "In orario",
+          "options": [
+            "On time",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "On time"
+        }
+      },
+      "lesson27": {
+        "title": "Delayed",
+        "step1": {
+          "italian": "In ritardo",
+          "english": "Delayed",
+          "audio": "In ritardo",
+          "note": "Means late/delayed.",
+          "mcq": {
+            "question": "Which phrase means 'Delayed'?",
+            "options": [
+              "In ritardo",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "In ritardo"
+          }
+        },
+        "step2": {
+          "type_prompt": "In r_____o  = Delayed",
+          "expected_answer": "In ritardo",
+          "alt_answers": [
+            "in ritardo",
+            "In ritardo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "In ritardo",
+          "options": [
+            "Delayed",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Delayed"
+        }
+      },
+      "lesson28": {
+        "title": "I have a reservation",
+        "step1": {
+          "italian": "Ho una prenotazione.",
+          "english": "I have a reservation.",
+          "audio": "Ho una prenotazione.",
+          "note": "'Prenotazione' means reservation.",
+          "mcq": {
+            "question": "Which phrase means 'I have a reservation.'?",
+            "options": [
+              "Ho una prenotazione.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Ho una prenotazione."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ho u_a p___________.  = I have a reservation.",
+          "expected_answer": "Ho una prenotazione.",
+          "alt_answers": [
+            "ho una prenotazione.",
+            "Ho una prenotazione."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ho una prenotazione.",
+          "options": [
+            "I have a reservation.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "I have a reservation."
+        }
+      },
+      "lesson29": {
+        "title": "I don’t have a reservation",
+        "step1": {
+          "italian": "Non ho una prenotazione.",
+          "english": "I don’t have a reservation.",
+          "audio": "Non ho una prenotazione.",
+          "note": "Useful when arriving without booking.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t have a reservation.'?",
+            "options": [
+              "Non ho una prenotazione.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Non ho una prenotazione."
+          }
+        },
+        "step2": {
+          "type_prompt": "N_n ho u_a p___________.  = I don’t have a reservation.",
+          "expected_answer": "Non ho una prenotazione.",
+          "alt_answers": [
+            "non ho una prenotazione.",
+            "Non ho una prenotazione."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Non ho una prenotazione.",
+          "options": [
+            "I don’t have a reservation.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "I don’t have a reservation."
+        }
+      },
+      "lesson30": {
+        "title": "Your passport, please",
+        "step1": {
+          "italian": "Il passaporto, per favore.",
+          "english": "Your passport, please.",
+          "audio": "Il passaporto, per favore.",
+          "note": "What hotel staff or border control may say.",
+          "mcq": {
+            "question": "Which phrase means 'Your passport, please.'?",
+            "options": [
+              "Il passaporto, per favore.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Il passaporto, per favore."
+          }
+        },
+        "step2": {
+          "type_prompt": "Il p_________, p_r f_____.  = Your passport, please.",
+          "expected_answer": "Il passaporto, per favore.",
+          "alt_answers": [
+            "il passaporto, per favore.",
+            "Il passaporto, per favore."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il passaporto, per favore.",
+          "options": [
+            "Your passport, please.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Your passport, please."
+        }
+      },
+      "lesson31": {
+        "title": "Here it is",
+        "step1": {
+          "italian": "Ecco.",
+          "english": "Here it is.",
+          "audio": "Ecco.",
+          "note": "Used when handing over documents or tickets.",
+          "mcq": {
+            "question": "Which phrase means 'Here it is.'?",
+            "options": [
+              "Ecco.",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Ecco."
+          }
+        },
+        "step2": {
+          "type_prompt": "E___.  = Here it is.",
+          "expected_answer": "Ecco.",
+          "alt_answers": [
+            "ecco.",
+            "Ecco."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ecco.",
+          "options": [
+            "Here it is.",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Here it is."
+        }
+      },
+      "lesson32": {
+        "title": "Help!",
+        "step1": {
+          "italian": "Aiuto!",
+          "english": "Help!",
+          "audio": "Aiuto!",
+          "note": "Emergency call for help.",
+          "mcq": {
+            "question": "Which phrase means 'Help!'?",
+            "options": [
+              "Aiuto!",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Aiuto!"
+          }
+        },
+        "step2": {
+          "type_prompt": "A____!  = Help!",
+          "expected_answer": "Aiuto!",
+          "alt_answers": [
+            "aiuto!",
+            "Aiuto!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Aiuto!",
+          "options": [
+            "Help!",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Help!"
+        }
+      },
+      "lesson33": {
+        "title": "Pharmacy",
+        "step1": {
+          "italian": "Farmacia",
+          "english": "Pharmacy",
+          "audio": "Farmacia",
+          "note": "Useful for finding medicine.",
+          "mcq": {
+            "question": "Which phrase means 'Pharmacy'?",
+            "options": [
+              "Farmacia",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Farmacia"
+          }
+        },
+        "step2": {
+          "type_prompt": "F______a  = Pharmacy",
+          "expected_answer": "Farmacia",
+          "alt_answers": [
+            "farmacia",
+            "Farmacia"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Farmacia",
+          "options": [
+            "Pharmacy",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Pharmacy"
+        }
+      },
+      "lesson34": {
+        "title": "Police",
+        "step1": {
+          "italian": "Polizia",
+          "english": "Police",
+          "audio": "Polizia",
+          "note": "Useful for emergencies or finding the police.",
+          "mcq": {
+            "question": "Which phrase means 'Police'?",
+            "options": [
+              "Polizia",
+              "Dov'è ...?",
+              "Dov'è la stazione?",
+              "Dov'è la fermata dell'autobus?"
+            ],
+            "answer": "Polizia"
+          }
+        },
+        "step2": {
+          "type_prompt": "P_____a  = Police",
+          "expected_answer": "Polizia",
+          "alt_answers": [
+            "polizia",
+            "Polizia"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Polizia",
+          "options": [
+            "Police",
+            "Hello!",
+            "Thank you.",
+            "Goodbye."
+          ],
+          "answer": "Police"
+        }
+      }
+    }
+  }
+}

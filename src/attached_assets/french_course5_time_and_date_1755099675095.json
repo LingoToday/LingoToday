@@ -1,0 +1,1486 @@
+{
+  "course5": {
+    "title": "Time and Date",
+    "description": "Days, months, telling time, and basic date/time expressions. One word/phrase per lesson for micro-learning.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "italian": "lundi",
+          "english": "monday",
+          "audio": "lundi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'lundi' mean?",
+            "options": [
+              "monday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "monday"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___i  = monday",
+          "expected_answer": "lundi",
+          "alt_answers": [
+            "lundi",
+            "lundi",
+            "lundi",
+            "Lundi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lundi",
+          "options": [
+            "monday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "monday"
+        }
+      },
+      "lesson2": {
+        "title": "Tuesday",
+        "step1": {
+          "italian": "mardi",
+          "english": "tuesday",
+          "audio": "mardi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'mardi' mean?",
+            "options": [
+              "tuesday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "tuesday"
+          }
+        },
+        "step2": {
+          "type_prompt": "m___i  = tuesday",
+          "expected_answer": "mardi",
+          "alt_answers": [
+            "mardi",
+            "mardi",
+            "mardi",
+            "Mardi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mardi",
+          "options": [
+            "tuesday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "tuesday"
+        }
+      },
+      "lesson3": {
+        "title": "Wednesday",
+        "step1": {
+          "italian": "mercredi",
+          "english": "wednesday",
+          "audio": "mercredi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'mercredi' mean?",
+            "options": [
+              "wednesday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "wednesday"
+          }
+        },
+        "step2": {
+          "type_prompt": "m______i  = wednesday",
+          "expected_answer": "mercredi",
+          "alt_answers": [
+            "mercredi",
+            "mercredi",
+            "mercredi",
+            "Mercredi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mercredi",
+          "options": [
+            "wednesday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "wednesday"
+        }
+      },
+      "lesson4": {
+        "title": "Thursday",
+        "step1": {
+          "italian": "jeudi",
+          "english": "thursday",
+          "audio": "jeudi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'jeudi' mean?",
+            "options": [
+              "thursday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "thursday"
+          }
+        },
+        "step2": {
+          "type_prompt": "j___i  = thursday",
+          "expected_answer": "jeudi",
+          "alt_answers": [
+            "jeudi",
+            "jeudi",
+            "jeudi",
+            "Jeudi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "jeudi",
+          "options": [
+            "thursday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "thursday"
+        }
+      },
+      "lesson5": {
+        "title": "Friday",
+        "step1": {
+          "italian": "vendredi",
+          "english": "friday",
+          "audio": "vendredi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'vendredi' mean?",
+            "options": [
+              "friday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "friday"
+          }
+        },
+        "step2": {
+          "type_prompt": "v______i  = friday",
+          "expected_answer": "vendredi",
+          "alt_answers": [
+            "vendredi",
+            "vendredi",
+            "vendredi",
+            "Vendredi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vendredi",
+          "options": [
+            "friday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "friday"
+        }
+      },
+      "lesson6": {
+        "title": "Saturday",
+        "step1": {
+          "italian": "samedi",
+          "english": "saturday",
+          "audio": "samedi",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'samedi' mean?",
+            "options": [
+              "saturday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "saturday"
+          }
+        },
+        "step2": {
+          "type_prompt": "s____i  = saturday",
+          "expected_answer": "samedi",
+          "alt_answers": [
+            "samedi",
+            "samedi",
+            "samedi",
+            "Samedi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "samedi",
+          "options": [
+            "saturday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "saturday"
+        }
+      },
+      "lesson7": {
+        "title": "Sunday",
+        "step1": {
+          "italian": "dimanche",
+          "english": "sunday",
+          "audio": "dimanche",
+          "note": "Days of the week are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'dimanche' mean?",
+            "options": [
+              "sunday",
+              "month",
+              "year",
+              "morning"
+            ],
+            "answer": "sunday"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______e  = sunday",
+          "expected_answer": "dimanche",
+          "alt_answers": [
+            "dimanche",
+            "dimanche",
+            "dimanche",
+            "Dimanche"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dimanche",
+          "options": [
+            "sunday",
+            "month",
+            "year",
+            "morning"
+          ],
+          "answer": "sunday"
+        }
+      },
+      "lesson8": {
+        "title": "January",
+        "step1": {
+          "italian": "janvier",
+          "english": "january",
+          "audio": "janvier",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'janvier' mean?",
+            "options": [
+              "january",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "january"
+          }
+        },
+        "step2": {
+          "type_prompt": "j_____r  = january",
+          "expected_answer": "janvier",
+          "alt_answers": [
+            "janvier",
+            "janvier",
+            "janvier",
+            "Janvier"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "janvier",
+          "options": [
+            "january",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "january"
+        }
+      },
+      "lesson9": {
+        "title": "February",
+        "step1": {
+          "italian": "février",
+          "english": "february",
+          "audio": "février",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'février' mean?",
+            "options": [
+              "february",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "february"
+          }
+        },
+        "step2": {
+          "type_prompt": "f_____r  = february",
+          "expected_answer": "février",
+          "alt_answers": [
+            "février",
+            "février",
+            "février",
+            "Février"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "février",
+          "options": [
+            "february",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "february"
+        }
+      },
+      "lesson10": {
+        "title": "March",
+        "step1": {
+          "italian": "mars",
+          "english": "march",
+          "audio": "mars",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'mars' mean?",
+            "options": [
+              "march",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "march"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__s  = march",
+          "expected_answer": "mars",
+          "alt_answers": [
+            "mars",
+            "mars",
+            "mars",
+            "Mars"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mars",
+          "options": [
+            "march",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "march"
+        }
+      },
+      "lesson11": {
+        "title": "April",
+        "step1": {
+          "italian": "avril",
+          "english": "april",
+          "audio": "avril",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'avril' mean?",
+            "options": [
+              "april",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "april"
+          }
+        },
+        "step2": {
+          "type_prompt": "a___l  = april",
+          "expected_answer": "avril",
+          "alt_answers": [
+            "avril",
+            "avril",
+            "avril",
+            "Avril"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "avril",
+          "options": [
+            "april",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "april"
+        }
+      },
+      "lesson12": {
+        "title": "May",
+        "step1": {
+          "italian": "mai",
+          "english": "may",
+          "audio": "mai",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'mai' mean?",
+            "options": [
+              "may",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "may"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_i  = may",
+          "expected_answer": "mai",
+          "alt_answers": [
+            "mai",
+            "mai",
+            "mai",
+            "Mai"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mai",
+          "options": [
+            "may",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "may"
+        }
+      },
+      "lesson13": {
+        "title": "June",
+        "step1": {
+          "italian": "juin",
+          "english": "june",
+          "audio": "juin",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'juin' mean?",
+            "options": [
+              "june",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "june"
+          }
+        },
+        "step2": {
+          "type_prompt": "j__n  = june",
+          "expected_answer": "juin",
+          "alt_answers": [
+            "juin",
+            "juin",
+            "juin",
+            "Juin"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "juin",
+          "options": [
+            "june",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "june"
+        }
+      },
+      "lesson14": {
+        "title": "July",
+        "step1": {
+          "italian": "juillet",
+          "english": "july",
+          "audio": "juillet",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'juillet' mean?",
+            "options": [
+              "july",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "july"
+          }
+        },
+        "step2": {
+          "type_prompt": "j_____t  = july",
+          "expected_answer": "juillet",
+          "alt_answers": [
+            "juillet",
+            "juillet",
+            "juillet",
+            "Juillet"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "juillet",
+          "options": [
+            "july",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "july"
+        }
+      },
+      "lesson15": {
+        "title": "August",
+        "step1": {
+          "italian": "août",
+          "english": "august",
+          "audio": "août",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'août' mean?",
+            "options": [
+              "august",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "august"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__t  = august",
+          "expected_answer": "août",
+          "alt_answers": [
+            "août",
+            "août",
+            "août",
+            "Août"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "août",
+          "options": [
+            "august",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "august"
+        }
+      },
+      "lesson16": {
+        "title": "September",
+        "step1": {
+          "italian": "septembre",
+          "english": "september",
+          "audio": "septembre",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'septembre' mean?",
+            "options": [
+              "september",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "september"
+          }
+        },
+        "step2": {
+          "type_prompt": "s_______e  = september",
+          "expected_answer": "septembre",
+          "alt_answers": [
+            "septembre",
+            "septembre",
+            "septembre",
+            "Septembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "septembre",
+          "options": [
+            "september",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "september"
+        }
+      },
+      "lesson17": {
+        "title": "October",
+        "step1": {
+          "italian": "octobre",
+          "english": "october",
+          "audio": "octobre",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'octobre' mean?",
+            "options": [
+              "october",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "october"
+          }
+        },
+        "step2": {
+          "type_prompt": "o_____e  = october",
+          "expected_answer": "octobre",
+          "alt_answers": [
+            "octobre",
+            "octobre",
+            "octobre",
+            "Octobre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "octobre",
+          "options": [
+            "october",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "october"
+        }
+      },
+      "lesson18": {
+        "title": "November",
+        "step1": {
+          "italian": "novembre",
+          "english": "november",
+          "audio": "novembre",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'novembre' mean?",
+            "options": [
+              "november",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "november"
+          }
+        },
+        "step2": {
+          "type_prompt": "n______e  = november",
+          "expected_answer": "novembre",
+          "alt_answers": [
+            "novembre",
+            "novembre",
+            "novembre",
+            "Novembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "novembre",
+          "options": [
+            "november",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "november"
+        }
+      },
+      "lesson19": {
+        "title": "December",
+        "step1": {
+          "italian": "décembre",
+          "english": "december",
+          "audio": "décembre",
+          "note": "Months are not capitalized in French.",
+          "mcq": {
+            "question": "What does 'décembre' mean?",
+            "options": [
+              "december",
+              "day",
+              "season",
+              "week"
+            ],
+            "answer": "december"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______e  = december",
+          "expected_answer": "décembre",
+          "alt_answers": [
+            "décembre",
+            "décembre",
+            "décembre",
+            "Décembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "décembre",
+          "options": [
+            "december",
+            "day",
+            "season",
+            "week"
+          ],
+          "answer": "december"
+        }
+      },
+      "lesson20": {
+        "title": "What time is it?",
+        "step1": {
+          "italian": "Quelle heure est-il ?",
+          "english": "What time is it?",
+          "audio": "Quelle heure est-il ?",
+          "note": "Standard way to ask the time.",
+          "mcq": {
+            "question": "What does 'Quelle heure est-il ?' mean?",
+            "options": [
+              "What time is it?",
+              "What day is it?",
+              "What’s the date?",
+              "Where is it?"
+            ],
+            "answer": "What time is it?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Quel__ heu__ est-il ?  = What time is it?",
+          "expected_answer": "Quelle heure est-il ?",
+          "alt_answers": [
+            "Quelle heure est-il ?",
+            "quelle heure est-il ?",
+            "Quelle heure est-il ?",
+            "Quelle heure est-il ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quelle heure est-il ?",
+          "options": [
+            "What time is it?",
+            "What day is it?",
+            "What’s the date?",
+            "Where is it?"
+          ],
+          "answer": "What time is it?"
+        }
+      },
+      "lesson21": {
+        "title": "It’s 1:00",
+        "step1": {
+          "italian": "Il est une heure.",
+          "english": "It’s 1:00",
+          "audio": "Il est une heure.",
+          "note": "Use singular 'heure' for 1 o’clock.",
+          "mcq": {
+            "question": "What does 'Il est une heure.' mean?",
+            "options": [
+              "It’s 1:00",
+              "It’s noon",
+              "It’s midnight",
+              "It’s 2:00"
+            ],
+            "answer": "It’s 1:00"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il est __e heure.  = It’s 1:00",
+          "expected_answer": "Il est une heure.",
+          "alt_answers": [
+            "Il est une heure.",
+            "il est une heure.",
+            "Il est une heure.",
+            "Il est une heure."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est une heure.",
+          "options": [
+            "It’s 1:00",
+            "It’s noon",
+            "It’s midnight",
+            "It’s 2:00"
+          ],
+          "answer": "It’s 1:00"
+        }
+      },
+      "lesson22": {
+        "title": "It’s 2:00",
+        "step1": {
+          "italian": "Il est deux heures.",
+          "english": "It’s 2:00",
+          "audio": "Il est deux heures.",
+          "note": "Use plural 'heures' from 2 o’clock onward.",
+          "mcq": {
+            "question": "What does 'Il est deux heures.' mean?",
+            "options": [
+              "It’s 2:00",
+              "It’s 1:00",
+              "It’s noon",
+              "It’s midnight"
+            ],
+            "answer": "It’s 2:00"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il est d__x heures.  = It’s 2:00",
+          "expected_answer": "Il est deux heures.",
+          "alt_answers": [
+            "Il est deux heures.",
+            "il est deux heures.",
+            "Il est deux heures.",
+            "Il est deux heures."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est deux heures.",
+          "options": [
+            "It’s 2:00",
+            "It’s 1:00",
+            "It’s noon",
+            "It’s midnight"
+          ],
+          "answer": "It’s 2:00"
+        }
+      },
+      "lesson23": {
+        "title": "It’s noon",
+        "step1": {
+          "italian": "Il est midi.",
+          "english": "It’s noon",
+          "audio": "Il est midi.",
+          "note": "'midi' is used without 'heures'.",
+          "mcq": {
+            "question": "What does 'Il est midi.' mean?",
+            "options": [
+              "It’s noon",
+              "It’s midnight",
+              "It’s 1:00",
+              "It’s morning"
+            ],
+            "answer": "It’s noon"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il est m__i.  = It’s noon",
+          "expected_answer": "Il est midi.",
+          "alt_answers": [
+            "Il est midi.",
+            "il est midi.",
+            "Il est midi.",
+            "Il est midi."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est midi.",
+          "options": [
+            "It’s noon",
+            "It’s midnight",
+            "It’s 1:00",
+            "It’s morning"
+          ],
+          "answer": "It’s noon"
+        }
+      },
+      "lesson24": {
+        "title": "It’s midnight",
+        "step1": {
+          "italian": "Il est minuit.",
+          "english": "It’s midnight",
+          "audio": "Il est minuit.",
+          "note": "'minuit' is used without 'heures'.",
+          "mcq": {
+            "question": "What does 'Il est minuit.' mean?",
+            "options": [
+              "It’s midnight",
+              "It’s noon",
+              "It’s 2:00",
+              "It’s evening"
+            ],
+            "answer": "It’s midnight"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il est mi__it.  = It’s midnight",
+          "expected_answer": "Il est minuit.",
+          "alt_answers": [
+            "Il est minuit.",
+            "il est minuit.",
+            "Il est minuit.",
+            "Il est minuit."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est minuit.",
+          "options": [
+            "It’s midnight",
+            "It’s noon",
+            "It’s 2:00",
+            "It’s evening"
+          ],
+          "answer": "It’s midnight"
+        }
+      },
+      "lesson25": {
+        "title": "… and a quarter",
+        "step1": {
+          "italian": "et quart",
+          "english": "… and a quarter",
+          "audio": "et quart",
+          "note": "Add after the hour: 'Il est deux heures et quart.'",
+          "mcq": {
+            "question": "What does 'et quart' mean?",
+            "options": [
+              "… and a quarter",
+              "… minus a quarter",
+              "… and a half",
+              "… minus ten"
+            ],
+            "answer": "… and a quarter"
+          }
+        },
+        "step2": {
+          "type_prompt": "et q__rt  = … and a quarter",
+          "expected_answer": "et quart",
+          "alt_answers": [
+            "et quart",
+            "et quart",
+            "et quart",
+            "Et quart"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est trois heures et quart.",
+          "options": [
+            "It’s 3:15.",
+            "It’s 3:30.",
+            "It’s 2:45.",
+            "It’s 3:10."
+          ],
+          "answer": "It’s 3:15."
+        }
+      },
+      "lesson26": {
+        "title": "… and a half",
+        "step1": {
+          "italian": "et demie",
+          "english": "… and a half",
+          "audio": "et demie",
+          "note": "Agree with 'heure' (fem.): 'Il est une heure et demie'; but 'Il est midi et demi'.",
+          "mcq": {
+            "question": "What does 'et demie' mean?",
+            "options": [
+              "… and a half",
+              "… minus a quarter",
+              "… and a quarter",
+              "… minus ten"
+            ],
+            "answer": "… and a half"
+          }
+        },
+        "step2": {
+          "type_prompt": "et d_mie  = … and a half",
+          "expected_answer": "et demie",
+          "alt_answers": [
+            "et demie",
+            "et demie",
+            "et demie",
+            "Et demie"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est quatre heures et demie.",
+          "options": [
+            "It’s 4:30.",
+            "It’s 4:15.",
+            "It’s 3:30.",
+            "It’s 4:45."
+          ],
+          "answer": "It’s 4:30."
+        }
+      },
+      "lesson27": {
+        "title": "… minus ten",
+        "step1": {
+          "italian": "moins dix",
+          "english": "… minus ten",
+          "audio": "moins dix",
+          "note": "Use for times like 5:50: 'Il est six heures moins dix.'",
+          "mcq": {
+            "question": "What does 'moins dix' mean?",
+            "options": [
+              "… minus ten",
+              "… minus a quarter",
+              "… and a half",
+              "… and a quarter"
+            ],
+            "answer": "… minus ten"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__ns dix  = … minus ten",
+          "expected_answer": "moins dix",
+          "alt_answers": [
+            "moins dix",
+            "moins dix",
+            "moins dix",
+            "Moins dix"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est six heures moins dix.",
+          "options": [
+            "It’s 5:50.",
+            "It’s 6:10.",
+            "It’s 6:15.",
+            "It’s 6:30."
+          ],
+          "answer": "It’s 5:50."
+        }
+      },
+      "lesson28": {
+        "title": "… minus a quarter",
+        "step1": {
+          "italian": "moins le quart",
+          "english": "… minus a quarter",
+          "audio": "moins le quart",
+          "note": "Use for :45 times: 'Il est sept heures moins le quart.'",
+          "mcq": {
+            "question": "What does 'moins le quart' mean?",
+            "options": [
+              "… minus a quarter",
+              "… minus ten",
+              "… and a quarter",
+              "… and a half"
+            ],
+            "answer": "… minus a quarter"
+          }
+        },
+        "step2": {
+          "type_prompt": "mo_ns le q__rt  = … minus a quarter",
+          "expected_answer": "moins le quart",
+          "alt_answers": [
+            "moins le quart",
+            "moins le quart",
+            "moins le quart",
+            "Moins le quart"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il est sept heures moins le quart.",
+          "options": [
+            "It’s 6:45.",
+            "It’s 7:15.",
+            "It’s 7:45.",
+            "It’s 7:10."
+          ],
+          "answer": "It’s 6:45."
+        }
+      },
+      "lesson29": {
+        "title": "What’s today’s date?",
+        "step1": {
+          "italian": "Quelle est la date aujourd’hui ?",
+          "english": "What’s today’s date?",
+          "audio": "Quelle est la date aujourd’hui ?",
+          "note": "Common way to ask the date.",
+          "mcq": {
+            "question": "What does 'Quelle est la date aujourd’hui ?' mean?",
+            "options": [
+              "What’s today’s date?",
+              "What day is it?",
+              "What time is it?",
+              "Where are we?"
+            ],
+            "answer": "What’s today’s date?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Quel__ est la d__e aujourd’hui ?  = What’s today’s date?",
+          "expected_answer": "Quelle est la date aujourd’hui ?",
+          "alt_answers": [
+            "Quelle est la date aujourd’hui ?",
+            "quelle est la date aujourd’hui ?",
+            "Quelle est la date aujourd'hui ?",
+            "Quelle est la date aujourd’hui ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quelle est la date aujourd’hui ?",
+          "options": [
+            "What’s today’s date?",
+            "What day is it?",
+            "What time is it?",
+            "Where are we?"
+          ],
+          "answer": "What’s today’s date?"
+        }
+      },
+      "lesson30": {
+        "title": "Today is March 1st",
+        "step1": {
+          "italian": "Aujourd’hui, c’est le 1er mars.",
+          "english": "Today is March 1st",
+          "audio": "Aujourd’hui, c’est le 1er mars.",
+          "note": "Use 'le' before the date; '1er' is for the first.",
+          "mcq": {
+            "question": "What does 'Aujourd’hui, c’est le 1er mars.' mean?",
+            "options": [
+              "Today is March 1st",
+              "Today is January 1st",
+              "Today is March 2nd",
+              "Today is April 1st"
+            ],
+            "answer": "Today is March 1st"
+          }
+        },
+        "step2": {
+          "type_prompt": "Aujour__’hui, c’est le 1er m__s.  = Today is March 1st",
+          "expected_answer": "Aujourd’hui, c’est le 1er mars.",
+          "alt_answers": [
+            "Aujourd’hui, c’est le 1er mars.",
+            "Aujourd'hui, c’est le 1er mars.",
+            "Aujourd'hui, c'est le 1er mars."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Aujourd’hui, c’est le 1er mars.",
+          "options": [
+            "Today is March 1st",
+            "Today is March 2nd",
+            "Today is January 1st",
+            "Today is April 1st"
+          ],
+          "answer": "Today is March 1st"
+        }
+      },
+      "lesson31": {
+        "title": "Yesterday",
+        "step1": {
+          "italian": "hier",
+          "english": "yesterday",
+          "audio": "hier",
+          "note": "Useful relative day word.",
+          "mcq": {
+            "question": "What does 'hier' mean?",
+            "options": [
+              "yesterday",
+              "today",
+              "tomorrow",
+              "yesterday"
+            ],
+            "answer": "yesterday"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__r  = yesterday",
+          "expected_answer": "hier",
+          "alt_answers": [
+            "hier",
+            "hier",
+            "hier",
+            "Hier"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hier",
+          "options": [
+            "yesterday",
+            "today",
+            "tomorrow"
+          ],
+          "answer": "yesterday"
+        }
+      },
+      "lesson32": {
+        "title": "Today",
+        "step1": {
+          "italian": "aujourd’hui",
+          "english": "today",
+          "audio": "aujourd’hui",
+          "note": "Useful relative day word.",
+          "mcq": {
+            "question": "What does 'aujourd’hui' mean?",
+            "options": [
+              "today",
+              "today",
+              "tomorrow",
+              "yesterday"
+            ],
+            "answer": "today"
+          }
+        },
+        "step2": {
+          "type_prompt": "a_________i  = today",
+          "expected_answer": "aujourd’hui",
+          "alt_answers": [
+            "aujourd’hui",
+            "aujourd’hui",
+            "aujourd'hui",
+            "Aujourd’hui"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "aujourd’hui",
+          "options": [
+            "today",
+            "tomorrow",
+            "yesterday"
+          ],
+          "answer": "today"
+        }
+      },
+      "lesson33": {
+        "title": "Tomorrow",
+        "step1": {
+          "italian": "demain",
+          "english": "tomorrow",
+          "audio": "demain",
+          "note": "Useful relative day word.",
+          "mcq": {
+            "question": "What does 'demain' mean?",
+            "options": [
+              "tomorrow",
+              "today",
+              "tomorrow",
+              "yesterday"
+            ],
+            "answer": "tomorrow"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____n  = tomorrow",
+          "expected_answer": "demain",
+          "alt_answers": [
+            "demain",
+            "demain",
+            "demain",
+            "Demain"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "demain",
+          "options": [
+            "tomorrow",
+            "today",
+            "yesterday"
+          ],
+          "answer": "tomorrow"
+        }
+      },
+      "lesson34": {
+        "title": "The Day After Tomorrow",
+        "step1": {
+          "italian": "après-demain",
+          "english": "the day after tomorrow",
+          "audio": "après-demain",
+          "note": "Useful relative day word.",
+          "mcq": {
+            "question": "What does 'après-demain' mean?",
+            "options": [
+              "the day after tomorrow",
+              "today",
+              "tomorrow",
+              "yesterday"
+            ],
+            "answer": "the day after tomorrow"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__________n  = the day after tomorrow",
+          "expected_answer": "après-demain",
+          "alt_answers": [
+            "après-demain",
+            "après-demain",
+            "après-demain",
+            "Après-demain"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "après-demain",
+          "options": [
+            "the day after tomorrow",
+            "today",
+            "tomorrow",
+            "yesterday"
+          ],
+          "answer": "the day after tomorrow"
+        }
+      },
+      "lesson35": {
+        "title": "In The Morning",
+        "step1": {
+          "italian": "du matin",
+          "english": "in the morning",
+          "audio": "du matin",
+          "note": "Used with clock times: e.g., 'à 9h du matin'.",
+          "mcq": {
+            "question": "What does 'du matin' mean?",
+            "options": [
+              "in the morning",
+              "good morning",
+              "good night",
+              "midnight"
+            ],
+            "answer": "in the morning"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______n  = in the morning",
+          "expected_answer": "du matin",
+          "alt_answers": [
+            "du matin",
+            "du matin",
+            "du matin",
+            "Du matin"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "du matin",
+          "options": [
+            "in the morning",
+            "good morning",
+            "good night",
+            "midnight"
+          ],
+          "answer": "in the morning"
+        }
+      },
+      "lesson36": {
+        "title": "In The Afternoon",
+        "step1": {
+          "italian": "de l’après-midi",
+          "english": "in the afternoon",
+          "audio": "de l’après-midi",
+          "note": "Used with clock times: e.g., 'à 9h du matin'.",
+          "mcq": {
+            "question": "What does 'de l’après-midi' mean?",
+            "options": [
+              "in the afternoon",
+              "good morning",
+              "good night",
+              "midnight"
+            ],
+            "answer": "in the afternoon"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_____________i  = in the afternoon",
+          "expected_answer": "de l’après-midi",
+          "alt_answers": [
+            "de l’après-midi",
+            "de l’après-midi",
+            "de l'après-midi",
+            "De l’après-midi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "de l’après-midi",
+          "options": [
+            "in the afternoon",
+            "good morning",
+            "good night",
+            "midnight"
+          ],
+          "answer": "in the afternoon"
+        }
+      },
+      "lesson37": {
+        "title": "In The Evening",
+        "step1": {
+          "italian": "du soir",
+          "english": "in the evening",
+          "audio": "du soir",
+          "note": "Used with clock times: e.g., 'à 9h du matin'.",
+          "mcq": {
+            "question": "What does 'du soir' mean?",
+            "options": [
+              "in the evening",
+              "good morning",
+              "good night",
+              "midnight"
+            ],
+            "answer": "in the evening"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_____r  = in the evening",
+          "expected_answer": "du soir",
+          "alt_answers": [
+            "du soir",
+            "du soir",
+            "du soir",
+            "Du soir"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "du soir",
+          "options": [
+            "in the evening",
+            "good morning",
+            "good night",
+            "midnight"
+          ],
+          "answer": "in the evening"
+        }
+      },
+      "lesson38": {
+        "title": "At Night",
+        "step1": {
+          "italian": "la nuit",
+          "english": "at night",
+          "audio": "la nuit",
+          "note": "Used with clock times: e.g., 'à 9h du matin'.",
+          "mcq": {
+            "question": "What does 'la nuit' mean?",
+            "options": [
+              "at night",
+              "good morning",
+              "good night",
+              "midnight"
+            ],
+            "answer": "at night"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____t  = at night",
+          "expected_answer": "la nuit",
+          "alt_answers": [
+            "la nuit",
+            "la nuit",
+            "la nuit",
+            "La nuit"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la nuit",
+          "options": [
+            "at night",
+            "good morning",
+            "good night",
+            "midnight"
+          ],
+          "answer": "at night"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,844 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Learn the most common ways to say hello and goodbye in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Hello / Hi",
+        "step1": {
+          "spanish": "¡Hola!",
+          "english": "Hello / Hi",
+          "audio": "Hola!",
+          "note": "Universal greeting for all times of day. Works in formal and informal situations.",
+          "mcq": {
+            "question": "Which phrase means 'Hello / Hi'?",
+            "options": [
+              "Adiós",
+              "¡Hola!",
+              "Buenas noches",
+              "Buenos días"
+            ],
+            "answer": "¡Hola!"
+          }
+        },
+        "step2": {
+          "type_prompt": "¡Ho__!  = Hello / Hi",
+          "expected_answer": "¡Hola!",
+          "alt_answers": [
+            "Hola!",
+            "hola!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¡Hola!",
+          "options": [
+            "Hello!",
+            "Goodbye!",
+            "Good morning!",
+            "Good night!"
+          ],
+          "answer": "Hello!"
+        }
+      },
+      "lesson2": {
+        "title": "Hi / Hello (casual)",
+        "step1": {
+          "spanish": "¡Buenas!",
+          "english": "Hi / Hello (casual)",
+          "audio": "Buenas!",
+          "note": "Informal; common short greeting in Spain and Latin America.",
+          "mcq": {
+            "question": "Which phrase means 'Hi / Hello' casually?",
+            "options": [
+              "¡Buenas!",
+              "Buenos días",
+              "Adiós",
+              "Buenas noches"
+            ],
+            "answer": "¡Buenas!"
+          }
+        },
+        "step2": {
+          "type_prompt": "¡Bue__s!  = Hi / Hello (casual)",
+          "expected_answer": "¡Buenas!",
+          "alt_answers": [
+            "Buenas!",
+            "buenas!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¡Buenas!",
+          "options": [
+            "Hi!",
+            "Goodbye!",
+            "Good night!",
+            "Good afternoon!"
+          ],
+          "answer": "Hi!"
+        }
+      },
+      "lesson3": {
+        "title": "Good morning / Good day",
+        "step1": {
+          "spanish": "Buenos días",
+          "english": "Good morning / Good day",
+          "audio": "Buenos días",
+          "note": "Used until around noon in most Spanish-speaking countries.",
+          "mcq": {
+            "question": "Which phrase means 'Good morning'?",
+            "options": [
+              "Buenos días",
+              "Buenas tardes",
+              "Buenas noches",
+              "Adiós"
+            ],
+            "answer": "Buenos días"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buenos d__s  = Good morning / Good day",
+          "expected_answer": "Buenos días",
+          "alt_answers": [
+            "buenos días"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buenos días",
+          "options": [
+            "Good morning!",
+            "Good afternoon!",
+            "Good evening!",
+            "Hello!"
+          ],
+          "answer": "Good morning!"
+        }
+      },
+      "lesson4": {
+        "title": "Good afternoon",
+        "step1": {
+          "spanish": "Buenas tardes",
+          "english": "Good afternoon",
+          "audio": "Buenas tardes",
+          "note": "Used from about 1 pm until sunset.",
+          "mcq": {
+            "question": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "Buenas tardes",
+              "Buenos días",
+              "Buenas noches",
+              "Hola"
+            ],
+            "answer": "Buenas tardes"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buenas tar__s  = Good afternoon",
+          "expected_answer": "Buenas tardes",
+          "alt_answers": [
+            "buenas tardes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buenas tardes",
+          "options": [
+            "Good afternoon!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Good afternoon!"
+        }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Hello / Hi'?",
+            "options": [
+              "Buenos días",
+              "Buenas tardes",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "¡Hola!"
+          },
+          {
+            "prompt": "Which phrase means 'Hi / Hello (casual)'?",
+            "options": [
+              "Buenas tardes",
+              "¡Buenas!",
+              "¡Hola!",
+              "Buenos días"
+            ],
+            "answer": "¡Buenas!"
+          },
+          {
+            "prompt": "Which phrase means 'Good morning / Good day'?",
+            "options": [
+              "Buenas tardes",
+              "Buenos días",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Buenos días"
+          },
+          {
+            "prompt": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "¡Buenas!",
+              "Buenos días",
+              "Buenas tardes",
+              "¡Hola!"
+            ],
+            "answer": "Buenas tardes"
+          },
+          {
+            "prompt": "Which phrase means 'Hello / Hi'?",
+            "options": [
+              "Buenos días",
+              "Buenas tardes",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "¡Hola!"
+          },
+          {
+            "prompt": "Which phrase means 'Hi / Hello (casual)'?",
+            "options": [
+              "Buenas tardes",
+              "¡Buenas!",
+              "¡Hola!",
+              "Buenos días"
+            ],
+            "answer": "¡Buenas!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson5": {
+        "title": "Good evening / Good night",
+        "step1": {
+          "spanish": "Buenas noches",
+          "english": "Good evening / Good night",
+          "audio": "Buenas noches",
+          "note": "Used both for greeting in the evening and for saying goodbye at night.",
+          "mcq": {
+            "question": "Which phrase means 'Good evening / Good night'?",
+            "options": [
+              "Buenas noches",
+              "Buenas tardes",
+              "Buenos días",
+              "Adiós"
+            ],
+            "answer": "Buenas noches"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buenas noc__s  = Good evening / Good night",
+          "expected_answer": "Buenas noches",
+          "alt_answers": [
+            "buenas noches"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buenas noches",
+          "options": [
+            "Good evening!",
+            "Good morning!",
+            "Good afternoon!",
+            "Hello!"
+          ],
+          "answer": "Good evening!"
+        }
+      },
+      "lesson6": {
+        "title": "Have a nice day",
+        "step1": {
+          "spanish": "Que tengas buen día",
+          "english": "Have a nice day",
+          "audio": "Que tengas buen día",
+          "note": "Informal; for formal say 'Que tenga buen día'.",
+          "mcq": {
+            "question": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Que tengas buen día",
+              "Buenas tardes",
+              "Hasta luego",
+              "Adiós"
+            ],
+            "answer": "Que tengas buen día"
+          }
+        },
+        "step2": {
+          "type_prompt": "Que tengas b__n día  = Have a nice day",
+          "expected_answer": "Que tengas buen día",
+          "alt_answers": [
+            "que tengas buen día"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Que tengas buen día",
+          "options": [
+            "Have a nice day!",
+            "Good night!",
+            "Good afternoon!",
+            "Good morning!"
+          ],
+          "answer": "Have a nice day!"
+        }
+      },
+      "lesson7": {
+        "title": "Have a good afternoon",
+        "step1": {
+          "spanish": "Que tengas buena tarde",
+          "english": "Have a good afternoon",
+          "audio": "Que tengas buena tarde",
+          "note": "Friendly afternoon farewell.",
+          "mcq": {
+            "question": "Which phrase means 'Have a good afternoon'?",
+            "options": [
+              "Que tengas buena tarde",
+              "Buenas noches",
+              "Buenos días",
+              "Hola"
+            ],
+            "answer": "Que tengas buena tarde"
+          }
+        },
+        "step2": {
+          "type_prompt": "Que tengas bu__a tarde  = Have a good afternoon",
+          "expected_answer": "Que tengas buena tarde",
+          "alt_answers": [
+            "que tengas buena tarde"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Que tengas buena tarde",
+          "options": [
+            "Have a good afternoon!",
+            "Good evening!",
+            "Goodbye!",
+            "Hello!"
+          ],
+          "answer": "Have a good afternoon!"
+        }
+      },
+      "lesson8": {
+        "title": "Have a good evening/night",
+        "step1": {
+          "spanish": "Que tengas buena noche",
+          "english": "Have a good evening/night",
+          "audio": "Que tengas buena noche",
+          "note": "Farewell in the evening or before sleeping.",
+          "mcq": {
+            "question": "Which phrase means 'Have a good evening/night'?",
+            "options": [
+              "Que tengas buena noche",
+              "Buenas tardes",
+              "Buenos días",
+              "Adiós"
+            ],
+            "answer": "Que tengas buena noche"
+          }
+        },
+        "step2": {
+          "type_prompt": "Que tengas bu__a noche  = Have a good evening/night",
+          "expected_answer": "Que tengas buena noche",
+          "alt_answers": [
+            "que tengas buena noche"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Que tengas buena noche",
+          "options": [
+            "Have a good night!",
+            "Goodbye!",
+            "Hello!",
+            "Good afternoon!"
+          ],
+          "answer": "Have a good night!"
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Good evening / Good night'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Buenas noches"
+            ],
+            "answer": "Buenas noches"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Buenos días",
+              "Que tengas buen día",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Que tengas buen día"
+          },
+          {
+            "prompt": "Which phrase means 'Have a good afternoon'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Que tengas buena tarde"
+            ],
+            "answer": "Que tengas buena tarde"
+          },
+          {
+            "prompt": "Which phrase means 'Have a good evening/night'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Que tengas buena noche"
+            ],
+            "answer": "Que tengas buena noche"
+          },
+          {
+            "prompt": "Which phrase means 'Good evening / Good night'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Buenas noches"
+            ],
+            "answer": "Buenas noches"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Buenos días",
+              "Que tengas buen día",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Que tengas buen día"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson9": {
+        "title": "Goodbye",
+        "step1": {
+          "spanish": "Adiós",
+          "english": "Goodbye",
+          "audio": "Adiós",
+          "note": "Standard and polite farewell in all situations.",
+          "mcq": {
+            "question": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Adiós",
+              "Hola",
+              "Buenas noches",
+              "Hasta luego"
+            ],
+            "answer": "Adiós"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ad__s  = Goodbye",
+          "expected_answer": "Adiós",
+          "alt_answers": [
+            "adiós",
+            "adios"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Adiós",
+          "options": [
+            "Goodbye!",
+            "Hello!",
+            "Good morning!",
+            "Good night!"
+          ],
+          "answer": "Goodbye!"
+        }
+      },
+      "lesson10": {
+        "title": "See you later",
+        "step1": {
+          "spanish": "Hasta luego",
+          "english": "See you later",
+          "audio": "Hasta luego",
+          "note": "Friendly, can mean later today or just 'bye'.",
+          "mcq": {
+            "question": "Which phrase means 'See you later'?",
+            "options": [
+              "Hasta luego",
+              "Adiós",
+              "Hola",
+              "Buenas noches"
+            ],
+            "answer": "Hasta luego"
+          }
+        },
+        "step2": {
+          "type_prompt": "Hasta lu__go  = See you later",
+          "expected_answer": "Hasta luego",
+          "alt_answers": [
+            "hasta luego"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Hasta luego",
+          "options": [
+            "See you later!",
+            "Goodbye!",
+            "Good morning!",
+            "Good evening!"
+          ],
+          "answer": "See you later!"
+        }
+      },
+      "lesson11": {
+        "title": "See you",
+        "step1": {
+          "spanish": "Nos vemos",
+          "english": "See you",
+          "audio": "Nos vemos",
+          "note": "Informal; often means 'see you soon'.",
+          "mcq": {
+            "question": "Which phrase means 'See you'?",
+            "options": [
+              "Nos vemos",
+              "Hasta luego",
+              "Adiós",
+              "Hola"
+            ],
+            "answer": "Nos vemos"
+          }
+        },
+        "step2": {
+          "type_prompt": "Nos ve__os  = See you",
+          "expected_answer": "Nos vemos",
+          "alt_answers": [
+            "nos vemos"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Nos vemos",
+          "options": [
+            "See you!",
+            "Goodbye!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "See you!"
+        }
+      },
+      "lesson12": {
+        "title": "Bye! (casual)",
+        "step1": {
+          "spanish": "Chao",
+          "english": "Bye!",
+          "audio": "Chao",
+          "note": "Casual farewell; common in Latin America, also used in Spain.",
+          "mcq": {
+            "question": "Which phrase means 'Bye!'?",
+            "options": [
+              "Chao",
+              "Adiós",
+              "Buenas noches",
+              "Hola"
+            ],
+            "answer": "Chao"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ch__  = Bye!",
+          "expected_answer": "Chao",
+          "alt_answers": [
+            "chao",
+            "chau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Chao",
+          "options": [
+            "Bye!",
+            "Hello!",
+            "Good morning!",
+            "Good night!"
+          ],
+          "answer": "Bye!"
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Buenos días",
+              "Adiós",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Adiós"
+          },
+          {
+            "prompt": "Which phrase means 'See you later'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Hasta luego"
+            ],
+            "answer": "Hasta luego"
+          },
+          {
+            "prompt": "Which phrase means 'See you'?",
+            "options": [
+              "Buenos días",
+              "Nos vemos",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Nos vemos"
+          },
+          {
+            "prompt": "Which phrase means 'Bye!'?",
+            "options": [
+              "Chao",
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días"
+            ],
+            "answer": "Chao"
+          },
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Buenos días",
+              "Adiós",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Adiós"
+          },
+          {
+            "prompt": "Which phrase means 'See you later'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Hasta luego"
+            ],
+            "answer": "Hasta luego"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson13": {
+        "title": "Pleased to meet you",
+        "step1": {
+          "spanish": "Mucho gusto",
+          "english": "Pleased to meet you",
+          "audio": "Mucho gusto",
+          "note": "Universal for meeting someone for the first time.",
+          "mcq": {
+            "question": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Mucho gusto",
+              "Adiós",
+              "Buenas tardes",
+              "Hola"
+            ],
+            "answer": "Mucho gusto"
+          }
+        },
+        "step2": {
+          "type_prompt": "Mu__o gusto  = Pleased to meet you",
+          "expected_answer": "Mucho gusto",
+          "alt_answers": [
+            "mucho gusto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mucho gusto",
+          "options": [
+            "Pleased to meet you!",
+            "Goodbye!",
+            "Hello!",
+            "Good morning!"
+          ],
+          "answer": "Pleased to meet you!"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–13",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Hello / Hi'?",
+            "options": [
+              "Buenos días",
+              "Buenas tardes",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "¡Hola!"
+          },
+          {
+            "prompt": "Which phrase means 'Hi / Hello (casual)'?",
+            "options": [
+              "Buenas tardes",
+              "¡Buenas!",
+              "¡Hola!",
+              "Buenos días"
+            ],
+            "answer": "¡Buenas!"
+          },
+          {
+            "prompt": "Which phrase means 'Good morning / Good day'?",
+            "options": [
+              "Buenas tardes",
+              "Buenos días",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Buenos días"
+          },
+          {
+            "prompt": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "¡Buenas!",
+              "Buenos días",
+              "Buenas tardes",
+              "¡Hola!"
+            ],
+            "answer": "Buenas tardes"
+          },
+          {
+            "prompt": "Which phrase means 'Good evening / Good night'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Buenas noches"
+            ],
+            "answer": "Buenas noches"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Buenos días",
+              "Que tengas buen día",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Que tengas buen día"
+          },
+          {
+            "prompt": "Which phrase means 'Have a good evening/night'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Que tengas buena noche"
+            ],
+            "answer": "Que tengas buena noche"
+          },
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Buenos días",
+              "Adiós",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Adiós"
+          },
+          {
+            "prompt": "Which phrase means 'See you later'?",
+            "options": [
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días",
+              "Hasta luego"
+            ],
+            "answer": "Hasta luego"
+          },
+          {
+            "prompt": "Which phrase means 'See you'?",
+            "options": [
+              "Buenos días",
+              "Nos vemos",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Nos vemos"
+          },
+          {
+            "prompt": "Which phrase means 'Bye!'?",
+            "options": [
+              "Chao",
+              "¡Hola!",
+              "¡Buenas!",
+              "Buenos días"
+            ],
+            "answer": "Chao"
+          },
+          {
+            "prompt": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Buenos días",
+              "Mucho gusto",
+              "¡Hola!",
+              "¡Buenas!"
+            ],
+            "answer": "Mucho gusto"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 9,
+          "questions": 12
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      }
+    }
+  }
+}

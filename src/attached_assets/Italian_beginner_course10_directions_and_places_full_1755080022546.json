@@ -1,0 +1,795 @@
+{
+  "course10": {
+    "title": "Directions and Places",
+    "description": "Ask for and understand directions; talk about locations. Each distinct word/phrase is its own lesson. Step 3 uses only previously taught or same‑course vocabulary.",
+    "lessons": {
+      "lesson1": {
+        "title": "Excuse me, where is the bathroom? (formal)",
+        "step1": {
+          "italian": "Scusi, dov'è il bagno?",
+          "english": "Excuse me, where is the bathroom?",
+          "audio": "Scusi, dov'è il bagno?",
+          "note": "Formal for strangers: Scusi…  Informal with friends: Scusa, dov'è il bagno?",
+          "mcq": {
+            "question": "Which phrase means 'Excuse me, where is the bathroom?'?",
+            "options": [
+              "Scusi, dov'è il bagno?",
+              "Dov'è la stazione?",
+              "A destra",
+              "Qui"
+            ],
+            "answer": "Scusi, dov'è il bagno?"
+          }
+        },
+        "step2": {
+          "type_prompt": "S___i, d___è il b___o?  = Excuse me, where is the bathroom?",
+          "expected_answer": "Scusi, dov'è il bagno?",
+          "alt_answers": [
+            "Scusi, dov'è il bagno?",
+            "Scusa, dov'è il bagno?",
+            "Scusi dov'è il bagno?",
+            "Scusi, dove è il bagno?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Scusi, dov'è il bagno?",
+          "options": [
+            "Excuse me, where is the bathroom?",
+            "Where is the station?",
+            "To the right.",
+            "Here."
+          ],
+          "answer": "Excuse me, where is the bathroom?"
+        }
+      },
+      "lesson2": {
+        "title": "Where is the station?",
+        "step1": {
+          "italian": "Dov'è la stazione?",
+          "english": "Where is the station?",
+          "audio": "Dov'è la stazione?",
+          "note": "Use with city transit or trains.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the station?'?",
+            "options": [
+              "Dov'è la stazione?",
+              "Dov'è il bagno?",
+              "A sinistra",
+              "Lì"
+            ],
+            "answer": "Dov'è la stazione?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è la s______e?  = Where is the station?",
+          "expected_answer": "Dov'è la stazione?",
+          "alt_answers": [
+            "Dov'è la stazione?",
+            "Dove è la stazione?",
+            "dov'è la stazione?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Scusi, dov'è la stazione?",
+          "options": [
+            "Excuse me, where is the station?",
+            "To the left.",
+            "Straight ahead.",
+            "Here."
+          ],
+          "answer": "Excuse me, where is the station?"
+        }
+      },
+      "lesson3": {
+        "title": "Where is the bus stop?",
+        "step1": {
+          "italian": "Dov'è la fermata dell'autobus?",
+          "english": "Where is the bus stop?",
+          "audio": "Dov'è la fermata dell'autobus?",
+          "note": "You can also hear: fermata del bus.",
+          "mcq": {
+            "question": "Which phrase means 'Where is the bus stop?'?",
+            "options": [
+              "Dov'è la fermata dell'autobus?",
+              "Dov'è il museo?",
+              "A destra",
+              "Vicino"
+            ],
+            "answer": "Dov'è la fermata dell'autobus?"
+          }
+        },
+        "step2": {
+          "type_prompt": "D___è la f______a d___l'a______s?  = Where is the bus stop?",
+          "expected_answer": "Dov'è la fermata dell'autobus?",
+          "alt_answers": [
+            "Dov'è la fermata dell'autobus?",
+            "Dov'è la fermata del bus?",
+            "Dove è la fermata dell'autobus?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Scusi, dov'è la fermata dell'autobus?",
+          "options": [
+            "Excuse me, where is the bus stop?",
+            "Where is the museum?",
+            "To the right.",
+            "Near."
+          ],
+          "answer": "Excuse me, where is the bus stop?"
+        }
+      },
+      "lesson4": {
+        "title": "To the right",
+        "step1": {
+          "italian": "A destra",
+          "english": "To the right",
+          "audio": "A destra",
+          "note": "Direction word you’ll hear in answers.",
+          "mcq": {
+            "question": "Which phrase means 'To the right'?",
+            "options": [
+              "A destra",
+              "A sinistra",
+              "Dritto",
+              "Dietro"
+            ],
+            "answer": "A destra"
+          }
+        },
+        "step2": {
+          "type_prompt": "a d____a  = To the right",
+          "expected_answer": "A destra",
+          "alt_answers": [
+            "A destra",
+            "a destra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La banca è a destra.",
+          "options": [
+            "The bank is to the right.",
+            "The bank is to the left.",
+            "The bank is behind.",
+            "The bank is here."
+          ],
+          "answer": "The bank is to the right."
+        }
+      },
+      "lesson5": {
+        "title": "To the left",
+        "step1": {
+          "italian": "A sinistra",
+          "english": "To the left",
+          "audio": "A sinistra",
+          "note": "Pair with ‘a destra’.",
+          "mcq": {
+            "question": "Which phrase means 'To the left'?",
+            "options": [
+              "A sinistra",
+              "A destra",
+              "Dritto",
+              "Davanti"
+            ],
+            "answer": "A sinistra"
+          }
+        },
+        "step2": {
+          "type_prompt": "a s_____a  = To the left",
+          "expected_answer": "A sinistra",
+          "alt_answers": [
+            "A sinistra",
+            "a sinistra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La stazione è a sinistra.",
+          "options": [
+            "The station is to the left.",
+            "The station is to the right.",
+            "The station is in front.",
+            "The station is behind."
+          ],
+          "answer": "The station is to the left."
+        }
+      },
+      "lesson6": {
+        "title": "Straight ahead",
+        "step1": {
+          "italian": "Dritto",
+          "english": "Straight (ahead)",
+          "audio": "Dritto",
+          "note": "Also heard as ‘sempre dritto’ (keep going straight).",
+          "mcq": {
+            "question": "Which phrase means 'Straight (ahead)'?",
+            "options": [
+              "Dritto",
+              "A destra",
+              "A sinistra",
+              "Dietro"
+            ],
+            "answer": "Dritto"
+          }
+        },
+        "step2": {
+          "type_prompt": "D____o  = Straight (ahead)",
+          "expected_answer": "Dritto",
+          "alt_answers": [
+            "Dritto",
+            "dritto",
+            "Sempre dritto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Vai dritto.",
+          "options": [
+            "Go straight ahead.",
+            "Go to the right.",
+            "Go to the left.",
+            "Go behind."
+          ],
+          "answer": "Go straight ahead."
+        }
+      },
+      "lesson7": {
+        "title": "Here",
+        "step1": {
+          "italian": "Qui",
+          "english": "Here",
+          "audio": "Qui",
+          "note": "Pointing near you.",
+          "mcq": {
+            "question": "Which phrase means 'Here'?",
+            "options": [
+              "Qui",
+              "Lì",
+              "Vicino",
+              "Lontano"
+            ],
+            "answer": "Qui"
+          }
+        },
+        "step2": {
+          "type_prompt": "q_i  = Here",
+          "expected_answer": "Qui",
+          "alt_answers": [
+            "Qui",
+            "qui"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La fermata è qui.",
+          "options": [
+            "The stop is here.",
+            "The stop is there.",
+            "The stop is near.",
+            "The stop is far."
+          ],
+          "answer": "The stop is here."
+        }
+      },
+      "lesson8": {
+        "title": "There",
+        "step1": {
+          "italian": "Lì",
+          "english": "There",
+          "audio": "Lì",
+          "note": "Pointing not near you. Variant: là.",
+          "mcq": {
+            "question": "Which phrase means 'There'?",
+            "options": [
+              "Lì",
+              "Qui",
+              "Davanti",
+              "Dietro"
+            ],
+            "answer": "Lì"
+          }
+        },
+        "step2": {
+          "type_prompt": "lì  = There",
+          "expected_answer": "Lì",
+          "alt_answers": [
+            "Lì",
+            "Li",
+            "lì",
+            "là"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il museo è lì.",
+          "options": [
+            "The museum is there.",
+            "The museum is here.",
+            "The museum is behind.",
+            "The museum is at the corner."
+          ],
+          "answer": "The museum is there."
+        }
+      },
+      "lesson9": {
+        "title": "Near",
+        "step1": {
+          "italian": "Vicino",
+          "english": "Near",
+          "audio": "Vicino",
+          "note": "Can agree with a noun (vicino/vicina).",
+          "mcq": {
+            "question": "Which phrase means 'Near'?",
+            "options": [
+              "Vicino",
+              "Lontano",
+              "Qui",
+              "Lì"
+            ],
+            "answer": "Vicino"
+          }
+        },
+        "step2": {
+          "type_prompt": "v____o  = Near",
+          "expected_answer": "Vicino",
+          "alt_answers": [
+            "Vicino",
+            "vicino",
+            "Vicina"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La farmacia è vicina.",
+          "options": [
+            "The pharmacy is near.",
+            "The pharmacy is far.",
+            "The pharmacy is behind.",
+            "The pharmacy is there."
+          ],
+          "answer": "The pharmacy is near."
+        }
+      },
+      "lesson10": {
+        "title": "Far",
+        "step1": {
+          "italian": "Lontano",
+          "english": "Far",
+          "audio": "Lontano",
+          "note": "Opposite of ‘vicino’.",
+          "mcq": {
+            "question": "Which phrase means 'Far'?",
+            "options": [
+              "Lontano",
+              "Vicino",
+              "Qui",
+              "Davanti"
+            ],
+            "answer": "Lontano"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_____o  = Far",
+          "expected_answer": "Lontano",
+          "alt_answers": [
+            "Lontano",
+            "lontano",
+            "Lontana"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il ristorante è lontano.",
+          "options": [
+            "The restaurant is far.",
+            "The restaurant is near.",
+            "The restaurant is here.",
+            "The restaurant is in front."
+          ],
+          "answer": "The restaurant is far."
+        }
+      },
+      "lesson11": {
+        "title": "At the corner",
+        "step1": {
+          "italian": "All'angolo",
+          "english": "At the corner",
+          "audio": "All'angolo",
+          "note": "Useful landmark in directions.",
+          "mcq": {
+            "question": "Which phrase means 'At the corner'?",
+            "options": [
+              "All'angolo",
+              "Dietro",
+              "Davanti",
+              "A destra"
+            ],
+            "answer": "All'angolo"
+          }
+        },
+        "step2": {
+          "type_prompt": "a_______o  = At the corner",
+          "expected_answer": "All'angolo",
+          "alt_answers": [
+            "All'angolo",
+            "all'angolo",
+            "All' angolo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La banca è all'angolo.",
+          "options": [
+            "The bank is at the corner.",
+            "The bank is behind.",
+            "The bank is in front.",
+            "The bank is here."
+          ],
+          "answer": "The bank is at the corner."
+        }
+      },
+      "lesson12": {
+        "title": "Behind",
+        "step1": {
+          "italian": "Dietro",
+          "english": "Behind",
+          "audio": "Dietro",
+          "note": "Opposite of ‘davanti’.",
+          "mcq": {
+            "question": "Which phrase means 'Behind'?",
+            "options": [
+              "Dietro",
+              "Davanti",
+              "A sinistra",
+              "Dritto"
+            ],
+            "answer": "Dietro"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____o  = Behind",
+          "expected_answer": "Dietro",
+          "alt_answers": [
+            "Dietro",
+            "dietro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La farmacia è dietro.",
+          "options": [
+            "The pharmacy is behind.",
+            "The pharmacy is in front.",
+            "The pharmacy is to the left.",
+            "The pharmacy is near."
+          ],
+          "answer": "The pharmacy is behind."
+        }
+      },
+      "lesson13": {
+        "title": "In front",
+        "step1": {
+          "italian": "Davanti",
+          "english": "In front",
+          "audio": "Davanti",
+          "note": "Often used as ‘davanti a’ + place.",
+          "mcq": {
+            "question": "Which phrase means 'In front'?",
+            "options": [
+              "Davanti",
+              "Dietro",
+              "A destra",
+              "Lontano"
+            ],
+            "answer": "Davanti"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_____i  = In front",
+          "expected_answer": "Davanti",
+          "alt_answers": [
+            "Davanti",
+            "davanti"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il museo è davanti.",
+          "options": [
+            "The museum is in front.",
+            "The museum is behind.",
+            "The museum is far.",
+            "The museum is near."
+          ],
+          "answer": "The museum is in front."
+        }
+      },
+      "lesson14": {
+        "title": "Bank",
+        "step1": {
+          "italian": "Banca",
+          "english": "Bank",
+          "audio": "Banca",
+          "note": "Place to get cash or exchange.",
+          "mcq": {
+            "question": "Which phrase means 'Bank'?",
+            "options": [
+              "Banca",
+              "Farmacia",
+              "Chiesa",
+              "Museo"
+            ],
+            "answer": "Banca"
+          }
+        },
+        "step2": {
+          "type_prompt": "b___a  = Bank",
+          "expected_answer": "Banca",
+          "alt_answers": [
+            "Banca",
+            "banca"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La banca è qui.",
+          "options": [
+            "The bank is here.",
+            "The bank is there.",
+            "The bank is behind.",
+            "The bank is at the corner."
+          ],
+          "answer": "The bank is here."
+        }
+      },
+      "lesson15": {
+        "title": "Pharmacy",
+        "step1": {
+          "italian": "Farmacia",
+          "english": "Pharmacy",
+          "audio": "Farmacia",
+          "note": "Look for the green cross sign.",
+          "mcq": {
+            "question": "Which phrase means 'Pharmacy'?",
+            "options": [
+              "Farmacia",
+              "Banca",
+              "Ristorante",
+              "Supermercato"
+            ],
+            "answer": "Farmacia"
+          }
+        },
+        "step2": {
+          "type_prompt": "f______a  = Pharmacy",
+          "expected_answer": "Farmacia",
+          "alt_answers": [
+            "Farmacia",
+            "farmacia"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La farmacia è vicina.",
+          "options": [
+            "The pharmacy is near.",
+            "The pharmacy is far.",
+            "The pharmacy is behind.",
+            "The pharmacy is there."
+          ],
+          "answer": "The pharmacy is near."
+        }
+      },
+      "lesson16": {
+        "title": "Supermarket",
+        "step1": {
+          "italian": "Supermercato",
+          "english": "Supermarket",
+          "audio": "Supermercato",
+          "note": "For groceries and basics.",
+          "mcq": {
+            "question": "Which phrase means 'Supermarket'?",
+            "options": [
+              "Supermercato",
+              "Ristorante",
+              "Museo",
+              "Chiesa"
+            ],
+            "answer": "Supermercato"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__________o  = Supermarket",
+          "expected_answer": "Supermercato",
+          "alt_answers": [
+            "Supermercato",
+            "supermercato"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il supermercato è a destra.",
+          "options": [
+            "The supermarket is to the right.",
+            "The supermarket is to the left.",
+            "The supermarket is behind.",
+            "The supermarket is in front."
+          ],
+          "answer": "The supermarket is to the right."
+        }
+      },
+      "lesson17": {
+        "title": "Restaurant",
+        "step1": {
+          "italian": "Ristorante",
+          "english": "Restaurant",
+          "audio": "Ristorante",
+          "note": "Place to eat a full meal.",
+          "mcq": {
+            "question": "Which phrase means 'Restaurant'?",
+            "options": [
+              "Ristorante",
+              "Supermercato",
+              "Banca",
+              "Farmacia"
+            ],
+            "answer": "Ristorante"
+          }
+        },
+        "step2": {
+          "type_prompt": "r_______e  = Restaurant",
+          "expected_answer": "Ristorante",
+          "alt_answers": [
+            "Ristorante",
+            "ristorante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il ristorante è lontano.",
+          "options": [
+            "The restaurant is far.",
+            "The restaurant is near.",
+            "The restaurant is here.",
+            "The restaurant is at the corner."
+          ],
+          "answer": "The restaurant is far."
+        }
+      },
+      "lesson18": {
+        "title": "Hospital",
+        "step1": {
+          "italian": "Ospedale",
+          "english": "Hospital",
+          "audio": "Ospedale",
+          "note": "Emergency sign: ‘Pronto soccorso’.",
+          "mcq": {
+            "question": "Which phrase means 'Hospital'?",
+            "options": [
+              "Ospedale",
+              "Polizia",
+              "Museo",
+              "Chiesa"
+            ],
+            "answer": "Ospedale"
+          }
+        },
+        "step2": {
+          "type_prompt": "o______e  = Hospital",
+          "expected_answer": "Ospedale",
+          "alt_answers": [
+            "Ospedale",
+            "ospedale"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "L'ospedale è lì.",
+          "options": [
+            "The hospital is there.",
+            "The hospital is here.",
+            "The hospital is behind.",
+            "The hospital is near."
+          ],
+          "answer": "The hospital is there."
+        }
+      },
+      "lesson19": {
+        "title": "Police",
+        "step1": {
+          "italian": "Polizia",
+          "english": "Police",
+          "audio": "Polizia",
+          "note": "For the station you may hear ‘stazione di polizia’.",
+          "mcq": {
+            "question": "Which phrase means 'Police'?",
+            "options": [
+              "Polizia",
+              "Ospedale",
+              "Banca",
+              "Museo"
+            ],
+            "answer": "Polizia"
+          }
+        },
+        "step2": {
+          "type_prompt": "p_____a  = Police",
+          "expected_answer": "Polizia",
+          "alt_answers": [
+            "Polizia",
+            "polizia"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La polizia è davanti.",
+          "options": [
+            "The police are in front.",
+            "The police are behind.",
+            "The police are to the right.",
+            "The police are here."
+          ],
+          "answer": "The police are in front."
+        }
+      },
+      "lesson20": {
+        "title": "Church",
+        "step1": {
+          "italian": "Chiesa",
+          "english": "Church",
+          "audio": "Chiesa",
+          "note": "Common landmark in town centers.",
+          "mcq": {
+            "question": "Which phrase means 'Church'?",
+            "options": [
+              "Chiesa",
+              "Museo",
+              "Farmacia",
+              "Banca"
+            ],
+            "answer": "Chiesa"
+          }
+        },
+        "step2": {
+          "type_prompt": "c___a  = Church",
+          "expected_answer": "Chiesa",
+          "alt_answers": [
+            "Chiesa",
+            "chiesa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La chiesa è a sinistra.",
+          "options": [
+            "The church is to the left.",
+            "The church is to the right.",
+            "The church is behind.",
+            "The church is far."
+          ],
+          "answer": "The church is to the left."
+        }
+      },
+      "lesson21": {
+        "title": "Museum",
+        "step1": {
+          "italian": "Museo",
+          "english": "Museum",
+          "audio": "Museo",
+          "note": "Often near historic centers.",
+          "mcq": {
+            "question": "Which phrase means 'Museum'?",
+            "options": [
+              "Museo",
+              "Chiesa",
+              "Ristorante",
+              "Supermercato"
+            ],
+            "answer": "Museo"
+          }
+        },
+        "step2": {
+          "type_prompt": "m___o  = Museum",
+          "expected_answer": "Museo",
+          "alt_answers": [
+            "Museo",
+            "museo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il museo è vicino.",
+          "options": [
+            "The museum is near.",
+            "The museum is far.",
+            "The museum is behind.",
+            "The museum is there."
+          ],
+          "answer": "The museum is near."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "Basics & Introductions": [
+    {
+      "title": "Greetings & Basic Phrases",
+      "notification_prompt": "What’s the Italian word for ‘Hello’?",
+      "lesson_content": {
+        "vocabulary": {
+          "Hello": "Ciao",
+          "Good morning": "Buongiorno",
+          "Good evening": "Buonasera",
+          "Goodbye": "Arrivederci"
+        },
+        "phrase_practice": [
+          {
+            "english": "Hello, how are you?",
+            "italian": "Ciao, come stai?"
+          },
+          {
+            "english": "Good morning!",
+            "italian": "Buongiorno!"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Personal Pronouns",
+      "notification_prompt": "What is the Italian word for ‘I’?",
+      "lesson_content": {
+        "pronouns": {
+          "I": "Io",
+          "You (informal)": "Tu",
+          "He": "Lui",
+          "She": "Lei",
+          "We": "Noi",
+          "You (plural)": "Voi",
+          "They": "Loro"
+        }
+      }
+    },
+    {
+      "title": "Verb 'Essere' (To Be)",
+      "notification_prompt": "How do you say ‘I am’ in Italian?",
+      "lesson_content": {
+        "verb_conjugation": {
+          "Io sono": "I am",
+          "Tu sei": "You are",
+          "Lui/Lei è": "He/She is",
+          "Noi siamo": "We are",
+          "Voi siete": "You (plural) are",
+          "Loro sono": "They are"
+        }
+      }
+    },
+    {
+      "title": "Introducing Yourself",
+      "notification_prompt": "How do you say ‘My name is…’ in Italian?",
+      "lesson_content": {
+        "phrases": [
+          {
+            "english": "My name is Marco.",
+            "italian": "Mi chiamo Marco."
+          },
+          {
+            "english": "Nice to meet you.",
+            "italian": "Piacere di conoscerti."
+          }
+        ]
+      }
+    },
+    {
+      "title": "Basic Questions",
+      "notification_prompt": "How do you ask ‘What’s your name?’ in Italian?",
+      "lesson_content": {
+        "questions": [
+          {
+            "english": "What’s your name?",
+            "italian": "Come ti chiami?"
+          },
+          {
+            "english": "Where are you from?",
+            "italian": "Di dove sei?"
+          }
+        ]
+      }
+    }
+  ],
+  "Numbers, Days & Simple Questions": [
+    {
+      "title": "Numbers 1–10",
+      "notification_prompt": "What is the Italian word for ‘three’?",
+      "lesson_content": {
+        "numbers": {
+          "1": "uno",
+          "2": "due",
+          "3": "tre",
+          "4": "quattro",
+          "5": "cinque",
+          "6": "sei",
+          "7": "sette",
+          "8": "otto",
+          "9": "nove",
+          "10": "dieci"
+        }
+      }
+    },
+    {
+      "title": "Numbers 11–20",
+      "notification_prompt": "How do you say ‘fifteen’ in Italian?",
+      "lesson_content": {
+        "numbers": {
+          "11": "undici",
+          "12": "dodici",
+          "13": "tredici",
+          "14": "quattordici",
+          "15": "quindici",
+          "16": "sedici",
+          "17": "diciassette",
+          "18": "diciotto",
+          "19": "diciannove",
+          "20": "venti"
+        }
+      }
+    },
+    {
+      "title": "Days of the Week",
+      "notification_prompt": "What day is ‘giovedì’?",
+      "lesson_content": {
+        "days": {
+          "Monday": "lunedì",
+          "Tuesday": "martedì",
+          "Wednesday": "mercoledì",
+          "Thursday": "giovedì",
+          "Friday": "venerdì",
+          "Saturday": "sabato",
+          "Sunday": "domenica"
+        }
+      }
+    },
+    {
+      "title": "Yes/No Questions",
+      "notification_prompt": "How do you ask ‘Do you speak English?’ in Italian?",
+      "lesson_content": {
+        "phrases": [
+          {
+            "english": "Do you speak English?",
+            "italian": "Parli inglese?"
+          },
+          {
+            "english": "Is this your bag?",
+            "italian": "È la tua borsa?"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Simple Responses",
+      "notification_prompt": "What is the Italian for ‘Yes’ and ‘No’?",
+      "lesson_content": {
+        "vocabulary": {
+          "Yes": "Sì",
+          "No": "No",
+          "Maybe": "Forse",
+          "I don’t know": "Non lo so"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,829 @@
+{
+  "course9": {
+    "title": "Food and Drinks",
+    "description": "Common foods/drinks and essential phrases for cafés and restaurants. Paired items are split into separate lessons. Step 3 uses only vocabulary from earlier courses or this course.",
+    "lessons": {
+      "lesson1": {
+        "title": "Water (still)",
+        "step1": {
+          "italian": "Acqua naturale",
+          "english": "Water (still)",
+          "audio": "Acqua naturale",
+          "note": "AHK-kwah nah-too-RAH-leh — non‑sparkling water.",
+          "mcq": {
+            "question": "Which phrase means 'Water (still)'?",
+            "options": [
+              "Acqua naturale",
+              "Acqua frizzante",
+              "Birra",
+              "Vino"
+            ],
+            "answer": "Acqua naturale"
+          }
+        },
+        "step2": {
+          "type_prompt": "A____ n_______e  = Water (still)",
+          "expected_answer": "Acqua naturale",
+          "alt_answers": [
+            "Acqua naturale",
+            "acqua naturale"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me acqua naturale, per favore.",
+          "options": [
+            "For me still water, please.",
+            "For me sparkling water, please.",
+            "For me beer, please.",
+            "For me wine, please."
+          ],
+          "answer": "For me still water, please."
+        }
+      },
+      "lesson2": {
+        "title": "Water (sparkling)",
+        "step1": {
+          "italian": "Acqua frizzante",
+          "english": "Water (sparkling)",
+          "audio": "Acqua frizzante",
+          "note": "AHK-kwah freet-ZAHN-teh — carbonated water.",
+          "mcq": {
+            "question": "Which phrase means 'Water (sparkling)'?",
+            "options": [
+              "Acqua frizzante",
+              "Acqua naturale",
+              "Caffè",
+              "Tè"
+            ],
+            "answer": "Acqua frizzante"
+          }
+        },
+        "step2": {
+          "type_prompt": "A____ f_______e  = Water (sparkling)",
+          "expected_answer": "Acqua frizzante",
+          "alt_answers": [
+            "Acqua frizzante",
+            "acqua frizzante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me acqua frizzante, per favore.",
+          "options": [
+            "For me sparkling water, please.",
+            "For me still water, please.",
+            "For me tea, please.",
+            "For me coffee, please."
+          ],
+          "answer": "For me sparkling water, please."
+        }
+      },
+      "lesson3": {
+        "title": "Coffee",
+        "step1": {
+          "italian": "Caffè",
+          "english": "Coffee",
+          "audio": "Caffè",
+          "note": "kah-FEH — In Italy, ‘caffè’ is an espresso by default.",
+          "mcq": {
+            "question": "Which phrase means 'Coffee'?",
+            "options": [
+              "Caffè",
+              "Tè",
+              "Birra",
+              "Vino"
+            ],
+            "answer": "Caffè"
+          }
+        },
+        "step2": {
+          "type_prompt": "C__fè  = Coffee",
+          "expected_answer": "Caffè",
+          "alt_answers": [
+            "Caffè",
+            "caffè",
+            "caffe"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me un caffè, per favore.",
+          "options": [
+            "For me a coffee, please.",
+            "For me a tea, please.",
+            "For me a beer, please.",
+            "For me a wine, please."
+          ],
+          "answer": "For me a coffee, please."
+        }
+      },
+      "lesson4": {
+        "title": "Tea",
+        "step1": {
+          "italian": "Tè",
+          "english": "Tea",
+          "audio": "Tè",
+          "note": "teh — ‘Tè caldo’ (hot tea), ‘tè freddo’ (iced tea).",
+          "mcq": {
+            "question": "Which phrase means 'Tea'?",
+            "options": [
+              "Tè",
+              "Caffè",
+              "Birra",
+              "Vino"
+            ],
+            "answer": "Tè"
+          }
+        },
+        "step2": {
+          "type_prompt": "T_  = Tea",
+          "expected_answer": "Tè",
+          "alt_answers": [
+            "Tè",
+            "tè",
+            "te"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me un tè, per favore.",
+          "options": [
+            "For me a tea, please.",
+            "For me a coffee, please.",
+            "For me a beer, please.",
+            "For me a wine, please."
+          ],
+          "answer": "For me a tea, please."
+        }
+      },
+      "lesson5": {
+        "title": "Beer",
+        "step1": {
+          "italian": "Birra",
+          "english": "Beer",
+          "audio": "Birra",
+          "note": "BEER-rah — Commonly ‘una birra’ (a beer).",
+          "mcq": {
+            "question": "Which phrase means 'Beer'?",
+            "options": [
+              "Birra",
+              "Vino",
+              "Tè",
+              "Caffè"
+            ],
+            "answer": "Birra"
+          }
+        },
+        "step2": {
+          "type_prompt": "B___a  = Beer",
+          "expected_answer": "Birra",
+          "alt_answers": [
+            "Birra",
+            "birra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me una birra, per favore.",
+          "options": [
+            "For me a beer, please.",
+            "For me a wine, please.",
+            "For me water, please.",
+            "For me a coffee, please."
+          ],
+          "answer": "For me a beer, please."
+        }
+      },
+      "lesson6": {
+        "title": "Wine",
+        "step1": {
+          "italian": "Vino",
+          "english": "Wine",
+          "audio": "Vino",
+          "note": "VEE-no — ‘vino rosso’ (red), ‘vino bianco’ (white).",
+          "mcq": {
+            "question": "Which phrase means 'Wine'?",
+            "options": [
+              "Vino",
+              "Birra",
+              "Tè",
+              "Caffè"
+            ],
+            "answer": "Vino"
+          }
+        },
+        "step2": {
+          "type_prompt": "V__o  = Wine",
+          "expected_answer": "Vino",
+          "alt_answers": [
+            "Vino",
+            "vino"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me un vino, per favore.",
+          "options": [
+            "For me a wine, please.",
+            "For me a beer, please.",
+            "For me a tea, please.",
+            "For me a coffee, please."
+          ],
+          "answer": "For me a wine, please."
+        }
+      },
+      "lesson7": {
+        "title": "Bread",
+        "step1": {
+          "italian": "Pane",
+          "english": "Bread",
+          "audio": "Pane",
+          "note": "PAH-neh — Basic staple in Italian meals.",
+          "mcq": {
+            "question": "Which phrase means 'Bread'?",
+            "options": [
+              "Pane",
+              "Formaggio",
+              "Pizza",
+              "Pasta"
+            ],
+            "answer": "Pane"
+          }
+        },
+        "step2": {
+          "type_prompt": "P__e  = Bread",
+          "expected_answer": "Pane",
+          "alt_answers": [
+            "Pane",
+            "pane"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il pane è buono.",
+          "options": [
+            "The bread is good.",
+            "The bread is bad.",
+            "The bread is red.",
+            "The bread is small."
+          ],
+          "answer": "The bread is good."
+        }
+      },
+      "lesson8": {
+        "title": "Cheese",
+        "step1": {
+          "italian": "Formaggio",
+          "english": "Cheese",
+          "audio": "Formaggio",
+          "note": "for-MAHJ-joh — ‘parmigiano’, ‘mozzarella’, etc.",
+          "mcq": {
+            "question": "Which phrase means 'Cheese'?",
+            "options": [
+              "Formaggio",
+              "Pane",
+              "Pizza",
+              "Pasta"
+            ],
+            "answer": "Formaggio"
+          }
+        },
+        "step2": {
+          "type_prompt": "F_______o  = Cheese",
+          "expected_answer": "Formaggio",
+          "alt_answers": [
+            "Formaggio",
+            "formaggio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il formaggio è buono.",
+          "options": [
+            "The cheese is good.",
+            "The cheese is bad.",
+            "The cheese is red.",
+            "The cheese is small."
+          ],
+          "answer": "The cheese is good."
+        }
+      },
+      "lesson9": {
+        "title": "Pizza",
+        "step1": {
+          "italian": "Pizza",
+          "english": "Pizza",
+          "audio": "Pizza",
+          "note": "PEET-tsah — Classic Italian dish.",
+          "mcq": {
+            "question": "Which phrase means 'Pizza'?",
+            "options": [
+              "Pizza",
+              "Pasta",
+              "Pane",
+              "Formaggio"
+            ],
+            "answer": "Pizza"
+          }
+        },
+        "step2": {
+          "type_prompt": "P___a  = Pizza",
+          "expected_answer": "Pizza",
+          "alt_answers": [
+            "Pizza",
+            "pizza"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me una pizza, per favore.",
+          "options": [
+            "For me a pizza, please.",
+            "For me pasta, please.",
+            "For me bread, please.",
+            "For me cheese, please."
+          ],
+          "answer": "For me a pizza, please."
+        }
+      },
+      "lesson10": {
+        "title": "Pasta",
+        "step1": {
+          "italian": "Pasta",
+          "english": "Pasta",
+          "audio": "Pasta",
+          "note": "PAH-stah — Many types: ‘spaghetti’, ‘penne’, etc.",
+          "mcq": {
+            "question": "Which phrase means 'Pasta'?",
+            "options": [
+              "Pasta",
+              "Pizza",
+              "Formaggio",
+              "Pane"
+            ],
+            "answer": "Pasta"
+          }
+        },
+        "step2": {
+          "type_prompt": "P___a  = Pasta",
+          "expected_answer": "Pasta",
+          "alt_answers": [
+            "Pasta",
+            "pasta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me la pasta, per favore.",
+          "options": [
+            "For me pasta, please.",
+            "For me pizza, please.",
+            "For me cheese, please.",
+            "For me bread, please."
+          ],
+          "answer": "For me pasta, please."
+        }
+      },
+      "lesson11": {
+        "title": "Ice cream",
+        "step1": {
+          "italian": "Gelato",
+          "english": "Ice cream",
+          "audio": "Gelato",
+          "note": "jeh-LAH-toh — Italian ice cream.",
+          "mcq": {
+            "question": "Which phrase means 'Ice cream'?",
+            "options": [
+              "Gelato",
+              "Pizza",
+              "Pasta",
+              "Pane"
+            ],
+            "answer": "Gelato"
+          }
+        },
+        "step2": {
+          "type_prompt": "G____o  = Ice cream",
+          "expected_answer": "Gelato",
+          "alt_answers": [
+            "Gelato",
+            "gelato"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il gelato è delizioso.",
+          "options": [
+            "Ice cream is delicious.",
+            "Ice cream is bad.",
+            "Ice cream is small.",
+            "Ice cream is red."
+          ],
+          "answer": "Ice cream is delicious."
+        }
+      },
+      "lesson12": {
+        "title": "The menu, please",
+        "step1": {
+          "italian": "Il menù, per favore",
+          "english": "The menu, please",
+          "audio": "Il menù, per favore",
+          "note": "meh-NOO — Also fine without accent: ‘Il menu, per favore’.",
+          "mcq": {
+            "question": "Which phrase means 'The menu, please'?",
+            "options": [
+              "Il menù, per favore",
+              "Il conto, per favore",
+              "Per me…",
+              "Vorrei un caffè, per favore"
+            ],
+            "answer": "Il menù, per favore"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il m___, per f______  = The menu, please",
+          "expected_answer": "Il menù, per favore",
+          "alt_answers": [
+            "Il menù, per favore",
+            "Il menu, per favore",
+            "Il menù per favore"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il menù, per favore.",
+          "options": [
+            "The menu, please.",
+            "The check, please.",
+            "For me, please.",
+            "A coffee, please."
+          ],
+          "answer": "The menu, please."
+        }
+      },
+      "lesson13": {
+        "title": "I would like a coffee, please",
+        "step1": {
+          "italian": "Vorrei un caffè, per favore",
+          "english": "I would like a coffee, please",
+          "audio": "Vorrei un caffè, per favore",
+          "note": "vor-REH-ee — polite request (‘I would like’).",
+          "mcq": {
+            "question": "Which phrase means 'I would like a coffee, please'?",
+            "options": [
+              "Vorrei un caffè, per favore",
+              "Per me un caffè, per favore",
+              "Ho caldo",
+              "Che tempo fa?"
+            ],
+            "answer": "Vorrei un caffè, per favore"
+          }
+        },
+        "step2": {
+          "type_prompt": "V____i un c__fè, per f______  = I would like a coffee, please",
+          "expected_answer": "Vorrei un caffè, per favore",
+          "alt_answers": [
+            "Vorrei un caffè, per favore",
+            "Vorrei un caffe, per favore"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Vorrei un caffè, per favore.",
+          "options": [
+            "I would like a coffee, please.",
+            "For me a coffee, please.",
+            "I feel hot.",
+            "How’s the weather?"
+          ],
+          "answer": "I would like a coffee, please."
+        }
+      },
+      "lesson14": {
+        "title": "For me…",
+        "step1": {
+          "italian": "Per me…",
+          "english": "For me…",
+          "audio": "Per me…",
+          "note": "Simple way to order: ‘Per me una pizza’.",
+          "mcq": {
+            "question": "Which phrase means 'For me…'?",
+            "options": [
+              "Per me…",
+              "Per favore",
+              "Il conto",
+              "Il menù"
+            ],
+            "answer": "Per me…"
+          }
+        },
+        "step2": {
+          "type_prompt": "P__ m_…  = For me…",
+          "expected_answer": "Per me…",
+          "alt_answers": [
+            "Per me…",
+            "Per me...",
+            "Per me"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per me una pizza, per favore.",
+          "options": [
+            "For me a pizza, please.",
+            "For me the check, please.",
+            "For me the menu, please.",
+            "For me water, tomorrow."
+          ],
+          "answer": "For me a pizza, please."
+        }
+      },
+      "lesson15": {
+        "title": "The check, please",
+        "step1": {
+          "italian": "Il conto, per favore",
+          "english": "The check, please",
+          "audio": "Il conto, per favore",
+          "note": "KON-toh — Also ‘il conto, grazie’.",
+          "mcq": {
+            "question": "Which phrase means 'The check, please'?",
+            "options": [
+              "Il conto, per favore",
+              "Il menù, per favore",
+              "Per me…",
+              "Vorrei un caffè, per favore"
+            ],
+            "answer": "Il conto, per favore"
+          }
+        },
+        "step2": {
+          "type_prompt": "Il c___o, per f______  = The check, please",
+          "expected_answer": "Il conto, per favore",
+          "alt_answers": [
+            "Il conto, per favore",
+            "Il conto per favore"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il conto, per favore.",
+          "options": [
+            "The check, please.",
+            "The menu, please.",
+            "For me, please.",
+            "A coffee, please."
+          ],
+          "answer": "The check, please."
+        }
+      },
+      "lesson16": {
+        "title": "It’s delicious!",
+        "step1": {
+          "italian": "È delizioso!",
+          "english": "It’s delicious!",
+          "audio": "È delizioso!",
+          "note": "deh-lee-TSYOH-zoh — For feminine food, you may hear ‘deliziosa’.",
+          "mcq": {
+            "question": "Which phrase means 'It’s delicious!'?",
+            "options": [
+              "È delizioso!",
+              "È cattivo",
+              "È brutto",
+              "È piccolo"
+            ],
+            "answer": "È delizioso!"
+          }
+        },
+        "step2": {
+          "type_prompt": "È d_______o!  = It’s delicious!",
+          "expected_answer": "È delizioso!",
+          "alt_answers": [
+            "È delizioso!",
+            "È delizioso!",
+            "È delizioso"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il gelato è delizioso!",
+          "options": [
+            "The ice cream is delicious!",
+            "The ice cream is bad.",
+            "The ice cream is small.",
+            "The ice cream is red."
+          ],
+          "answer": "The ice cream is delicious!"
+        }
+      },
+      "lesson17": {
+        "title": "I’m vegetarian (male)",
+        "step1": {
+          "italian": "Sono vegetariano",
+          "english": "I’m vegetarian (male)",
+          "audio": "Sono vegetariano",
+          "note": "veh-jeh-tah-ryah-NO — masculine form.",
+          "mcq": {
+            "question": "Which phrase means 'I’m vegetarian (male)'?",
+            "options": [
+              "Sono vegetariano",
+              "Sono vegetariana",
+              "Sono allergico",
+              "Senza glutine"
+            ],
+            "answer": "Sono vegetariano"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o v__________o  = I’m vegetarian (male)",
+          "expected_answer": "Sono vegetariano",
+          "alt_answers": [
+            "Sono vegetariano",
+            "sono vegetariano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono vegetariano.",
+          "options": [
+            "I’m vegetarian.",
+            "I’m allergic.",
+            "It’s delicious.",
+            "The check, please."
+          ],
+          "answer": "I’m vegetarian."
+        }
+      },
+      "lesson18": {
+        "title": "I’m vegetarian (female)",
+        "step1": {
+          "italian": "Sono vegetariana",
+          "english": "I’m vegetarian (female)",
+          "audio": "Sono vegetariana",
+          "note": "veh-jeh-tah-ryah-NAH — feminine form.",
+          "mcq": {
+            "question": "Which phrase means 'I’m vegetarian (female)'?",
+            "options": [
+              "Sono vegetariana",
+              "Sono vegetariano",
+              "Sono allergica",
+              "Senza lattosio"
+            ],
+            "answer": "Sono vegetariana"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o v__________a  = I’m vegetarian (female)",
+          "expected_answer": "Sono vegetariana",
+          "alt_answers": [
+            "Sono vegetariana",
+            "sono vegetariana"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono vegetariana.",
+          "options": [
+            "I’m vegetarian.",
+            "I’m allergic.",
+            "It’s delicious.",
+            "The check, please."
+          ],
+          "answer": "I’m vegetarian."
+        }
+      },
+      "lesson19": {
+        "title": "I’m allergic to… (male)",
+        "step1": {
+          "italian": "Sono allergico a…",
+          "english": "I’m allergic to… (male)",
+          "audio": "Sono allergico a…",
+          "note": "al-LER-jee-koh — add the item: ‘a noci’ (to nuts), ‘al latte’ (to milk).",
+          "mcq": {
+            "question": "Which phrase means 'I’m allergic to… (male)'?",
+            "options": [
+              "Sono allergico a…",
+              "Sono allergica a…",
+              "Sono vegetariano",
+              "Per me…"
+            ],
+            "answer": "Sono allergico a…"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o a_______o a…  = I’m allergic to… (male)",
+          "expected_answer": "Sono allergico a…",
+          "alt_answers": [
+            "Sono allergico a…",
+            "Sono allergico a...",
+            "sono allergico a…"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono allergico al latte.",
+          "options": [
+            "I’m allergic to milk.",
+            "I’m allergic to tea.",
+            "I’m vegetarian.",
+            "The menu, please."
+          ],
+          "answer": "I’m allergic to milk."
+        }
+      },
+      "lesson20": {
+        "title": "I’m allergic to… (female)",
+        "step1": {
+          "italian": "Sono allergica a…",
+          "english": "I’m allergic to… (female)",
+          "audio": "Sono allergica a…",
+          "note": "al-LER-jee-kah — feminine form.",
+          "mcq": {
+            "question": "Which phrase means 'I’m allergic to… (female)'?",
+            "options": [
+              "Sono allergica a…",
+              "Sono allergico a…",
+              "Sono vegetariana",
+              "Per me…"
+            ],
+            "answer": "Sono allergica a…"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o a_______a a…  = I’m allergic to… (female)",
+          "expected_answer": "Sono allergica a…",
+          "alt_answers": [
+            "Sono allergica a…",
+            "Sono allergica a...",
+            "sono allergica a…"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono allergica alle noci.",
+          "options": [
+            "I’m allergic to nuts.",
+            "I’m allergic to milk.",
+            "I’m vegetarian.",
+            "The check, please."
+          ],
+          "answer": "I’m allergic to nuts."
+        }
+      },
+      "lesson21": {
+        "title": "Lactose‑free",
+        "step1": {
+          "italian": "Senza lattosio",
+          "english": "Lactose‑free",
+          "audio": "Senza lattosio",
+          "note": "SEHN-zah lah-TOH-syoh — ‘senza’ = without.",
+          "mcq": {
+            "question": "Which phrase means 'Lactose‑free'?",
+            "options": [
+              "Senza lattosio",
+              "Senza glutine",
+              "Con latte",
+              "Con formaggio"
+            ],
+            "answer": "Senza lattosio"
+          }
+        },
+        "step2": {
+          "type_prompt": "S____ l______o  = Lactose‑free",
+          "expected_answer": "Senza lattosio",
+          "alt_answers": [
+            "Senza lattosio",
+            "senza lattosio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È senza lattosio.",
+          "options": [
+            "It’s lactose‑free.",
+            "It’s with milk.",
+            "It’s with cheese.",
+            "It’s gluten‑free."
+          ],
+          "answer": "It’s lactose‑free."
+        }
+      },
+      "lesson22": {
+        "title": "Gluten‑free",
+        "step1": {
+          "italian": "Senza glutine",
+          "english": "Gluten‑free",
+          "audio": "Senza glutine",
+          "note": "SEHN-zah GLOO-tee-neh — common on menus.",
+          "mcq": {
+            "question": "Which phrase means 'Gluten‑free'?",
+            "options": [
+              "Senza glutine",
+              "Senza lattosio",
+              "Con pane",
+              "Con pasta"
+            ],
+            "answer": "Senza glutine"
+          }
+        },
+        "step2": {
+          "type_prompt": "S____ g_____e  = Gluten‑free",
+          "expected_answer": "Senza glutine",
+          "alt_answers": [
+            "Senza glutine",
+            "senza glutine"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "È senza glutine.",
+          "options": [
+            "It’s gluten‑free.",
+            "It’s with bread.",
+            "It’s with pasta.",
+            "It’s lactose‑free."
+          ],
+          "answer": "It’s gluten‑free."
+        }
+      }
+    }
+  }
+}

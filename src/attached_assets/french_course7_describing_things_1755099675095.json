@@ -1,0 +1,616 @@
+{
+  "course7": {
+    "title": "Describing Things – Colors & Adjectives",
+    "description": "Learn French vocabulary for common colors and basic descriptive adjectives. Each item is a separate micro-lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Black (m./f.)",
+        "step1": {
+          "italian": "noir / noire",
+          "english": "black",
+          "audio": "noir / noire",
+          "note": "Agreement: noir (m.), noire (f.).",
+          "mcq": {
+            "question": "What does 'noir / noire' mean?",
+            "options": [
+              "black",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "black"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__r  = black",
+          "expected_answer": "noir / noire",
+          "alt_answers": [
+            "noir / noire",
+            "noir / noire",
+            "Noir / noire"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "noir / noire",
+          "options": [
+            "black",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "black"
+        }
+      },
+      "lesson2": {
+        "title": "White (m./f.)",
+        "step1": {
+          "italian": "blanc / blanche",
+          "english": "white",
+          "audio": "blanc / blanche",
+          "note": "Agreement: blanc (m.), blanche (f.).",
+          "mcq": {
+            "question": "What does 'blanc / blanche' mean?",
+            "options": [
+              "white",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "white"
+          }
+        },
+        "step2": {
+          "type_prompt": "b___c  = white",
+          "expected_answer": "blanc / blanche",
+          "alt_answers": [
+            "blanc / blanche",
+            "blanc / blanche",
+            "Blanc / blanche"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "blanc / blanche",
+          "options": [
+            "white",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "white"
+        }
+      },
+      "lesson3": {
+        "title": "Red",
+        "step1": {
+          "italian": "rouge",
+          "english": "red",
+          "audio": "rouge",
+          "note": "Same form for masculine and feminine.",
+          "mcq": {
+            "question": "What does 'rouge' mean?",
+            "options": [
+              "red",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "red"
+          }
+        },
+        "step2": {
+          "type_prompt": "r___e  = red",
+          "expected_answer": "rouge",
+          "alt_answers": [
+            "rouge",
+            "rouge",
+            "Rouge"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "rouge",
+          "options": [
+            "red",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "red"
+        }
+      },
+      "lesson4": {
+        "title": "Yellow (m./f.)",
+        "step1": {
+          "italian": "jaune",
+          "english": "yellow",
+          "audio": "jaune",
+          "note": "Same form for masculine and feminine.",
+          "mcq": {
+            "question": "What does 'jaune' mean?",
+            "options": [
+              "yellow",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "yellow"
+          }
+        },
+        "step2": {
+          "type_prompt": "j___e  = yellow",
+          "expected_answer": "jaune",
+          "alt_answers": [
+            "jaune",
+            "jaune",
+            "Jaune"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "jaune",
+          "options": [
+            "yellow",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "yellow"
+        }
+      },
+      "lesson5": {
+        "title": "Green (m./f.)",
+        "step1": {
+          "italian": "vert / verte",
+          "english": "green",
+          "audio": "vert / verte",
+          "note": "Agreement: vert (m.), verte (f.).",
+          "mcq": {
+            "question": "What does 'vert / verte' mean?",
+            "options": [
+              "green",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "green"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__t  = green",
+          "expected_answer": "vert / verte",
+          "alt_answers": [
+            "vert / verte",
+            "vert / verte",
+            "Vert / verte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vert / verte",
+          "options": [
+            "green",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "green"
+        }
+      },
+      "lesson6": {
+        "title": "Blue (m./f.)",
+        "step1": {
+          "italian": "bleu / bleue",
+          "english": "blue",
+          "audio": "bleu / bleue",
+          "note": "Agreement: bleu (m.), bleue (f.).",
+          "mcq": {
+            "question": "What does 'bleu / bleue' mean?",
+            "options": [
+              "blue",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "blue"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__u  = blue",
+          "expected_answer": "bleu / bleue",
+          "alt_answers": [
+            "bleu / bleue",
+            "bleu / bleue",
+            "Bleu / bleue"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "bleu / bleue",
+          "options": [
+            "blue",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "blue"
+        }
+      },
+      "lesson7": {
+        "title": "Orange",
+        "step1": {
+          "italian": "orange",
+          "english": "orange",
+          "audio": "orange",
+          "note": "Invariable color adjective.",
+          "mcq": {
+            "question": "What does 'orange' mean?",
+            "options": [
+              "orange",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "orange"
+          }
+        },
+        "step2": {
+          "type_prompt": "o____e  = orange",
+          "expected_answer": "orange",
+          "alt_answers": [
+            "orange",
+            "orange",
+            "Orange"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "orange",
+          "options": [
+            "orange",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "orange"
+        }
+      },
+      "lesson8": {
+        "title": "Brown",
+        "step1": {
+          "italian": "marron",
+          "english": "brown",
+          "audio": "marron",
+          "note": "Invariable color adjective.",
+          "mcq": {
+            "question": "What does 'marron' mean?",
+            "options": [
+              "brown",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "brown"
+          }
+        },
+        "step2": {
+          "type_prompt": "m____n  = brown",
+          "expected_answer": "marron",
+          "alt_answers": [
+            "marron",
+            "marron",
+            "Marron"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "marron",
+          "options": [
+            "brown",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "brown"
+        }
+      },
+      "lesson9": {
+        "title": "Big",
+        "step1": {
+          "italian": "grand / grande",
+          "english": "big",
+          "audio": "grand / grande",
+          "note": "Agreement: grand (m.), grande (f.).",
+          "mcq": {
+            "question": "What does 'grand / grande' mean?",
+            "options": [
+              "big",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "big"
+          }
+        },
+        "step2": {
+          "type_prompt": "g___d  = big",
+          "expected_answer": "grand / grande",
+          "alt_answers": [
+            "grand / grande",
+            "grand / grande",
+            "Grand / grande"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "grand / grande",
+          "options": [
+            "big",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "big"
+        }
+      },
+      "lesson10": {
+        "title": "Small",
+        "step1": {
+          "italian": "petit / petite",
+          "english": "small",
+          "audio": "petit / petite",
+          "note": "Agreement: petit (m.), petite (f.).",
+          "mcq": {
+            "question": "What does 'petit / petite' mean?",
+            "options": [
+              "small",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "small"
+          }
+        },
+        "step2": {
+          "type_prompt": "p___t  = small",
+          "expected_answer": "petit / petite",
+          "alt_answers": [
+            "petit / petite",
+            "petit / petite",
+            "Petit / petite"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "petit / petite",
+          "options": [
+            "small",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "small"
+        }
+      },
+      "lesson11": {
+        "title": "Beautiful",
+        "step1": {
+          "italian": "beau / belle",
+          "english": "beautiful",
+          "audio": "beau / belle",
+          "note": "Irregular forms; agreement needed.",
+          "mcq": {
+            "question": "What does 'beau / belle' mean?",
+            "options": [
+              "beautiful",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "beautiful"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__u  = beautiful",
+          "expected_answer": "beau / belle",
+          "alt_answers": [
+            "beau / belle",
+            "beau / belle",
+            "Beau / belle"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "beau / belle",
+          "options": [
+            "beautiful",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "beautiful"
+        }
+      },
+      "lesson12": {
+        "title": "Ugly",
+        "step1": {
+          "italian": "moche",
+          "english": "ugly",
+          "audio": "moche",
+          "note": "Same for masculine and feminine.",
+          "mcq": {
+            "question": "What does 'moche' mean?",
+            "options": [
+              "ugly",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "ugly"
+          }
+        },
+        "step2": {
+          "type_prompt": "m___e  = ugly",
+          "expected_answer": "moche",
+          "alt_answers": [
+            "moche",
+            "moche",
+            "Moche"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "moche",
+          "options": [
+            "ugly",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "ugly"
+        }
+      },
+      "lesson13": {
+        "title": "New",
+        "step1": {
+          "italian": "nouveau / nouvelle",
+          "english": "new",
+          "audio": "nouveau / nouvelle",
+          "note": "Irregular forms; agreement needed.",
+          "mcq": {
+            "question": "What does 'nouveau / nouvelle' mean?",
+            "options": [
+              "new",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "new"
+          }
+        },
+        "step2": {
+          "type_prompt": "n_____u  = new",
+          "expected_answer": "nouveau / nouvelle",
+          "alt_answers": [
+            "nouveau / nouvelle",
+            "nouveau / nouvelle",
+            "Nouveau / nouvelle"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "nouveau / nouvelle",
+          "options": [
+            "new",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "new"
+        }
+      },
+      "lesson14": {
+        "title": "Old",
+        "step1": {
+          "italian": "vieux / vieille",
+          "english": "old",
+          "audio": "vieux / vieille",
+          "note": "Irregular forms; agreement needed.",
+          "mcq": {
+            "question": "What does 'vieux / vieille' mean?",
+            "options": [
+              "old",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "old"
+          }
+        },
+        "step2": {
+          "type_prompt": "v___x  = old",
+          "expected_answer": "vieux / vieille",
+          "alt_answers": [
+            "vieux / vieille",
+            "vieux / vieille",
+            "Vieux / vieille"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vieux / vieille",
+          "options": [
+            "old",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "old"
+        }
+      },
+      "lesson15": {
+        "title": "Good",
+        "step1": {
+          "italian": "bon / bonne",
+          "english": "good",
+          "audio": "bon / bonne",
+          "note": "Agreement: bon (m.), bonne (f.).",
+          "mcq": {
+            "question": "What does 'bon / bonne' mean?",
+            "options": [
+              "good",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "good"
+          }
+        },
+        "step2": {
+          "type_prompt": "b_n  = good",
+          "expected_answer": "bon / bonne",
+          "alt_answers": [
+            "bon / bonne",
+            "bon / bonne",
+            "Bon / bonne"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "bon / bonne",
+          "options": [
+            "good",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "good"
+        }
+      },
+      "lesson16": {
+        "title": "Bad",
+        "step1": {
+          "italian": "mauvais / mauvaise",
+          "english": "bad",
+          "audio": "mauvais / mauvaise",
+          "note": "Agreement: mauvais (m.), mauvaise (f.).",
+          "mcq": {
+            "question": "What does 'mauvais / mauvaise' mean?",
+            "options": [
+              "bad",
+              "red",
+              "blue",
+              "green"
+            ],
+            "answer": "bad"
+          }
+        },
+        "step2": {
+          "type_prompt": "m_____s  = bad",
+          "expected_answer": "mauvais / mauvaise",
+          "alt_answers": [
+            "mauvais / mauvaise",
+            "mauvais / mauvaise",
+            "Mauvais / mauvaise"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mauvais / mauvaise",
+          "options": [
+            "bad",
+            "red",
+            "blue",
+            "green"
+          ],
+          "answer": "bad"
+        }
+      }
+    }
+  }
+}

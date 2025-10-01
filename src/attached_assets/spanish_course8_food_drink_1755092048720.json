@@ -1,0 +1,1118 @@
+{
+  "course8": {
+    "title": "Food & Drink",
+    "description": "Learn essential Spanish vocabulary for common foods and drinks. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Water",
+        "step1": {
+          "spanish": "agua",
+          "english": "Water",
+          "audio": "agua",
+          "note": "The Spanish word for 'water'.",
+          "mcq": {
+            "question": "Which Spanish word means 'water'?",
+            "options": [
+              "agua",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "agua"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Water",
+          "expected_answer": "agua",
+          "alt_answers": [
+            "Agua",
+            "agua"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "agua",
+          "options": [
+            "Water",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Water"
+        }
+      },
+      "lesson2": {
+        "title": "Coffee",
+        "step1": {
+          "spanish": "café",
+          "english": "Coffee",
+          "audio": "café",
+          "note": "The Spanish word for 'coffee'.",
+          "mcq": {
+            "question": "Which Spanish word means 'coffee'?",
+            "options": [
+              "café",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "café"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Coffee",
+          "expected_answer": "café",
+          "alt_answers": [
+            "Café",
+            "café"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "café",
+          "options": [
+            "Coffee",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Coffee"
+        }
+      },
+      "lesson3": {
+        "title": "Tea",
+        "step1": {
+          "spanish": "té",
+          "english": "Tea",
+          "audio": "té",
+          "note": "The Spanish word for 'tea'.",
+          "mcq": {
+            "question": "Which Spanish word means 'tea'?",
+            "options": [
+              "té",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "té"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Tea",
+          "expected_answer": "té",
+          "alt_answers": [
+            "Té",
+            "té"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "té",
+          "options": [
+            "Tea",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Tea"
+        }
+      },
+      "lesson4": {
+        "title": "Juice",
+        "step1": {
+          "spanish": "jugo",
+          "english": "Juice",
+          "audio": "jugo",
+          "note": "The Spanish word for 'juice'.",
+          "mcq": {
+            "question": "Which Spanish word means 'juice'?",
+            "options": [
+              "jugo",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "jugo"
+          }
+        },
+        "step2": {
+          "type_prompt": "j__  = Juice",
+          "expected_answer": "jugo",
+          "alt_answers": [
+            "Jugo",
+            "jugo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "jugo",
+          "options": [
+            "Juice",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Juice"
+        }
+      },
+      "lesson5": {
+        "title": "Milk",
+        "step1": {
+          "spanish": "leche",
+          "english": "Milk",
+          "audio": "leche",
+          "note": "The Spanish word for 'milk'.",
+          "mcq": {
+            "question": "Which Spanish word means 'milk'?",
+            "options": [
+              "leche",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "leche"
+          }
+        },
+        "step2": {
+          "type_prompt": "l__  = Milk",
+          "expected_answer": "leche",
+          "alt_answers": [
+            "Leche",
+            "leche"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "leche",
+          "options": [
+            "Milk",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Milk"
+        }
+      },
+      "lesson6": {
+        "title": "Bread",
+        "step1": {
+          "spanish": "pan",
+          "english": "Bread",
+          "audio": "pan",
+          "note": "The Spanish word for 'bread'.",
+          "mcq": {
+            "question": "Which Spanish word means 'bread'?",
+            "options": [
+              "pan",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "pan"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Bread",
+          "expected_answer": "pan",
+          "alt_answers": [
+            "Pan",
+            "pan"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pan",
+          "options": [
+            "Bread",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Bread"
+        }
+      },
+      "lesson7": {
+        "title": "Butter",
+        "step1": {
+          "spanish": "mantequilla",
+          "english": "Butter",
+          "audio": "mantequilla",
+          "note": "The Spanish word for 'butter'.",
+          "mcq": {
+            "question": "Which Spanish word means 'butter'?",
+            "options": [
+              "mantequilla",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "mantequilla"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Butter",
+          "expected_answer": "mantequilla",
+          "alt_answers": [
+            "Mantequilla",
+            "mantequilla"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mantequilla",
+          "options": [
+            "Butter",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Butter"
+        }
+      },
+      "lesson8": {
+        "title": "Cheese",
+        "step1": {
+          "spanish": "queso",
+          "english": "Cheese",
+          "audio": "queso",
+          "note": "The Spanish word for 'cheese'.",
+          "mcq": {
+            "question": "Which Spanish word means 'cheese'?",
+            "options": [
+              "queso",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "queso"
+          }
+        },
+        "step2": {
+          "type_prompt": "q__  = Cheese",
+          "expected_answer": "queso",
+          "alt_answers": [
+            "Queso",
+            "queso"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "queso",
+          "options": [
+            "Cheese",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Cheese"
+        }
+      },
+      "lesson9": {
+        "title": "Egg",
+        "step1": {
+          "spanish": "huevo",
+          "english": "Egg",
+          "audio": "huevo",
+          "note": "The Spanish word for 'egg'.",
+          "mcq": {
+            "question": "Which Spanish word means 'egg'?",
+            "options": [
+              "huevo",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "huevo"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Egg",
+          "expected_answer": "huevo",
+          "alt_answers": [
+            "Huevo",
+            "huevo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "huevo",
+          "options": [
+            "Egg",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Egg"
+        }
+      },
+      "lesson10": {
+        "title": "Chicken",
+        "step1": {
+          "spanish": "pollo",
+          "english": "Chicken",
+          "audio": "pollo",
+          "note": "The Spanish word for 'chicken'.",
+          "mcq": {
+            "question": "Which Spanish word means 'chicken'?",
+            "options": [
+              "pollo",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "pollo"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Chicken",
+          "expected_answer": "pollo",
+          "alt_answers": [
+            "Pollo",
+            "pollo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pollo",
+          "options": [
+            "Chicken",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Chicken"
+        }
+      },
+      "lesson11": {
+        "title": "Meat",
+        "step1": {
+          "spanish": "carne",
+          "english": "Meat",
+          "audio": "carne",
+          "note": "The Spanish word for 'meat'.",
+          "mcq": {
+            "question": "Which Spanish word means 'meat'?",
+            "options": [
+              "carne",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "carne"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__  = Meat",
+          "expected_answer": "carne",
+          "alt_answers": [
+            "Carne",
+            "carne"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "carne",
+          "options": [
+            "Meat",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Meat"
+        }
+      },
+      "lesson12": {
+        "title": "Fish",
+        "step1": {
+          "spanish": "pescado",
+          "english": "Fish",
+          "audio": "pescado",
+          "note": "The Spanish word for 'fish'.",
+          "mcq": {
+            "question": "Which Spanish word means 'fish'?",
+            "options": [
+              "pescado",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "pescado"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Fish",
+          "expected_answer": "pescado",
+          "alt_answers": [
+            "Pescado",
+            "pescado"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pescado",
+          "options": [
+            "Fish",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Fish"
+        }
+      },
+      "lesson13": {
+        "title": "Salad",
+        "step1": {
+          "spanish": "ensalada",
+          "english": "Salad",
+          "audio": "ensalada",
+          "note": "The Spanish word for 'salad'.",
+          "mcq": {
+            "question": "Which Spanish word means 'salad'?",
+            "options": [
+              "ensalada",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "ensalada"
+          }
+        },
+        "step2": {
+          "type_prompt": "e__  = Salad",
+          "expected_answer": "ensalada",
+          "alt_answers": [
+            "Ensalada",
+            "ensalada"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ensalada",
+          "options": [
+            "Salad",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Salad"
+        }
+      },
+      "lesson14": {
+        "title": "Vegetables",
+        "step1": {
+          "spanish": "verduras",
+          "english": "Vegetables",
+          "audio": "verduras",
+          "note": "The Spanish word for 'vegetables'.",
+          "mcq": {
+            "question": "Which Spanish word means 'vegetables'?",
+            "options": [
+              "verduras",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "verduras"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Vegetables",
+          "expected_answer": "verduras",
+          "alt_answers": [
+            "Verduras",
+            "verduras"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "verduras",
+          "options": [
+            "Vegetables",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Vegetables"
+        }
+      },
+      "lesson15": {
+        "title": "Fruit",
+        "step1": {
+          "spanish": "fruta",
+          "english": "Fruit",
+          "audio": "fruta",
+          "note": "The Spanish word for 'fruit'.",
+          "mcq": {
+            "question": "Which Spanish word means 'fruit'?",
+            "options": [
+              "fruta",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "fruta"
+          }
+        },
+        "step2": {
+          "type_prompt": "f__  = Fruit",
+          "expected_answer": "fruta",
+          "alt_answers": [
+            "Fruta",
+            "fruta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fruta",
+          "options": [
+            "Fruit",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Fruit"
+        }
+      },
+      "lesson16": {
+        "title": "Apple",
+        "step1": {
+          "spanish": "manzana",
+          "english": "Apple",
+          "audio": "manzana",
+          "note": "The Spanish word for 'apple'.",
+          "mcq": {
+            "question": "Which Spanish word means 'apple'?",
+            "options": [
+              "manzana",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "manzana"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Apple",
+          "expected_answer": "manzana",
+          "alt_answers": [
+            "Manzana",
+            "manzana"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "manzana",
+          "options": [
+            "Apple",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Apple"
+        }
+      },
+      "lesson17": {
+        "title": "Banana",
+        "step1": {
+          "spanish": "plátano",
+          "english": "Banana",
+          "audio": "plátano",
+          "note": "The Spanish word for 'banana'.",
+          "mcq": {
+            "question": "Which Spanish word means 'banana'?",
+            "options": [
+              "plátano",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "plátano"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Banana",
+          "expected_answer": "plátano",
+          "alt_answers": [
+            "Plátano",
+            "plátano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "plátano",
+          "options": [
+            "Banana",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Banana"
+        }
+      },
+      "lesson18": {
+        "title": "Orange",
+        "step1": {
+          "spanish": "naranja",
+          "english": "Orange",
+          "audio": "naranja",
+          "note": "The Spanish word for 'orange'.",
+          "mcq": {
+            "question": "Which Spanish word means 'orange'?",
+            "options": [
+              "naranja",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "naranja"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Orange",
+          "expected_answer": "naranja",
+          "alt_answers": [
+            "Naranja",
+            "naranja"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "naranja",
+          "options": [
+            "Orange",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Orange"
+        }
+      },
+      "lesson19": {
+        "title": "Grape",
+        "step1": {
+          "spanish": "uva",
+          "english": "Grape",
+          "audio": "uva",
+          "note": "The Spanish word for 'grape'.",
+          "mcq": {
+            "question": "Which Spanish word means 'grape'?",
+            "options": [
+              "uva",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "uva"
+          }
+        },
+        "step2": {
+          "type_prompt": "u__  = Grape",
+          "expected_answer": "uva",
+          "alt_answers": [
+            "Uva",
+            "uva"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "uva",
+          "options": [
+            "Grape",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Grape"
+        }
+      },
+      "lesson20": {
+        "title": "Strawberry",
+        "step1": {
+          "spanish": "fresa",
+          "english": "Strawberry",
+          "audio": "fresa",
+          "note": "The Spanish word for 'strawberry'.",
+          "mcq": {
+            "question": "Which Spanish word means 'strawberry'?",
+            "options": [
+              "fresa",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "fresa"
+          }
+        },
+        "step2": {
+          "type_prompt": "f__  = Strawberry",
+          "expected_answer": "fresa",
+          "alt_answers": [
+            "Fresa",
+            "fresa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fresa",
+          "options": [
+            "Strawberry",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Strawberry"
+        }
+      },
+      "lesson21": {
+        "title": "Salt",
+        "step1": {
+          "spanish": "sal",
+          "english": "Salt",
+          "audio": "sal",
+          "note": "The Spanish word for 'salt'.",
+          "mcq": {
+            "question": "Which Spanish word means 'salt'?",
+            "options": [
+              "sal",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "sal"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Salt",
+          "expected_answer": "sal",
+          "alt_answers": [
+            "Sal",
+            "sal"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sal",
+          "options": [
+            "Salt",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Salt"
+        }
+      },
+      "lesson22": {
+        "title": "Sugar",
+        "step1": {
+          "spanish": "azúcar",
+          "english": "Sugar",
+          "audio": "azúcar",
+          "note": "The Spanish word for 'sugar'.",
+          "mcq": {
+            "question": "Which Spanish word means 'sugar'?",
+            "options": [
+              "azúcar",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "azúcar"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Sugar",
+          "expected_answer": "azúcar",
+          "alt_answers": [
+            "Azúcar",
+            "azúcar"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "azúcar",
+          "options": [
+            "Sugar",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Sugar"
+        }
+      },
+      "lesson23": {
+        "title": "Pepper",
+        "step1": {
+          "spanish": "pimienta",
+          "english": "Pepper",
+          "audio": "pimienta",
+          "note": "The Spanish word for 'pepper'.",
+          "mcq": {
+            "question": "Which Spanish word means 'pepper'?",
+            "options": [
+              "pimienta",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "pimienta"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Pepper",
+          "expected_answer": "pimienta",
+          "alt_answers": [
+            "Pimienta",
+            "pimienta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pimienta",
+          "options": [
+            "Pepper",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Pepper"
+        }
+      },
+      "lesson24": {
+        "title": "Oil",
+        "step1": {
+          "spanish": "aceite",
+          "english": "Oil",
+          "audio": "aceite",
+          "note": "The Spanish word for 'oil'.",
+          "mcq": {
+            "question": "Which Spanish word means 'oil'?",
+            "options": [
+              "aceite",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "aceite"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Oil",
+          "expected_answer": "aceite",
+          "alt_answers": [
+            "Aceite",
+            "aceite"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "aceite",
+          "options": [
+            "Oil",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Oil"
+        }
+      },
+      "lesson25": {
+        "title": "Vinegar",
+        "step1": {
+          "spanish": "vinagre",
+          "english": "Vinegar",
+          "audio": "vinagre",
+          "note": "The Spanish word for 'vinegar'.",
+          "mcq": {
+            "question": "Which Spanish word means 'vinegar'?",
+            "options": [
+              "vinagre",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "vinagre"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Vinegar",
+          "expected_answer": "vinagre",
+          "alt_answers": [
+            "Vinagre",
+            "vinagre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vinagre",
+          "options": [
+            "Vinegar",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Vinegar"
+        }
+      },
+      "lesson26": {
+        "title": "Rice",
+        "step1": {
+          "spanish": "arroz",
+          "english": "Rice",
+          "audio": "arroz",
+          "note": "The Spanish word for 'rice'.",
+          "mcq": {
+            "question": "Which Spanish word means 'rice'?",
+            "options": [
+              "arroz",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "arroz"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Rice",
+          "expected_answer": "arroz",
+          "alt_answers": [
+            "Arroz",
+            "arroz"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "arroz",
+          "options": [
+            "Rice",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Rice"
+        }
+      },
+      "lesson27": {
+        "title": "Pasta",
+        "step1": {
+          "spanish": "pasta",
+          "english": "Pasta",
+          "audio": "pasta",
+          "note": "The Spanish word for 'pasta'.",
+          "mcq": {
+            "question": "Which Spanish word means 'pasta'?",
+            "options": [
+              "pasta",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "pasta"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Pasta",
+          "expected_answer": "pasta",
+          "alt_answers": [
+            "Pasta",
+            "pasta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pasta",
+          "options": [
+            "Pasta",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Pasta"
+        }
+      },
+      "lesson28": {
+        "title": "Soup",
+        "step1": {
+          "spanish": "sopa",
+          "english": "Soup",
+          "audio": "sopa",
+          "note": "The Spanish word for 'soup'.",
+          "mcq": {
+            "question": "Which Spanish word means 'soup'?",
+            "options": [
+              "sopa",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "sopa"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Soup",
+          "expected_answer": "sopa",
+          "alt_answers": [
+            "Sopa",
+            "sopa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sopa",
+          "options": [
+            "Soup",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Soup"
+        }
+      },
+      "lesson29": {
+        "title": "Dessert",
+        "step1": {
+          "spanish": "postre",
+          "english": "Dessert",
+          "audio": "postre",
+          "note": "The Spanish word for 'dessert'.",
+          "mcq": {
+            "question": "Which Spanish word means 'dessert'?",
+            "options": [
+              "postre",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "postre"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Dessert",
+          "expected_answer": "postre",
+          "alt_answers": [
+            "Postre",
+            "postre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "postre",
+          "options": [
+            "Dessert",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Dessert"
+        }
+      },
+      "lesson30": {
+        "title": "Ice cream",
+        "step1": {
+          "spanish": "helado",
+          "english": "Ice cream",
+          "audio": "helado",
+          "note": "The Spanish word for 'ice cream'.",
+          "mcq": {
+            "question": "Which Spanish word means 'ice cream'?",
+            "options": [
+              "helado",
+              "pan",
+              "agua",
+              "queso"
+            ],
+            "answer": "helado"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Ice cream",
+          "expected_answer": "helado",
+          "alt_answers": [
+            "Helado",
+            "helado"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "helado",
+          "options": [
+            "Ice cream",
+            "Water",
+            "Bread",
+            "Cheese"
+          ],
+          "answer": "Ice cream"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,891 @@
+{
+  "course5": {
+    "title": "Days, Months & Dates",
+    "description": "Learn the days of the week, months, and how to talk about dates in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Monday",
+        "step1": {
+          "spanish": "lunes",
+          "english": "Monday",
+          "audio": "lunes",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Monday'?",
+            "options": [
+              "lunes",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "lunes"
+          }
+        },
+        "step2": {
+          "type_prompt": "l__  = Monday",
+          "expected_answer": "lunes",
+          "alt_answers": [
+            "Lunes",
+            "lunes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "lunes",
+          "options": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Monday"
+        }
+      },
+      "lesson2": {
+        "title": "Tuesday",
+        "step1": {
+          "spanish": "martes",
+          "english": "Tuesday",
+          "audio": "martes",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Tuesday'?",
+            "options": [
+              "martes",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "martes"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Tuesday",
+          "expected_answer": "martes",
+          "alt_answers": [
+            "Martes",
+            "martes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "martes",
+          "options": [
+            "Tuesday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Tuesday"
+        }
+      },
+      "lesson3": {
+        "title": "Wednesday",
+        "step1": {
+          "spanish": "miércoles",
+          "english": "Wednesday",
+          "audio": "miércoles",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Wednesday'?",
+            "options": [
+              "miércoles",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "miércoles"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Wednesday",
+          "expected_answer": "miércoles",
+          "alt_answers": [
+            "Miércoles",
+            "miércoles"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "miércoles",
+          "options": [
+            "Wednesday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Wednesday"
+        }
+      },
+      "lesson4": {
+        "title": "Thursday",
+        "step1": {
+          "spanish": "jueves",
+          "english": "Thursday",
+          "audio": "jueves",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Thursday'?",
+            "options": [
+              "jueves",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "jueves"
+          }
+        },
+        "step2": {
+          "type_prompt": "j__  = Thursday",
+          "expected_answer": "jueves",
+          "alt_answers": [
+            "Jueves",
+            "jueves"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "jueves",
+          "options": [
+            "Thursday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Thursday"
+        }
+      },
+      "lesson5": {
+        "title": "Friday",
+        "step1": {
+          "spanish": "viernes",
+          "english": "Friday",
+          "audio": "viernes",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Friday'?",
+            "options": [
+              "viernes",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "viernes"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Friday",
+          "expected_answer": "viernes",
+          "alt_answers": [
+            "Viernes",
+            "viernes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "viernes",
+          "options": [
+            "Friday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Friday"
+        }
+      },
+      "lesson6": {
+        "title": "Saturday",
+        "step1": {
+          "spanish": "sábado",
+          "english": "Saturday",
+          "audio": "sábado",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Saturday'?",
+            "options": [
+              "sábado",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "sábado"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = Saturday",
+          "expected_answer": "sábado",
+          "alt_answers": [
+            "Sábado",
+            "sábado"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sábado",
+          "options": [
+            "Saturday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Saturday"
+        }
+      },
+      "lesson7": {
+        "title": "Sunday",
+        "step1": {
+          "spanish": "domingo",
+          "english": "Sunday",
+          "audio": "domingo",
+          "note": "Days of the week in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'Sunday'?",
+            "options": [
+              "domingo",
+              "lunes",
+              "martes",
+              "domingo"
+            ],
+            "answer": "domingo"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = Sunday",
+          "expected_answer": "domingo",
+          "alt_answers": [
+            "Domingo",
+            "domingo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "domingo",
+          "options": [
+            "Sunday",
+            "Tuesday",
+            "Wednesday",
+            "Friday"
+          ],
+          "answer": "Sunday"
+        }
+      },
+      "lesson8": {
+        "title": "January",
+        "step1": {
+          "spanish": "enero",
+          "english": "January",
+          "audio": "enero",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'January'?",
+            "options": [
+              "enero",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "enero"
+          }
+        },
+        "step2": {
+          "type_prompt": "e__  = January",
+          "expected_answer": "enero",
+          "alt_answers": [
+            "Enero",
+            "enero"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "enero",
+          "options": [
+            "January",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "January"
+        }
+      },
+      "lesson9": {
+        "title": "February",
+        "step1": {
+          "spanish": "febrero",
+          "english": "February",
+          "audio": "febrero",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'February'?",
+            "options": [
+              "febrero",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "febrero"
+          }
+        },
+        "step2": {
+          "type_prompt": "f__  = February",
+          "expected_answer": "febrero",
+          "alt_answers": [
+            "Febrero",
+            "febrero"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "febrero",
+          "options": [
+            "February",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "February"
+        }
+      },
+      "lesson10": {
+        "title": "March",
+        "step1": {
+          "spanish": "marzo",
+          "english": "March",
+          "audio": "marzo",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'March'?",
+            "options": [
+              "marzo",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "marzo"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = March",
+          "expected_answer": "marzo",
+          "alt_answers": [
+            "Marzo",
+            "marzo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "marzo",
+          "options": [
+            "March",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "March"
+        }
+      },
+      "lesson11": {
+        "title": "April",
+        "step1": {
+          "spanish": "abril",
+          "english": "April",
+          "audio": "abril",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'April'?",
+            "options": [
+              "abril",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "abril"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = April",
+          "expected_answer": "abril",
+          "alt_answers": [
+            "Abril",
+            "abril"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "abril",
+          "options": [
+            "April",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "April"
+        }
+      },
+      "lesson12": {
+        "title": "May",
+        "step1": {
+          "spanish": "mayo",
+          "english": "May",
+          "audio": "mayo",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'May'?",
+            "options": [
+              "mayo",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "mayo"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = May",
+          "expected_answer": "mayo",
+          "alt_answers": [
+            "Mayo",
+            "mayo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mayo",
+          "options": [
+            "May",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "May"
+        }
+      },
+      "lesson13": {
+        "title": "June",
+        "step1": {
+          "spanish": "junio",
+          "english": "June",
+          "audio": "junio",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'June'?",
+            "options": [
+              "junio",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "junio"
+          }
+        },
+        "step2": {
+          "type_prompt": "j__  = June",
+          "expected_answer": "junio",
+          "alt_answers": [
+            "Junio",
+            "junio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "junio",
+          "options": [
+            "June",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "June"
+        }
+      },
+      "lesson14": {
+        "title": "July",
+        "step1": {
+          "spanish": "julio",
+          "english": "July",
+          "audio": "julio",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'July'?",
+            "options": [
+              "julio",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "julio"
+          }
+        },
+        "step2": {
+          "type_prompt": "j__  = July",
+          "expected_answer": "julio",
+          "alt_answers": [
+            "Julio",
+            "julio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "julio",
+          "options": [
+            "July",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "July"
+        }
+      },
+      "lesson15": {
+        "title": "August",
+        "step1": {
+          "spanish": "agosto",
+          "english": "August",
+          "audio": "agosto",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'August'?",
+            "options": [
+              "agosto",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "agosto"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = August",
+          "expected_answer": "agosto",
+          "alt_answers": [
+            "Agosto",
+            "agosto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "agosto",
+          "options": [
+            "August",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "August"
+        }
+      },
+      "lesson16": {
+        "title": "September",
+        "step1": {
+          "spanish": "septiembre",
+          "english": "September",
+          "audio": "septiembre",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'September'?",
+            "options": [
+              "septiembre",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "septiembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__  = September",
+          "expected_answer": "septiembre",
+          "alt_answers": [
+            "Septiembre",
+            "septiembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "septiembre",
+          "options": [
+            "September",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "September"
+        }
+      },
+      "lesson17": {
+        "title": "October",
+        "step1": {
+          "spanish": "octubre",
+          "english": "October",
+          "audio": "octubre",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'October'?",
+            "options": [
+              "octubre",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "octubre"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__  = October",
+          "expected_answer": "octubre",
+          "alt_answers": [
+            "Octubre",
+            "octubre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "octubre",
+          "options": [
+            "October",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "October"
+        }
+      },
+      "lesson18": {
+        "title": "November",
+        "step1": {
+          "spanish": "noviembre",
+          "english": "November",
+          "audio": "noviembre",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'November'?",
+            "options": [
+              "noviembre",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "noviembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = November",
+          "expected_answer": "noviembre",
+          "alt_answers": [
+            "Noviembre",
+            "noviembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "noviembre",
+          "options": [
+            "November",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "November"
+        }
+      },
+      "lesson19": {
+        "title": "December",
+        "step1": {
+          "spanish": "diciembre",
+          "english": "December",
+          "audio": "diciembre",
+          "note": "Months in Spanish are not capitalized unless at the start of a sentence.",
+          "mcq": {
+            "question": "Which Spanish word means 'December'?",
+            "options": [
+              "diciembre",
+              "enero",
+              "febrero",
+              "marzo"
+            ],
+            "answer": "diciembre"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__  = December",
+          "expected_answer": "diciembre",
+          "alt_answers": [
+            "Diciembre",
+            "diciembre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diciembre",
+          "options": [
+            "December",
+            "May",
+            "August",
+            "November"
+          ],
+          "answer": "December"
+        }
+      },
+      "lesson20": {
+        "title": "What day is today?",
+        "step1": {
+          "spanish": "¿Qué día es hoy?",
+          "english": "What day is today?",
+          "audio": "¿Qué día es hoy?",
+          "note": "Common question to ask the current day.",
+          "mcq": {
+            "question": "How do you say 'What day is today?' in Spanish?",
+            "options": [
+              "¿Qué día es hoy?",
+              "¿Qué día es?",
+              "¿Cuál es la fecha?",
+              "Hoy es lunes"
+            ],
+            "answer": "¿Qué día es hoy?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Qué __  = What day is today?",
+          "expected_answer": "¿Qué día es hoy?",
+          "alt_answers": [
+            "¿Qué día es hoy?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Qué día es hoy?",
+          "options": [
+            "What day is today?",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "What day is today?"
+        }
+      },
+      "lesson21": {
+        "title": "Today is Monday",
+        "step1": {
+          "spanish": "Hoy es lunes",
+          "english": "Today is Monday",
+          "audio": "Hoy es lunes",
+          "note": "Replace 'lunes' with the actual day.",
+          "mcq": {
+            "question": "How do you say 'Today is Monday' in Spanish?",
+            "options": [
+              "Hoy es lunes",
+              "¿Qué día es?",
+              "¿Cuál es la fecha?",
+              "Hoy es lunes"
+            ],
+            "answer": "Hoy es lunes"
+          }
+        },
+        "step2": {
+          "type_prompt": "Hoy e__  = Today is Monday",
+          "expected_answer": "Hoy es lunes",
+          "alt_answers": [
+            "Hoy es lunes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Hoy es lunes",
+          "options": [
+            "Today is Monday",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "Today is Monday"
+        }
+      },
+      "lesson22": {
+        "title": "What’s today’s date?",
+        "step1": {
+          "spanish": "¿Cuál es la fecha de hoy?",
+          "english": "What’s today’s date?",
+          "audio": "¿Cuál es la fecha de hoy?",
+          "note": "Used to ask the date.",
+          "mcq": {
+            "question": "How do you say 'What’s today’s date?' in Spanish?",
+            "options": [
+              "¿Cuál es la fecha de hoy?",
+              "¿Qué día es?",
+              "¿Cuál es la fecha?",
+              "Hoy es lunes"
+            ],
+            "answer": "¿Cuál es la fecha de hoy?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Cuál__  = What’s today’s date?",
+          "expected_answer": "¿Cuál es la fecha de hoy?",
+          "alt_answers": [
+            "¿Cuál es la fecha de hoy?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Cuál es la fecha de hoy?",
+          "options": [
+            "What’s today’s date?",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "What’s today’s date?"
+        }
+      },
+      "lesson23": {
+        "title": "Today is May 5th",
+        "step1": {
+          "spanish": "Hoy es 5 de mayo",
+          "english": "Today is May 5th",
+          "audio": "Hoy es 5 de mayo",
+          "note": "Spanish date format is 'day + de + month'. No ordinal numbers for dates.",
+          "mcq": {
+            "question": "How do you say 'Today is May 5th' in Spanish?",
+            "options": [
+              "Hoy es 5 de mayo",
+              "¿Qué día es?",
+              "¿Cuál es la fecha?",
+              "Hoy es lunes"
+            ],
+            "answer": "Hoy es 5 de mayo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Hoy e__  = Today is May 5th",
+          "expected_answer": "Hoy es 5 de mayo",
+          "alt_answers": [
+            "Hoy es 5 de mayo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Hoy es 5 de mayo",
+          "options": [
+            "Today is May 5th",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "Today is May 5th"
+        }
+      },
+      "lesson24": {
+        "title": "My birthday is October 10th",
+        "step1": {
+          "spanish": "Mi cumpleaños es el 10 de octubre",
+          "english": "My birthday is October 10th",
+          "audio": "Mi cumpleaños es el 10 de octubre",
+          "note": "Literal: My birthday is the 10 of October.",
+          "mcq": {
+            "question": "How do you say 'My birthday is October 10th' in Spanish?",
+            "options": [
+              "Mi cumpleaños es el 10 de octubre",
+              "¿Qué día es?",
+              "¿Cuál es la fecha?",
+              "Hoy es lunes"
+            ],
+            "answer": "Mi cumpleaños es el 10 de octubre"
+          }
+        },
+        "step2": {
+          "type_prompt": "Mi cu__  = My birthday is October 10th",
+          "expected_answer": "Mi cumpleaños es el 10 de octubre",
+          "alt_answers": [
+            "Mi cumpleaños es el 10 de octubre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi cumpleaños es el 10 de octubre",
+          "options": [
+            "My birthday is October 10th",
+            "What’s your name?",
+            "Where are you from?",
+            "How are you?"
+          ],
+          "answer": "My birthday is October 10th"
+        }
+      }
+    }
+  }
+}

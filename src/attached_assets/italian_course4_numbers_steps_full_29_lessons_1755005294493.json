@@ -1,0 +1,1160 @@
+{
+  "course4": {
+    "title": "Numbers",
+    "description": "Learn how to count in Italian from 0 to 100, plus essential phrases for talking about age.",
+    "lessons": {
+      "lesson1": {
+        "title": "0",
+        "step1": {
+          "italian": "zero",
+          "english": "0",
+          "audio": "zero",
+          "note": "ZEH-ro",
+          "mcq": {
+            "question": "Which phrase means '0'?",
+            "options": [
+              "zero",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "zero"
+          }
+        },
+        "step2": {
+          "type_prompt": "z__o  = 0",
+          "expected_answer": "zero",
+          "alt_answers": [
+            "Zero"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zero",
+          "options": [
+            "0.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "0."
+        }
+      },
+      "lesson2": {
+        "title": "1",
+        "step1": {
+          "italian": "uno",
+          "english": "1",
+          "audio": "uno",
+          "note": "OO-noh",
+          "mcq": {
+            "question": "Which phrase means '1'?",
+            "options": [
+              "uno",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "uno"
+          }
+        },
+        "step2": {
+          "type_prompt": "u_o  = 1",
+          "expected_answer": "uno",
+          "alt_answers": [
+            "Uno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "uno",
+          "options": [
+            "1.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "1."
+        }
+      },
+      "lesson3": {
+        "title": "2",
+        "step1": {
+          "italian": "due",
+          "english": "2",
+          "audio": "due",
+          "note": "DOO-eh",
+          "mcq": {
+            "question": "Which phrase means '2'?",
+            "options": [
+              "due",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "due"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_e  = 2",
+          "expected_answer": "due",
+          "alt_answers": [
+            "Due"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "due",
+          "options": [
+            "2.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "2."
+        }
+      },
+      "lesson4": {
+        "title": "3",
+        "step1": {
+          "italian": "tre",
+          "english": "3",
+          "audio": "tre",
+          "note": "TREH",
+          "mcq": {
+            "question": "Which phrase means '3'?",
+            "options": [
+              "tre",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "tre"
+          }
+        },
+        "step2": {
+          "type_prompt": "t_e  = 3",
+          "expected_answer": "tre",
+          "alt_answers": [
+            "Tre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "tre",
+          "options": [
+            "3.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "3."
+        }
+      },
+      "lesson5": {
+        "title": "4",
+        "step1": {
+          "italian": "quattro",
+          "english": "4",
+          "audio": "quattro",
+          "note": "KWAHT-troh",
+          "mcq": {
+            "question": "Which phrase means '4'?",
+            "options": [
+              "quattro",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "quattro"
+          }
+        },
+        "step2": {
+          "type_prompt": "q_____o  = 4",
+          "expected_answer": "quattro",
+          "alt_answers": [
+            "Quattro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quattro",
+          "options": [
+            "4.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "4."
+        }
+      },
+      "lesson6": {
+        "title": "5",
+        "step1": {
+          "italian": "cinque",
+          "english": "5",
+          "audio": "cinque",
+          "note": "CHEEN-kweh",
+          "mcq": {
+            "question": "Which phrase means '5'?",
+            "options": [
+              "cinque",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "cinque"
+          }
+        },
+        "step2": {
+          "type_prompt": "c____e  = 5",
+          "expected_answer": "cinque",
+          "alt_answers": [
+            "Cinque"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cinque",
+          "options": [
+            "5.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "5."
+        }
+      },
+      "lesson7": {
+        "title": "6",
+        "step1": {
+          "italian": "sei",
+          "english": "6",
+          "audio": "sei",
+          "note": "SEH-ee",
+          "mcq": {
+            "question": "Which phrase means '6'?",
+            "options": [
+              "sei",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "sei"
+          }
+        },
+        "step2": {
+          "type_prompt": "s_i  = 6",
+          "expected_answer": "sei",
+          "alt_answers": [
+            "Sei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sei",
+          "options": [
+            "6.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "6."
+        }
+      },
+      "lesson8": {
+        "title": "7",
+        "step1": {
+          "italian": "sette",
+          "english": "7",
+          "audio": "sette",
+          "note": "SEHT-teh",
+          "mcq": {
+            "question": "Which phrase means '7'?",
+            "options": [
+              "sette",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "sette"
+          }
+        },
+        "step2": {
+          "type_prompt": "s___e  = 7",
+          "expected_answer": "sette",
+          "alt_answers": [
+            "Sette"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sette",
+          "options": [
+            "7.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "7."
+        }
+      },
+      "lesson9": {
+        "title": "8",
+        "step1": {
+          "italian": "otto",
+          "english": "8",
+          "audio": "otto",
+          "note": "OT-toh",
+          "mcq": {
+            "question": "Which phrase means '8'?",
+            "options": [
+              "otto",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "otto"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__o  = 8",
+          "expected_answer": "otto",
+          "alt_answers": [
+            "Otto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "otto",
+          "options": [
+            "8.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "8."
+        }
+      },
+      "lesson10": {
+        "title": "9",
+        "step1": {
+          "italian": "nove",
+          "english": "9",
+          "audio": "nove",
+          "note": "NO-veh",
+          "mcq": {
+            "question": "Which phrase means '9'?",
+            "options": [
+              "nove",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "nove"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__e  = 9",
+          "expected_answer": "nove",
+          "alt_answers": [
+            "Nove"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "nove",
+          "options": [
+            "9.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "9."
+        }
+      },
+      "lesson11": {
+        "title": "10",
+        "step1": {
+          "italian": "dieci",
+          "english": "10",
+          "audio": "dieci",
+          "note": "DEE-eh-chee",
+          "mcq": {
+            "question": "Which phrase means '10'?",
+            "options": [
+              "dieci",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "dieci"
+          }
+        },
+        "step2": {
+          "type_prompt": "d___i  = 10",
+          "expected_answer": "dieci",
+          "alt_answers": [
+            "Dieci"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dieci",
+          "options": [
+            "10.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "10."
+        }
+      },
+      "lesson12": {
+        "title": "11",
+        "step1": {
+          "italian": "undici",
+          "english": "11",
+          "audio": "undici",
+          "note": "OON-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '11'?",
+            "options": [
+              "undici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "undici"
+          }
+        },
+        "step2": {
+          "type_prompt": "u____i  = 11",
+          "expected_answer": "undici",
+          "alt_answers": [
+            "Undici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "undici",
+          "options": [
+            "11.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "11."
+        }
+      },
+      "lesson13": {
+        "title": "12",
+        "step1": {
+          "italian": "dodici",
+          "english": "12",
+          "audio": "dodici",
+          "note": "DOH-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '12'?",
+            "options": [
+              "dodici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "dodici"
+          }
+        },
+        "step2": {
+          "type_prompt": "d____i  = 12",
+          "expected_answer": "dodici",
+          "alt_answers": [
+            "Dodici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dodici",
+          "options": [
+            "12.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "12."
+        }
+      },
+      "lesson14": {
+        "title": "13",
+        "step1": {
+          "italian": "tredici",
+          "english": "13",
+          "audio": "tredici",
+          "note": "TREH-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '13'?",
+            "options": [
+              "tredici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "tredici"
+          }
+        },
+        "step2": {
+          "type_prompt": "t_____i  = 13",
+          "expected_answer": "tredici",
+          "alt_answers": [
+            "Tredici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "tredici",
+          "options": [
+            "13.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "13."
+        }
+      },
+      "lesson15": {
+        "title": "14",
+        "step1": {
+          "italian": "quattordici",
+          "english": "14",
+          "audio": "quattordici",
+          "note": "kwat-TOR-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '14'?",
+            "options": [
+              "quattordici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "quattordici"
+          }
+        },
+        "step2": {
+          "type_prompt": "q_________i  = 14",
+          "expected_answer": "quattordici",
+          "alt_answers": [
+            "Quattordici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quattordici",
+          "options": [
+            "14.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "14."
+        }
+      },
+      "lesson16": {
+        "title": "15",
+        "step1": {
+          "italian": "quindici",
+          "english": "15",
+          "audio": "quindici",
+          "note": "KWEEN-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '15'?",
+            "options": [
+              "quindici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "quindici"
+          }
+        },
+        "step2": {
+          "type_prompt": "q______i  = 15",
+          "expected_answer": "quindici",
+          "alt_answers": [
+            "Quindici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quindici",
+          "options": [
+            "15.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "15."
+        }
+      },
+      "lesson17": {
+        "title": "16",
+        "step1": {
+          "italian": "sedici",
+          "english": "16",
+          "audio": "sedici",
+          "note": "SEH-dee-chee",
+          "mcq": {
+            "question": "Which phrase means '16'?",
+            "options": [
+              "sedici",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "sedici"
+          }
+        },
+        "step2": {
+          "type_prompt": "s____i  = 16",
+          "expected_answer": "sedici",
+          "alt_answers": [
+            "Sedici"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sedici",
+          "options": [
+            "16.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "16."
+        }
+      },
+      "lesson18": {
+        "title": "17",
+        "step1": {
+          "italian": "diciassette",
+          "english": "17",
+          "audio": "diciassette",
+          "note": "dee-chahs-SET-teh",
+          "mcq": {
+            "question": "Which phrase means '17'?",
+            "options": [
+              "diciassette",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "diciassette"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_________e  = 17",
+          "expected_answer": "diciassette",
+          "alt_answers": [
+            "Diciassette"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diciassette",
+          "options": [
+            "17.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "17."
+        }
+      },
+      "lesson19": {
+        "title": "18",
+        "step1": {
+          "italian": "diciotto",
+          "english": "18",
+          "audio": "diciotto",
+          "note": "dee-CHOHT-toh",
+          "mcq": {
+            "question": "Which phrase means '18'?",
+            "options": [
+              "diciotto",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "diciotto"
+          }
+        },
+        "step2": {
+          "type_prompt": "d______o  = 18",
+          "expected_answer": "diciotto",
+          "alt_answers": [
+            "Diciotto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diciotto",
+          "options": [
+            "18.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "18."
+        }
+      },
+      "lesson20": {
+        "title": "19",
+        "step1": {
+          "italian": "diciannove",
+          "english": "19",
+          "audio": "diciannove",
+          "note": "dee-chah-NO-veh",
+          "mcq": {
+            "question": "Which phrase means '19'?",
+            "options": [
+              "diciannove",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "diciannove"
+          }
+        },
+        "step2": {
+          "type_prompt": "d________e  = 19",
+          "expected_answer": "diciannove",
+          "alt_answers": [
+            "Diciannove"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "diciannove",
+          "options": [
+            "19.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "19."
+        }
+      },
+      "lesson21": {
+        "title": "20",
+        "step1": {
+          "italian": "venti",
+          "english": "20",
+          "audio": "venti",
+          "note": "VEN-tee",
+          "mcq": {
+            "question": "Which phrase means '20'?",
+            "options": [
+              "venti",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "venti"
+          }
+        },
+        "step2": {
+          "type_prompt": "v___i  = 20",
+          "expected_answer": "venti",
+          "alt_answers": [
+            "Venti"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "venti",
+          "options": [
+            "20.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "20."
+        }
+      },
+      "lesson22": {
+        "title": "30",
+        "step1": {
+          "italian": "trenta",
+          "english": "30",
+          "audio": "trenta",
+          "note": "TREN-tah",
+          "mcq": {
+            "question": "Which phrase means '30'?",
+            "options": [
+              "trenta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "trenta"
+          }
+        },
+        "step2": {
+          "type_prompt": "t____a  = 30",
+          "expected_answer": "trenta",
+          "alt_answers": [
+            "Trenta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "trenta",
+          "options": [
+            "30.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "30."
+        }
+      },
+      "lesson23": {
+        "title": "40",
+        "step1": {
+          "italian": "quaranta",
+          "english": "40",
+          "audio": "quaranta",
+          "note": "kwah-RAN-tah",
+          "mcq": {
+            "question": "Which phrase means '40'?",
+            "options": [
+              "quaranta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "quaranta"
+          }
+        },
+        "step2": {
+          "type_prompt": "q______a  = 40",
+          "expected_answer": "quaranta",
+          "alt_answers": [
+            "Quaranta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quaranta",
+          "options": [
+            "40.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "40."
+        }
+      },
+      "lesson24": {
+        "title": "50",
+        "step1": {
+          "italian": "cinquanta",
+          "english": "50",
+          "audio": "cinquanta",
+          "note": "cheen-KWAHN-tah",
+          "mcq": {
+            "question": "Which phrase means '50'?",
+            "options": [
+              "cinquanta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "cinquanta"
+          }
+        },
+        "step2": {
+          "type_prompt": "c_______a  = 50",
+          "expected_answer": "cinquanta",
+          "alt_answers": [
+            "Cinquanta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cinquanta",
+          "options": [
+            "50.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "50."
+        }
+      },
+      "lesson25": {
+        "title": "60",
+        "step1": {
+          "italian": "sessanta",
+          "english": "60",
+          "audio": "sessanta",
+          "note": "seh-SAN-tah",
+          "mcq": {
+            "question": "Which phrase means '60'?",
+            "options": [
+              "sessanta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "sessanta"
+          }
+        },
+        "step2": {
+          "type_prompt": "s______a  = 60",
+          "expected_answer": "sessanta",
+          "alt_answers": [
+            "Sessanta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sessanta",
+          "options": [
+            "60.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "60."
+        }
+      },
+      "lesson26": {
+        "title": "70",
+        "step1": {
+          "italian": "settanta",
+          "english": "70",
+          "audio": "settanta",
+          "note": "set-TAN-tah",
+          "mcq": {
+            "question": "Which phrase means '70'?",
+            "options": [
+              "settanta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "settanta"
+          }
+        },
+        "step2": {
+          "type_prompt": "s______a  = 70",
+          "expected_answer": "settanta",
+          "alt_answers": [
+            "Settanta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "settanta",
+          "options": [
+            "70.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "70."
+        }
+      },
+      "lesson27": {
+        "title": "80",
+        "step1": {
+          "italian": "ottanta",
+          "english": "80",
+          "audio": "ottanta",
+          "note": "oht-TAN-tah",
+          "mcq": {
+            "question": "Which phrase means '80'?",
+            "options": [
+              "ottanta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "ottanta"
+          }
+        },
+        "step2": {
+          "type_prompt": "o_____a  = 80",
+          "expected_answer": "ottanta",
+          "alt_answers": [
+            "Ottanta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "ottanta",
+          "options": [
+            "80.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "80."
+        }
+      },
+      "lesson28": {
+        "title": "90",
+        "step1": {
+          "italian": "novanta",
+          "english": "90",
+          "audio": "novanta",
+          "note": "noh-VAN-tah",
+          "mcq": {
+            "question": "Which phrase means '90'?",
+            "options": [
+              "novanta",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "novanta"
+          }
+        },
+        "step2": {
+          "type_prompt": "n_____a  = 90",
+          "expected_answer": "novanta",
+          "alt_answers": [
+            "Novanta"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "novanta",
+          "options": [
+            "90.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "90."
+        }
+      },
+      "lesson29": {
+        "title": "One hundred",
+        "step1": {
+          "italian": "cento",
+          "english": "one hundred",
+          "audio": "cento",
+          "note": "CHEN-toh",
+          "mcq": {
+            "question": "Which phrase means 'one hundred'?",
+            "options": [
+              "cento",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "cento"
+          }
+        },
+        "step2": {
+          "type_prompt": "c___o  = one hundred",
+          "expected_answer": "cento",
+          "alt_answers": [
+            "Cento"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cento",
+          "options": [
+            "One hundred.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "One hundred."
+        }
+      },
+      "lesson30": {
+        "title": "How old are you? (informal)",
+        "step1": {
+          "italian": "Quanti anni hai?",
+          "english": "How old are you? (informal)",
+          "audio": "Quanti anni hai?",
+          "note": "KWAN-tee AHN-nee ai",
+          "mcq": {
+            "question": "Which phrase means 'How old are you? (informal)'?",
+            "options": [
+              "Quanti anni hai?",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "Quanti anni hai?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Quanti anni hai?  = How old are you? (informal)",
+          "expected_answer": "Quanti anni hai?",
+          "alt_answers": [
+            "quanti anni hai?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quanti anni hai?",
+          "options": [
+            "How old are you? (informal)",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "How old are you? (informal)"
+        }
+      },
+      "lesson31": {
+        "title": "How old are you? (formal)",
+        "step1": {
+          "italian": "Quanti anni ha?",
+          "english": "How old are you? (formal)",
+          "audio": "Quanti anni ha?",
+          "note": "KWAN-tee AHN-nee ah",
+          "mcq": {
+            "question": "Which phrase means 'How old are you? (formal)'?",
+            "options": [
+              "Quanti anni ha?",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "Quanti anni ha?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Quanti anni ha?  = How old are you? (formal)",
+          "expected_answer": "Quanti anni ha?",
+          "alt_answers": [
+            "quanti anni ha?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quanti anni ha?",
+          "options": [
+            "How old are you? (formal)",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "How old are you? (formal)"
+        }
+      },
+      "lesson32": {
+        "title": "I am __ years old",
+        "step1": {
+          "italian": "Ho __ anni",
+          "english": "I am __ years old",
+          "audio": "Ho __ anni",
+          "note": "OH __ AHN-nee",
+          "mcq": {
+            "question": "Which phrase means 'I am __ years old'?",
+            "options": [
+              "Ho __ anni",
+              "uno",
+              "due",
+              "tre"
+            ],
+            "answer": "Ho __ anni"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ho _ anni  = I am __ years old",
+          "expected_answer": "Ho __ anni",
+          "alt_answers": [
+            "ho __ anni"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ho 20 anni",
+          "options": [
+            "I am __ years old",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "I am __ years old"
+        }
+      }
+    }
+  }
+}

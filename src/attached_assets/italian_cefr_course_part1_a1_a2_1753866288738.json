@@ -1,0 +1,246 @@
+{
+  "A1": {
+    "Greetings & Politeness": {
+      "vocabulary": [
+        "ciao",
+        "buongiorno",
+        "buonasera",
+        "arrivederci",
+        "per favore",
+        "grazie",
+        "prego",
+        "scusa"
+      ],
+      "phrases": [
+        {
+          "english": "Hello, how are you?",
+          "italian": "Ciao, come stai?"
+        },
+        {
+          "english": "Thank you very much.",
+          "italian": "Grazie mille."
+        },
+        {
+          "english": "You're welcome.",
+          "italian": "Prego."
+        },
+        {
+          "english": "Excuse me.",
+          "italian": "Scusa."
+        }
+      ],
+      "grammar": [
+        "Present tense of 'essere' and 'stare'",
+        "Informal vs formal address (tu vs Lei)"
+      ],
+      "pronunciation_tips": [
+        "'Scusa' - soft 's' sound, stress on 'scu'.",
+        "'Ciao' sounds like 'chow'."
+      ],
+      "conversation": {
+        "sample_dialogue": [
+          {
+            "person1": "Ciao, come ti chiami?",
+            "person2": "Mi chiamo Paolo. E tu?"
+          },
+          {
+            "person1": "Piacere di conoscerti!",
+            "person2": "Piacere mio!"
+          }
+        ]
+      }
+    },
+    "Introducing Yourself & Others": {
+      "vocabulary": [
+        "nome",
+        "età",
+        "nazionalità",
+        "professione",
+        "studente",
+        "insegnante"
+      ],
+      "phrases": [
+        {
+          "english": "My name is Anna.",
+          "italian": "Mi chiamo Anna."
+        },
+        {
+          "english": "I am a teacher.",
+          "italian": "Sono un insegnante."
+        },
+        {
+          "english": "This is my friend Marco.",
+          "italian": "Questo è il mio amico Marco."
+        }
+      ],
+      "grammar": [
+        "Verb 'essere'",
+        "Gender of nouns and articles",
+        "Singular/plural nouns"
+      ],
+      "pronunciation_tips": [
+        "Pay attention to vowel endings for gender: insegnante (m/f)."
+      ],
+      "conversation": {}
+    },
+    "Basic Questions & Responses": {
+      "vocabulary": [
+        "che",
+        "come",
+        "quando",
+        "dove",
+        "chi",
+        "perché",
+        "sì",
+        "no",
+        "non lo so"
+      ],
+      "phrases": [
+        {
+          "english": "What is your name?",
+          "italian": "Come ti chiami?"
+        },
+        {
+          "english": "Where are you from?",
+          "italian": "Di dove sei?"
+        },
+        {
+          "english": "I don’t know.",
+          "italian": "Non lo so."
+        }
+      ],
+      "grammar": [
+        "Interrogative structure",
+        "Simple negation with 'non'"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    },
+    "Numbers & Time": {
+      "vocabulary": [
+        "uno",
+        "due",
+        "tre",
+        "quattro",
+        "cinque",
+        "sei",
+        "sette",
+        "otto",
+        "nove",
+        "dieci"
+      ],
+      "phrases": [
+        {
+          "english": "What time is it?",
+          "italian": "Che ore sono?"
+        },
+        {
+          "english": "It is five o'clock.",
+          "italian": "Sono le cinque."
+        }
+      ],
+      "grammar": [
+        "Use of 'essere' for time",
+        "Definite articles with time"
+      ],
+      "pronunciation_tips": [
+        "‘Cinque’ is pronounced ‘cheen-kweh’.",
+        "‘Otto’ is pronounced ‘ot-to’."
+      ],
+      "conversation": {}
+    }
+  },
+  "A2": {
+    "Food & Drinks": {
+      "vocabulary": [
+        "pane",
+        "formaggio",
+        "vino",
+        "acqua",
+        "pizza",
+        "birra",
+        "frutta",
+        "verdura"
+      ],
+      "phrases": [
+        {
+          "english": "I would like a coffee.",
+          "italian": "Vorrei un caffè."
+        },
+        {
+          "english": "Do you have vegetarian dishes?",
+          "italian": "Avete piatti vegetariani?"
+        }
+      ],
+      "grammar": [
+        "Partitive articles (del, della)",
+        "Modal verbs (volere, potere)"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {
+        "sample_dialogue": [
+          {
+            "person1": "Cosa prendi?",
+            "person2": "Vorrei una pizza e una birra, grazie."
+          }
+        ]
+      }
+    },
+    "Shopping & Prices": {
+      "vocabulary": [
+        "prezzo",
+        "caro",
+        "economico",
+        "negozio",
+        "sconto",
+        "taglia",
+        "prova"
+      ],
+      "phrases": [
+        {
+          "english": "How much is this?",
+          "italian": "Quanto costa questo?"
+        },
+        {
+          "english": "Can I try it on?",
+          "italian": "Posso provarlo?"
+        }
+      ],
+      "grammar": [
+        "Use of 'questo/quella'",
+        "Question inversion",
+        "Indirect object pronouns"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    },
+    "Daily Routines": {
+      "vocabulary": [
+        "svegliarsi",
+        "alzarsi",
+        "fare colazione",
+        "andare al lavoro",
+        "cenare",
+        "dormire"
+      ],
+      "phrases": [
+        {
+          "english": "I wake up at 7.",
+          "italian": "Mi sveglio alle sette."
+        },
+        {
+          "english": "I have dinner at 8.",
+          "italian": "Ceno alle otto."
+        }
+      ],
+      "grammar": [
+        "Reflexive verbs",
+        "Present tense regular verbs (-are, -ere, -ire)"
+      ],
+      "pronunciation_tips": [
+        "'Mi sveglio' - stress on 'sve'. Roll the 'r' in 'lavoro'."
+      ],
+      "conversation": {}
+    }
+  }
+}

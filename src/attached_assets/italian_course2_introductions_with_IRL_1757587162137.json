@@ -1,0 +1,884 @@
+{
+  "course2": {
+    "title": "Introducing Yourself",
+    "description": "Learn how to introduce yourself, ask names, share where you're from, and exchange polite introductions in Italian. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall. Step 3 uses only natural, clear examples within learned vocabulary.",
+    "lessons": {
+      "lesson1": {
+        "title": "What’s your name? (informal)",
+        "step1": {
+          "italian": "Come ti chiami?",
+          "english": "What is your name? (informal)",
+          "audio": "Come ti chiami?",
+          "note": "Use with friends or people your age.",
+          "mcq": {
+            "question": "Which phrase means 'What is your name? (informal)'?",
+            "options": [
+              "Come ti chiami?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Come ti chiami?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Co__ ti chiami?  = What is your name? (informal)",
+          "expected_answer": "Come ti chiami?",
+          "alt_answers": [
+            "come ti chiami?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Come ti chiami?",
+          "options": [
+            "What is your name?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "What is your name?"
+        }
+      },
+      "lesson2": {
+        "title": "What is your name? (formal)",
+        "step1": {
+          "italian": "Come si chiama?",
+          "english": "What is your name? (formal)",
+          "audio": "Come si chiama?",
+          "note": "Use in polite situations or with older people.",
+          "mcq": {
+            "question": "Which phrase means 'What is your name? (formal)'?",
+            "options": [
+              "Come si chiama?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Come si chiama?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Come si chi__ma?  = What is your name? (formal)",
+          "expected_answer": "Come si chiama?",
+          "alt_answers": [
+            "come si chiama?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Come si chiama?",
+          "options": [
+            "What is your name?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "What is your name?"
+        }
+      },
+      "lesson3": {
+        "title": "My name is…",
+        "step1": {
+          "italian": "Mi chiamo...",
+          "english": "My name is...",
+          "audio": "Mi chiamo...",
+          "note": "Standard way to introduce your name.",
+          "mcq": {
+            "question": "Which phrase means 'My name is...'?",
+            "options": [
+              "Mi chiamo...",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Mi chiamo..."
+          }
+        },
+        "step2": {
+          "type_prompt": "Mi ch__mo...  = My name is...",
+          "expected_answer": "Mi chiamo...",
+          "alt_answers": [
+            "mi chiamo..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "My name is Luca",
+          "options": [
+            "My name is Luca.",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "My name is Luca."
+        }
+      },
+      "lesson4": {
+        "title": "I am…",
+        "step1": {
+          "italian": "Sono...",
+          "english": "I am...",
+          "audio": "Sono...",
+          "note": "Use with your name, profession, or nationality.",
+          "mcq": {
+            "question": "Which phrase means 'I am...'?",
+            "options": [
+              "Sono...",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Sono..."
+          }
+        },
+        "step2": {
+          "type_prompt": "So__...  = I am...",
+          "expected_answer": "Sono...",
+          "alt_answers": [
+            "sono..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "I am Marco",
+          "options": [
+            "I am Marco.",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "I am Marco."
+        }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'What is your name? (informal)'?",
+            "options": [
+              "Sono italiana",
+              "Sono italiano",
+              "Come ti chiami?",
+              "Sono di..."
+            ],
+            "answer": "Come ti chiami?"
+          },
+          {
+            "prompt": "Which phrase means 'What is your name? (formal)'?",
+            "options": [
+              "Sono italiano",
+              "Sono italiana",
+              "Come si chiama?",
+              "Di dove sei?"
+            ],
+            "answer": "Come si chiama?"
+          },
+          {
+            "prompt": "Which phrase means 'My name is...'?",
+            "options": [
+              "Come sta?",
+              "Mi chiamo...",
+              "Sono italiana",
+              "Come stai?"
+            ],
+            "answer": "Mi chiamo..."
+          },
+          {
+            "prompt": "Which phrase means 'I am...'?",
+            "options": [
+              "Sono di...",
+              "Sono...",
+              "Mi chiamo...",
+              "Sono italiana"
+            ],
+            "answer": "Sono..."
+          },
+          {
+            "prompt": "Select the correct Italian for: What is your name? (informal)",
+            "options": [
+              "Sono...",
+              "Piacere di conoscerti",
+              "Sono italiana",
+              "Come ti chiami?"
+            ],
+            "answer": "Come ti chiami?"
+          },
+          {
+            "prompt": "Select the correct Italian for: What is your name? (formal)",
+            "options": [
+              "Come si chiama?",
+              "Mi chiamo...",
+              "Sono italiano",
+              "Come sta?"
+            ],
+            "answer": "Come si chiama?"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl1": {
+        "title": "IRL Video Challenge 1",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/italian_beginners_course2/party_introduction.mp4",
+            "prompt": "You meet someone on the street. They ask your name: 'Come ti chiami?'.",
+            "answer_prompt": "Reply by introducing yourself: 'My name is'",
+            "expected_answers": [
+              "Mi chiamo",
+              "Sono",
+              "Ciao, mi chiamo"
+            ]
+          }
+        ]
+      },
+      "lesson5": {
+        "title": "Where are you from? (informal)",
+        "step1": {
+          "italian": "Di dove sei?",
+          "english": "Where are you from? (informal)",
+          "audio": "Di dove sei?",
+          "note": "Use with friends or people your age.",
+          "mcq": {
+            "question": "Which phrase means 'Where are you from? (informal)'?",
+            "options": [
+              "Di dove sei?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Di dove sei?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Di do__ sei?  = Where are you from? (informal)",
+          "expected_answer": "Di dove sei?",
+          "alt_answers": [
+            "di dove sei?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Di dove sei?",
+          "options": [
+            "Where are you from?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "Where are you from?"
+        }
+      },
+      "lesson6": {
+        "title": "Where are you from? (formal)",
+        "step1": {
+          "italian": "Di dov'è?",
+          "english": "Where are you from? (formal)",
+          "audio": "Di dov'è?",
+          "note": "Use in polite situations or with older people.",
+          "mcq": {
+            "question": "Which phrase means 'Where are you from? (formal)'?",
+            "options": [
+              "Di dov'è?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Di dov'è?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Di do__'è?  = Where are you from? (formal)",
+          "expected_answer": "Di dov'è?",
+          "alt_answers": [
+            "di dov'è?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Di dov'è?",
+          "options": [
+            "Where are you from?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "Where are you from?"
+        }
+      },
+      "lesson7": {
+        "title": "I am from…",
+        "step1": {
+          "italian": "Sono di...",
+          "english": "I am from...",
+          "audio": "Sono di...",
+          "note": "Say your city or country after 'di'.",
+          "mcq": {
+            "question": "Which phrase means 'I am from...'?",
+            "options": [
+              "Sono di...",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Sono di..."
+          }
+        },
+        "step2": {
+          "type_prompt": "So__ di...  = I am from...",
+          "expected_answer": "Sono di...",
+          "alt_answers": [
+            "sono di..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "I am from Roma",
+          "options": [
+            "I am from Roma.",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "I am from Roma."
+        }
+      },
+      "lesson8": {
+        "title": "I am Italian (male)",
+        "step1": {
+          "italian": "Sono italiano",
+          "english": "I am Italian (male)",
+          "audio": "Sono italiano",
+          "note": "Used by men. For women, use 'italiana'.",
+          "mcq": {
+            "question": "Which phrase means 'I am Italian (male)'?",
+            "options": [
+              "Sono italiano",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Sono italiano"
+          }
+        },
+        "step2": {
+          "type_prompt": "So__ italiano  = I am Italian (male)",
+          "expected_answer": "Sono italiano",
+          "alt_answers": [
+            "sono italiano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono italiano",
+          "options": [
+            "I am Italian.",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "I am Italian."
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Where are you from? (informal)'?",
+            "options": [
+              "Mi chiamo...",
+              "Di dove sei?",
+              "Di dov'è?",
+              "Sto bene, grazie. E tu/lei?"
+            ],
+            "answer": "Di dove sei?"
+          },
+          {
+            "prompt": "Which phrase means 'Where are you from? (formal)'?",
+            "options": [
+              "Di dov'è?",
+              "Come si chiama?",
+              "Sono...",
+              "Sono di..."
+            ],
+            "answer": "Di dov'è?"
+          },
+          {
+            "prompt": "Which phrase means 'I am from...'?",
+            "options": [
+              "Come sta?",
+              "Sono di...",
+              "Piacere di conoscerti",
+              "Mi chiamo..."
+            ],
+            "answer": "Sono di..."
+          },
+          {
+            "prompt": "Which phrase means 'I am Italian (male)'?",
+            "options": [
+              "Come ti chiami?",
+              "Sono italiano",
+              "Sto bene, grazie. E tu/lei?",
+              "Come sta?"
+            ],
+            "answer": "Sono italiano"
+          },
+          {
+            "prompt": "Select the correct Italian for: Where are you from? (informal)",
+            "options": [
+              "Di dove sei?",
+              "Piacere di conoscerti",
+              "Sono italiana",
+              "Come sta?"
+            ],
+            "answer": "Di dove sei?"
+          },
+          {
+            "prompt": "Select the correct Italian for: Where are you from? (formal)",
+            "options": [
+              "Di dove sei?",
+              "Di dov'è?",
+              "Sto bene, grazie. E tu/lei?",
+              "Come si chiama?"
+            ],
+            "answer": "Di dov'è?"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl2": {
+        "title": "IRL Video Challenge 2",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/italian_beginners_course2/where_are_you_from.mp4",
+            "prompt": "A new friend asks where you are from: 'Di dove sei?'.",
+            "answer_prompt": "Reply by saying you are from Rome.",
+            "expected_answers": [
+              "Sono di Roma."
+            ]
+          }
+        ]
+      },
+      "lesson9": {
+        "title": "I am Italian (female)",
+        "step1": {
+          "italian": "Sono italiana",
+          "english": "I am Italian (female)",
+          "audio": "Sono italiana",
+          "note": "Used by women.",
+          "mcq": {
+            "question": "Which phrase means 'I am Italian (female)'?",
+            "options": [
+              "Sono italiana",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Sono italiana"
+          }
+        },
+        "step2": {
+          "type_prompt": "So__ italiana  = I am Italian (female)",
+          "expected_answer": "Sono italiana",
+          "alt_answers": [
+            "sono italiana"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono italiana",
+          "options": [
+            "I am Italian.",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "I am Italian."
+        }
+      },
+      "lesson10": {
+        "title": "Pleased to meet you (informal)",
+        "step1": {
+          "italian": "Piacere di conoscerti",
+          "english": "Pleased to meet you (informal)",
+          "audio": "Piacere di conoscerti",
+          "note": "Use with friends, peers, or in casual settings.",
+          "mcq": {
+            "question": "Which phrase means 'Pleased to meet you (informal)'?",
+            "options": [
+              "Piacere di conoscerti",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Piacere di conoscerti"
+          }
+        },
+        "step2": {
+          "type_prompt": "Piacere di conos__rti  = Pleased to meet you (informal)",
+          "expected_answer": "Piacere di conoscerti",
+          "alt_answers": [
+            "piacere di conoscerti"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Piacere di conoscerti",
+          "options": [
+            "Pleased to meet you!",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "Pleased to meet you!"
+        }
+      },
+      "lesson11": {
+        "title": "How are you? (informal)",
+        "step1": {
+          "italian": "Come stai?",
+          "english": "How are you? (informal)",
+          "audio": "Come stai?",
+          "note": "Use with friends or people your age.",
+          "mcq": {
+            "question": "Which phrase means 'How are you? (informal)'?",
+            "options": [
+              "Come stai?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Come stai?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Come st__?  = How are you? (informal)",
+          "expected_answer": "Come stai?",
+          "alt_answers": [
+            "come stai?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Come stai?",
+          "options": [
+            "How are you?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "How are you?"
+        }
+      },
+      "lesson12": {
+        "title": "How are you? (formal)",
+        "step1": {
+          "italian": "Come sta?",
+          "english": "How are you? (formal)",
+          "audio": "Come sta?",
+          "note": "Use in polite situations or with older people.",
+          "mcq": {
+            "question": "Which phrase means 'How are you? (formal)'?",
+            "options": [
+              "Come sta?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Come sta?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Come st__?  = How are you? (formal)",
+          "expected_answer": "Come sta?",
+          "alt_answers": [
+            "come sta?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Come sta?",
+          "options": [
+            "How are you?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "How are you?"
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'I am Italian (female)'?",
+            "options": [
+              "Sono italiana",
+              "Sto bene, grazie. E tu/lei?",
+              "Di dove sei?",
+              "Di dov'è?"
+            ],
+            "answer": "Sono italiana"
+          },
+          {
+            "prompt": "Which phrase means 'Pleased to meet you (informal)'?",
+            "options": [
+              "Mi chiamo...",
+              "Come stai?",
+              "Piacere di conoscerti",
+              "Come ti chiami?"
+            ],
+            "answer": "Piacere di conoscerti"
+          },
+          {
+            "prompt": "Which phrase means 'How are you? (informal)'?",
+            "options": [
+              "Come stai?",
+              "Come ti chiami?",
+              "Come si chiama?",
+              "Sono italiana"
+            ],
+            "answer": "Come stai?"
+          },
+          {
+            "prompt": "Which phrase means 'How are you? (formal)'?",
+            "options": [
+              "Come sta?",
+              "Di dove sei?",
+              "Sono...",
+              "Di dov'è?"
+            ],
+            "answer": "Come sta?"
+          },
+          {
+            "prompt": "Select the correct Italian for: I am Italian (female)",
+            "options": [
+              "Sono di...",
+              "Come sta?",
+              "Sto bene, grazie. E tu/lei?",
+              "Sono italiana"
+            ],
+            "answer": "Sono italiana"
+          },
+          {
+            "prompt": "Select the correct Italian for: Pleased to meet you (informal)",
+            "options": [
+              "Piacere di conoscerti",
+              "Sono di...",
+              "Di dove sei?",
+              "Sono italiana"
+            ],
+            "answer": "Piacere di conoscerti"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson13": {
+        "title": "I’m fine, thank you / And you? (informal/formal)",
+        "step1": {
+          "italian": "Sto bene, grazie. E tu/lei?",
+          "english": "I’m fine, thank you / And you? (informal/formal)",
+          "audio": "Sto bene, grazie. E tu/lei?",
+          "note": "Use 'tu' for informal, 'lei' for formal situations.",
+          "mcq": {
+            "question": "Which phrase means 'I’m fine, thank you / And you? (informal/formal)'?",
+            "options": [
+              "Sto bene, grazie. E tu/lei?",
+              "Mi chiamo...",
+              "Sono...",
+              "Piacere!"
+            ],
+            "answer": "Sto bene, grazie. E tu/lei?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sto bene, gra__e. E tu/lei?  = I’m fine, thank you / And you? (informal/formal)",
+          "expected_answer": "Sto bene, grazie. E tu/lei?",
+          "alt_answers": [
+            "sto bene, grazie. e tu/lei?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sto bene, grazie. E tu/lei?",
+          "options": [
+            "I’m fine, thank you. And you?",
+            "Hello!",
+            "Goodbye!",
+            "Good morning!"
+          ],
+          "answer": "I’m fine, thank you. And you?"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–13",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Translate to Italian: What is your name? (informal)",
+            "options": [
+              "Di dove sei?",
+              "Sono italiana",
+              "Come stai?",
+              "Come ti chiami?"
+            ],
+            "answer": "Come ti chiami?"
+          },
+          {
+            "prompt": "Translate to Italian: What is your name? (formal)",
+            "options": [
+              "Come sta?",
+              "Mi chiamo...",
+              "Come si chiama?",
+              "Sono di..."
+            ],
+            "answer": "Come si chiama?"
+          },
+          {
+            "prompt": "Translate to Italian: My name is...",
+            "options": [
+              "Mi chiamo...",
+              "Come sta?",
+              "Sono...",
+              "Come si chiama?"
+            ],
+            "answer": "Mi chiamo..."
+          },
+          {
+            "prompt": "Translate to Italian: I am...",
+            "options": [
+              "Di dove sei?",
+              "Sono italiana",
+              "Sono...",
+              "Piacere di conoscerti"
+            ],
+            "answer": "Sono..."
+          },
+          {
+            "prompt": "Translate to Italian: Where are you from? (informal)",
+            "options": [
+              "Sono...",
+              "Sono italiano",
+              "Come si chiama?",
+              "Di dove sei?"
+            ],
+            "answer": "Di dove sei?"
+          },
+          {
+            "prompt": "Translate to Italian: Where are you from? (formal)",
+            "options": [
+              "Sono italiano",
+              "Di dov'è?",
+              "Come si chiama?",
+              "Sono italiana"
+            ],
+            "answer": "Di dov'è?"
+          },
+          {
+            "prompt": "Translate to Italian: I am from...",
+            "options": [
+              "Sono di...",
+              "Di dove sei?",
+              "Sono italiana",
+              "Di dov'è?"
+            ],
+            "answer": "Sono di..."
+          },
+          {
+            "prompt": "Translate to Italian: I am Italian (male)",
+            "options": [
+              "Sono italiano",
+              "Sono di...",
+              "Sto bene, grazie. E tu/lei?",
+              "Come ti chiami?"
+            ],
+            "answer": "Sono italiano"
+          },
+          {
+            "prompt": "Translate to Italian: I am Italian (female)",
+            "options": [
+              "Sono italiana",
+              "Mi chiamo...",
+              "Come sta?",
+              "Di dov'è?"
+            ],
+            "answer": "Sono italiana"
+          },
+          {
+            "prompt": "Translate to Italian: Pleased to meet you (informal)",
+            "options": [
+              "Come si chiama?",
+              "Piacere di conoscerti",
+              "Sono italiana",
+              "Come sta?"
+            ],
+            "answer": "Piacere di conoscerti"
+          },
+          {
+            "prompt": "Translate to Italian: How are you? (informal)",
+            "options": [
+              "Sono di...",
+              "Come stai?",
+              "Di dove sei?",
+              "Sono italiano"
+            ],
+            "answer": "Come stai?"
+          },
+          {
+            "prompt": "Translate to Italian: How are you? (formal)",
+            "options": [
+              "Sono di...",
+              "Come sta?",
+              "Come ti chiami?",
+              "Sono italiano"
+            ],
+            "answer": "Come sta?"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 9,
+          "questions": 12
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl3": {
+        "title": "IRL Video Challenge 3",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/italian_beginners_course2/first_meeting_farewell.mp4",
+            "prompt": "You’re finishing a first conversation after meeting someone new. They say: 'Piacere di conoscerti! Come stai?'.",
+            "answer_prompt": "Reply: 'I’m well, thanks. And you?'",
+            "expected_answers": [
+              "Sto bene, grazie. E tu?"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

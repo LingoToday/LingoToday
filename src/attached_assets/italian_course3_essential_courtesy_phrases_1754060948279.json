@@ -1,0 +1,93 @@
+{
+  "course3": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Master the basic polite words and expressions like yes, no, please, thank you, and apologies.",
+    "lessons": {
+      "lesson1": {
+        "title": "Yes, No, Please, Thank You",
+        "items": [
+          {
+            "italian": "Sì",
+            "english": "Yes",
+            "note": ""
+          },
+          {
+            "italian": "No",
+            "english": "No",
+            "note": ""
+          },
+          {
+            "italian": "Per favore",
+            "english": "Please",
+            "note": ""
+          },
+          {
+            "italian": "Grazie",
+            "english": "Thank you",
+            "note": ""
+          },
+          {
+            "italian": "Prego",
+            "english": "You're welcome",
+            "note": "Also used to offer or invite"
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Apologies and Excuse Me",
+        "items": [
+          {
+            "italian": "Mi dispiace",
+            "english": "I'm sorry",
+            "note": "To apologize for something"
+          },
+          {
+            "italian": "Scusa",
+            "english": "Excuse me / Sorry",
+            "note": "Informal"
+          },
+          {
+            "italian": "Scusi",
+            "english": "Excuse me",
+            "note": "Formal"
+          },
+          {
+            "italian": "Permesso",
+            "english": "May I pass?",
+            "note": "Used when squeezing by someone"
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Communication Helpers",
+        "items": [
+          {
+            "italian": "Parli inglese?",
+            "english": "Do you speak English?",
+            "note": "Informal"
+          },
+          {
+            "italian": "Non capisco",
+            "english": "I don't understand",
+            "note": ""
+          },
+          {
+            "italian": "Non lo so",
+            "english": "I don't know",
+            "note": ""
+          },
+          {
+            "italian": "Parlo un po’ di italiano",
+            "english": "I speak a little Italian",
+            "note": ""
+          },
+          {
+            "italian": "Può ripetere, per favore?",
+            "english": "Can you repeat, please?",
+            "note": "Formal"
+          }
+        ]
+      }
+    }
+  }
+}

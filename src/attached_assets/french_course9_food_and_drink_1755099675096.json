@@ -1,0 +1,1072 @@
+{
+  "course9": {
+    "title": "Food & Drink",
+    "description": "Learn French vocabulary for common foods, drinks, and ordering phrases. Each item is a separate micro-lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Bread",
+        "step1": {
+          "italian": "le pain",
+          "english": "bread",
+          "audio": "le pain",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le pain' mean?",
+            "options": [
+              "bread",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "bread"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = bread",
+          "expected_answer": "le pain",
+          "alt_answers": [
+            "le pain",
+            "le pain",
+            "Le pain"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le pain",
+          "options": [
+            "bread",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "bread"
+        }
+      },
+      "lesson2": {
+        "title": "Butter",
+        "step1": {
+          "italian": "le beurre",
+          "english": "butter",
+          "audio": "le beurre",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le beurre' mean?",
+            "options": [
+              "butter",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "butter"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = butter",
+          "expected_answer": "le beurre",
+          "alt_answers": [
+            "le beurre",
+            "le beurre",
+            "Le beurre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le beurre",
+          "options": [
+            "butter",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "butter"
+        }
+      },
+      "lesson3": {
+        "title": "Cheese",
+        "step1": {
+          "italian": "le fromage",
+          "english": "cheese",
+          "audio": "le fromage",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le fromage' mean?",
+            "options": [
+              "cheese",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "cheese"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = cheese",
+          "expected_answer": "le fromage",
+          "alt_answers": [
+            "le fromage",
+            "le fromage",
+            "Le fromage"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le fromage",
+          "options": [
+            "cheese",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "cheese"
+        }
+      },
+      "lesson4": {
+        "title": "Milk",
+        "step1": {
+          "italian": "le lait",
+          "english": "milk",
+          "audio": "le lait",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le lait' mean?",
+            "options": [
+              "milk",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "milk"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = milk",
+          "expected_answer": "le lait",
+          "alt_answers": [
+            "le lait",
+            "le lait",
+            "Le lait"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le lait",
+          "options": [
+            "milk",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "milk"
+        }
+      },
+      "lesson5": {
+        "title": "Egg",
+        "step1": {
+          "italian": "l’œuf",
+          "english": "egg",
+          "audio": "l’œuf",
+          "note": "Plural: les œufs.",
+          "mcq": {
+            "question": "What does 'l’œuf' mean?",
+            "options": [
+              "egg",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "egg"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___f  = egg",
+          "expected_answer": "l’œuf",
+          "alt_answers": [
+            "l’œuf",
+            "l’œuf",
+            "L’œuf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "l’œuf",
+          "options": [
+            "egg",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "egg"
+        }
+      },
+      "lesson6": {
+        "title": "Meat",
+        "step1": {
+          "italian": "la viande",
+          "english": "meat",
+          "audio": "la viande",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la viande' mean?",
+            "options": [
+              "meat",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "meat"
+          }
+        },
+        "step2": {
+          "type_prompt": "la  = meat",
+          "expected_answer": "la viande",
+          "alt_answers": [
+            "la viande",
+            "la viande",
+            "La viande"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la viande",
+          "options": [
+            "meat",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "meat"
+        }
+      },
+      "lesson7": {
+        "title": "Fish",
+        "step1": {
+          "italian": "le poisson",
+          "english": "fish",
+          "audio": "le poisson",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le poisson' mean?",
+            "options": [
+              "fish",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "fish"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = fish",
+          "expected_answer": "le poisson",
+          "alt_answers": [
+            "le poisson",
+            "le poisson",
+            "Le poisson"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le poisson",
+          "options": [
+            "fish",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "fish"
+        }
+      },
+      "lesson8": {
+        "title": "Fruit",
+        "step1": {
+          "italian": "le fruit",
+          "english": "fruit",
+          "audio": "le fruit",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le fruit' mean?",
+            "options": [
+              "fruit",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "fruit"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = fruit",
+          "expected_answer": "le fruit",
+          "alt_answers": [
+            "le fruit",
+            "le fruit",
+            "Le fruit"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le fruit",
+          "options": [
+            "fruit",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "fruit"
+        }
+      },
+      "lesson9": {
+        "title": "Vegetable",
+        "step1": {
+          "italian": "le légume",
+          "english": "vegetable",
+          "audio": "le légume",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le légume' mean?",
+            "options": [
+              "vegetable",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "vegetable"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = vegetable",
+          "expected_answer": "le légume",
+          "alt_answers": [
+            "le légume",
+            "le légume",
+            "Le légume"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le légume",
+          "options": [
+            "vegetable",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "vegetable"
+        }
+      },
+      "lesson10": {
+        "title": "Soup",
+        "step1": {
+          "italian": "la soupe",
+          "english": "soup",
+          "audio": "la soupe",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la soupe' mean?",
+            "options": [
+              "soup",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "soup"
+          }
+        },
+        "step2": {
+          "type_prompt": "la  = soup",
+          "expected_answer": "la soupe",
+          "alt_answers": [
+            "la soupe",
+            "la soupe",
+            "La soupe"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la soupe",
+          "options": [
+            "soup",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "soup"
+        }
+      },
+      "lesson11": {
+        "title": "Salad",
+        "step1": {
+          "italian": "la salade",
+          "english": "salad",
+          "audio": "la salade",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la salade' mean?",
+            "options": [
+              "salad",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "salad"
+          }
+        },
+        "step2": {
+          "type_prompt": "la  = salad",
+          "expected_answer": "la salade",
+          "alt_answers": [
+            "la salade",
+            "la salade",
+            "La salade"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la salade",
+          "options": [
+            "salad",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "salad"
+        }
+      },
+      "lesson12": {
+        "title": "Rice",
+        "step1": {
+          "italian": "le riz",
+          "english": "rice",
+          "audio": "le riz",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le riz' mean?",
+            "options": [
+              "rice",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "rice"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = rice",
+          "expected_answer": "le riz",
+          "alt_answers": [
+            "le riz",
+            "le riz",
+            "Le riz"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le riz",
+          "options": [
+            "rice",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "rice"
+        }
+      },
+      "lesson13": {
+        "title": "Pasta",
+        "step1": {
+          "italian": "les pâtes",
+          "english": "pasta",
+          "audio": "les pâtes",
+          "note": "Always plural in French.",
+          "mcq": {
+            "question": "What does 'les pâtes' mean?",
+            "options": [
+              "pasta",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "pasta"
+          }
+        },
+        "step2": {
+          "type_prompt": "l_s  = pasta",
+          "expected_answer": "les pâtes",
+          "alt_answers": [
+            "les pâtes",
+            "les pâtes",
+            "Les pâtes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "les pâtes",
+          "options": [
+            "pasta",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "pasta"
+        }
+      },
+      "lesson14": {
+        "title": "Cake",
+        "step1": {
+          "italian": "le gâteau",
+          "english": "cake",
+          "audio": "le gâteau",
+          "note": "Plural: gâteaux.",
+          "mcq": {
+            "question": "What does 'le gâteau' mean?",
+            "options": [
+              "cake",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "cake"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = cake",
+          "expected_answer": "le gâteau",
+          "alt_answers": [
+            "le gâteau",
+            "le gâteau",
+            "Le gâteau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le gâteau",
+          "options": [
+            "cake",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "cake"
+        }
+      },
+      "lesson15": {
+        "title": "Ice cream",
+        "step1": {
+          "italian": "la glace",
+          "english": "ice cream",
+          "audio": "la glace",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la glace' mean?",
+            "options": [
+              "ice cream",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "ice cream"
+          }
+        },
+        "step2": {
+          "type_prompt": "la  = ice cream",
+          "expected_answer": "la glace",
+          "alt_answers": [
+            "la glace",
+            "la glace",
+            "La glace"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la glace",
+          "options": [
+            "ice cream",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "ice cream"
+        }
+      },
+      "lesson16": {
+        "title": "Water",
+        "step1": {
+          "italian": "l’eau",
+          "english": "water",
+          "audio": "l’eau",
+          "note": "",
+          "mcq": {
+            "question": "What does 'l’eau' mean?",
+            "options": [
+              "water",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "water"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___u  = water",
+          "expected_answer": "l’eau",
+          "alt_answers": [
+            "l’eau",
+            "l’eau",
+            "L’eau"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "l’eau",
+          "options": [
+            "water",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "water"
+        }
+      },
+      "lesson17": {
+        "title": "Still water",
+        "step1": {
+          "italian": "l’eau plate",
+          "english": "still water",
+          "audio": "l’eau plate",
+          "note": "",
+          "mcq": {
+            "question": "What does 'l’eau plate' mean?",
+            "options": [
+              "still water",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "still water"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___u  = still water",
+          "expected_answer": "l’eau plate",
+          "alt_answers": [
+            "l’eau plate",
+            "l’eau plate",
+            "L’eau plate"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "l’eau plate",
+          "options": [
+            "still water",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "still water"
+        }
+      },
+      "lesson18": {
+        "title": "Sparkling water",
+        "step1": {
+          "italian": "l’eau gazeuse",
+          "english": "sparkling water",
+          "audio": "l’eau gazeuse",
+          "note": "",
+          "mcq": {
+            "question": "What does 'l’eau gazeuse' mean?",
+            "options": [
+              "sparkling water",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "sparkling water"
+          }
+        },
+        "step2": {
+          "type_prompt": "l___u  = sparkling water",
+          "expected_answer": "l’eau gazeuse",
+          "alt_answers": [
+            "l’eau gazeuse",
+            "l’eau gazeuse",
+            "L’eau gazeuse"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "l’eau gazeuse",
+          "options": [
+            "sparkling water",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "sparkling water"
+        }
+      },
+      "lesson19": {
+        "title": "Juice",
+        "step1": {
+          "italian": "le jus",
+          "english": "juice",
+          "audio": "le jus",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le jus' mean?",
+            "options": [
+              "juice",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "juice"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = juice",
+          "expected_answer": "le jus",
+          "alt_answers": [
+            "le jus",
+            "le jus",
+            "Le jus"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le jus",
+          "options": [
+            "juice",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "juice"
+        }
+      },
+      "lesson20": {
+        "title": "Orange juice",
+        "step1": {
+          "italian": "le jus d’orange",
+          "english": "orange juice",
+          "audio": "le jus d’orange",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le jus d’orange' mean?",
+            "options": [
+              "orange juice",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "orange juice"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = orange juice",
+          "expected_answer": "le jus d’orange",
+          "alt_answers": [
+            "le jus d’orange",
+            "le jus d’orange",
+            "Le jus d’orange"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le jus d’orange",
+          "options": [
+            "orange juice",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "orange juice"
+        }
+      },
+      "lesson21": {
+        "title": "Coffee",
+        "step1": {
+          "italian": "le café",
+          "english": "coffee",
+          "audio": "le café",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le café' mean?",
+            "options": [
+              "coffee",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "coffee"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = coffee",
+          "expected_answer": "le café",
+          "alt_answers": [
+            "le café",
+            "le café",
+            "Le café"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le café",
+          "options": [
+            "coffee",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "coffee"
+        }
+      },
+      "lesson22": {
+        "title": "Tea",
+        "step1": {
+          "italian": "le thé",
+          "english": "tea",
+          "audio": "le thé",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le thé' mean?",
+            "options": [
+              "tea",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "tea"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = tea",
+          "expected_answer": "le thé",
+          "alt_answers": [
+            "le thé",
+            "le thé",
+            "Le thé"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le thé",
+          "options": [
+            "tea",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "tea"
+        }
+      },
+      "lesson23": {
+        "title": "Wine",
+        "step1": {
+          "italian": "le vin",
+          "english": "wine",
+          "audio": "le vin",
+          "note": "",
+          "mcq": {
+            "question": "What does 'le vin' mean?",
+            "options": [
+              "wine",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "wine"
+          }
+        },
+        "step2": {
+          "type_prompt": "le  = wine",
+          "expected_answer": "le vin",
+          "alt_answers": [
+            "le vin",
+            "le vin",
+            "Le vin"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "le vin",
+          "options": [
+            "wine",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "wine"
+        }
+      },
+      "lesson24": {
+        "title": "Beer",
+        "step1": {
+          "italian": "la bière",
+          "english": "beer",
+          "audio": "la bière",
+          "note": "",
+          "mcq": {
+            "question": "What does 'la bière' mean?",
+            "options": [
+              "beer",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "beer"
+          }
+        },
+        "step2": {
+          "type_prompt": "la  = beer",
+          "expected_answer": "la bière",
+          "alt_answers": [
+            "la bière",
+            "la bière",
+            "La bière"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "la bière",
+          "options": [
+            "beer",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "beer"
+        }
+      },
+      "lesson25": {
+        "title": "I would like…",
+        "step1": {
+          "italian": "Je voudrais …",
+          "english": "I would like…",
+          "audio": "Je voudrais …",
+          "note": "Polite way to order food or drink.",
+          "mcq": {
+            "question": "What does 'Je voudrais …' mean?",
+            "options": [
+              "I would like…",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "I would like…"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je  = I would like…",
+          "expected_answer": "Je voudrais …",
+          "alt_answers": [
+            "Je voudrais …",
+            "je voudrais …",
+            "Je voudrais …"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je voudrais …",
+          "options": [
+            "I would like…",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "I would like…"
+        }
+      },
+      "lesson26": {
+        "title": "Can I have… please?",
+        "step1": {
+          "italian": "Je peux avoir … s’il vous plaît ?",
+          "english": "Can I have… please?",
+          "audio": "Je peux avoir … s’il vous plaît ?",
+          "note": "Polite request.",
+          "mcq": {
+            "question": "What does 'Je peux avoir … s’il vous plaît ?' mean?",
+            "options": [
+              "Can I have… please?",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "Can I have… please?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Je  = Can I have… please?",
+          "expected_answer": "Je peux avoir … s’il vous plaît ?",
+          "alt_answers": [
+            "Je peux avoir … s’il vous plaît ?",
+            "je peux avoir … s’il vous plaît ?",
+            "Je peux avoir … s’il vous plaît ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Je peux avoir … s’il vous plaît ?",
+          "options": [
+            "Can I have… please?",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "Can I have… please?"
+        }
+      },
+      "lesson27": {
+        "title": "The bill, please",
+        "step1": {
+          "italian": "L’addition, s’il vous plaît",
+          "english": "The bill, please",
+          "audio": "L’addition, s’il vous plaît",
+          "note": "In restaurants.",
+          "mcq": {
+            "question": "What does 'L’addition, s’il vous plaît' mean?",
+            "options": [
+              "The bill, please",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "The bill, please"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_________,  = The bill, please",
+          "expected_answer": "L’addition, s’il vous plaît",
+          "alt_answers": [
+            "L’addition, s’il vous plaît",
+            "l’addition, s’il vous plaît",
+            "L’addition, s’il vous plaît"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "L’addition, s’il vous plaît",
+          "options": [
+            "The bill, please",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "The bill, please"
+        }
+      },
+      "lesson28": {
+        "title": "Enjoy your meal",
+        "step1": {
+          "italian": "Bon appétit",
+          "english": "Enjoy your meal",
+          "audio": "Bon appétit",
+          "note": "Said before eating.",
+          "mcq": {
+            "question": "What does 'Bon appétit' mean?",
+            "options": [
+              "Enjoy your meal",
+              "water",
+              "bread",
+              "milk"
+            ],
+            "answer": "Enjoy your meal"
+          }
+        },
+        "step2": {
+          "type_prompt": "B_n  = Enjoy your meal",
+          "expected_answer": "Bon appétit",
+          "alt_answers": [
+            "Bon appétit",
+            "bon appétit",
+            "Bon appétit"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Bon appétit",
+          "options": [
+            "Enjoy your meal",
+            "water",
+            "bread",
+            "milk"
+          ],
+          "answer": "Enjoy your meal"
+        }
+      }
+    }
+  }
+}

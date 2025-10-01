@@ -1,0 +1,1472 @@
+{
+  "course8": {
+    "title": "Weather and Seasons",
+    "description": "Ask about and describe the weather; learn the seasons. Each phrase is a separate micro-lesson with clear examples. Step 3 only uses vocabulary from this or earlier courses.",
+    "lessons": {
+      "lesson1": {
+        "title": "How’s the weather?",
+        "step1": {
+          "italian": "Che tempo fa?",
+          "english": "How’s the weather?",
+          "audio": "Che tempo fa?",
+          "note": "keh TEM-poh fah? – Common way to ask about the current weather.",
+          "mcq": {
+            "question": "Which phrase means 'How’s the weather?'?",
+            "options": [
+              "Che tempo fa?",
+              "Fa caldo",
+              "È soleggiato",
+              "C'è vento"
+            ],
+            "answer": "Che tempo fa?"
+          }
+        },
+        "step2": {
+          "type_prompt": "C_e t___o fa?  = How’s the weather?",
+          "expected_answer": "Che tempo fa?",
+          "alt_answers": [
+            "Che tempo fa?",
+            "Che tempo fa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Che tempo fa?",
+          "options": [
+            "How’s the weather?",
+            "It’s hot.",
+            "It’s sunny.",
+            "It’s windy."
+          ],
+          "answer": "How’s the weather?"
+        }
+      },
+      "lesson2": {
+        "title": "It’s hot",
+        "step1": {
+          "italian": "Fa caldo",
+          "english": "It’s hot",
+          "audio": "Fa caldo",
+          "note": "fah KAHL-doh – Literally, “It makes hot”.",
+          "mcq": {
+            "question": "Which phrase means 'It’s hot'?",
+            "options": [
+              "Fa caldo",
+              "Fa freddo",
+              "È soleggiato",
+              "Piove"
+            ],
+            "answer": "Fa caldo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Fa c___o  = It’s hot",
+          "expected_answer": "Fa caldo",
+          "alt_answers": [
+            "Fa caldo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi fa caldo.",
+          "options": [
+            "It’s hot today.",
+            "It’s cold today.",
+            "It’s sunny today.",
+            "It’s raining today."
+          ],
+          "answer": "It’s hot today."
+        }
+      },
+      "lesson3": {
+        "title": "It’s cold",
+        "step1": {
+          "italian": "Fa freddo",
+          "english": "It’s cold",
+          "audio": "Fa freddo",
+          "note": "fah FREHD-doh – Literally, “It makes cold”.",
+          "mcq": {
+            "question": "Which phrase means 'It’s cold'?",
+            "options": [
+              "Fa freddo",
+              "Fa caldo",
+              "Nevica",
+              "È nuvoloso"
+            ],
+            "answer": "Fa freddo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Fa f____o  = It’s cold",
+          "expected_answer": "Fa freddo",
+          "alt_answers": [
+            "Fa freddo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "In inverno fa freddo.",
+          "options": [
+            "It’s cold in winter.",
+            "It’s hot in winter.",
+            "It’s sunny in winter.",
+            "It’s raining in winter."
+          ],
+          "answer": "It’s cold in winter."
+        }
+      },
+      "lesson4": {
+        "title": "It’s sunny",
+        "step1": {
+          "italian": "È soleggiato",
+          "english": "It’s sunny",
+          "audio": "È soleggiato",
+          "note": "EH soh-lehj-JAH-toh – Describes sunny weather.",
+          "mcq": {
+            "question": "Which phrase means 'It’s sunny'?",
+            "options": [
+              "È soleggiato",
+              "È nuvoloso",
+              "Piove",
+              "C'è vento"
+            ],
+            "answer": "È soleggiato"
+          }
+        },
+        "step2": {
+          "type_prompt": "È s________o  = It’s sunny",
+          "expected_answer": "È soleggiato",
+          "alt_answers": [
+            "È soleggiato",
+            "È soleggiato"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi è soleggiato.",
+          "options": [
+            "It’s sunny today.",
+            "It’s cloudy today.",
+            "It’s raining today.",
+            "It’s windy today."
+          ],
+          "answer": "It’s sunny today."
+        }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the phrase for 'How’s the weather?'",
+            "options": [
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo",
+              "È soleggiato"
+            ],
+            "answer": "Che tempo fa?"
+          },
+          {
+            "prompt": "What does this mean in English: Che tempo fa?",
+            "options": [
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold",
+              "It’s sunny"
+            ],
+            "answer": "How’s the weather?"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s hot'",
+            "options": [
+              "Fa caldo",
+              "Che tempo fa?",
+              "Fa freddo",
+              "È soleggiato"
+            ],
+            "answer": "Fa caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Fa caldo",
+            "options": [
+              "It’s hot",
+              "How’s the weather?",
+              "It’s cold",
+              "It’s sunny"
+            ],
+            "answer": "It’s hot"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s cold'",
+            "options": [
+              "Fa freddo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "È soleggiato"
+            ],
+            "answer": "Fa freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Fa freddo",
+            "options": [
+              "It’s cold",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s sunny"
+            ],
+            "answer": "It’s cold"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s sunny'",
+            "options": [
+              "È soleggiato",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "È soleggiato"
+          },
+          {
+            "prompt": "What does this mean in English: È soleggiato",
+            "options": [
+              "It’s sunny",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s sunny"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson5": {
+        "title": "It’s cloudy",
+        "step1": {
+          "italian": "È nuvoloso",
+          "english": "It’s cloudy",
+          "audio": "È nuvoloso",
+          "note": "EH noo-voh-LOH-soh – Describes cloudy/overcast weather.",
+          "mcq": {
+            "question": "Which phrase means 'It’s cloudy'?",
+            "options": [
+              "È nuvoloso",
+              "È soleggiato",
+              "Fa caldo",
+              "Nevica"
+            ],
+            "answer": "È nuvoloso"
+          }
+        },
+        "step2": {
+          "type_prompt": "È n______o  = It’s cloudy",
+          "expected_answer": "È nuvoloso",
+          "alt_answers": [
+            "È nuvoloso",
+            "È nuvoloso"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Il cielo è nuvoloso.",
+          "options": [
+            "The sky is cloudy.",
+            "The sky is sunny.",
+            "The sky is snowy.",
+            "The sky is clear."
+          ],
+          "answer": "The sky is cloudy."
+        }
+      },
+      "lesson6": {
+        "title": "It’s raining",
+        "step1": {
+          "italian": "Piove",
+          "english": "It’s raining",
+          "audio": "Piove",
+          "note": "PYOH-veh – From “piovere” (to rain).",
+          "mcq": {
+            "question": "Which phrase means 'It’s raining'?",
+            "options": [
+              "Piove",
+              "Nevica",
+              "Fa caldo",
+              "È nuvoloso"
+            ],
+            "answer": "Piove"
+          }
+        },
+        "step2": {
+          "type_prompt": "P___e  = It’s raining",
+          "expected_answer": "Piove",
+          "alt_answers": [
+            "Piove"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi piove.",
+          "options": [
+            "It’s raining today.",
+            "It’s snowing today.",
+            "It’s hot today.",
+            "It’s cloudy today."
+          ],
+          "answer": "It’s raining today."
+        }
+      },
+      "lesson7": {
+        "title": "It’s snowing",
+        "step1": {
+          "italian": "Nevica",
+          "english": "It’s snowing",
+          "audio": "Nevica",
+          "note": "NEH-vee-kah – From “nevicare” (to snow).",
+          "mcq": {
+            "question": "Which phrase means 'It’s snowing'?",
+            "options": [
+              "Nevica",
+              "Piove",
+              "Fa freddo",
+              "È soleggiato"
+            ],
+            "answer": "Nevica"
+          }
+        },
+        "step2": {
+          "type_prompt": "N____a  = It’s snowing",
+          "expected_answer": "Nevica",
+          "alt_answers": [
+            "Nevica"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "A dicembre nevica.",
+          "options": [
+            "It snows in December.",
+            "It rains in December.",
+            "It’s sunny in December.",
+            "It’s windy in December."
+          ],
+          "answer": "It snows in December."
+        }
+      },
+      "lesson8": {
+        "title": "It’s windy",
+        "step1": {
+          "italian": "C'è vento",
+          "english": "It’s windy",
+          "audio": "C'è vento",
+          "note": "cheh VEN-toh – Literally, “There is wind”.",
+          "mcq": {
+            "question": "Which phrase means 'It’s windy'?",
+            "options": [
+              "C'è vento",
+              "Fa caldo",
+              "Piove",
+              "È nuvoloso"
+            ],
+            "answer": "C'è vento"
+          }
+        },
+        "step2": {
+          "type_prompt": "C'è v___o  = It’s windy",
+          "expected_answer": "C'è vento",
+          "alt_answers": [
+            "C'è vento",
+            "C'è vento"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi c'è vento.",
+          "options": [
+            "It’s windy today.",
+            "It’s hot today.",
+            "It’s raining today.",
+            "It’s cloudy today."
+          ],
+          "answer": "It’s windy today."
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the phrase for 'It’s cloudy'",
+            "options": [
+              "È nuvoloso",
+              "Piove",
+              "Nevica",
+              "C'è vento"
+            ],
+            "answer": "È nuvoloso"
+          },
+          {
+            "prompt": "What does this mean in English: È nuvoloso",
+            "options": [
+              "It’s cloudy",
+              "It’s raining",
+              "It’s snowing",
+              "It’s windy"
+            ],
+            "answer": "It’s cloudy"
+          },
+          {
+            "prompt": "Select the word for 'It’s raining'",
+            "options": [
+              "Piove",
+              "È nuvoloso",
+              "Nevica",
+              "C'è vento"
+            ],
+            "answer": "Piove"
+          },
+          {
+            "prompt": "What does this mean in English: Piove",
+            "options": [
+              "It’s raining",
+              "It’s cloudy",
+              "It’s snowing",
+              "It’s windy"
+            ],
+            "answer": "It’s raining"
+          },
+          {
+            "prompt": "Select the word for 'It’s snowing'",
+            "options": [
+              "Nevica",
+              "È nuvoloso",
+              "Piove",
+              "C'è vento"
+            ],
+            "answer": "Nevica"
+          },
+          {
+            "prompt": "What does this mean in English: Nevica",
+            "options": [
+              "It’s snowing",
+              "It’s cloudy",
+              "It’s raining",
+              "It’s windy"
+            ],
+            "answer": "It’s snowing"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s windy'",
+            "options": [
+              "C'è vento",
+              "È nuvoloso",
+              "Piove",
+              "Nevica"
+            ],
+            "answer": "C'è vento"
+          },
+          {
+            "prompt": "What does this mean in English: C'è vento",
+            "options": [
+              "It’s windy",
+              "It’s cloudy",
+              "It’s raining",
+              "It’s snowing"
+            ],
+            "answer": "It’s windy"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson9": {
+        "title": "I feel hot",
+        "step1": {
+          "italian": "Ho caldo",
+          "english": "I feel hot",
+          "audio": "Ho caldo",
+          "note": "oh KAHL-doh – Literally, “I have hot”.",
+          "mcq": {
+            "question": "Which phrase means 'I feel hot'?",
+            "options": [
+              "Ho caldo",
+              "Ho freddo",
+              "Fa caldo",
+              "Piove"
+            ],
+            "answer": "Ho caldo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ho c___o  = I feel hot",
+          "expected_answer": "Ho caldo",
+          "alt_answers": [
+            "Ho caldo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "In estate ho caldo.",
+          "options": [
+            "I feel hot in summer.",
+            "I feel cold in summer.",
+            "It’s hot in summer.",
+            "It’s cold in summer."
+          ],
+          "answer": "I feel hot in summer."
+        }
+      },
+      "lesson10": {
+        "title": "I feel cold",
+        "step1": {
+          "italian": "Ho freddo",
+          "english": "I feel cold",
+          "audio": "Ho freddo",
+          "note": "oh FREHD-doh – Literally, “I have cold”.",
+          "mcq": {
+            "question": "Which phrase means 'I feel cold'?",
+            "options": [
+              "Ho freddo",
+              "Ho caldo",
+              "Fa freddo",
+              "Nevica"
+            ],
+            "answer": "Ho freddo"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ho f____o  = I feel cold",
+          "expected_answer": "Ho freddo",
+          "alt_answers": [
+            "Ho freddo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "In inverno ho freddo.",
+          "options": [
+            "I feel cold in winter.",
+            "I feel hot in winter.",
+            "It’s cold in winter.",
+            "It snows in winter."
+          ],
+          "answer": "I feel cold in winter."
+        }
+      },
+      "lesson11": {
+        "title": "Spring",
+        "step1": {
+          "italian": "Primavera",
+          "english": "Spring",
+          "audio": "Primavera",
+          "note": "pree-mah-VEH-rah – The season of spring.",
+          "mcq": {
+            "question": "Which phrase means 'Spring'?",
+            "options": [
+              "Primavera",
+              "Estate",
+              "Autunno",
+              "Inverno"
+            ],
+            "answer": "Primavera"
+          }
+        },
+        "step2": {
+          "type_prompt": "P_______a  = Spring",
+          "expected_answer": "Primavera",
+          "alt_answers": [
+            "Primavera"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "La primavera è bella.",
+          "options": [
+            "Spring is beautiful.",
+            "Summer is beautiful.",
+            "Autumn is beautiful.",
+            "Winter is beautiful."
+          ],
+          "answer": "Spring is beautiful."
+        }
+      },
+      "lesson12": {
+        "title": "Summer",
+        "step1": {
+          "italian": "Estate",
+          "english": "Summer",
+          "audio": "Estate",
+          "note": "eh-STAH-teh – The season of summer.",
+          "mcq": {
+            "question": "Which phrase means 'Summer'?",
+            "options": [
+              "Estate",
+              "Primavera",
+              "Autunno",
+              "Inverno"
+            ],
+            "answer": "Estate"
+          }
+        },
+        "step2": {
+          "type_prompt": "E____e  = Summer",
+          "expected_answer": "Estate",
+          "alt_answers": [
+            "Estate"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "L'estate è calda.",
+          "options": [
+            "Summer is hot.",
+            "Spring is hot.",
+            "Autumn is hot.",
+            "Winter is hot."
+          ],
+          "answer": "Summer is hot."
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the phrase for 'I feel hot'",
+            "options": [
+              "Ho caldo",
+              "Ho freddo",
+              "Primavera",
+              "Estate"
+            ],
+            "answer": "Ho caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Ho caldo",
+            "options": [
+              "I feel hot",
+              "I feel cold",
+              "Spring",
+              "Summer"
+            ],
+            "answer": "I feel hot"
+          },
+          {
+            "prompt": "Select the phrase for 'I feel cold'",
+            "options": [
+              "Ho freddo",
+              "Ho caldo",
+              "Primavera",
+              "Estate"
+            ],
+            "answer": "Ho freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Ho freddo",
+            "options": [
+              "I feel cold",
+              "I feel hot",
+              "Spring",
+              "Summer"
+            ],
+            "answer": "I feel cold"
+          },
+          {
+            "prompt": "Select the word for 'Spring'",
+            "options": [
+              "Primavera",
+              "Ho caldo",
+              "Ho freddo",
+              "Estate"
+            ],
+            "answer": "Primavera"
+          },
+          {
+            "prompt": "What does this mean in English: Primavera",
+            "options": [
+              "Spring",
+              "I feel hot",
+              "I feel cold",
+              "Summer"
+            ],
+            "answer": "Spring"
+          },
+          {
+            "prompt": "Select the word for 'Summer'",
+            "options": [
+              "Estate",
+              "Ho caldo",
+              "Ho freddo",
+              "Primavera"
+            ],
+            "answer": "Estate"
+          },
+          {
+            "prompt": "What does this mean in English: Estate",
+            "options": [
+              "Summer",
+              "I feel hot",
+              "I feel cold",
+              "Spring"
+            ],
+            "answer": "Summer"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson13": {
+        "title": "Autumn / fall",
+        "step1": {
+          "italian": "Autunno",
+          "english": "Autumn / fall",
+          "audio": "Autunno",
+          "note": "ow-TOON-noh – The season of autumn (fall).",
+          "mcq": {
+            "question": "Which phrase means 'Autumn / fall'?",
+            "options": [
+              "Autunno",
+              "Primavera",
+              "Estate",
+              "Inverno"
+            ],
+            "answer": "Autunno"
+          }
+        },
+        "step2": {
+          "type_prompt": "A_____o  = Autumn / fall",
+          "expected_answer": "Autunno",
+          "alt_answers": [
+            "Autunno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "L'autunno è fresco.",
+          "options": [
+            "Autumn is cool.",
+            "Spring is cool.",
+            "Summer is cool.",
+            "Winter is cool."
+          ],
+          "answer": "Autumn is cool."
+        }
+      },
+      "lesson14": {
+        "title": "Winter",
+        "step1": {
+          "italian": "Inverno",
+          "english": "Winter",
+          "audio": "Inverno",
+          "note": "een-VER-noh – The season of winter.",
+          "mcq": {
+            "question": "Which phrase means 'Winter'?",
+            "options": [
+              "Inverno",
+              "Autunno",
+              "Estate",
+              "Primavera"
+            ],
+            "answer": "Inverno"
+          }
+        },
+        "step2": {
+          "type_prompt": "I_____o  = Winter",
+          "expected_answer": "Inverno",
+          "alt_answers": [
+            "Inverno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "L'inverno è freddo.",
+          "options": [
+            "Winter is cold.",
+            "Autumn is cold.",
+            "Summer is cold.",
+            "Spring is cold."
+          ],
+          "answer": "Winter is cold."
+        }
+      },
+      "lesson15": {
+        "title": "What’s the temperature?",
+        "step1": {
+          "italian": "Che temperatura c'è?",
+          "english": "What’s the temperature?",
+          "audio": "Che temperatura c'è?",
+          "note": "keh tem-peh-rah-TOO-rah cheh? – Ask about exact temperature.",
+          "mcq": {
+            "question": "Which phrase means 'What’s the temperature?'?",
+            "options": [
+              "Che temperatura c'è?",
+              "Che tempo fa?",
+              "Fa caldo",
+              "È nuvoloso"
+            ],
+            "answer": "Che temperatura c'è?"
+          }
+        },
+        "step2": {
+          "type_prompt": "C_e t_________a c'è?  = What’s the temperature?",
+          "expected_answer": "Che temperatura c'è?",
+          "alt_answers": [
+            "Che temperatura c'è",
+            "Che temperatura c'è",
+            "Che temperatura c'è?",
+            "Che temperatura c'è?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Che temperatura c'è oggi?",
+          "options": [
+            "What’s the temperature today?",
+            "How’s the weather today?",
+            "It’s hot today.",
+            "It’s cloudy today."
+          ],
+          "answer": "What’s the temperature today?"
+        }
+      },
+      "lesson16": {
+        "title": "It’s very hot today",
+        "step1": {
+          "italian": "Oggi fa molto caldo",
+          "english": "It’s very hot today",
+          "audio": "Oggi fa molto caldo",
+          "note": "OH-jji fah MOL-toh KAHL-doh – “Molto” means “very”.",
+          "mcq": {
+            "question": "Which phrase means 'It’s very hot today'?",
+            "options": [
+              "Oggi fa molto caldo",
+              "Oggi fa molto freddo",
+              "Fa caldo",
+              "È soleggiato"
+            ],
+            "answer": "Oggi fa molto caldo"
+          }
+        },
+        "step2": {
+          "type_prompt": "O__i fa m___o c___o  = It’s very hot today",
+          "expected_answer": "Oggi fa molto caldo",
+          "alt_answers": [
+            "Oggi fa molto caldo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi fa molto caldo.",
+          "options": [
+            "It’s very hot today.",
+            "It’s very cold today.",
+            "It’s hot today.",
+            "It’s sunny today."
+          ],
+          "answer": "It’s very hot today."
+        }
+      },
+      "review4": {
+        "title": "Review: Lessons 13–16",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the word for 'Autumn / fall'",
+            "options": [
+              "Autunno",
+              "Inverno",
+              "Che temperatura c'è?",
+              "Oggi fa molto caldo"
+            ],
+            "answer": "Autunno"
+          },
+          {
+            "prompt": "What does this mean in English: Autunno",
+            "options": [
+              "Autumn / fall",
+              "Winter",
+              "What’s the temperature?",
+              "It’s very hot today"
+            ],
+            "answer": "Autumn / fall"
+          },
+          {
+            "prompt": "Select the word for 'Winter'",
+            "options": [
+              "Inverno",
+              "Autunno",
+              "Che temperatura c'è?",
+              "Oggi fa molto caldo"
+            ],
+            "answer": "Inverno"
+          },
+          {
+            "prompt": "What does this mean in English: Inverno",
+            "options": [
+              "Winter",
+              "Autumn / fall",
+              "What’s the temperature?",
+              "It’s very hot today"
+            ],
+            "answer": "Winter"
+          },
+          {
+            "prompt": "Select the phrase for 'What’s the temperature?'",
+            "options": [
+              "Che temperatura c'è?",
+              "Autunno",
+              "Inverno",
+              "Oggi fa molto caldo"
+            ],
+            "answer": "Che temperatura c'è?"
+          },
+          {
+            "prompt": "What does this mean in English: Che temperatura c'è?",
+            "options": [
+              "What’s the temperature?",
+              "Autumn / fall",
+              "Winter",
+              "It’s very hot today"
+            ],
+            "answer": "What’s the temperature?"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s very hot today'",
+            "options": [
+              "Oggi fa molto caldo",
+              "Autunno",
+              "Inverno",
+              "Che temperatura c'è?"
+            ],
+            "answer": "Oggi fa molto caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Oggi fa molto caldo",
+            "options": [
+              "It’s very hot today",
+              "Autumn / fall",
+              "Winter",
+              "What’s the temperature?"
+            ],
+            "answer": "It’s very hot today"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 8
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson17": {
+        "title": "It’s very cold today",
+        "step1": {
+          "italian": "Oggi fa molto freddo",
+          "english": "It’s very cold today",
+          "audio": "Oggi fa molto freddo",
+          "note": "OH-jji fah MOL-toh FREHD-doh – “Molto” means “very”.",
+          "mcq": {
+            "question": "Which phrase means 'It’s very cold today'?",
+            "options": [
+              "Oggi fa molto freddo",
+              "Oggi fa molto caldo",
+              "Fa freddo",
+              "Nevica"
+            ],
+            "answer": "Oggi fa molto freddo"
+          }
+        },
+        "step2": {
+          "type_prompt": "O__i fa m___o f____o  = It’s very cold today",
+          "expected_answer": "Oggi fa molto freddo",
+          "alt_answers": [
+            "Oggi fa molto freddo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi fa molto freddo.",
+          "options": [
+            "It’s very cold today.",
+            "It’s very hot today.",
+            "It’s cold today.",
+            "It’s snowing today."
+          ],
+          "answer": "It’s very cold today."
+        }
+      },
+      "lesson18": {
+        "title": "How’s the weather tomorrow?",
+        "step1": {
+          "italian": "Che tempo farà domani?",
+          "english": "How’s the weather tomorrow?",
+          "audio": "Che tempo farà domani?",
+          "note": "keh TEM-poh fah-RAH doh-MAH-nee? – Future tense “farà” (it will do).",
+          "mcq": {
+            "question": "Which phrase means 'How’s the weather tomorrow?'?",
+            "options": [
+              "Che tempo farà domani?",
+              "Che tempo fa?",
+              "Fa caldo",
+              "È nuvoloso"
+            ],
+            "answer": "Che tempo farà domani?"
+          }
+        },
+        "step2": {
+          "type_prompt": "C_e t___o f__à d____i?  = How’s the weather tomorrow?",
+          "expected_answer": "Che tempo farà domani?",
+          "alt_answers": [
+            "Che tempo farà domani",
+            "Che tempo farà domani?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Che tempo farà domani?",
+          "options": [
+            "How’s the weather tomorrow?",
+            "How’s the weather today?",
+            "It’s hot tomorrow.",
+            "It’s cloudy tomorrow."
+          ],
+          "answer": "How’s the weather tomorrow?"
+        }
+      },
+      "review5": {
+        "title": "Review: Lessons 17–18",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the phrase for 'It’s very cold today'",
+            "options": [
+              "Oggi fa molto freddo",
+              "Che tempo farà domani?"
+            ],
+            "answer": "Oggi fa molto freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Oggi fa molto freddo",
+            "options": [
+              "It’s very cold today",
+              "How’s the weather tomorrow?"
+            ],
+            "answer": "It’s very cold today"
+          },
+          {
+            "prompt": "Select the phrase for 'How’s the weather tomorrow?'",
+            "options": [
+              "Che tempo farà domani?",
+              "Oggi fa molto freddo"
+            ],
+            "answer": "Che tempo farà domani?"
+          },
+          {
+            "prompt": "What does this mean in English: Che tempo farà domani?",
+            "options": [
+              "How’s the weather tomorrow?",
+              "It’s very cold today"
+            ],
+            "answer": "How’s the weather tomorrow?"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 2,
+          "questions": 4
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–18",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Select the phrase for 'How’s the weather?'",
+            "options": [
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo",
+              "È soleggiato"
+            ],
+            "answer": "Che tempo fa?"
+          },
+          {
+            "prompt": "What does this mean in English: Che tempo fa?",
+            "options": [
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold",
+              "It’s sunny"
+            ],
+            "answer": "How’s the weather?"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s hot'",
+            "options": [
+              "Fa caldo",
+              "Che tempo fa?",
+              "Fa freddo",
+              "È soleggiato"
+            ],
+            "answer": "Fa caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Fa caldo",
+            "options": [
+              "It’s hot",
+              "How’s the weather?",
+              "It’s cold",
+              "It’s sunny"
+            ],
+            "answer": "It’s hot"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s cold'",
+            "options": [
+              "Fa freddo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "È soleggiato"
+            ],
+            "answer": "Fa freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Fa freddo",
+            "options": [
+              "It’s cold",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s sunny"
+            ],
+            "answer": "It’s cold"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s sunny'",
+            "options": [
+              "È soleggiato",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "È soleggiato"
+          },
+          {
+            "prompt": "What does this mean in English: È soleggiato",
+            "options": [
+              "It’s sunny",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s sunny"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s cloudy'",
+            "options": [
+              "È nuvoloso",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "È nuvoloso"
+          },
+          {
+            "prompt": "What does this mean in English: È nuvoloso",
+            "options": [
+              "It’s cloudy",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s cloudy"
+          },
+          {
+            "prompt": "Select the word for 'It’s raining'",
+            "options": [
+              "Piove",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Piove"
+          },
+          {
+            "prompt": "What does this mean in English: Piove",
+            "options": [
+              "It’s raining",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s raining"
+          },
+          {
+            "prompt": "Select the word for 'It’s snowing'",
+            "options": [
+              "Nevica",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Nevica"
+          },
+          {
+            "prompt": "What does this mean in English: Nevica",
+            "options": [
+              "It’s snowing",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s snowing"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s windy'",
+            "options": [
+              "C'è vento",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "C'è vento"
+          },
+          {
+            "prompt": "What does this mean in English: C'è vento",
+            "options": [
+              "It’s windy",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s windy"
+          },
+          {
+            "prompt": "Select the phrase for 'I feel hot'",
+            "options": [
+              "Ho caldo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Ho caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Ho caldo",
+            "options": [
+              "I feel hot",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "I feel hot"
+          },
+          {
+            "prompt": "Select the phrase for 'I feel cold'",
+            "options": [
+              "Ho freddo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Ho freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Ho freddo",
+            "options": [
+              "I feel cold",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "I feel cold"
+          },
+          {
+            "prompt": "Select the word for 'Spring'",
+            "options": [
+              "Primavera",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Primavera"
+          },
+          {
+            "prompt": "What does this mean in English: Primavera",
+            "options": [
+              "Spring",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "Spring"
+          },
+          {
+            "prompt": "Select the word for 'Summer'",
+            "options": [
+              "Estate",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Estate"
+          },
+          {
+            "prompt": "What does this mean in English: Estate",
+            "options": [
+              "Summer",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "Summer"
+          },
+          {
+            "prompt": "Select the word for 'Autumn / fall'",
+            "options": [
+              "Autunno",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Autunno"
+          },
+          {
+            "prompt": "What does this mean in English: Autunno",
+            "options": [
+              "Autumn / fall",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "Autumn / fall"
+          },
+          {
+            "prompt": "Select the word for 'Winter'",
+            "options": [
+              "Inverno",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Inverno"
+          },
+          {
+            "prompt": "What does this mean in English: Inverno",
+            "options": [
+              "Winter",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "Winter"
+          },
+          {
+            "prompt": "Select the phrase for 'What’s the temperature?'",
+            "options": [
+              "Che temperatura c'è?",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Che temperatura c'è?"
+          },
+          {
+            "prompt": "What does this mean in English: Che temperatura c'è?",
+            "options": [
+              "What’s the temperature?",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "What’s the temperature?"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s very hot today'",
+            "options": [
+              "Oggi fa molto caldo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Oggi fa molto caldo"
+          },
+          {
+            "prompt": "What does this mean in English: Oggi fa molto caldo",
+            "options": [
+              "It’s very hot today",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s very hot today"
+          },
+          {
+            "prompt": "Select the phrase for 'It’s very cold today'",
+            "options": [
+              "Oggi fa molto freddo",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Oggi fa molto freddo"
+          },
+          {
+            "prompt": "What does this mean in English: Oggi fa molto freddo",
+            "options": [
+              "It’s very cold today",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "It’s very cold today"
+          },
+          {
+            "prompt": "Select the phrase for 'How’s the weather tomorrow?'",
+            "options": [
+              "Che tempo farà domani?",
+              "Che tempo fa?",
+              "Fa caldo",
+              "Fa freddo"
+            ],
+            "answer": "Che tempo farà domani?"
+          },
+          {
+            "prompt": "What does this mean in English: Che tempo farà domani?",
+            "options": [
+              "How’s the weather tomorrow?",
+              "How’s the weather?",
+              "It’s hot",
+              "It’s cold"
+            ],
+            "answer": "How’s the weather tomorrow?"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 30,
+          "questions": 36
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      }
+    }
+  }
+}

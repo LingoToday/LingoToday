@@ -1,0 +1,256 @@
+{
+  "B1": {
+    "Describing People & Things": {
+      "vocabulary": [
+        "alto",
+        "basso",
+        "magro",
+        "biondo",
+        "simpatico",
+        "intelligente",
+        "vecchio",
+        "giovane"
+      ],
+      "phrases": [
+        {
+          "english": "She is tall and kind.",
+          "italian": "Lei è alta e gentile."
+        },
+        {
+          "english": "He has blond hair.",
+          "italian": "Ha i capelli biondi."
+        }
+      ],
+      "grammar": [
+        "Adjective agreement",
+        "Essere vs avere for description"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {
+        "sample_dialogue": [
+          {
+            "person1": "Com'è tua sorella?",
+            "person2": "È simpatica e molto intelligente."
+          }
+        ]
+      }
+    },
+    "Talking About the Past": {
+      "vocabulary": [
+        "ieri",
+        "settimana scorsa",
+        "anno scorso",
+        "vacanza",
+        "viaggio",
+        "esperienza"
+      ],
+      "phrases": [
+        {
+          "english": "I went to Naples last year.",
+          "italian": "Sono andato a Napoli l’anno scorso."
+        },
+        {
+          "english": "We visited three museums.",
+          "italian": "Abbiamo visitato tre musei."
+        }
+      ],
+      "grammar": [
+        "Passato prossimo with essere and avere",
+        "Time expressions with the past"
+      ],
+      "pronunciation_tips": [
+        "‘Napoli’ is pronounced 'NAH-poh-lee' with stress on the first syllable."
+      ],
+      "conversation": {}
+    },
+    "Future Plans": {
+      "vocabulary": [
+        "domani",
+        "settimana prossima",
+        "viaggiare",
+        "lavorare",
+        "studiare",
+        "partire"
+      ],
+      "phrases": [
+        {
+          "english": "Tomorrow I will work from home.",
+          "italian": "Domani lavorerò da casa."
+        },
+        {
+          "english": "We will travel to Florence.",
+          "italian": "Viaggeremo a Firenze."
+        }
+      ],
+      "grammar": [
+        "Futuro semplice tense",
+        "Irregular verbs in the future (andare, avere, essere)"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    }
+  },
+  "B2": {
+    "Expressing Opinions": {
+      "vocabulary": [
+        "secondo me",
+        "credo che",
+        "penso che",
+        "ritengo",
+        "a mio avviso"
+      ],
+      "phrases": [
+        {
+          "english": "I believe it's important to learn languages.",
+          "italian": "Ritengo che sia importante imparare le lingue."
+        },
+        {
+          "english": "In my opinion, that film was excellent.",
+          "italian": "Secondo me, quel film era ottimo."
+        }
+      ],
+      "grammar": [
+        "Congiuntivo presente (present subjunctive)",
+        "Expressions that require subjunctive"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {
+        "sample_dialogue": [
+          {
+            "person1": "Cosa pensi della scuola italiana?",
+            "person2": "Penso che sia molto valida."
+          }
+        ]
+      }
+    },
+    "Work & Daily Life": {
+      "vocabulary": [
+        "riunione",
+        "colleghi",
+        "orario",
+        "straordinario",
+        "azienda",
+        "ufficio"
+      ],
+      "phrases": [
+        {
+          "english": "I start work at 9 AM.",
+          "italian": "Inizio a lavorare alle 9."
+        },
+        {
+          "english": "The meeting was long but useful.",
+          "italian": "La riunione è stata lunga ma utile."
+        }
+      ],
+      "grammar": [
+        "Imperfetto vs passato prossimo",
+        "Expressions of habitual past"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    }
+  },
+  "C1": {
+    "Advanced Debate & Argumentation": {
+      "vocabulary": [
+        "benché",
+        "affinché",
+        "tuttavia",
+        "ciò nonostante",
+        "pertanto"
+      ],
+      "phrases": [
+        {
+          "english": "Although I agree, I have some doubts.",
+          "italian": "Benché sia d’accordo, ho alcuni dubbi."
+        },
+        {
+          "english": "Therefore, we should reconsider the proposal.",
+          "italian": "Pertanto, dovremmo riconsiderare la proposta."
+        }
+      ],
+      "grammar": [
+        "Congiuntivo imperfetto",
+        "Discourse connectors",
+        "Complex conditional structures"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    },
+    "News & Formal Writing": {
+      "vocabulary": [
+        "notizia",
+        "editoriale",
+        "opinionista",
+        "cronaca",
+        "articolo",
+        "saggistica"
+      ],
+      "phrases": [
+        {
+          "english": "This article discusses global warming.",
+          "italian": "Questo articolo tratta il riscaldamento globale."
+        }
+      ],
+      "grammar": [
+        "Passive voice",
+        "Reported speech (discorso indiretto)"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    }
+  },
+  "C2": {
+    "Idioms & Figurative Language": {
+      "vocabulary": [
+        "in bocca al lupo",
+        "chi dorme non piglia pesci",
+        "avere le mani bucate"
+      ],
+      "phrases": [
+        {
+          "english": "Break a leg!",
+          "italian": "In bocca al lupo!"
+        },
+        {
+          "english": "He spends money like water.",
+          "italian": "Ha le mani bucate."
+        }
+      ],
+      "grammar": [
+        "Use of idioms in formal vs informal registers",
+        "Nuance and tone in expression"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {}
+    },
+    "Academic & Literary Expression": {
+      "vocabulary": [
+        "altresì",
+        "sicché",
+        "quantunque",
+        "giacché",
+        "nondimeno"
+      ],
+      "phrases": [
+        {
+          "english": "It is therefore essential to proceed carefully.",
+          "italian": "È altresì essenziale procedere con cautela."
+        }
+      ],
+      "grammar": [
+        "Subjunctive in literary language",
+        "Rhetorical techniques and advanced connectors"
+      ],
+      "pronunciation_tips": [],
+      "conversation": {
+        "sample_dialogue": [
+          {
+            "person1": "Qual è la tesi centrale del saggio?",
+            "person2": "L'autore argomenta che l’identità culturale è il fulcro della narrazione postmoderna."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,563 @@
+{
+  "course6": {
+    "title": "Family and People",
+    "description": "Learn how to talk about family members and people in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Father",
+        "step1": {
+          "spanish": "padre",
+          "english": "Father",
+          "audio": "padre",
+          "note": "The Spanish word for 'father'.",
+          "mcq": {
+            "question": "Which Spanish word means 'father'?",
+            "options": [
+              "padre",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "padre"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Father",
+          "expected_answer": "padre",
+          "alt_answers": [
+            "Padre",
+            "padre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "padre",
+          "options": [
+            "Father",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Father"
+        }
+      },
+      "lesson2": {
+        "title": "Mother",
+        "step1": {
+          "spanish": "madre",
+          "english": "Mother",
+          "audio": "madre",
+          "note": "The Spanish word for 'mother'.",
+          "mcq": {
+            "question": "Which Spanish word means 'mother'?",
+            "options": [
+              "madre",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "madre"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Mother",
+          "expected_answer": "madre",
+          "alt_answers": [
+            "Madre",
+            "madre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "madre",
+          "options": [
+            "Mother",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Mother"
+        }
+      },
+      "lesson3": {
+        "title": "Parents",
+        "step1": {
+          "spanish": "padres",
+          "english": "Parents",
+          "audio": "padres",
+          "note": "The Spanish word for 'parents'.",
+          "mcq": {
+            "question": "Which Spanish word means 'parents'?",
+            "options": [
+              "padres",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "padres"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Parents",
+          "expected_answer": "padres",
+          "alt_answers": [
+            "Padres",
+            "padres"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "padres",
+          "options": [
+            "Parents",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Parents"
+        }
+      },
+      "lesson4": {
+        "title": "Brother",
+        "step1": {
+          "spanish": "hermano",
+          "english": "Brother",
+          "audio": "hermano",
+          "note": "The Spanish word for 'brother'.",
+          "mcq": {
+            "question": "Which Spanish word means 'brother'?",
+            "options": [
+              "hermano",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "hermano"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Brother",
+          "expected_answer": "hermano",
+          "alt_answers": [
+            "Hermano",
+            "hermano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hermano",
+          "options": [
+            "Brother",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Brother"
+        }
+      },
+      "lesson5": {
+        "title": "Sister",
+        "step1": {
+          "spanish": "hermana",
+          "english": "Sister",
+          "audio": "hermana",
+          "note": "The Spanish word for 'sister'.",
+          "mcq": {
+            "question": "Which Spanish word means 'sister'?",
+            "options": [
+              "hermana",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "hermana"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Sister",
+          "expected_answer": "hermana",
+          "alt_answers": [
+            "Hermana",
+            "hermana"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hermana",
+          "options": [
+            "Sister",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Sister"
+        }
+      },
+      "lesson6": {
+        "title": "Son",
+        "step1": {
+          "spanish": "hijo",
+          "english": "Son",
+          "audio": "hijo",
+          "note": "The Spanish word for 'son'.",
+          "mcq": {
+            "question": "Which Spanish word means 'son'?",
+            "options": [
+              "hijo",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "hijo"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Son",
+          "expected_answer": "hijo",
+          "alt_answers": [
+            "Hijo",
+            "hijo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hijo",
+          "options": [
+            "Son",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Son"
+        }
+      },
+      "lesson7": {
+        "title": "Daughter",
+        "step1": {
+          "spanish": "hija",
+          "english": "Daughter",
+          "audio": "hija",
+          "note": "The Spanish word for 'daughter'.",
+          "mcq": {
+            "question": "Which Spanish word means 'daughter'?",
+            "options": [
+              "hija",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "hija"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__  = Daughter",
+          "expected_answer": "hija",
+          "alt_answers": [
+            "Hija",
+            "hija"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hija",
+          "options": [
+            "Daughter",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Daughter"
+        }
+      },
+      "lesson8": {
+        "title": "Grandfather",
+        "step1": {
+          "spanish": "abuelo",
+          "english": "Grandfather",
+          "audio": "abuelo",
+          "note": "The Spanish word for 'grandfather'.",
+          "mcq": {
+            "question": "Which Spanish word means 'grandfather'?",
+            "options": [
+              "abuelo",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "abuelo"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Grandfather",
+          "expected_answer": "abuelo",
+          "alt_answers": [
+            "Abuelo",
+            "abuelo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "abuelo",
+          "options": [
+            "Grandfather",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Grandfather"
+        }
+      },
+      "lesson9": {
+        "title": "Grandmother",
+        "step1": {
+          "spanish": "abuela",
+          "english": "Grandmother",
+          "audio": "abuela",
+          "note": "The Spanish word for 'grandmother'.",
+          "mcq": {
+            "question": "Which Spanish word means 'grandmother'?",
+            "options": [
+              "abuela",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "abuela"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Grandmother",
+          "expected_answer": "abuela",
+          "alt_answers": [
+            "Abuela",
+            "abuela"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "abuela",
+          "options": [
+            "Grandmother",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Grandmother"
+        }
+      },
+      "lesson10": {
+        "title": "Husband",
+        "step1": {
+          "spanish": "esposo",
+          "english": "Husband",
+          "audio": "esposo",
+          "note": "The Spanish word for 'husband'.",
+          "mcq": {
+            "question": "Which Spanish word means 'husband'?",
+            "options": [
+              "esposo",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "esposo"
+          }
+        },
+        "step2": {
+          "type_prompt": "e__  = Husband",
+          "expected_answer": "esposo",
+          "alt_answers": [
+            "Esposo",
+            "esposo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "esposo",
+          "options": [
+            "Husband",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Husband"
+        }
+      },
+      "lesson11": {
+        "title": "Wife",
+        "step1": {
+          "spanish": "esposa",
+          "english": "Wife",
+          "audio": "esposa",
+          "note": "The Spanish word for 'wife'.",
+          "mcq": {
+            "question": "Which Spanish word means 'wife'?",
+            "options": [
+              "esposa",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "esposa"
+          }
+        },
+        "step2": {
+          "type_prompt": "e__  = Wife",
+          "expected_answer": "esposa",
+          "alt_answers": [
+            "Esposa",
+            "esposa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "esposa",
+          "options": [
+            "Wife",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Wife"
+        }
+      },
+      "lesson12": {
+        "title": "Uncle",
+        "step1": {
+          "spanish": "tío",
+          "english": "Uncle",
+          "audio": "tío",
+          "note": "The Spanish word for 'uncle'.",
+          "mcq": {
+            "question": "Which Spanish word means 'uncle'?",
+            "options": [
+              "tío",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "tío"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Uncle",
+          "expected_answer": "tío",
+          "alt_answers": [
+            "Tío",
+            "tío"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "tío",
+          "options": [
+            "Uncle",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Uncle"
+        }
+      },
+      "lesson13": {
+        "title": "Aunt",
+        "step1": {
+          "spanish": "tía",
+          "english": "Aunt",
+          "audio": "tía",
+          "note": "The Spanish word for 'aunt'.",
+          "mcq": {
+            "question": "Which Spanish word means 'aunt'?",
+            "options": [
+              "tía",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "tía"
+          }
+        },
+        "step2": {
+          "type_prompt": "t__  = Aunt",
+          "expected_answer": "tía",
+          "alt_answers": [
+            "Tía",
+            "tía"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "tía",
+          "options": [
+            "Aunt",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Aunt"
+        }
+      },
+      "lesson14": {
+        "title": "Cousin (male)",
+        "step1": {
+          "spanish": "primo",
+          "english": "Cousin (male)",
+          "audio": "primo",
+          "note": "The Spanish word for 'cousin (male)'.",
+          "mcq": {
+            "question": "Which Spanish word means 'cousin (male)'?",
+            "options": [
+              "primo",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "primo"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Cousin (male)",
+          "expected_answer": "primo",
+          "alt_answers": [
+            "Primo",
+            "primo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "primo",
+          "options": [
+            "Cousin (male)",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Cousin (male)"
+        }
+      },
+      "lesson15": {
+        "title": "Cousin (female)",
+        "step1": {
+          "spanish": "prima",
+          "english": "Cousin (female)",
+          "audio": "prima",
+          "note": "The Spanish word for 'cousin (female)'.",
+          "mcq": {
+            "question": "Which Spanish word means 'cousin (female)'?",
+            "options": [
+              "prima",
+              "padre",
+              "madre",
+              "hermano"
+            ],
+            "answer": "prima"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Cousin (female)",
+          "expected_answer": "prima",
+          "alt_answers": [
+            "Prima",
+            "prima"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "prima",
+          "options": [
+            "Cousin (female)",
+            "Mother",
+            "Father",
+            "Brother"
+          ],
+          "answer": "Cousin (female)"
+        }
+      }
+    }
+  }
+}

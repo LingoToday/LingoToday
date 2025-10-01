@@ -1,0 +1,565 @@
+{
+  "course3": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Master basic polite expressions like yes, no, please, thank you, apologies, and communication helpers. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Yes",
+        "step1": {
+          "spanish": "Sí",
+          "english": "Yes",
+          "audio": "Sí",
+          "note": "Remember the accent on 'Sí' (yes). Without accent, 'si' means 'if'.",
+          "mcq": {
+            "question": "Which word means 'Yes' in Spanish?",
+            "options": [
+              "Sí",
+              "No",
+              "Tal vez",
+              "Nunca"
+            ],
+            "answer": "Sí"
+          }
+        },
+        "step2": {
+          "type_prompt": "S_  = Yes",
+          "expected_answer": "Sí",
+          "alt_answers": [
+            "sí",
+            "Si"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sí.",
+          "options": [
+            "Yes.",
+            "No.",
+            "Maybe.",
+            "Never."
+          ],
+          "answer": "Yes."
+        }
+      },
+      "lesson2": {
+        "title": "No",
+        "step1": {
+          "spanish": "No",
+          "english": "No",
+          "audio": "No",
+          "note": "Same spelling and meaning as English but pronounced with a pure 'o'.",
+          "mcq": {
+            "question": "Which word means 'No' in Spanish?",
+            "options": [
+              "Sí",
+              "No",
+              "Nada",
+              "Nunca"
+            ],
+            "answer": "No"
+          }
+        },
+        "step2": {
+          "type_prompt": "N_  = No",
+          "expected_answer": "No",
+          "alt_answers": [
+            "no"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "No.",
+          "options": [
+            "No.",
+            "Yes.",
+            "Never.",
+            "Maybe."
+          ],
+          "answer": "No."
+        }
+      },
+      "lesson3": {
+        "title": "Please",
+        "step1": {
+          "spanish": "Por favor",
+          "english": "Please",
+          "audio": "Por favor",
+          "note": "Used in all registers. Often placed after the request.",
+          "mcq": {
+            "question": "How do you say 'Please' in Spanish?",
+            "options": [
+              "De nada",
+              "Por favor",
+              "Gracias",
+              "Perdón"
+            ],
+            "answer": "Por favor"
+          }
+        },
+        "step2": {
+          "type_prompt": "P__ f__or  = Please",
+          "expected_answer": "Por favor",
+          "alt_answers": [
+            "por favor",
+            "Por Favor"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Por favor.",
+          "options": [
+            "Please.",
+            "Thank you.",
+            "You're welcome.",
+            "Excuse me."
+          ],
+          "answer": "Please."
+        }
+      },
+      "lesson4": {
+        "title": "Thank you",
+        "step1": {
+          "spanish": "Gracias",
+          "english": "Thank you",
+          "audio": "Gracias",
+          "note": "Very common courtesy word. 'Muchas gracias' = 'Thank you very much'.",
+          "mcq": {
+            "question": "Which phrase means 'Thank you'?",
+            "options": [
+              "De nada",
+              "Gracias",
+              "Perdón",
+              "Por favor"
+            ],
+            "answer": "Gracias"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gr__ias  = Thank you",
+          "expected_answer": "Gracias",
+          "alt_answers": [
+            "gracias",
+            "Gracias."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Gracias.",
+          "options": [
+            "Thank you.",
+            "You're welcome.",
+            "Please.",
+            "Sorry."
+          ],
+          "answer": "Thank you."
+        }
+      },
+      "lesson5": {
+        "title": "You're welcome",
+        "step1": {
+          "spanish": "De nada",
+          "english": "You're welcome",
+          "audio": "De nada",
+          "note": "Default response to 'Gracias'. Literally 'of nothing'.",
+          "mcq": {
+            "question": "How do you reply to 'Gracias'?",
+            "options": [
+              "De nada",
+              "Por favor",
+              "Perdón",
+              "Sí"
+            ],
+            "answer": "De nada"
+          }
+        },
+        "step2": {
+          "type_prompt": "De n__a  = You're welcome",
+          "expected_answer": "De nada",
+          "alt_answers": [
+            "de nada",
+            "De nada."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "De nada.",
+          "options": [
+            "You're welcome.",
+            "Thank you.",
+            "Please.",
+            "Excuse me."
+          ],
+          "answer": "You're welcome."
+        }
+      },
+      "lesson6": {
+        "title": "I'm sorry (regret)",
+        "step1": {
+          "spanish": "Lo siento",
+          "english": "I'm sorry",
+          "audio": "Lo siento",
+          "note": "Stronger apology for regret or empathy. Not used to get attention.",
+          "mcq": {
+            "question": "Which Spanish phrase is a stronger apology for regret?",
+            "options": [
+              "Perdón",
+              "Lo siento",
+              "Disculpe",
+              "Con permiso"
+            ],
+            "answer": "Lo siento"
+          }
+        },
+        "step2": {
+          "type_prompt": "Lo s__to  = I'm sorry",
+          "expected_answer": "Lo siento",
+          "alt_answers": [
+            "lo siento",
+            "Lo siento."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lo siento.",
+          "options": [
+            "I'm sorry.",
+            "Excuse me.",
+            "Please.",
+            "Thank you."
+          ],
+          "answer": "I'm sorry."
+        }
+      },
+      "lesson7": {
+        "title": "Sorry / Excuse me (mild)",
+        "step1": {
+          "spanish": "Perdón",
+          "english": "Sorry / Excuse me",
+          "audio": "Perdón",
+          "note": "Use for small apologies (bumping someone) or to interject politely.",
+          "mcq": {
+            "question": "Which word can mean 'Sorry' or 'Excuse me' for minor situations?",
+            "options": [
+              "Perdón",
+              "Disculpe",
+              "Lo siento",
+              "De nada"
+            ],
+            "answer": "Perdón"
+          }
+        },
+        "step2": {
+          "type_prompt": "Perd__  = Sorry / Excuse me",
+          "expected_answer": "Perdón",
+          "alt_answers": [
+            "perdón",
+            "Perdon"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Perdón.",
+          "options": [
+            "Sorry.",
+            "Thank you.",
+            "Please.",
+            "You're welcome."
+          ],
+          "answer": "Sorry."
+        }
+      },
+      "lesson8": {
+        "title": "Excuse me (formal; to get attention)",
+        "step1": {
+          "spanish": "Disculpe",
+          "english": "Excuse me (formal)",
+          "audio": "Disculpe",
+          "note": "Use to get someone's attention politely, especially with 'usted'.",
+          "mcq": {
+            "question": "Which word is best to get someone's attention politely?",
+            "options": [
+              "Disculpe",
+              "Perdón",
+              "Lo siento",
+              "De nada"
+            ],
+            "answer": "Disculpe"
+          }
+        },
+        "step2": {
+          "type_prompt": "Disc__pe  = Excuse me (formal)",
+          "expected_answer": "Disculpe",
+          "alt_answers": [
+            "disculpe",
+            "Disculpe."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Disculpe, ¿me ayuda?",
+          "options": [
+            "Excuse me, can you help me?",
+            "I'm sorry, can you help me?",
+            "Please, can you help me?",
+            "Thank you, can you help me?"
+          ],
+          "answer": "Excuse me, can you help me?"
+        }
+      },
+      "lesson9": {
+        "title": "Excuse me (to pass through)",
+        "step1": {
+          "spanish": "Con permiso",
+          "english": "Excuse me (to pass through)",
+          "audio": "Con permiso",
+          "note": "Say when passing in front of someone or moving through a crowd.",
+          "mcq": {
+            "question": "Which phrase do you use to pass through a crowd politely?",
+            "options": [
+              "Con permiso",
+              "Perdón",
+              "Disculpe",
+              "Lo siento"
+            ],
+            "answer": "Con permiso"
+          }
+        },
+        "step2": {
+          "type_prompt": "Con per__so  = Excuse me (to pass through)",
+          "expected_answer": "Con permiso",
+          "alt_answers": [
+            "con permiso",
+            "Con permiso."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Con permiso.",
+          "options": [
+            "Excuse me.",
+            "I'm sorry.",
+            "Please.",
+            "You're welcome."
+          ],
+          "answer": "Excuse me."
+        }
+      },
+      "lesson10": {
+        "title": "Do you speak English? (informal)",
+        "step1": {
+          "spanish": "¿Hablas inglés?",
+          "english": "Do you speak English? (informal)",
+          "audio": "¿Hablas inglés?",
+          "note": "Use with friends or peers. 'tú' form.",
+          "mcq": {
+            "question": "How do you ask informally if someone speaks English?",
+            "options": [
+              "¿Habla inglés?",
+              "¿Hablas inglés?",
+              "¿Hablan inglés?",
+              "¿Hablas español?"
+            ],
+            "answer": "¿Hablas inglés?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿Ha__as ingl__s?  = Do you speak English? (informal)",
+          "expected_answer": "¿Hablas inglés?",
+          "alt_answers": [
+            "Hablas inglés?",
+            "¿Hablas ingles?",
+            "¿Hablas inglés"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Hablas inglés?",
+          "options": [
+            "Do you speak English?",
+            "Do you understand?",
+            "Do you know?",
+            "Can you repeat?"
+          ],
+          "answer": "Do you speak English?"
+        }
+      },
+      "lesson11": {
+        "title": "Do you speak English? (formal)",
+        "step1": {
+          "spanish": "¿Habla inglés?",
+          "english": "Do you speak English? (formal)",
+          "audio": "¿Habla inglés?",
+          "note": "Formal 'usted' form, used with strangers or in service contexts.",
+          "mcq": {
+            "question": "How do you ask formally if someone speaks English?",
+            "options": [
+              "¿Hablas inglés?",
+              "¿Habla inglés?",
+              "¿Hablan inglés?",
+              "¿Puede hablar inglés?"
+            ],
+            "answer": "¿Habla inglés?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿H__la inglés?  = Do you speak English? (formal)",
+          "expected_answer": "¿Habla inglés?",
+          "alt_answers": [
+            "Habla inglés?",
+            "¿Habla ingles?",
+            "¿Habla inglés"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Habla inglés?",
+          "options": [
+            "Do you speak English? (formal)",
+            "Do you understand? (formal)",
+            "Do you know? (formal)",
+            "Can you repeat? (formal)"
+          ],
+          "answer": "Do you speak English? (formal)"
+        }
+      },
+      "lesson12": {
+        "title": "I don’t understand",
+        "step1": {
+          "spanish": "No entiendo",
+          "english": "I don’t understand",
+          "audio": "No entiendo",
+          "note": "Polite way to say you didn’t catch something. Add 'bien' for 'well'.",
+          "mcq": {
+            "question": "How do you say 'I don’t understand' in Spanish?",
+            "options": [
+              "No sé",
+              "No entiendo",
+              "No puedo",
+              "No hablo"
+            ],
+            "answer": "No entiendo"
+          }
+        },
+        "step2": {
+          "type_prompt": "No enti__do  = I don’t understand",
+          "expected_answer": "No entiendo",
+          "alt_answers": [
+            "no entiendo",
+            "No entiendo."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lo siento, no entiendo.",
+          "options": [
+            "I'm sorry, I don't understand.",
+            "I don't know.",
+            "I can't.",
+            "I don't speak."
+          ],
+          "answer": "I'm sorry, I don't understand."
+        }
+      },
+      "lesson13": {
+        "title": "I don’t know",
+        "step1": {
+          "spanish": "No lo sé",
+          "english": "I don’t know",
+          "audio": "No lo sé",
+          "note": "Common phrase; stress the accent on 'sé'.",
+          "mcq": {
+            "question": "Which phrase means 'I don’t know'?",
+            "options": [
+              "No entiendo",
+              "No lo sé",
+              "No puede ser",
+              "No sé lo"
+            ],
+            "answer": "No lo sé"
+          }
+        },
+        "step2": {
+          "type_prompt": "No lo s_  = I don’t know",
+          "expected_answer": "No lo sé",
+          "alt_answers": [
+            "no lo sé",
+            "No lo se"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "No lo sé.",
+          "options": [
+            "I don't know.",
+            "I don't understand.",
+            "I can't.",
+            "I know."
+          ],
+          "answer": "I don't know."
+        }
+      },
+      "lesson14": {
+        "title": "I speak a little Spanish",
+        "step1": {
+          "spanish": "Hablo un poco de español",
+          "english": "I speak a little Spanish",
+          "audio": "Hablo un poco de español",
+          "note": "Useful for travelers. Alternative: 'Hablo un poquito de español' (a tiny bit).",
+          "mcq": {
+            "question": "How do you say 'I speak a little Spanish'?",
+            "options": [
+              "No hablo español",
+              "Hablo un poco de español",
+              "Hablo mucho español",
+              "Hablo inglés"
+            ],
+            "answer": "Hablo un poco de español"
+          }
+        },
+        "step2": {
+          "type_prompt": "Hablo un p__o de español  = I speak a little Spanish",
+          "expected_answer": "Hablo un poco de español",
+          "alt_answers": [
+            "Hablo un poco de espanol",
+            "hablo un poco de español"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Hablo un poco de español.",
+          "options": [
+            "I speak a little Spanish.",
+            "I don't speak Spanish.",
+            "I speak a lot of Spanish.",
+            "I speak English."
+          ],
+          "answer": "I speak a little Spanish."
+        }
+      },
+      "lesson15": {
+        "title": "Can you repeat, please? (formal)",
+        "step1": {
+          "spanish": "¿Puede repetir, por favor?",
+          "english": "Can you repeat, please? (formal)",
+          "audio": "¿Puede repetir, por favor?",
+          "note": "Formal 'usted' request. Informal: '¿Puedes repetir, por favor?'",
+          "mcq": {
+            "question": "How do you formally ask someone to repeat?",
+            "options": [
+              "¿Puedes repetir, por favor?",
+              "¿Puede repetir, por favor?",
+              "¿Puedo repetir, por favor?",
+              "¿Repites, por favor?"
+            ],
+            "answer": "¿Puede repetir, por favor?"
+          }
+        },
+        "step2": {
+          "type_prompt": "¿P__de repe__r, por favor?  = Can you repeat, please? (formal)",
+          "expected_answer": "¿Puede repetir, por favor?",
+          "alt_answers": [
+            "Puede repetir, por favor?",
+            "¿Puede repetir por favor?",
+            "¿Puede repetir, por favor"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "¿Puede repetir, por favor?",
+          "options": [
+            "Can you repeat, please?",
+            "Do you speak English?",
+            "Can you help me?",
+            "Can you slow down?"
+          ],
+          "answer": "Can you repeat, please?"
+        }
+      }
+    }
+  }
+}

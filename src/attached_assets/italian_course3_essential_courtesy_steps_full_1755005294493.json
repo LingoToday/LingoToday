@@ -1,0 +1,476 @@
+{
+  "course3": {
+    "title": "Essential Courtesy Phrases",
+    "description": "Learn common polite expressions in Italian. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall. Step 3 uses natural examples within learned vocabulary.",
+    "lessons": {
+      "lesson1": {
+        "title": "Please (informal)",
+        "step1": {
+          "italian": "Per favore",
+          "english": "Please (informal)",
+          "audio": "Per favore",
+          "note": "Use with friends or people your age.",
+          "mcq": {
+            "question": "Which phrase means 'Please (informal)'?",
+            "options": [
+              "Per favore",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Per favore"
+          }
+        },
+        "step2": {
+          "type_prompt": "Per fav__e  = Please (informal)",
+          "expected_answer": "Per favore",
+          "alt_answers": [
+            "per favore"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per favore",
+          "options": [
+            "Please.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Please."
+        }
+      },
+      "lesson2": {
+        "title": "Please (formal)",
+        "step1": {
+          "italian": "Per piacere",
+          "english": "Please (formal)",
+          "audio": "Per piacere",
+          "note": "Polite — works in most situations.",
+          "mcq": {
+            "question": "Which phrase means 'Please (formal)'?",
+            "options": [
+              "Per piacere",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Per piacere"
+          }
+        },
+        "step2": {
+          "type_prompt": "Per pia__re  = Please (formal)",
+          "expected_answer": "Per piacere",
+          "alt_answers": [
+            "per piacere"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Per piacere",
+          "options": [
+            "Please.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Please."
+        }
+      },
+      "lesson3": {
+        "title": "Thank you",
+        "step1": {
+          "italian": "Grazie",
+          "english": "Thank you",
+          "audio": "Grazie",
+          "note": "Use in any situation to show gratitude.",
+          "mcq": {
+            "question": "Which phrase means 'Thank you'?",
+            "options": [
+              "Grazie",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Grazie"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gra__e  = Thank you",
+          "expected_answer": "Grazie",
+          "alt_answers": [
+            "grazie"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Grazie",
+          "options": [
+            "Thank you.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Thank you."
+        }
+      },
+      "lesson4": {
+        "title": "Thank you very much",
+        "step1": {
+          "italian": "Grazie mille",
+          "english": "Thank you very much",
+          "audio": "Grazie mille",
+          "note": "A warmer, stronger thanks.",
+          "mcq": {
+            "question": "Which phrase means 'Thank you very much'?",
+            "options": [
+              "Grazie mille",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Grazie mille"
+          }
+        },
+        "step2": {
+          "type_prompt": "Gra__e mille  = Thank you very much",
+          "expected_answer": "Grazie mille",
+          "alt_answers": [
+            "grazie mille"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Grazie mille",
+          "options": [
+            "Thank you very much.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Thank you very much."
+        }
+      },
+      "lesson5": {
+        "title": "You're welcome (informal)",
+        "step1": {
+          "italian": "Di niente",
+          "english": "You're welcome (informal)",
+          "audio": "Di niente",
+          "note": "Casual response to 'thanks'.",
+          "mcq": {
+            "question": "Which phrase means 'You're welcome (informal)'?",
+            "options": [
+              "Di niente",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Di niente"
+          }
+        },
+        "step2": {
+          "type_prompt": "Di nie__e  = You're welcome (informal)",
+          "expected_answer": "Di niente",
+          "alt_answers": [
+            "di niente"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Di niente",
+          "options": [
+            "You're welcome.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "You're welcome."
+        }
+      },
+      "lesson6": {
+        "title": "You're welcome (formal)",
+        "step1": {
+          "italian": "Prego",
+          "english": "You're welcome (formal)",
+          "audio": "Prego",
+          "note": "Polite, standard response to 'thanks'.",
+          "mcq": {
+            "question": "Which phrase means 'You're welcome (formal)'?",
+            "options": [
+              "Prego",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Prego"
+          }
+        },
+        "step2": {
+          "type_prompt": "Pre__o  = You're welcome (formal)",
+          "expected_answer": "Prego",
+          "alt_answers": [
+            "prego"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Prego",
+          "options": [
+            "You're welcome.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "You're welcome."
+        }
+      },
+      "lesson7": {
+        "title": "Excuse me / Pardon (to get attention)",
+        "step1": {
+          "italian": "Scusi",
+          "english": "Excuse me (formal)",
+          "audio": "Scusi",
+          "note": "Use to politely get attention.",
+          "mcq": {
+            "question": "Which phrase means 'Excuse me (formal)'?",
+            "options": [
+              "Scusi",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Scusi"
+          }
+        },
+        "step2": {
+          "type_prompt": "Scu__  = Excuse me (formal)",
+          "expected_answer": "Scusi",
+          "alt_answers": [
+            "scusi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Scusi",
+          "options": [
+            "Excuse me.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Excuse me."
+        }
+      },
+      "lesson8": {
+        "title": "Excuse me (informal)",
+        "step1": {
+          "italian": "Scusa",
+          "english": "Excuse me (informal)",
+          "audio": "Scusa",
+          "note": "Casual, for friends or peers.",
+          "mcq": {
+            "question": "Which phrase means 'Excuse me (informal)'?",
+            "options": [
+              "Scusa",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Scusa"
+          }
+        },
+        "step2": {
+          "type_prompt": "Scu__  = Excuse me (informal)",
+          "expected_answer": "Scusa",
+          "alt_answers": [
+            "scusa"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Scusa",
+          "options": [
+            "Excuse me.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Excuse me."
+        }
+      },
+      "lesson9": {
+        "title": "I'm sorry",
+        "step1": {
+          "italian": "Mi dispiace",
+          "english": "I'm sorry",
+          "audio": "Mi dispiace",
+          "note": "Polite apology.",
+          "mcq": {
+            "question": "Which phrase means 'I'm sorry'?",
+            "options": [
+              "Mi dispiace",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Mi dispiace"
+          }
+        },
+        "step2": {
+          "type_prompt": "Mi disp__ce  = I'm sorry",
+          "expected_answer": "Mi dispiace",
+          "alt_answers": [
+            "mi dispiace"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mi dispiace",
+          "options": [
+            "I'm sorry.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "I'm sorry."
+        }
+      },
+      "lesson10": {
+        "title": "No problem",
+        "step1": {
+          "italian": "Nessun problema",
+          "english": "No problem",
+          "audio": "Nessun problema",
+          "note": "Friendly reassurance.",
+          "mcq": {
+            "question": "Which phrase means 'No problem'?",
+            "options": [
+              "Nessun problema",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Nessun problema"
+          }
+        },
+        "step2": {
+          "type_prompt": "Nessun pro__ma  = No problem",
+          "expected_answer": "Nessun problema",
+          "alt_answers": [
+            "nessun problema"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Nessun problema",
+          "options": [
+            "No problem.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "No problem."
+        }
+      },
+      "lesson11": {
+        "title": "May I...?",
+        "step1": {
+          "italian": "Posso...?",
+          "english": "May I...?",
+          "audio": "Posso...?",
+          "note": "Polite request.",
+          "mcq": {
+            "question": "Which phrase means 'May I...?'?",
+            "options": [
+              "Posso...?",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Posso...?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Po__o...?  = May I...?",
+          "expected_answer": "Posso...?",
+          "alt_answers": [
+            "posso...?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Posso...?",
+          "options": [
+            "May I?",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "May I?"
+        }
+      },
+      "lesson12": {
+        "title": "Could you...?",
+        "step1": {
+          "italian": "Potrebbe...?",
+          "english": "Could you...? (formal)",
+          "audio": "Potrebbe...?",
+          "note": "Formal polite request.",
+          "mcq": {
+            "question": "Which phrase means 'Could you...? (formal)'?",
+            "options": [
+              "Potrebbe...?",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Potrebbe...?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Potr__bbe...?  = Could you...? (formal)",
+          "expected_answer": "Potrebbe...?",
+          "alt_answers": [
+            "potrebbe...?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Potrebbe...?",
+          "options": [
+            "Could you?",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "Could you?"
+        }
+      },
+      "lesson13": {
+        "title": "I understand",
+        "step1": {
+          "italian": "Capisco",
+          "english": "I understand",
+          "audio": "Capisco",
+          "note": "To show you follow what’s being said.",
+          "mcq": {
+            "question": "Which phrase means 'I understand'?",
+            "options": [
+              "Capisco",
+              "Grazie",
+              "Prego",
+              "Scusi"
+            ],
+            "answer": "Capisco"
+          }
+        },
+        "step2": {
+          "type_prompt": "Cap__co  = I understand",
+          "expected_answer": "Capisco",
+          "alt_answers": [
+            "capisco"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Capisco",
+          "options": [
+            "I understand.",
+            "Hello!",
+            "Goodbye!",
+            "Good night!"
+          ],
+          "answer": "I understand."
+        }
+      }
+    }
+  }
+}
