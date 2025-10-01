@@ -12,15 +12,13 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../lib/apiClient';
 import { CheckpointQuestion } from '../types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ParamListBase, RouteProp } from '@react-navigation/native';
 
-interface CheckpointScreenProps {
-  navigation: any;
-  route: {
-    params: {
-      checkpointId: number;
-    };
-  };
-}
+type CheckpointScreenProps = {
+  navigation: NativeStackNavigationProp<ParamListBase, 'Checkpoint'>;
+  route: RouteProp<{ Checkpoint: { checkpointId: number } }, 'Checkpoint'>;
+};
 
 interface Checkpoint {
   id: number;
@@ -42,14 +40,14 @@ export default function CheckpointScreen({ navigation, route }: CheckpointScreen
   // Fetch checkpoint data
   const { data: checkpoint, isLoading, error } = useQuery<Checkpoint>({
     queryKey: ['/api/checkpoint', checkpointId],
-    queryFn: () => apiClient.getCheckpoint(checkpointId),
+    queryFn: () => apiClient.getCheckpoint(checkpointId) as Promise<Checkpoint>,
   });
 
   // Submit checkpoint answers mutation
   const submitCheckpointMutation = useMutation({
     mutationFn: (answersData: any) => apiClient.submitCheckpointAnswers(checkpointId, answersData),
     onSuccess: (result) => {
-      setScore(result.score || 0);
+      setScore((result as any).score || 0);
       setIsCompleted(true);
       // Invalidate queries to update UI
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });

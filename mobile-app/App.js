@@ -1,53 +1,39 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-import { queryClient } from './src/lib/queryClient';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/contexts/AuthContext'; // Import from AuthContext
+import { useAuth } from './src/hooks/useAuth'; // Import from useAuth hook
 
-// Main app component that handles navigation based on auth state
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
+
 function AppContent() {
-  const { user, isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3b82f6" />
-        <Text style={styles.loadingText}>Loading LingoToday...</Text>
-      </View>
-    );
-  }
-
-  return (
-    <>
-      <AppNavigator isAuthenticated={isAuthenticated} user={user} />
-      <StatusBar style="auto" />
-    </>
-  );
+  const { isAuthenticated, user } = useAuth();
+  
+  return <AppNavigator isAuthenticated={isAuthenticated} user={user} />;
 }
 
 export default function App() {
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AppContent />
+            <StatusBar style="auto" />
+          </AuthProvider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#64748b',
-  },
-});
