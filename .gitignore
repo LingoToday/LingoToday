@@ -34,3 +34,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Workflow files
+.github/workflows/deploy-production.yml

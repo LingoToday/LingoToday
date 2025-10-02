@@ -28,6 +28,6 @@ jobs:
         run: echo "EXPO_TOKEN=${{ secrets.EXPO_TOKEN }}" > .env.local
 
       - name: 📱 Build Android APK
-        run: eas build --platform android --profile development
+        run: npx eas build --platform android --profile development --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
