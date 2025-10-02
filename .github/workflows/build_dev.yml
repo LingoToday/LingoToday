@@ -1,33 +1,45 @@
-name: Build Android APK (Development)
+name: Build Android (EAS)
 
 on:
   push:
-    branches:
-      - master  # or your development branch
+    branches: [ main ]
 
 jobs:
-  build:
+  eas-build-android:
     runs-on: ubuntu-latest
     steps:
-      - name: 📱 Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v3
+      # Use Node 18+ so os.availableParallelism exists
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
-          cache: npm
+          node-version: '18.x'
 
-      - name: 📦 Install dependencies
-        run: npm install
+      - name: Install yarn/npm deps
+        run: |
+          npm ci
+          # OR yarn install --frozen-lockfile
 
-      - name: 🧰 Install Expo CLI
-        run: npm install -g expo-cli eas-cli
+      # Make sure EAS CLI is available — either in devDependencies or install globally
+      - name: Install EAS CLI
+        run: npm install -g eas-cli@latest
 
-      - name: 🔐 Setup Expo token
-        run: echo "EXPO_TOKEN=${{ secrets.EXPO_TOKEN }}" > .env.local
-
-      - name: 📱 Build Android APK
-        run: npx eas build --platform android --profile development --non-interactive
+      # EXPO_TOKEN stored as a GitHub repo secret
+      - name: Configure Expo token
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "EXPO_TOKEN is set"
+          # Optional: whoami to verify token
+          eas whoami || true
+
+      - name: Validate expo config (optional)
+        run: npx expo config --json
+
+      - name: EAS Build (non-interactive)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          # ensure the profile matches eas.json (development/profile name)
+          npx eas build --platform android --profile development --non-interactive
