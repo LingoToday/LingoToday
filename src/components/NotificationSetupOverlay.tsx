@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -7,12 +7,14 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   Dimensions,
-  Platform
+  Platform,
+  Linking
 } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { Ionicons } from '@expo/vector-icons';
+import { ResizeMode, Video } from 'expo-av';
 
-import { Card } from './ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { Button } from './ui/Button';
 import { Switch } from './ui/Switch';
 import { theme } from '../lib/theme';
@@ -31,9 +33,11 @@ export default function NotificationSetupOverlay({
   const [step, setStep] = useState(0);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
+  const videoRef = useRef<Video>(null);
 
   useEffect(() => {
     if (isVisible) {
+      // Check current notification permission
       checkNotificationPermission();
       setStep(0); // Reset to first step when opening
     }
@@ -45,22 +49,25 @@ export default function NotificationSetupOverlay({
     setNotificationsEnabled(status === 'granted');
   };
 
-  // Simplified steps for mobile
+  // Steps matching web version exactly
   const steps = [
     {
+      title: "Enable Notifications",
+      content: "Turn on browser notifications to receive gentle reminders for your language lessons throughout the day.",
+      icon: "notifications",
+      iconColor: "#059669"
+    },
+    {
+      title: "Set Your Schedule", 
+      content: "Choose how often you'd like to be reminded and set your preferred learning hours that work with your daily routine.",
+      icon: "time",
+      iconColor: "#7C3AED"
+    },
+    {
       title: "Welcome to LingoToday!",
-      content: "Get personalized language learning reminders to help you stay consistent with your Italian studies.",
-      icon: "🎯"
-    },
-    {
-      title: "Enable Notifications", 
-      content: "Turn on gentle push notifications to receive lesson reminders throughout your day.",
-      icon: "🔔"
-    },
-    {
-      title: "You're All Set!",
-      content: "Start your language learning journey with smart reminders and personalized lessons!",
-      icon: "🚀"
+      content: "",
+      icon: "play",
+      iconColor: "#2563EB"
     }
   ];
 
@@ -83,28 +90,22 @@ export default function NotificationSetupOverlay({
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      handleComplete();
+      onClose();
     }
   };
 
   const handleSkip = () => {
-    console.log('👆 User skipped notification setup');
-    onClose();
-  };
-
-  const handleComplete = () => {
-    console.log('✅ User completed notification setup');
     onClose();
   };
 
   const getPermissionStatusText = () => {
     switch (notificationPermission) {
       case 'granted':
-        return '✓ Notifications enabled';
+        return '✓ Browser notifications are enabled';
       case 'denied':
-        return '⚠ Enable in device settings';
+        return '⚠ Browser notifications are blocked. Check your browser settings.';
       default:
-        return 'Tap toggle to enable';
+        return 'Toggle to request browser notification permission';
     }
   };
 
@@ -115,37 +116,104 @@ export default function NotificationSetupOverlay({
       case 'denied':
         return '#DC2626';
       default:
-        return '#6B7280';
+        return '#1E40AF';
     }
   };
+
+  const handleFAQPress = () => {
+    Linking.openURL('https://linguotoday.com/faq');
+  };
+
+  if (!isVisible) return null;
 
   return (
     <Modal
       visible={isVisible}
       transparent
-      animationType="slide"
+      animationType="fade"
       onRequestClose={handleSkip}
     >
-      <View style={styles.overlay}>
+      <TouchableOpacity 
+        style={styles.overlay}
+        onPress={handleSkip}
+        activeOpacity={1}
+      >
         <TouchableOpacity 
-          style={styles.backdrop} 
-          onPress={handleSkip}
+          style={[
+            styles.container,
+            step === 2 && styles.containerWide
+          ]}
           activeOpacity={1}
-        />
-        
-        <View style={styles.container}>
-          <View style={styles.card}>
-            {/* Header */}
-            <View style={styles.header}>
+        >
+          <Card style={styles.card}>
+            <CardHeader style={styles.cardHeader}>
               <TouchableOpacity
-                onPress={handleSkip}
+                onPress={onClose}
                 style={styles.closeButton}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name="close" size={24} color="#6B7280" />
+                <Ionicons name="close" size={20} color="#9CA3AF" />
               </TouchableOpacity>
               
-              {/* Step Indicator */}
+              {/* Show icon only if not the video step */}
+              {step !== 2 && (
+                <View style={styles.iconContainer}>
+                  <Ionicons 
+                    name={steps[step].icon as any} 
+                    size={32} 
+                    color={steps[step].iconColor} 
+                  />
+                </View>
+              )}
+              
+              <CardTitle style={styles.cardTitle}>
+                {steps[step].title}
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent style={styles.cardContent}>
+              {/* Show content text only if it's not empty (not the video step) */}
+              {steps[step].content && (
+                <Text style={styles.description}>
+                  {steps[step].content}
+                </Text>
+              )}
+
+              {/* Video - Show only on third step */}
+              {step === 2 && (
+                <View style={styles.videoContainer}>
+                  <Video
+                    ref={videoRef}
+                    style={styles.video}
+                    source={require(
+                      '../attached_assets/copy_1EC8BCF0-0552-45EA-94D0-8EAACB53AF04_1757075689342.MOV'
+                    )}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={step === 2}
+                    isMuted={false}
+                  />
+                </View>
+              )}
+
+              {/* Enable Notifications Toggle - Show only on first step */}
+              {step === 0 && (
+                <View style={styles.notificationToggleContainer}>
+                  <View style={styles.toggleHeader}>
+                    <Text style={styles.toggleLabel}>Enable Notifications</Text>
+                    <Switch
+                      checked={notificationsEnabled}
+                      onCheckedChange={handleNotificationToggle}
+                    />
+                  </View>
+                  
+                  <Text style={[styles.permissionStatus, { color: getPermissionStatusColor() }]}>
+                    {getPermissionStatusText()}
+                  </Text>
+                </View>
+              )}
+
+              {/* Step indicator */}
               <View style={styles.stepIndicator}>
                 {steps.map((_, index) => (
                   <View
@@ -153,229 +221,219 @@ export default function NotificationSetupOverlay({
                     style={[
                       styles.stepDot,
                       {
-                        backgroundColor: index <= step 
-                          ? theme.colors.primary 
-                          : '#E5E7EB'
+                        backgroundColor: index === step 
+                          ? '#2563EB' 
+                          : '#D1D5DB'
                       }
                     ]}
                   />
                 ))}
               </View>
-            </View>
-            
-            {/* Content */}
-            <View style={styles.content}>
-              {/* Icon */}
-              <View style={styles.iconContainer}>
-                <Text style={styles.stepIcon}>{steps[step].icon}</Text>
-              </View>
-              
-              {/* Title */}
-              <Text style={styles.title}>
-                {steps[step].title}
-              </Text>
-              
-              {/* Description */}
-              <Text style={styles.description}>
-                {steps[step].content}
-              </Text>
 
-              {/* Notification Toggle - Show only on step 1 */}
-              {step === 1 && (
-                <View style={styles.toggleContainer}>
-                  <View style={styles.toggleHeader}>
-                    <Text style={styles.toggleLabel}>Push Notifications</Text>
-                    <Switch
-                      checked={notificationsEnabled}
-                      onCheckedChange={handleNotificationToggle}
-                    />
-                  </View>
-                  
-                  <Text style={[styles.statusText, { color: getPermissionStatusColor() }]}>
-                    {getPermissionStatusText()}
+              {/* FAQ link - Show only on notification steps, not on video step */}
+              {step !== 2 && (
+                <View style={styles.faqSection}>
+                  <Text style={styles.faqText}>
+                    For more information on how to enable notifications, visit our FAQ page
                   </Text>
+                  <TouchableOpacity 
+                    onPress={handleFAQPress}
+                    style={styles.faqButton}
+                  >
+                    <Text style={styles.faqButtonText}>FAQ Page</Text>
+                    <Ionicons name="open-outline" size={12} color="#2563EB" />
+                  </TouchableOpacity>
                 </View>
               )}
-            </View>
 
-            {/* Footer */}
-            <View style={styles.footer}>
-              <TouchableOpacity
-                onPress={handleSkip}
-                style={styles.skipButton}
-              >
-                <Text style={styles.skipButtonText}>Skip</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                onPress={handleNext}
-                style={styles.nextButton}
-              >
-                <Text style={styles.nextButtonText}>
-                  {step === steps.length - 1 ? 'Get Started' : 'Continue'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </View>
+              {/* Action buttons */}
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  onPress={handleSkip}
+                  style={styles.skipButton}
+                >
+                  <Text style={styles.skipButtonText}>Skip Setup</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  onPress={handleNext}
+                  style={styles.nextButton}
+                >
+                  <Text style={styles.nextButtonText}>
+                    {step === steps.length - 1 ? 'Get Started' : 'Next'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </CardContent>
+          </Card>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  // Modal Overlay
   overlay: {
     flex: 1,
-    justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  backdrop: {
-    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
   container: {
-    paddingHorizontal: 16,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 16,
+    width: '100%',
+    maxWidth: 384, // max-w-md
   },
-  
-  // Card
+  containerWide: {
+    maxWidth: 512, // max-w-lg for video step
+  },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    minHeight: 400,
-    maxHeight: height * 0.75,
+    borderRadius: 8,
+    width: '100%',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 16,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
       },
       android: {
-        elevation: 16,
+        elevation: 8,
       },
     }),
   },
-  
-  // Header
-  header: {
-    flexDirection: 'row',
+  cardHeader: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
     paddingTop: 24,
+    paddingHorizontal: 24,
     paddingBottom: 16,
+    position: 'relative',
   },
   closeButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
     padding: 4,
-  },
-  stepIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    flex: 1,
-    justifyContent: 'center',
-    marginRight: 32, // Account for close button
-  },
-  stepDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  
-  // Content
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    gap: 24,
+    zIndex: 1,
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 80,
-    height: 80,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 40,
+    marginBottom: 16,
   },
-  stepIcon: {
-    fontSize: 40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '600',
     color: '#111827',
     textAlign: 'center',
-    lineHeight: 32,
+  },
+  cardContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    alignItems: 'center',
+    gap: 24,
   },
   description: {
     fontSize: 16,
     color: '#6B7280',
     textAlign: 'center',
     lineHeight: 24,
-    marginHorizontal: 16,
+    paddingHorizontal: 8,
   },
-  
-  // Toggle Container
-  toggleContainer: {
+  videoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  video: {
+    width: 224, // w-56
+    height: 320, // h-80
+    borderRadius: 8,
+  },
+  notificationToggleContainer: {
     width: '100%',
-    backgroundColor: 'rgba(99, 102, 241, 0.05)',
-    padding: 20,
-    borderRadius: 16,
+    backgroundColor: '#EFF6FF', // blue-50
+    padding: 16,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.2)',
+    borderColor: '#DBEAFE', // blue-200
   },
   toggleHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 12,
   },
   toggleLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4F46E5',
-  },
-  statusText: {
     fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
+    fontWeight: '500',
+    color: '#1E40AF', // blue-800
   },
-  
-  // Footer
-  footer: {
+  permissionStatus: {
+    fontSize: 12,
+    textAlign: 'left',
+  },
+  stepIndicator: {
     flexDirection: 'row',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    gap: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  faqSection: {
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
+    paddingTop: 16,
+    alignItems: 'center',
+    width: '100%',
+  },
+  faqText: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  faqButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    gap: 4,
+  },
+  faqButtonText: {
+    fontSize: 12,
+    color: '#2563EB',
+    fontWeight: '500',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 16,
+    gap: 16,
+    width: '100%',
   },
   skipButton: {
-    flex: 1,
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderRadius: 12,
-    backgroundColor: '#F9FAFB',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
   skipButtonText: {
-    color: '#6B7280',
     fontSize: 16,
-    fontWeight: '600',
+    color: '#6B7280',
+    fontWeight: '500',
   },
   nextButton: {
-    flex: 2,
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderRadius: 12,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 6,
   },
   nextButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
+    color: '#FFFFFF',
     fontWeight: '600',
   },
 });

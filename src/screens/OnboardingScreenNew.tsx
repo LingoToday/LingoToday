@@ -9,6 +9,8 @@ import {
   ScrollView,
   StatusBar,
   Alert as RNAlert,
+  KeyboardAvoidingView, // ADD THIS
+  Platform, // ADD THIS
 } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -21,6 +23,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import Constants from 'expo-constants';
 import { Alert, AlertDescription } from '../components/ui/Alert';
 
 // Import Stripe for React Native
@@ -78,7 +81,7 @@ const learningStyles = [
 ];
 
 // Stripe publishable key - should be in environment variables
-const STRIPE_PUBLISHABLE_KEY = process.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_your_key_here';
+const STRIPE_PUBLISHABLE_KEY = Constants.expoConfig?.extra?.stripePublishableKey;
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
@@ -244,6 +247,28 @@ export default function OnboardingScreen() {
       try {
         await apiClient.login(registerData.email, registerData.password);
         
+        // ADDED: Now save notification settings to database after user is created and logged in
+        try {
+          console.log('💾 Saving notification settings after user creation...');
+          
+          const settingsResponse = await apiClient.updateUserSettings({
+            notificationsEnabled: notificationsEnabled,
+            notificationFrequency: 15,
+            notificationStartTime: '09:00',
+            notificationEndTime: '18:00',
+            language: selectedLanguage,
+            theme: 'light',
+            soundEnabled: true,
+            difficultyLevel: selectedLevel,
+          });
+          
+          console.log('✅ Notification settings saved successfully:', settingsResponse);
+          
+        } catch (settingsError) {
+          console.error('❌ Error saving notification settings (non-critical):', settingsError);
+          // Don't fail registration if settings save fails
+        }
+        
         // Clear temporary AsyncStorage and save final preferences
         const finalData = {
           language: selectedLanguage,
@@ -254,6 +279,7 @@ export default function OnboardingScreen() {
         };
         await AsyncStorage.setItem('lingoToday_onboarding', JSON.stringify(finalData));
         await AsyncStorage.removeItem('lingoToday_onboarding_temp');
+        
         // Auto-advance to next screen immediately
         nextScreen();
       } catch (loginError) {
@@ -340,13 +366,49 @@ export default function OnboardingScreen() {
       case 6:
         return (
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
-            <PaymentScreen onSuccess={() => navigation.navigate('Dashboard' as never)} />
+            <PaymentScreen onSuccess={handlePaymentSuccess} />
           </StripeProvider>
         );
       default:
         return null;
     }
   };
+
+  // Add this function in the OnboardingScreen component, after the other handler functions:
+const handlePaymentSuccess = async () => {
+  try {
+    // Mark onboarding as completed and save final preferences
+    const finalData = {
+      language: selectedLanguage,
+      level: selectedLevel,
+      learningStyle: selectedLearningStyle,
+      notifications: notificationsEnabled,
+      completedOnboarding: true
+    };
+    
+    await AsyncStorage.setItem('lingoToday_onboarding', JSON.stringify(finalData));
+    await AsyncStorage.removeItem('lingoToday_onboarding_temp');
+    
+    // Update auth context to refresh the app state
+    if (authContext?.refreshAuth) {
+      await authContext.refreshAuth();
+    }
+    
+    // The navigation will be handled automatically by AppNavigator 
+    // when auth state updates and user has completedOnboarding
+    console.log('✅ Onboarding completed, payment successful');
+    
+  } catch (error) {
+    console.error('Error completing onboarding:', error);
+    // Fallback: try to navigate directly if auth context refresh fails
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' as never }],
+      });
+    }, 1000);
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -368,18 +430,23 @@ export default function OnboardingScreen() {
             </Text>
           </View>
 
-          {/* Screen container with slide animation - matching web */}
-          <View style={[
-            styles.screenContainer,
-            isTransitioning && styles.screenTransitioning
-          ]}>
-            <ScrollView 
-              contentContainerStyle={styles.scrollContent}
-              showsVerticalScrollIndicator={false}
-            >
+          {/* FIXED: Handle payment screen separately */}
+          {currentScreen === 6 ? (
+            // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
+            <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
-            </ScrollView>
-          </View>
+            </View>
+          ) : (
+            // All other screens - use original ScrollView wrapper
+            <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
+              <ScrollView 
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+              >
+                {renderScreen()}
+              </ScrollView>
+            </View>
+          )}
 
           {/* Continue button - hide on registration, payment, and learning plan screens - matching web logic */}
           {currentScreen < 6 && currentScreen !== 3 && currentScreen !== 5 && (
@@ -673,10 +740,41 @@ const NotificationScreen = ({
   onRequestPermission: () => Promise<boolean>;
 }) => {
   const [hasRequested, setHasRequested] = useState(false);
+  const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
   
   const handleEnableNotifications = async () => {
-    setHasRequested(true);
-    await onRequestPermission();
+    try {
+      setHasRequested(true);
+      setIsUpdatingSettings(true);
+      
+      // First request device permission
+      const permissionGranted = await onRequestPermission();
+      
+      // DON'T update database settings here - user doesn't exist yet
+      // Settings will be saved during registration step
+      console.log('✅ Notification permission granted:', permissionGranted);
+      
+    } catch (error) {
+      console.error('❌ Error enabling notifications:', error);
+    } finally {
+      setIsUpdatingSettings(false);
+    }
+  };
+
+  const handleSkipNotifications = async () => {
+    try {
+      setHasRequested(true);
+      setIsUpdatingSettings(true);
+      
+      // DON'T update database settings here - user doesn't exist yet
+      // Settings will be saved during registration step
+      console.log('✅ Notifications skipped');
+      
+    } catch (error) {
+      console.error('❌ Error skipping notifications:', error);
+    } finally {
+      setIsUpdatingSettings(false);
+    }
   };
 
   if (hasRequested) {
@@ -700,6 +798,13 @@ const NotificationScreen = ({
             ? "We'll send gentle reminders to keep you on track." 
             : "You can always enable notifications later in settings."}
         </Text>
+        
+        {isUpdatingSettings && (
+          <View style={styles.loadingContainer}>
+            <Ionicons name="hourglass" size={20} color="#6366f1" />
+            <Text style={styles.loadingText}>Saving preferences...</Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -719,9 +824,22 @@ const NotificationScreen = ({
       <View style={styles.notificationButtonContainer}>
         <Button
           onPress={handleEnableNotifications}
-          style={styles.notificationButton}
+          disabled={isUpdatingSettings}
+          style={[styles.notificationButton, isUpdatingSettings && styles.notificationButtonDisabled]}
         >
-          <Text style={styles.notificationButtonText}>Enable Notifications</Text>
+          <Text style={[styles.notificationButtonText, isUpdatingSettings && styles.notificationButtonTextDisabled]}>
+            {isUpdatingSettings ? 'Setting up...' : 'Enable Notifications'}
+          </Text>
+        </Button>
+        
+        <Button
+          onPress={handleSkipNotifications}
+          disabled={isUpdatingSettings}
+          style={[styles.notificationSkipButton, isUpdatingSettings && styles.notificationButtonDisabled]}
+        >
+          <Text style={[styles.notificationSkipButtonText, isUpdatingSettings && styles.notificationButtonTextDisabled]}>
+            {isUpdatingSettings ? 'Please wait...' : 'Skip for now'}
+          </Text>
         </Button>
       </View>
     </View>
@@ -856,7 +974,7 @@ const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
       await apiClient.getCurrentUser();
 
       // Create subscription with payment intent using apiClient
-      const { clientSecret } = await apiClient.createSubscription('price_1QEgdmAjBOdJlg0mMNGqgHkh') as { clientSecret: string };
+      const { clientSecret } = await apiClient.createSubscription() as { clientSecret: string };
 
       // Confirm payment using Stripe React Native
       const { error } = await confirmPayment(clientSecret, {
@@ -919,38 +1037,46 @@ const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <View style={styles.stripeFormContainer}>
+      {/* FIXED: Better card field container with improved spacing */}
       <View style={styles.cardFieldContainer}>
-        <CardField
-          postalCodeEnabled={false}
-          placeholders={{
-            number: '4242 4242 4242 4242',
-          }}
-          cardStyle={styles.cardFieldStyle}
-          style={styles.cardField}
-          onCardChange={(cardDetails) => {
-            setCardComplete(cardDetails.complete);
-          }}
-        />
+        <Text style={styles.cardFieldLabel}>Card Details</Text>
+        <View style={styles.cardFieldWrapper}>
+          <CardField
+            postalCodeEnabled={false}
+            placeholders={{
+              number: '4242 4242 4242 4242',
+            }}
+            cardStyle={styles.cardFieldStyle}
+            style={styles.cardField}
+            onCardChange={(cardDetails) => {
+              setCardComplete(cardDetails.complete);
+              console.log('Card details:', cardDetails);
+            }}
+          />
+        </View>
       </View>
       
-      <Button
-        onPress={handleSubmit}
-        disabled={!cardComplete || isProcessing}
-        style={[
-          styles.stripeSubmitButton,
-          (!cardComplete || isProcessing) && styles.stripeSubmitButtonDisabled
-        ]}
-      >
-        <View style={styles.stripeButtonContent}>
-          {isProcessing && <Ionicons name="hourglass" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />}
-          <Text style={[
-            styles.stripeSubmitButtonText,
-            (!cardComplete || isProcessing) && styles.stripeSubmitButtonTextDisabled
-          ]}>
-            {getButtonText()}
-          </Text>
-        </View>
-      </Button>
+      {/* FIXED: Button with more spacing */}
+      <View style={styles.stripeButtonContainer}>
+        <Button
+          onPress={handleSubmit}
+          disabled={!cardComplete || isProcessing}
+          style={[
+            styles.stripeSubmitButton,
+            (!cardComplete || isProcessing) && styles.stripeSubmitButtonDisabled
+          ]}
+        >
+          <View style={styles.stripeButtonContent}>
+            {isProcessing && <Ionicons name="hourglass" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />}
+            <Text style={[
+              styles.stripeSubmitButtonText,
+              (!cardComplete || isProcessing) && styles.stripeSubmitButtonTextDisabled
+            ]}>
+              {getButtonText()}
+            </Text>
+          </View>
+        </Button>
+      </View>
       
       <Text style={styles.stripeTermsText}>
         By continuing, you agree to our Terms of Service and Privacy Policy.
@@ -1031,38 +1157,53 @@ const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
     );
   }
   
+  // FIXED: Wrap payment content in KeyboardAvoidingView with proper scrolling
   return (
-    <View style={[styles.screenContent, { maxWidth: 384 }]}>
-      <Text style={styles.screenTitle}>
-        Complete Your Subscription
-      </Text>
-      <Text style={styles.screenSubtitle}>
-        Start your 5-day free trial now
-      </Text>
-      
-      <View style={styles.paymentPlanCard}>
-        <View style={styles.paymentPlanHeader}>
-          <Text style={styles.paymentPlanTitle}>💎 Pro Learner</Text>
-          <Text style={styles.paymentPlanTrial}>5-Day Free Trial</Text>
-          <Text style={styles.paymentPlanPrice}>£2.49/month</Text>
-          <Text style={styles.paymentPlanCancel}>Cancel anytime</Text>
+    <KeyboardAvoidingView 
+      style={styles.paymentKeyboardContainer}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.paymentScrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        scrollEnabled={true}
+        bounces={false}
+      >
+        <View style={styles.paymentScreenContent}>
+          <Text style={styles.screenTitle}>
+            Complete Your Subscription
+          </Text>
+          <Text style={styles.screenSubtitle}>
+            Start your 5-day free trial now
+          </Text>
+          
+          <View style={styles.paymentPlanCard}>
+            <View style={styles.paymentPlanHeader}>
+              <Text style={styles.paymentPlanTitle}>💎 Pro Learner</Text>
+              <Text style={styles.paymentPlanTrial}>5-Day Free Trial</Text>
+              <Text style={styles.paymentPlanPrice}>£2.49/month</Text>
+              <Text style={styles.paymentPlanCancel}>Cancel anytime</Text>
+            </View>
+            
+            <View style={styles.paymentPlanFeatures}>
+              {[
+                '• Full access to all languages',
+                '• Unlimited lessons and practice',
+                '• Progress tracking and analytics',
+                '• Premium video content',
+                '• Mobile and desktop sync'
+              ].map((feature, index) => (
+                <Text key={index} style={styles.paymentPlanFeature}>{feature}</Text>
+              ))}
+            </View>
+          </View>
+          
+          <StripePaymentForm onSuccess={handleSuccess} />
         </View>
-        
-        <View style={styles.paymentPlanFeatures}>
-          {[
-            '• Full access to all languages',
-            '• Unlimited lessons and practice',
-            '• Progress tracking and analytics',
-            '• Premium video content',
-            '• Mobile and desktop sync'
-          ].map((feature, index) => (
-            <Text key={index} style={styles.paymentPlanFeature}>{feature}</Text>
-          ))}
-        </View>
-      </View>
-      
-      <StripePaymentForm onSuccess={handleSuccess} />
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -1439,6 +1580,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  notificationButtonDisabled: {
+    opacity: 0.5,
+  },
+  notificationButtonTextDisabled: {
+    color: '#9CA3AF',
+  },
+  notificationSkipButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#6366f1',
+    borderRadius: 9999,
+    width: '100%',
+  },
+  notificationSkipButtonText: {
+    color: '#6366f1',
+    fontSize: 18,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
 
   // Learning Plan Screen
   timelineCard: {
@@ -1618,6 +1778,22 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
+  cardFieldLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  cardFieldWrapper: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  stripeButtonContainer: {
+    marginTop: 8,
+  },
   cardField: {
     width: '100%',
     height: 50,
@@ -1657,5 +1833,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     textAlign: 'center',
+  },
+  
+  // FIXED: New styles for payment screen keyboard avoiding view and scroll
+  paymentKeyboardContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  paymentScrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+    paddingTop: 24,
+  },
+  paymentScreenContent: {
+    flex: 1,
+    maxWidth: 384,
+    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: 16,
   },
 });

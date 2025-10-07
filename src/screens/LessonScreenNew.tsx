@@ -16,6 +16,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
+import * as Speech from 'expo-speech'; // FIXED: Added proper speech import
 import * as SecureStore from 'expo-secure-store';
 
 import { theme } from '../lib/theme';
@@ -27,9 +28,9 @@ import { Progress } from '../components/ui/Progress';
 import { Badge } from '../components/ui/Badge';
 import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
-import LessonModal from '../components/LessonModal';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const isTablet = screenWidth >= 768;
 
 type RootStackParamList = {
   Lesson: {
@@ -289,296 +290,346 @@ export default function LessonScreen() {
 
   // Get current step data - matching web logic exactly
   const getCurrentStepData = () => {
-    if (!currentLesson?.lesson) return null;
-    
-    // Handle IRL video lessons
-    const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
-    if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
-      return {
-        type: 'irl_video',
-        videoUrl: firstStep.content.videoUrl || '',
-        prompt: firstStep.content.word || '',
-        answerPrompt: firstStep.content.answerPrompt || '',
-        expectedAnswers: firstStep.content.expectedAnswers || []
-      };
-    }
-    
-    // Handle locally stored IRL lessons
-    if (currentLesson.isIRLLesson) {
-      return {
-        type: 'irl_video',
-        videoUrl: currentLesson.content?.videoUrl || '',
-        prompt: currentLesson.content?.word || '',
-        answerPrompt: currentLesson.content?.answerPrompt || '',
-        expectedAnswers: currentLesson.content?.expectedAnswers || []
-      };
-    }
-
-    // Normalize legacy lesson format (step1, step2, step3, step4) to steps[] array
-    if (!currentLesson.lesson?.steps && currentLesson.lesson?.step1) {
-      console.log('🔄 Normalizing legacy 4-step format to steps[]');
-      const normalizedSteps = [];
+    try {
+      if (!currentLesson?.lesson) return null;
       
-      for (let i = 1; i <= 4; i++) {
-        const stepKey = `step${i}` as keyof typeof currentLesson.lesson;
-        const stepData = currentLesson.lesson[stepKey];
-        if (stepData) {
-          let stepType = 'unknown';
-          let content = stepData;
+      // Handle IRL video lessons
+      const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
+      if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
+        return {
+          type: 'irl_video',
+          videoUrl: firstStep.content.videoUrl || '',
+          prompt: firstStep.content.word || '',
+          answerPrompt: firstStep.content.answerPrompt || '',
+          expectedAnswers: firstStep.content.expectedAnswers || []
+        };
+      }
+      
+      // Handle locally stored IRL lessons
+      if (currentLesson.isIRLLesson) {
+        return {
+          type: 'irl_video',
+          videoUrl: currentLesson.content?.videoUrl || '',
+          prompt: currentLesson.content?.word || '',
+          answerPrompt: currentLesson.content?.answerPrompt || '',
+          expectedAnswers: currentLesson.content?.expectedAnswers || []
+        };
+      }
+
+      // Normalize legacy lesson format (step1, step2, step3, step4) to steps[] array
+      if (!currentLesson.lesson?.steps && currentLesson.lesson?.step1) {
+        console.log('🔄 Normalizing legacy 4-step format to steps[]');
+        const normalizedSteps = [];
+        
+        for (let i = 1; i <= 4; i++) {
+          const stepKey = `step${i}` as keyof typeof currentLesson.lesson;
+          const stepData = currentLesson.lesson[stepKey];
+          if (stepData) {
+            let stepType = 'unknown';
+            let content = stepData;
+            
+            if (stepData.type) {
+              if (stepData.type === 'video_choice') {
+                stepType = 'video_choice';
+              } else if (stepData.type === 'video') {
+                stepType = 'pro_video';
+                content = {
+                  video_url: stepData.video_url || '',
+                  prompt: stepData.prompt || '',
+                  answer_prompt: stepData.answer_prompt || '',
+                  expected_answers: stepData.expected_answers || [],
+                  requiredTier: stepData.requiredTier || ['pro']
+                };
+              }
+            } else {
+              if (stepData.italian && stepData.english) {
+                stepType = 'word_review';
+              } else if (stepData.type_prompt || stepData.expectedAnswer) {
+                stepType = 'typing';
+              } else if (stepData.audio_sentence || stepData.options) {
+                stepType = 'comprehension';
+              }
+            }
+            
+            normalizedSteps.push({
+              stepNumber: i,
+              stepType: stepType,
+              content: content
+            });
+          }
+        }
+        
+        currentLesson.lesson.steps = normalizedSteps;
+      }
+
+      // Handle API lessons with steps object (object with named keys)
+      if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+        const stepMapping = {
+          1: 'word_review',
+          2: 'typing', 
+          3: 'comprehension',
+          4: 'pro_video'
+        };
+        const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+        
+        if (stepName && currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps]) {
+          const stepData = currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps];
           
-          if (stepData.type) {
-            if (stepData.type === 'video_choice') {
-              stepType = 'video_choice';
-            } else if (stepData.type === 'video') {
-              stepType = 'pro_video';
-              content = {
-                video_url: stepData.video_url || '',
-                prompt: stepData.prompt || '',
-                answer_prompt: stepData.answer_prompt || '',
-                expected_answers: stepData.expected_answers || [],
-                requiredTier: stepData.requiredTier || ['pro']
-              };
+          if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
+            const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
+            const userTier = userData?.priceTier || 'free';
+            
+            const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+            
+            const videoUrl = stepData.content?.video_url || stepData.video_url || '';
+            const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
+            
+            return {
+              type: 'pro_video',
+              videoUrl: normalizeAssetUrl(fallbackVideoUrl),
+              prompt: stepData.content?.prompt || stepData.prompt || '',
+              answerPrompt: stepData.content?.answer_prompt || stepData.answer_prompt || '',
+              expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
+              hasAccess,
+              requiredTier
+            };
+          }
+        }
+      }
+
+      // Handle API lessons with steps array (new structure from database)
+      if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
+        const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
+        
+        if (currentStepData) {
+          // Handle video_choice step type (gender-based videos)
+          if (currentStepData.stepType === 'video_choice') {
+            const userFirstName = userData?.firstName || '';
+            const detectedGender = detectGender(userFirstName);
+            
+            const options = currentStepData.content.options || [];
+            let selectedOption: any = null;
+            
+            if (detectedGender === 'male') {
+              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'male');
+            } else if (detectedGender === 'female') {
+              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
             }
-          } else {
-            if (stepData.italian && stepData.english) {
-              stepType = 'word_review';
-            } else if (stepData.type_prompt || stepData.expectedAnswer) {
-              stepType = 'typing';
-            } else if (stepData.audio_sentence || stepData.options) {
-              stepType = 'comprehension';
+            
+            if (!selectedOption) {
+              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
             }
+            
+            const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
+            
+            return {
+              type: 'video_choice',
+              videoUrl: videoUrl,
+              prompt: currentStepData.content.prompt || '',
+              answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
+              expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
+              tier: 'free',
+              selectedGender: detectedGender
+            };
           }
           
-          normalizedSteps.push({
-            stepNumber: i,
-            stepType: stepType,
-            content: content
-          });
+          // Handle pro_video step type
+          if (currentStepData.stepType === 'pro_video') {
+            const requiredTier = currentStepData.content.requiredTier || [];
+            const userTier = userData?.priceTier || 'free';
+            
+            const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+            
+            return {
+              type: 'pro_video',
+              videoUrl: normalizeAssetUrl(currentStepData.content.video_url || ''),
+              prompt: currentStepData.content.prompt || '',
+              answerPrompt: currentStepData.content.answer_prompt || '',
+              expectedAnswers: currentStepData.content.expected_answers || [],
+              hasAccess,
+              requiredTier
+            };
+          }
+          
+          // Handle other API step types
+          if (currentStepData.stepType === 'word_review') {
+            return {
+              type: 'word_review',
+              word: currentStepData.content.italian || '',
+              translation: currentStepData.content.english || '',
+              audio: currentStepData.content.audio || '',
+              note: currentStepData.content.note || ''
+            };
+          }
+          
+          if (currentStepData.stepType === 'quick_check') {
+            return {
+              type: 'quick_check',
+              question: currentStepData.content.mcq?.question || '',
+              options: currentStepData.content.mcq?.options || [],
+              answer: currentStepData.content.mcq?.answer || ''
+            };
+          }
+          
+          if (currentStepData.stepType === 'typing') {
+            return {
+              type: 'type',
+              prompt: currentStepData.content.type_prompt || '',
+              expected: currentStepData.content.expected_answer || '',
+              alternatives: currentStepData.content.alt_answers || []
+            };
+          }
+          
+          if (currentStepData.stepType === 'comprehension') {
+            return {
+              type: 'audio',
+              audioSentence: currentStepData.content.audio_sentence || '',
+              options: currentStepData.content.options || [],
+              answer: currentStepData.content.answer || ''
+            };
+          }
         }
       }
       
-      currentLesson.lesson.steps = normalizedSteps;
-    }
-
-    // Handle API lessons with steps object (object with named keys)
-    if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
-      const stepMapping = {
-        1: 'word_review',
-        2: 'typing', 
-        3: 'comprehension',
-        4: 'pro_video'
-      };
-      const stepName = stepMapping[currentStep as keyof typeof stepMapping];
-      
-      if (stepName && currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps]) {
-        const stepData = currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps];
-        
-        if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
-          const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
-          const userTier = userData?.priceTier || 'free';
-          
-          const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
-          
-          const videoUrl = stepData.content?.video_url || stepData.video_url || '';
-          const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
-          
+      // Handle review lessons (MCQ format)
+      if (currentLesson.lesson.mode === 'mcq' && currentLesson.lesson.questions) {
+        const questions = currentLesson.lesson.questions;
+        if (currentStep <= questions.length) {
+          const currentQuestion = questions[currentStep - 1];
           return {
-            type: 'pro_video',
-            videoUrl: normalizeAssetUrl(fallbackVideoUrl),
-            prompt: stepData.content?.prompt || stepData.prompt || '',
-            answerPrompt: stepData.content?.answer_prompt || stepData.answer_prompt || '',
-            expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
-            hasAccess,
-            requiredTier
+            type: 'review_mcq',
+            question: currentQuestion.prompt,
+            options: currentQuestion.options || [],
+            answer: currentQuestion.answer,
+            isReview: true,
+            totalQuestions: questions.length,
+            currentQuestion: currentStep
           };
         }
+        return null;
       }
-    }
-
-    // Handle API lessons with steps array (new structure from database)
-    if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
-      const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
       
-      if (currentStepData) {
-        // Handle video_choice step type (gender-based videos)
-        if (currentStepData.stepType === 'video_choice') {
-          const userFirstName = userData?.firstName || '';
-          const detectedGender = detectGender(userFirstName);
-          
-          const options = currentStepData.content.options || [];
-          let selectedOption: any = null;
-          
-          if (detectedGender === 'male') {
-            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'male');
-          } else if (detectedGender === 'female') {
-            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
-          }
-          
-          if (!selectedOption) {
-            selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
-          }
-          
-          const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
-          
-          return {
-            type: 'video_choice',
-            videoUrl: videoUrl,
-            prompt: currentStepData.content.prompt || '',
-            answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
-            expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
-            tier: 'free',
-            selectedGender: detectedGender
-          };
-        }
-        
-        // Handle pro_video step type
-        if (currentStepData.stepType === 'pro_video') {
-          const requiredTier = currentStepData.content.requiredTier || [];
-          const userTier = userData?.priceTier || 'free';
-          
-          const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
-          
-          return {
-            type: 'pro_video',
-            videoUrl: normalizeAssetUrl(currentStepData.content.video_url || ''),
-            prompt: currentStepData.content.prompt || '',
-            answerPrompt: currentStepData.content.answer_prompt || '',
-            expectedAnswers: currentStepData.content.expected_answers || [],
-            hasAccess,
-            requiredTier
-          };
-        }
-        
-        // Handle other API step types
-        if (currentStepData.stepType === 'word_review') {
+      // Handle new lesson format (with content and quiz properties) - 4 steps
+      if (currentLesson.lesson.content && currentLesson.lesson.quiz) {
+        if (currentStep === 1) {
           return {
             type: 'word_review',
-            word: currentStepData.content.italian || '',
-            translation: currentStepData.content.english || '',
-            audio: currentStepData.content.audio || '',
-            note: currentStepData.content.note || ''
+            word: currentLesson.lesson.content.word || '',
+            translation: currentLesson.lesson.content.translation || '',
+            audio: currentLesson.lesson.content.audio || '',
+            note: currentLesson.lesson.content.note || ''
           };
-        }
-        
-        if (currentStepData.stepType === 'quick_check') {
+        } else if (currentStep === 2) {
           return {
             type: 'quick_check',
-            question: currentStepData.content.mcq?.question || '',
-            options: currentStepData.content.mcq?.options || [],
-            answer: currentStepData.content.mcq?.answer || ''
+            question: currentLesson.lesson.quiz.question || '',
+            options: currentLesson.lesson.quiz.options || [],
+            answer: currentLesson.lesson.quiz.options?.[currentLesson.lesson.quiz.correct] || ''
           };
-        }
-        
-        if (currentStepData.stepType === 'typing') {
+        } else if (currentStep === 3) {
+          const word = currentLesson.lesson.content.word || '';
+          const translation = currentLesson.lesson.content.translation || '';
+          
+          // FIXED: Safer generateFillInText function with bounds checking
+          const generateFillInText = (word: string) => {
+            if (!word || word.length === 0) return '___'; // Handle empty words
+            
+            if (word.includes(' ')) {
+              const parts = word.split(' ');
+              const firstPart = parts[0] || '';
+              const remainingLength = Math.max(0, word.length - firstPart.length); // Ensure non-negative
+              return firstPart + "_".repeat(remainingLength);
+            }
+            
+            if (word.length <= 3) {
+              const repeatCount = Math.max(0, word.length - 1); // Ensure non-negative
+              return word.charAt(0) + "_".repeat(repeatCount);
+            }
+            
+            const repeatCount = Math.max(0, word.length - 2); // Ensure non-negative
+            return word.substring(0, 2) + "_".repeat(repeatCount);
+          };
+          
+          // FIXED: Safer getMissingLetters function with bounds checking
+          const getMissingLetters = (word: string) => {
+            if (!word || word.length === 0) return ''; // Handle empty words
+            
+            if (word.includes(' ')) {
+              const firstSpaceIndex = word.indexOf(' ');
+              if (firstSpaceIndex === -1 || firstSpaceIndex >= word.length - 1) {
+                return ''; // Handle edge cases
+              }
+              return word.substring(firstSpaceIndex + 1);
+            }
+            
+            if (word.length <= 3) {
+              return word.length > 1 ? word.substring(1) : ''; // Ensure we have characters to return
+            }
+            
+            return word.length > 2 ? word.substring(2) : ''; // Ensure we have characters to return
+          };
+          
+          // FIXED: Add validation before using the functions
+          const fillInPrompt = generateFillInText(word);
+          const missingLetters = getMissingLetters(word);
+          
+          // Add debug logging to help identify issues
+          console.log('Step 3 Debug:', {
+            word,
+            translation,
+            wordLength: word.length,
+            fillInPrompt,
+            missingLetters,
+            missingLettersLength: missingLetters.length
+          });
+          
           return {
             type: 'type',
-            prompt: currentStepData.content.type_prompt || '',
-            expected: currentStepData.content.expected_answer || '',
-            alternatives: currentStepData.content.alt_answers || []
+            prompt: `${fillInPrompt} = ${translation}`,
+            expected: missingLetters,
+            alternatives: [
+              missingLetters.toLowerCase(), 
+              missingLetters.toUpperCase(),
+              missingLetters.trim() // Add trimmed version as alternative
+            ].filter(alt => alt.length > 0) // Remove empty alternatives
           };
-        }
-        
-        if (currentStepData.stepType === 'comprehension') {
+        } else if (currentStep === 4) {
+          const step3Data = currentLesson.lesson.step3;
+          if (step3Data) {
+            return {
+              type: 'audio',
+              audioSentence: step3Data.audio_sentence || '',
+              options: step3Data.options || [],
+              answer: step3Data.answer || (step3Data.options && step3Data.options[0]) || ''
+            };
+          }
+          
+          const word = currentLesson.lesson.content.word || '';
+          const translation = currentLesson.lesson.content.translation || '';
           return {
             type: 'audio',
-            audioSentence: currentStepData.content.audio_sentence || '',
-            options: currentStepData.content.options || [],
-            answer: currentStepData.content.answer || ''
+            audioSentence: word,
+            options: [translation, 'Hello!', 'Goodbye!', 'Good night!'],
+            answer: translation
           };
         }
+        return null;
       }
-    }
-    
-    // Handle review lessons (MCQ format)
-    if (currentLesson.lesson.mode === 'mcq' && currentLesson.lesson.questions) {
-      const questions = currentLesson.lesson.questions;
-      if (currentStep <= questions.length) {
-        const currentQuestion = questions[currentStep - 1];
-        return {
-          type: 'review_mcq',
-          question: currentQuestion.prompt,
-          options: currentQuestion.options || [],
-          answer: currentQuestion.answer,
-          isReview: true,
-          totalQuestions: questions.length,
-          currentQuestion: currentStep
-        };
-      }
+      
       return null;
+    } catch (error) {
+      console.error('❌ Error in getCurrentStepData:', error);
+      console.error('Current lesson data:', currentLesson);
+      console.error('Current step:', currentStep);
+      
+      // Return a fallback step data to prevent crashes
+      return {
+        type: 'error',
+        prompt: 'An error occurred loading this step.',
+        expected: '',
+        alternatives: []
+      };
     }
-    
-    // Handle new lesson format (with content and quiz properties) - 4 steps
-    if (currentLesson.lesson.content && currentLesson.lesson.quiz) {
-      if (currentStep === 1) {
-        return {
-          type: 'word_review',
-          word: currentLesson.lesson.content.word || '',
-          translation: currentLesson.lesson.content.translation || '',
-          audio: currentLesson.lesson.content.audio || '',
-          note: currentLesson.lesson.content.note || ''
-        };
-      } else if (currentStep === 2) {
-        return {
-          type: 'quick_check',
-          question: currentLesson.lesson.quiz.question || '',
-          options: currentLesson.lesson.quiz.options || [],
-          answer: currentLesson.lesson.quiz.options?.[currentLesson.lesson.quiz.correct] || ''
-        };
-      } else if (currentStep === 3) {
-        const word = currentLesson.lesson.content.word || '';
-        const translation = currentLesson.lesson.content.translation || '';
-        
-        const generateFillInText = (word: string) => {
-          if (word.includes(' ')) {
-            const parts = word.split(' ');
-            return parts[0] + "_".repeat(word.length - parts[0].length);
-          }
-          if (word.length <= 3) return word.charAt(0) + "_".repeat(word.length - 1);
-          return word.substring(0, 2) + "_".repeat(word.length - 2);
-        };
-        
-        const getMissingLetters = (word: string) => {
-          if (word.includes(' ')) {
-            const firstSpaceIndex = word.indexOf(' ');
-            return word.substring(firstSpaceIndex + 1);
-          }
-          if (word.length <= 3) return word.substring(1);
-          return word.substring(2);
-        };
-        
-        const fillInPrompt = generateFillInText(word);
-        const missingLetters = getMissingLetters(word);
-        
-        return {
-          type: 'type',
-          prompt: `${fillInPrompt} = ${translation}`,
-          expected: missingLetters,
-          alternatives: [missingLetters.toLowerCase(), missingLetters.toUpperCase()]
-        };
-      } else if (currentStep === 4) {
-        const step3Data = currentLesson.lesson.step3;
-        if (step3Data) {
-          return {
-            type: 'audio',
-            audioSentence: step3Data.audio_sentence || '',
-            options: step3Data.options || [],
-            answer: step3Data.answer || (step3Data.options && step3Data.options[0]) || ''
-          };
-        }
-        
-        const word = currentLesson.lesson.content.word || '';
-        const translation = currentLesson.lesson.content.translation || '';
-        return {
-          type: 'audio',
-          audioSentence: word,
-          options: [translation, 'Hello!', 'Goodbye!', 'Good night!'],
-          answer: translation
-        };
-      }
-      return null;
-    }
-    
-    return null;
   };
 
   const stepData = getCurrentStepData();
@@ -761,14 +812,31 @@ export default function LessonScreen() {
     }
   };
 
-  // Text-to-speech function
+  // FIXED: Text-to-speech function using expo-speech
   const speakText = async (text: string) => {
     try {
-      // For now, we'll use a simple alert to indicate TTS would work
-      // In a production app, you'd use expo-speech
-      console.log('Speaking:', text);
+      // Stop any current speech
+      await Speech.stop();
+      
+      // Determine language for TTS
+      const languageCode = language === 'spanish' ? 'es' : 
+                          language === 'french' ? 'fr' :
+                          language === 'italian' ? 'it' :
+                          language === 'german' ? 'de' : 'en';
+      
+      // Speak the text
+      await Speech.speak(text, {
+        language: languageCode,
+        pitch: 1.0,
+        rate: 0.8, // Slightly slower for learning
+        volume: 1.0,
+      });
+      
+      console.log('🔊 Speaking:', text, 'in language:', languageCode);
     } catch (error) {
-      console.error('TTS error:', error);
+      console.error('❌ TTS error:', error);
+      // Fallback alert for debugging
+      Alert.alert('Audio', `Would speak: "${text}"`);
     }
   };
 
@@ -817,16 +885,16 @@ export default function LessonScreen() {
               <View style={styles.videoContainer}>
                 <Video
                   style={styles.video}
-                  source={{
-                    uri: courseId === 'course1' ? '/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4' :
-                         courseId === 'course2' ? '/attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV' :
-                         courseId === 'course3' ? '/attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV' :
-                         '/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4'
-                  }}
+                  source={
+                    courseId === 'course1' ? require('../attached_assets/Italian_beginner_course1_intro_1757082612339.MP4') :
+                    courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
+                    courseId === 'course3' ? require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV') :
+                    require('../attached_assets/Italian_beginner_course1_intro_1757082612339.MP4')
+                  }
                   useNativeControls
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay={true}
-                  isMuted={true}
+                  isMuted={false}
                 />
               </View>
               
@@ -840,19 +908,22 @@ export default function LessonScreen() {
         </ScrollView>
       )}
       
-      {/* Header - Hide when showing intro video */}
+      {/* FIXED: Improved Header - Hide when showing intro video */}
       {!showIntroVideo && (
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
+            <Ionicons name="arrow-back" size={20} color={theme.colors.foreground} />
+            <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
           
           <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>{currentLesson?.lesson?.title || 'Lesson'}</Text>
-            <Text style={styles.headerSubtitle}>
+            <Text style={styles.headerTitle} numberOfLines={1} adjustsFontSizeToFit>
+              {currentLesson?.lesson?.title || 'Lesson'}
+            </Text>
+            <Text style={styles.headerSubtitle} numberOfLines={1}>
               {courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}
             </Text>
             {stepData?.isReview ? (
@@ -990,23 +1061,27 @@ export default function LessonScreen() {
                 </>
               )}
 
-              {/* Word Review Step */}
+              {/* FIXED: Word Review Step with improved audio button */}
               {stepData && stepData.type === 'word_review' && (
                 <>
                   <View style={styles.wordReviewContainer}>
+                    <Text style={styles.lessonEmoji}>👋</Text>
+                    <Text style={styles.wordText}>{stepData.word}</Text>
+                    <Text style={styles.translationText}>{stepData.translation}</Text>
+                    
                     <TouchableOpacity 
                       style={styles.speakButton}
                       onPress={() => speakText(stepData.word)}
+                      activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={32} color={theme.colors.primary} />
+                      <Ionicons name="volume-high" size={24} color="#ffffff" />
+                      <Text style={styles.speakButtonText}>Listen</Text>
                     </TouchableOpacity>
-                    
-                    <Text style={styles.wordText}>{stepData.word}</Text>
-                    <Text style={styles.translationText}>{stepData.translation}</Text>
                   </View>
                   
                   {stepData.note && (
                     <View style={styles.noteContainer}>
+                      <Text style={styles.noteTitle}>Usage Note</Text>
                       <Text style={styles.noteText}>{stepData.note}</Text>
                     </View>
                   )}
@@ -1017,6 +1092,7 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'quick_check' && (
                 <>
                   <View style={styles.stepHeader}>
+                    <Text style={styles.stepTitle}>🎯 Quick Check</Text>
                     <Text style={styles.questionText}>{stepData.question}</Text>
                   </View>
 
@@ -1027,6 +1103,8 @@ export default function LessonScreen() {
                         style={[
                           styles.optionButton,
                           selectedAnswer === option && styles.selectedOption,
+                          showResult && option === stepData.answer && styles.correctOption,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
                         ]}
                         onPress={() => !showResult && setSelectedAnswer(option)}
                         disabled={showResult}
@@ -1034,8 +1112,10 @@ export default function LessonScreen() {
                         <Text style={[
                           styles.optionText,
                           selectedAnswer === option && styles.selectedOptionText,
+                          showResult && option === stepData.answer && styles.correctOptionText,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
                         ]}>
-                          {option}
+                          {option} {showResult && option === stepData.answer && '✅'}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -1047,6 +1127,7 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'review_mcq' && (
                 <>
                   <View style={styles.stepHeader}>
+                    <Text style={styles.stepTitle}>🔄 Review Question</Text>
                     <Text style={styles.questionText}>{stepData.question}</Text>
                   </View>
 
@@ -1057,6 +1138,8 @@ export default function LessonScreen() {
                         style={[
                           styles.optionButton,
                           selectedAnswer === option && styles.selectedOption,
+                          showResult && option === stepData.answer && styles.correctOption,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
                         ]}
                         onPress={() => !showResult && setSelectedAnswer(option)}
                         disabled={showResult}
@@ -1064,8 +1147,10 @@ export default function LessonScreen() {
                         <Text style={[
                           styles.optionText,
                           selectedAnswer === option && styles.selectedOptionText,
+                          showResult && option === stepData.answer && styles.correctOptionText,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
                         ]}>
-                          {option}
+                          {option} {showResult && option === stepData.answer && '✅'}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -1077,6 +1162,7 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'type' && (
                 <>
                   <View style={styles.stepHeader}>
+                    <Text style={styles.stepTitle}>✏️ Type Practice</Text>
                     <Text style={styles.questionText}>Complete the word:</Text>
                     <Text style={styles.promptText}>{stepData.prompt}</Text>
                   </View>
@@ -1092,17 +1178,19 @@ export default function LessonScreen() {
                 </>
               )}
 
-              {/* Audio Step */}
+              {/* FIXED: Audio Step with improved audio button */}
               {stepData && stepData.type === 'audio' && (
                 <>
                   <View style={styles.stepHeader}>
+                    <Text style={styles.stepTitle}>🎧 Listen and Choose</Text>
                     <Text style={styles.questionText}>What do you hear?</Text>
                     
                     <TouchableOpacity 
                       style={styles.listenButton}
                       onPress={() => speakText(stepData.audioSentence)}
+                      activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={32} color={theme.colors.primary} />
+                      <Ionicons name="volume-high" size={32} color="#8B5CF6" />
                       <Text style={styles.listenText}>Tap to listen</Text>
                     </TouchableOpacity>
                   </View>
@@ -1114,6 +1202,8 @@ export default function LessonScreen() {
                         style={[
                           styles.optionButton,
                           selectedAnswer === option && styles.selectedOption,
+                          showResult && option === stepData.answer && styles.correctOption,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
                         ]}
                         onPress={() => !showResult && setSelectedAnswer(option)}
                         disabled={showResult}
@@ -1121,11 +1211,34 @@ export default function LessonScreen() {
                         <Text style={[
                           styles.optionText,
                           selectedAnswer === option && styles.selectedOptionText,
+                          showResult && option === stepData.answer && styles.correctOptionText,
+                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
                         ]}>
-                          {option}
+                          {option} {showResult && option === stepData.answer && '✅'}
                         </Text>
                       </TouchableOpacity>
                     ))}
+                  </View>
+                </>
+              )}
+              
+              {/* Error Step - Fallback */}
+              {stepData && stepData.type === 'error' && (
+                <>
+                  <View style={styles.stepHeader}>
+                    <Text style={styles.stepTitle}>⚠️ Error</Text>
+                    <Text style={styles.questionText}>{stepData.prompt}</Text>
+                  </View>
+
+                  <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>
+                      There was an issue loading this lesson step. Please try refreshing or contact support.
+                    </Text>
+                    <Button
+                      title="Skip This Step"
+                      onPress={handleNextStep}
+                      style={styles.skipButton}
+                    />
                   </View>
                 </>
               )}
@@ -1201,7 +1314,7 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
 
-  // Header
+  // FIXED: Improved Header - Mobile responsive
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1210,22 +1323,36 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
     backgroundColor: theme.colors.background,
+    minHeight: 60, // Ensure minimum height
+    marginTop: theme.spacing.lg,
   },
   backButton: {
-    padding: theme.spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: theme.spacing.xs,
+    paddingRight: theme.spacing.sm,
+    minWidth: 60, // Ensure touch target
+  },
+  backButtonText: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.foreground,
+    marginLeft: theme.spacing.xs,
   },
   headerContent: {
     flex: 1,
-    marginLeft: theme.spacing.md,
+    marginLeft: theme.spacing.xs,
+    paddingRight: theme.spacing.sm, // Prevent text from touching edge
   },
   headerTitle: {
-    fontSize: theme.fontSize.lg,
+    fontSize: isTablet ? theme.fontSize.lg : theme.fontSize.base, // Responsive font size
     fontWeight: '600' as any,
     color: theme.colors.foreground,
+    marginBottom: 2,
   },
   headerSubtitle: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? theme.fontSize.sm : theme.fontSize.xs, // Responsive font size
     color: theme.colors.mutedForeground,
+    marginBottom: 2,
   },
   headerProgress: {
     fontSize: theme.fontSize.xs,
@@ -1243,7 +1370,8 @@ const styles = StyleSheet.create({
 
   // Intro Video
   introVideoCard: {
-    marginBottom: theme.spacing.lg,
+    marginTop: theme.spacing.lg,
+    // marginBottom: theme.spacing.lg,
   },
   introVideoContent: {
     alignItems: 'center',
@@ -1300,6 +1428,13 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.muted + '50',
     borderRadius: theme.borderRadius.lg,
   },
+  stepTitle: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700' as any,
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xs,
+  },
   stepPrompt: {
     fontSize: theme.fontSize.lg,
     fontWeight: '600' as any,
@@ -1313,32 +1448,54 @@ const styles = StyleSheet.create({
     marginVertical: theme.spacing.lg,
   },
   video: {
-    width: screenWidth - (theme.spacing.md * 4),
-    height: ((screenWidth - (theme.spacing.md * 4)) * 9) / 16, // 16:9 aspect ratio
+    width: Math.min(screenWidth - (theme.spacing.md * 4), 320),
+    height: Math.min(((screenWidth - (theme.spacing.md * 4)) * 9) / 16, 240), // 16:9 aspect ratio with max height
     borderRadius: theme.borderRadius.lg,
   },
 
-  // Word Review
+  // FIXED: Word Review with better styling
   wordReviewContainer: {
     alignItems: 'center',
     gap: theme.spacing.lg,
     padding: theme.spacing.xl,
+    backgroundColor: '#EFF6FF',
+    borderRadius: theme.borderRadius.lg,
   },
-  speakButton: {
-    padding: theme.spacing.lg,
-    borderRadius: theme.borderRadius.full,
-    backgroundColor: theme.colors.primary + '20',
+  lessonEmoji: {
+    fontSize: 48,
+    marginBottom: theme.spacing.sm,
   },
   wordText: {
     fontSize: theme.fontSize['3xl'],
     fontWeight: '700' as any,
-    color: theme.colors.primary,
+    color: '#2563EB',
     textAlign: 'center',
   },
   translationText: {
     fontSize: theme.fontSize.xl,
-    color: theme.colors.foreground,
+    color: '#1E40AF',
     textAlign: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  // FIXED: Improved speak button styling
+  speakButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3B82F6',
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    gap: theme.spacing.sm,
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  speakButtonText: {
+    color: '#ffffff',
+    fontSize: theme.fontSize.base,
+    fontWeight: '600' as any,
   },
   noteContainer: {
     backgroundColor: '#EFF6FF',
@@ -1347,9 +1504,15 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
   },
+  noteTitle: {
+    fontSize: theme.fontSize.base,
+    fontWeight: '600' as any,
+    color: '#1E40AF',
+    marginBottom: theme.spacing.sm,
+  },
   noteText: {
     fontSize: theme.fontSize.sm,
-    color: '#1E40AF',
+    color: '#2563EB',
     lineHeight: theme.fontSize.sm * 1.4,
   },
 
@@ -1381,6 +1544,14 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
     backgroundColor: theme.colors.primary + '10',
   },
+  correctOption: {
+    borderColor: '#10b981',
+    backgroundColor: '#f0fdf4',
+  },
+  incorrectOption: {
+    borderColor: '#ef4444',
+    backgroundColor: '#fef2f2',
+  },
   optionText: {
     fontSize: theme.fontSize.base,
     color: theme.colors.foreground,
@@ -1388,6 +1559,14 @@ const styles = StyleSheet.create({
   },
   selectedOptionText: {
     color: theme.colors.primary,
+    fontWeight: '600' as any,
+  },
+  correctOptionText: {
+    color: '#10b981',
+    fontWeight: '600' as any,
+  },
+  incorrectOptionText: {
+    color: '#ef4444',
     fontWeight: '600' as any,
   },
 
@@ -1410,23 +1589,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Listen Button
+  // FIXED: Improved Listen Button
   listenButton: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing.xl,
-    backgroundColor: theme.colors.primary + '10',
+    backgroundColor: '#F3E8FF',
     borderRadius: theme.borderRadius.lg,
     borderWidth: 2,
-    borderColor: theme.colors.primary + '30',
+    borderColor: '#8B5CF6',
     borderStyle: 'dashed',
     gap: theme.spacing.md,
     marginVertical: theme.spacing.lg,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   listenText: {
     fontSize: theme.fontSize.base,
-    color: theme.colors.primary,
-    fontWeight: '500' as any,
+    color: '#8B5CF6',
+    fontWeight: '600' as any,
   },
 
   // Upgrade Container
@@ -1476,10 +1660,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.full,
   },
   correctBadge: {
-    backgroundColor: theme.colors.success500,
+    backgroundColor: '#10b981',
   },
   incorrectBadge: {
-    backgroundColor: theme.colors.destructive,
+    backgroundColor: '#ef4444',
   },
   resultText: {
     color: 'white',
@@ -1497,7 +1681,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
   },
   nextButton: {
-    backgroundColor: theme.colors.success500,
+    backgroundColor: '#10b981',
     marginTop: theme.spacing.md,
   },
   continueButton: {
@@ -1524,5 +1708,16 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
     textAlign: 'center',
+  },
+
+  // Error handling styles
+  errorContainer: {
+    alignItems: 'center',
+    gap: theme.spacing.lg,
+    padding: theme.spacing.xl,
+    backgroundColor: '#FEF2F2',
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: '#FECACA',
   },
 });

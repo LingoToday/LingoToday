@@ -1,8 +1,7 @@
 {
   "expo": {
-    "owner": "lingotoday",
     "name": "LingoToday",
-    "slug": "lingotoday-mobile",
+    "slug": "lingotoday",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,10 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lingotoday.mobile",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "bundleIdentifier": "com.lingotoday.mobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,15 +34,8 @@
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
     "extra": {
-      "eas": {
-        "projectId": "b5c4ecbe-0f0f-4f0f-8f8e-b155460d2f03"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/b5c4ecbe-0f0f-4f0f-8f8e-b155460d2f03"
+      "apiBaseUrl": "https://c7756cd61072.ngrok-free.app",
+      "stripePublishableKey": "pk_test_51S3GKG3dMgplFeCzCy8okVARwbR41NONkQQGjxeiH0nwHCr6lVT4wtDyqFmm7sGdM5Z1vNMS6RKE5V9c0nk6wu6b00RPir2zbq"
     }
   }
 }

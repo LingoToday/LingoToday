@@ -6,11 +6,16 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../lib/theme';
 import { Footer } from '../components/ui/Footer';
+
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 export default function ApproachScreen() {
   const navigation = useNavigation();
@@ -25,62 +30,76 @@ export default function ApproachScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header - matching web exactly */}
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent} 
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        {/* Header - Matching web exactly with sticky behavior */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
-          </TouchableOpacity>
-          
-          <View style={styles.logoContainer}>
-            <View style={styles.logoIcon}>
-              <Ionicons name="globe" size={16} color="#ffffff" />
-            </View>
-            <Text style={styles.logoText}>LingoToday</Text>
+          <View style={styles.headerContent}>
+            <TouchableOpacity onPress={handleGoBack} style={styles.logoLink}>
+              <View style={styles.logoContainer}>
+                <View style={styles.logoIcon}>
+                  <Ionicons name="globe" size={16} color="#ffffff" />
+                </View>
+                <Text style={styles.logoText}>LingoToday</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Approach Content - matching web exactly */}
-        <View style={styles.content}>
+        {/* Main Content - Matching web structure exactly */}
+        <View style={styles.main}>
           <View style={styles.prose}>
             <Text style={styles.title}>Approach</Text>
             
-            <View style={styles.textContent}>
-              <Text style={styles.paragraph}>
-                We believe small, regular steps add up to big results.
-              </Text>
-              
-              <Text style={styles.paragraph}>
-                Our approach is built on proven learning science, combining micro-learning with spaced repetition and retrieval practice. Instead of cramming or setting aside big blocks of time, you get a series of quick 1–2 minute lessons spaced throughout your workday.
-              </Text>
-              
-              <Text style={styles.paragraph}>This means:</Text>
-              
-              <View style={styles.bulletSection}>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bulletTitle}>Minimum disruption</Text>
-                  <Text style={styles.bulletText}> – You can keep your workflow intact while still progressing.</Text>
+            <View style={styles.contentSpace}>
+              <View style={styles.textContent}>
+                <Text style={styles.paragraph}>
+                  We believe small, regular steps add up to big results.
+                </Text>
+                
+                <Text style={styles.paragraph}>
+                  Our approach is built on proven learning science, combining micro-learning with spaced repetition and retrieval practice. Instead of cramming or setting aside big blocks of time, you get a series of quick 1–2 minute lessons spaced throughout your workday.
+                </Text>
+                
+                <Text style={styles.paragraph}>This means:</Text>
+                
+                <View style={styles.bulletSection}>
+                  <View style={styles.bulletItem}>
+                    <Text style={styles.bulletContent}>
+                      <Text style={styles.bulletTitle}>Minimum disruption</Text>
+                      <Text style={styles.bulletText}> – You can keep your workflow intact while still progressing.</Text>
+                    </Text>
+                  </View>
+                  
+                  <View style={styles.bulletItem}>
+                    <Text style={styles.bulletContent}>
+                      <Text style={styles.bulletTitle}>Better retention</Text>
+                      <Text style={styles.bulletText}> – Revisiting concepts at spaced intervals locks them into long-term memory.</Text>
+                    </Text>
+                  </View>
+                  
+                  <View style={styles.bulletItem}>
+                    <Text style={styles.bulletContent}>
+                      <Text style={styles.bulletTitle}>Lower effort, higher consistency</Text>
+                      <Text style={styles.bulletText}> – Because each lesson is so short, it's easier to stick with it.</Text>
+                    </Text>
+                  </View>
+                  
+                  <View style={styles.bulletItem}>
+                    <Text style={styles.bulletContent}>
+                      <Text style={styles.bulletTitle}>Real skills, built daily</Text>
+                      <Text style={styles.bulletText}> – Small doses of focused practice compound over time into real conversational ability.</Text>
+                    </Text>
+                  </View>
                 </View>
                 
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bulletTitle}>Better retention</Text>
-                  <Text style={styles.bulletText}> – Revisiting concepts at spaced intervals locks them into long-term memory.</Text>
-                </View>
-                
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bulletTitle}>Lower effort, higher consistency</Text>
-                  <Text style={styles.bulletText}> – Because each lesson is so short, it's easier to stick with it.</Text>
-                </View>
-                
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bulletTitle}>Real skills, built daily</Text>
-                  <Text style={styles.bulletText}> – Small doses of focused practice compound over time into real conversational ability.</Text>
-                </View>
+                <Text style={styles.paragraph}>
+                  LingoToday turns your desk into your classroom — without the overwhelm, without the guilt, and without the need to find "extra time."
+                </Text>
               </View>
-              
-              <Text style={styles.paragraph}>
-                LingoToday turns your desk into your classroom — without the overwhelm, without the guilt, and without the need to find "extra time."
-              </Text>
             </View>
           </View>
         </View>
@@ -97,90 +116,112 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   scrollContent: {
-    paddingBottom: theme.spacing.xl,
+    flexGrow: 1,
   },
 
-  // Header - Matching TermsScreen exactly
+  // Header - Matching web sticky header with backdrop blur effect
   header: {
-    alignItems: 'center',
-    paddingTop: theme.spacing.lg,
-    paddingHorizontal: theme.spacing.lg,
-    paddingBottom: theme.spacing.xl,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
+    marginTop: 20,
+    // Simulate sticky behavior with elevation
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
-  backButton: {
-    position: 'absolute',
-    top: theme.spacing.lg,
-    left: theme.spacing.lg,
-    padding: theme.spacing.sm,
-    zIndex: 1,
+  headerContent: {
+    maxWidth: isTablet ? 1280 : width,
+    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: isTablet ? 32 : 16,
+    paddingVertical: 0,
+  },
+  logoLink: {
+    alignSelf: 'flex-start',
+    paddingVertical: 16,
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 12,
   },
   logoIcon: {
     width: 32,
     height: 32,
     backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: theme.spacing.sm,
   },
   logoText: {
-    fontSize: theme.fontSize.xl,
+    fontSize: isTablet ? 20 : 18,
     fontWeight: '700',
-    color: theme.colors.foreground,
+    color: '#111827', // text-gray-900
   },
 
-  // Content
-  content: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: theme.spacing.xl,
+  // Main Content - Matching web max-w-4xl structure
+  main: {
+    maxWidth: isTablet ? 896 : width, // max-w-4xl = 896px
+    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: isTablet ? 32 : 16,
+    paddingVertical: 64, // py-16
   },
   prose: {
     maxWidth: '100%',
   },
   title: {
-    fontSize: theme.fontSize['3xl'],
+    fontSize: isTablet ? 36 : 30, // text-3xl md:text-4xl
     fontWeight: '700',
-    color: theme.colors.foreground,
-    marginBottom: theme.spacing.xl,
+    color: '#111827', // text-gray-900
+    marginBottom: 32, // mb-8
+  },
+  
+  // Content spacing - Matching web space-y-8
+  contentSpace: {
+    gap: 32,
   },
   textContent: {
-    gap: theme.spacing.lg,
+    color: '#6B7280', // text-gray-600
+    lineHeight: 28, // leading-relaxed
+    fontSize: 18, // text-lg
+    gap: 24, // space-y-6
   },
   paragraph: {
-    color: theme.colors.mutedForeground,
-    fontSize: theme.fontSize.lg,
+    color: '#6B7280',
+    fontSize: 18,
     lineHeight: 28,
-    marginBottom: theme.spacing.lg,
+    marginBottom: 24,
   },
 
-  // Bullet Points - matching web ml-4 structure
+  // Bullet Section - Matching web space-y-4 ml-4
   bulletSection: {
-    marginLeft: 16,
-    gap: 16,
-    marginBottom: theme.spacing.lg,
+    marginLeft: 16, // ml-4
+    gap: 16, // space-y-4
+    marginBottom: 24,
   },
-  bulletPoint: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
+  bulletItem: {
+    // Each bullet item container
+  },
+  bulletContent: {
+    fontSize: 18,
+    lineHeight: 28,
   },
   bulletTitle: {
-    fontWeight: '700',
-    color: theme.colors.mutedForeground,
-    fontSize: theme.fontSize.lg,
-    lineHeight: 28,
+    fontWeight: '700', // font-bold
+    color: '#6B7280',
   },
   bulletText: {
-    color: theme.colors.mutedForeground,
-    fontSize: theme.fontSize.lg,
-    lineHeight: 28,
-    flex: 1,
+    color: '#6B7280',
+    fontWeight: '400',
   },
 });

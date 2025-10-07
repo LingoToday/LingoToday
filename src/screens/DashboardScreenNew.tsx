@@ -11,6 +11,7 @@ import {
   RefreshControl,
   Platform,
   Dimensions,
+  Linking,
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +26,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import NotificationSettings from '../components/NotificationSettings';
 import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
+import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { Footer } from '../components/ui/Footer';
 
 const { width } = Dimensions.get('window');
@@ -93,8 +95,10 @@ export default function DashboardScreenNew() {
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const [isDailySessionActive, setIsDailySessionActive] = useState(false);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
+  
+  // REMOVED: const [isDailySessionActive, setIsDailySessionActive] = useState(false);
+  // We'll calculate this dynamically instead
 
   // Consolidated fallback data - ALWAYS available
   const getFallbackData = (): DashboardData => ({
@@ -254,14 +258,94 @@ export default function DashboardScreenNew() {
     markNotificationSetupSeenMutation.mutate();
   };
 
-  // Handle starting daily notification session
+  // ADDED: Dynamic calculation of daily session status
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  
+  // Calculate if daily session is active dynamically
+  const isDailySessionActive = React.useMemo(() => {
+    const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
+    const hasSessionTime = sessionStartTime !== null;
+    const isWithinSessionWindow = hasSessionTime && sessionStartTime && 
+      (Date.now() - sessionStartTime) < (8 * 60 * 60 * 1000); // 8 hours window
+    
+    return notificationsEnabled && hasSessionTime && isWithinSessionWindow;
+  }, [
+    effectiveDashboardData?.settings?.notificationsEnabled, 
+    sessionStartTime
+  ]);
+
+  // ADDED: Effect to clear session when notifications are disabled
+  useEffect(() => {
+    const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
+    
+    if (!notificationsEnabled && sessionStartTime) {
+      console.log('🔕 Notifications disabled - clearing daily session');
+      setSessionStartTime(null);
+      // Cancel any scheduled notifications
+      Notifications.cancelAllScheduledNotificationsAsync();
+    }
+  }, [effectiveDashboardData?.settings?.notificationsEnabled, sessionStartTime]);
+
+  // UPDATED: Handle starting daily notification session
   const handleStartDailySession = async () => {
     try {
-      const { status } = await Notifications.requestPermissionsAsync();
+      // Check current permission status
+      const { status: currentStatus } = await Notifications.getPermissionsAsync();
       
-      if (status === "granted" && user?.selectedLanguage) {
+      console.log('🔍 Checking daily session start:', {
+        currentPermission: currentStatus,
+        settingsEnabled: effectiveDashboardData?.settings?.notificationsEnabled,
+        userLanguage: user?.selectedLanguage,
+        currentSessionTime: sessionStartTime
+      });
+
+      // Check if notifications are enabled in settings AND permission is granted
+      const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
+      
+      if (currentStatus !== "granted") {
+        // Request permission if not granted
+        const { status: newStatus } = await Notifications.requestPermissionsAsync();
+        
+        if (newStatus !== "granted") {
+          Alert.alert(
+            "Permission required",
+            "Please allow notifications to start your daily learning session.",
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { 
+                text: 'Open Settings', 
+                onPress: () => {
+                  if (Platform.OS === 'ios') {
+                    Linking.openURL('app-settings:');
+                  } else {
+                    Linking.openSettings();
+                  }
+                }
+              }
+            ]
+          );
+          return;
+        }
+      }
+
+      // Check if notifications are enabled in user settings
+      if (!notificationsEnabled) {
+        Alert.alert(
+          "Enable notifications first",
+          "Please enable notifications in the settings below, then try starting your daily session again.",
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      if (user?.selectedLanguage) {
         const frequency = effectiveDashboardData?.settings?.notificationFrequency || 15;
-        setIsDailySessionActive(true);
+        
+        // FIXED: Set session start time
+        setSessionStartTime(Date.now());
+        
+        // Schedule actual notifications
+        await scheduleNotificationSession(user.selectedLanguage, frequency);
         
         Alert.alert(
           "Daily session started!",
@@ -270,17 +354,86 @@ export default function DashboardScreenNew() {
         );
       } else {
         Alert.alert(
-          "Permission required",
-          "Please allow notifications to start your daily learning session.",
+          "Language not selected",
+          "Please select a learning language first.",
           [{ text: 'OK' }]
         );
       }
     } catch (error) {
+      console.error('Error starting daily session:', error);
       Alert.alert(
         "Error",
         "Failed to start daily session. Please try again.",
         [{ text: 'OK' }]
       );
+    }
+  };
+
+  // ADDED: Handle stopping daily session
+  const handleStopDailySession = async () => {
+    try {
+      console.log('🛑 Stopping daily session');
+      
+      // Cancel all scheduled notifications
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      
+      // Clear session time
+      setSessionStartTime(null);
+      
+      Alert.alert(
+        "Daily session stopped",
+        "All scheduled lesson reminders have been cancelled.",
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error stopping daily session:', error);
+      Alert.alert(
+        "Error",
+        "Failed to stop daily session properly.",
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  // UPDATED: Helper function to schedule notification session
+  const scheduleNotificationSession = async (language: string, frequency: number) => {
+    try {
+      // Cancel any existing notifications first
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      
+      // Schedule notifications for the next 8 hours
+      const notifications = [];
+      const now = new Date();
+      const endTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // 8 hours from now
+      
+      let nextTime = new Date(now.getTime() + (frequency * 60 * 1000)); // First notification after frequency minutes
+      
+      while (nextTime <= endTime) {
+        notifications.push(
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: `${getLanguageDisplayName(language)} Learning Reminder`,
+              body: `Time for your ${getLanguageDisplayName(language)} lesson! Keep your streak going! 🔥`,
+              sound: true,
+              data: { 
+                language, 
+                sessionId: sessionStartTime || Date.now(),
+                frequency 
+              },
+            },
+            trigger: { type: SchedulableTriggerInputTypes.DATE, date: nextTime },
+          })
+        );
+        
+        // Schedule next notification
+        nextTime = new Date(nextTime.getTime() + (frequency * 60 * 1000));
+      }
+      
+      await Promise.all(notifications);
+      console.log(`📅 Scheduled ${notifications.length} notifications for ${language} session`);
+    } catch (error) {
+      console.error('Error scheduling notifications:', error);
+      throw error;
     }
   };
 
@@ -406,6 +559,8 @@ export default function DashboardScreenNew() {
     { name: 'Numbers', totalLessons: 29 },
     { name: 'Days and Dates', totalLessons: 10 }
   ];
+
+  const totalPossibleLessons = courseData.reduce((sum, course) => sum + course.totalLessons, 0);
   
   const learningPath = courseData.map((course, index) => {
     const courseProgress = allProgress.filter(p => p.courseId === `course${index + 1}`);
@@ -429,6 +584,32 @@ export default function DashboardScreenNew() {
       status
     };
   });
+
+  // FIXED: Update the condition for showing daily session button
+  const shouldShowDailySessionButton = !isDailySessionActive && 
+    effectiveDashboardData?.settings?.notificationsEnabled;
+  
+  const shouldShowActiveSession = isDailySessionActive && 
+    effectiveDashboardData?.settings?.notificationsEnabled;
+
+  // ADDED: Get session remaining time for display
+  const getSessionRemainingTime = (): string => {
+    if (!sessionStartTime) return '';
+    
+    const elapsed = Date.now() - sessionStartTime;
+    const remaining = (8 * 60 * 60 * 1000) - elapsed; // 8 hours total
+    
+    if (remaining <= 0) return 'Session expired';
+    
+    const hours = Math.floor(remaining / (60 * 60 * 1000));
+    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m remaining`;
+    } else {
+      return `${minutes}m remaining`;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -508,8 +689,8 @@ export default function DashboardScreenNew() {
                       </Badge>
                       <View style={styles.progressInfo}>
                         <Text style={styles.progressText}>
-                          {stats.lessonsCompleted > 0 
-                            ? `${Math.round((stats.lessonsCompleted / stats.totalLessons) * 100)}% complete`
+                          {stats.lessonsCompleted > 0
+                            ? `${Math.round(learningPath.reduce((acc, course) => acc + course.completion, 0) / learningPath.length)}% complete`
                             : '0% to Introducing Yourself'}
                         </Text>
                       </View>
@@ -558,8 +739,8 @@ export default function DashboardScreenNew() {
                   </CardContent>
                 </Card>
 
-                {/* Daily Session Button */}
-                {(!isDailySessionActive || stats.lessonsCompleted === 0) && (
+                {/* FIXED: Daily Session Button with proper condition */}
+                {shouldShowDailySessionButton && (
                   <Card style={styles.sessionCard}>
                     <CardContent style={styles.sessionContent}>
                       <View style={styles.sessionInfo}>
@@ -568,6 +749,9 @@ export default function DashboardScreenNew() {
                         </Text>
                         <Text style={styles.sessionSubtitle}>
                           Get personalized {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} lesson reminders throughout the day
+                        </Text>
+                        <Text style={styles.sessionNote}>
+                          ✅ Notifications enabled - ready to start!
                         </Text>
                       </View>
                       <TouchableOpacity 
@@ -581,8 +765,8 @@ export default function DashboardScreenNew() {
                   </Card>
                 )}
 
-                {/* Daily Session Status - matching web logic */}
-                {isDailySessionActive && ((stats?.lessonsCompleted || 0) > 0) && (
+                {/* UPDATED: Daily Session Status - only show when truly active */}
+                {shouldShowActiveSession && (
                   <Card style={styles.activeSessionCard}>
                     <CardContent style={styles.activeSessionContent}>
                       <View style={styles.activeSessionIcon}>
@@ -593,7 +777,32 @@ export default function DashboardScreenNew() {
                           Daily learning session is active
                         </Text>
                         <Text style={styles.activeSessionSubtitle}>
-                          You'll receive lesson reminders every {settings?.notificationFrequency || 15} minutes
+                          Reminders every {settings?.notificationFrequency || 15} minutes • {getSessionRemainingTime()}
+                        </Text>
+                      </View>
+                      <TouchableOpacity 
+                        style={styles.stopSessionButton}
+                        onPress={handleStopDailySession}
+                      >
+                        <Ionicons name="stop" size={16} color="#dc2626" />
+                      </TouchableOpacity>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* ADDED: Show info when notifications are disabled */}
+                {!effectiveDashboardData?.settings?.notificationsEnabled && (
+                  <Card style={styles.disabledNotificationCard}>
+                    <CardContent style={styles.disabledNotificationContent}>
+                      <View style={styles.disabledNotificationIcon}>
+                        <Ionicons name="notifications-off" size={20} color="#f59e0b" />
+                      </View>
+                      <View style={styles.disabledNotificationInfo}>
+                        <Text style={styles.disabledNotificationTitle}>
+                          Notifications are disabled
+                        </Text>
+                        <Text style={styles.disabledNotificationSubtitle}>
+                          Enable notifications below to start receiving lesson reminders
                         </Text>
                       </View>
                     </CardContent>
@@ -782,7 +991,7 @@ export default function DashboardScreenNew() {
                   </CardContent>
                 </Card>
 
-                {/* Notifications - Use NotificationSettings component */}
+                {/* Notifications - Use updated NotificationSettings component */}
                 <NotificationSettings />
 
                 {/* Learning Progress Card - matching web exactly */}
@@ -837,6 +1046,7 @@ export default function DashboardScreenNew() {
   );
 }
 
+// ADDED: New styles for the additional components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -1108,6 +1318,12 @@ const styles = StyleSheet.create({
   sessionSubtitle: {
     fontSize: 14,
     color: '#3b82f6',
+  },
+  sessionNote: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: '500',
+    marginTop: 8,
   },
   sessionButton: {
     backgroundColor: '#2563eb',
@@ -1447,7 +1663,7 @@ const styles = StyleSheet.create({
     color: '#2563eb',
   },
 
-  // Learning Progress Card (matching web exactly)
+  // Learning Progress Card - matching web exactly
   progressCard: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
@@ -1480,5 +1696,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#111827',
+  },
+
+  // Add these new styles:
+  stopSessionButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#fef2f2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  
+  disabledNotificationCard: {
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#fde68a',
+    backgroundColor: '#fffbeb',
+  },
+  disabledNotificationContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  disabledNotificationIcon: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#fef3c7',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  disabledNotificationInfo: {
+    flex: 1,
+  },
+  disabledNotificationTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#92400e',
+  },
+  disabledNotificationSubtitle: {
+    fontSize: 12,
+    color: '#a16207',
   },
 });

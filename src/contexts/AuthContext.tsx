@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { apiClient } from '../lib/apiClient';
 import { User } from '../types';
 
@@ -21,6 +22,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (userData: Partial<User>) => void;
   refreshUser: () => Promise<void>;
+  refreshAuth?: () => Promise<void>; // Add this method
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,8 +45,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
       
-      // First check if we have a stored token
-      const token = await SecureStore.getItemAsync('authToken');
+      // Platform-aware token checking
+      let token: string | null = null;
+      
+      if (Platform.OS === 'web') {
+        token = localStorage.getItem('authToken');
+      } else {
+        token = await SecureStore.getItemAsync('authToken');
+      }
+      
       if (!token) {
         setUser(null);
         return;
@@ -59,14 +68,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(userObj as User);
       } else {
         // Token is invalid, remove it
-        await SecureStore.deleteItemAsync('authToken');
+        if (Platform.OS === 'web') {
+          localStorage.removeItem('authToken');
+        } else {
+          await SecureStore.deleteItemAsync('authToken');
+        }
         setUser(null);
       }
     } catch (error) {
       console.log('No authenticated user found or token invalid:', error);
       // Clean up invalid token
       try {
-        await SecureStore.deleteItemAsync('authToken');
+        if (Platform.OS === 'web') {
+          localStorage.removeItem('authToken');
+        } else {
+          await SecureStore.deleteItemAsync('authToken');
+        }
       } catch (cleanupError) {
         console.error('Error cleaning up auth token:', cleanupError);
       }
@@ -148,7 +165,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } finally {
       // Always clean up local state and token
       try {
-        await SecureStore.deleteItemAsync('authToken');
+        if (Platform.OS === 'web') {
+          localStorage.removeItem('authToken');
+        } else {
+          await SecureStore.deleteItemAsync('authToken');
+        }
       } catch (tokenError) {
         console.error('Error removing auth token:', tokenError);
       }
@@ -180,6 +201,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const refreshAuth = async () => {
+    try {
+      setIsLoading(true);
+      const userData = await apiClient.getCurrentUser();
+      
+      if (userData && typeof userData === 'object' && !(userData as any).error) {
+        const userObj = (userData as any).data || userData;
+        setUser(userObj as User);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.log('User not authenticated during refresh');
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isLoading,
@@ -189,6 +229,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     updateUser,
     refreshUser,
+    refreshAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

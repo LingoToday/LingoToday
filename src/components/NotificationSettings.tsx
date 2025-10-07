@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  Linking,
 } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -15,18 +16,23 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { Button } from './ui/Button';
 import { Switch } from './ui/Switch';
 import { Select } from './ui/Select';
-import { apiClient, DashboardData } from '../lib/apiClient';
+import { apiClient } from '../lib/apiClient';
 import { useAuth } from '../hooks/useAuth';
+import { SchedulableTriggerInputTypes } from 'expo-notifications';
 
 interface UserSettings {
+  userId: string;
+  language: string;
+  theme: string;
+  soundEnabled: boolean;
   notificationsEnabled: boolean;
   notificationFrequency: number;
   notificationStartTime: string;
   notificationEndTime: string;
-  selectedLanguage: string;
+  difficultyLevel: string;
 }
 
-// Helper function to get language display name - matching web exactly
+// Helper function to get language display name
 function getLanguageDisplayName(code: string): string {
   const languages: { [key: string]: string } = {
     italian: 'Italian',
@@ -44,111 +50,102 @@ function getLanguageDisplayName(code: string): string {
 export default function NotificationSettings() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [notificationPermission, setNotificationPermission] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
+  
+  // REMOVED: All device permission checking - we'll use DB only
+  const [devicePermissionStatus, setDevicePermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
 
-  // Get settings from dashboard data - matching web exactly
-  const { data: dashboardData, isLoading, error: dashboardError } = useQuery<DashboardData>({
-    queryKey: ["/api/dashboard"],
+  // FIXED: Use only the /api/settings route for all notification data
+  const { data: settings, isLoading, error } = useQuery<UserSettings>({
+    queryKey: ['/api/settings'],
     queryFn: async () => {
       try {
-        return await apiClient.getDashboardData();
+        console.log('📊 Fetching settings from /api/settings');
+        const result = await apiClient.getUserSettings();
+        console.log('✅ Settings fetched:', result);
+        return result;
       } catch (error) {
-        console.error('Dashboard query error:', error);
-        // Return fallback data to prevent UI breaking
-        const fallbackUser = user ? {
-          ...user,
-          firstName: user.firstName ?? undefined, // Convert null to undefined
-          lastName: user.lastName ?? undefined,
-          avatarUrl: user.avatarUrl ?? undefined,
-          password: user.password ?? undefined,
-          selectedLanguage: user.selectedLanguage ?? undefined
-        } : { id: '', email: '', firstName: 'User' };
-        
+        console.error('❌ Settings fetch error:', error);
+        // Return default settings instead of throwing
         return {
-          user: fallbackUser,
-          settings: {
-            notificationsEnabled: false,
-            notificationFrequency: 15,
-            notificationStartTime: '09:00',
-            notificationEndTime: '18:00',
-            selectedLanguage: user?.selectedLanguage || 'italian',
-          },
-          stats: {
-            streak: 0,
-            totalLessons: 0,
-            wordsLearned: 0,
-            lessonsCompleted: 0,
-          },
-          progress: []
-        } as DashboardData;
+          userId: user?.id || '',
+          language: user?.selectedLanguage || 'italian',
+          theme: 'light',
+          soundEnabled: true,
+          notificationsEnabled: false,
+          notificationFrequency: 15,
+          notificationStartTime: '09:00',
+          notificationEndTime: '18:00',
+          difficultyLevel: 'beginner',
+        } as UserSettings;
       }
     },
     enabled: !!user,
-    retry: 1, // Only retry once
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+    staleTime: 30000, // 30 seconds
   });
-  
 
-  const settings = dashboardData?.settings || {
-    notificationsEnabled: false,
-    notificationFrequency: 15,
-    notificationStartTime: '09:00',
-    notificationEndTime: '18:00',
-    selectedLanguage: user?.selectedLanguage || 'italian',
-  };
+  // Check device permission only once on mount (for display purposes only)
+  useEffect(() => {
+    const checkDevicePermission = async () => {
+      try {
+        const { status } = await Notifications.getPermissionsAsync();
+        setDevicePermissionStatus(status);
+      } catch (error) {
+        console.warn('Could not check device notification permission:', error);
+      }
+    };
+    
+    checkDevicePermission();
+  }, []);
 
-  // Update settings mutation - matching web exactly
+  // FIXED: Update settings mutation - uses /api/settings route
   const updateSettingsMutation = useMutation({
     mutationFn: async (updatedSettings: Partial<UserSettings>) => {
       try {
-        return await apiClient.updateUserSettings(updatedSettings);
+        console.log('💾 Updating settings:', updatedSettings);
+        
+        // FIXED: Clean the settings object before sending
+        const cleanedSettings = { ...updatedSettings };
+        
+        // Remove timestamp fields and other metadata that shouldn't be sent
+        delete (cleanedSettings as any).createdAt;
+        delete (cleanedSettings as any).updatedAt;
+        delete (cleanedSettings as any).userId; // Server will set this
+        
+        console.log('💾 Cleaned settings for API:', cleanedSettings);
+        
+        const result = await apiClient.updateUserSettings(cleanedSettings);
+        console.log('✅ Settings updated successfully:', result);
+        return result;
       } catch (error) {
-        console.warn('Settings update failed:', error);
+        console.error('❌ Settings update failed:', error);
         throw error;
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+    onSuccess: (data) => {
+      // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+      
+      console.log('🔄 Settings cache invalidated');
+      
       Alert.alert(
-        'Settings updated',
+        'Settings Updated',
         'Your notification preferences have been saved.',
         [{ text: 'OK' }]
       );
     },
     onError: (error) => {
+      console.error('❌ Settings update error:', error);
       Alert.alert(
-        'Error',
-        'Failed to update settings. Please try again.',
+        'Update Failed',
+        'Failed to save settings. Please try again.',
         [{ text: 'OK' }]
       );
     },
   });
 
-  useEffect(() => {
-    checkNotificationPermission();
-    
-    // Check permission periodically in case user changed it - matching web exactly
-    const permissionCheck = setInterval(() => {
-      checkNotificationPermission();
-    }, 1000);
-    
-    return () => clearInterval(permissionCheck);
-  }, []);
-
-  const checkNotificationPermission = async () => {
-    try {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== notificationPermission) {
-        console.log('Permission changed from', notificationPermission, 'to', status);
-        setNotificationPermission(status);
-      }
-    } catch (error) {
-      console.error('Error checking notification permission:', error);
-    }
-  };
-
-  // Generate time options for dropdowns (24-hour format) - matching web exactly
+  // Generate time options for dropdowns (24-hour format)
   const generateTimeOptions = () => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
@@ -167,65 +164,87 @@ export default function NotificationSettings() {
 
   const timeOptions = generateTimeOptions();
 
-  // Handle notification settings change - matching web exactly
+  // FIXED: Handle notification toggle - uses DB state as source of truth
   const handleNotificationToggle = async (enabled: boolean) => {
     try {
-      if (enabled && notificationPermission !== 'granted') {
+      // If enabling notifications, check device permission first
+      if (enabled && devicePermissionStatus !== 'granted') {
         const { status } = await Notifications.requestPermissionsAsync();
-        setNotificationPermission(status);
+        setDevicePermissionStatus(status);
         
         if (status !== 'granted') {
           Alert.alert(
-            'Permission required',
+            'Permission Required',
             'Please allow notifications in your device settings to enable this feature.',
-            [{ text: 'OK' }]
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { 
+                text: 'Open Settings', 
+                onPress: () => {
+                  if (Platform.OS === 'ios') {
+                    Linking.openURL('app-settings:');
+                  } else {
+                    Linking.openSettings();
+                  }
+                }
+              }
+            ]
           );
-          return;
+          return; // Don't update DB if permission denied
         }
       }
 
-      updateSettingsMutation.mutate({
-        ...settings,
-        notificationsEnabled: enabled,
-      });
+      // FIXED: Only send the fields that should be updated
+      const updateData = {
+        language: settings?.language || 'italian',
+        theme: settings?.theme || 'light',
+        soundEnabled: settings?.soundEnabled ?? true,
+        notificationsEnabled: enabled, // This is the main change
+        notificationFrequency: settings?.notificationFrequency || 15,
+        notificationStartTime: settings?.notificationStartTime || '09:00',
+        notificationEndTime: settings?.notificationEndTime || '18:00',
+        difficultyLevel: settings?.difficultyLevel || 'beginner',
+      };
 
-      // Stop notifications if disabled - matching web exactly
+      console.log('🔄 Sending clean settings update:', updateData);
+
+      await updateSettingsMutation.mutateAsync(updateData);
+
+      // Handle notification scheduling based on database state
       if (!enabled) {
-        console.log('🛑 Stopping notifications - disabled by user');
-        // Stop any scheduled notifications
+        console.log('🛑 Notifications disabled in DB - canceling scheduled notifications');
         await Notifications.cancelAllScheduledNotificationsAsync();
       } else {
-        console.log('✅ Notifications enabled - user must start daily session on dashboard');
+        console.log('✅ Notifications enabled in DB - ready for daily session scheduling');
       }
     } catch (error) {
+      console.error('❌ Error toggling notifications:', error);
       Alert.alert(
         'Error',
-        'Failed to update notification settings.',
+        'Failed to update notification settings. Please try again.',
         [{ text: 'OK' }]
       );
     }
   };
 
-  // Handle language change - matching web exactly
+  // FIXED: Handle language change - uses DB route
   const handleLanguageChange = (language: string) => {
     updateSettingsMutation.mutate({
       ...settings,
-      selectedLanguage: language,
+      language: language, // Note: API expects 'language' not 'selectedLanguage'
     });
   };
 
-  // Handle frequency change - matching web exactly
+  // FIXED: Handle frequency change - uses DB route
   const handleFrequencyChange = (frequency: string) => {
     const newFrequency = parseInt(frequency);
     updateSettingsMutation.mutate({
       ...settings,
       notificationFrequency: newFrequency,
     });
-
-    console.log('✅ Notification frequency updated - will apply to next daily session');
   };
 
-  // Handle start time change - matching web exactly
+  // FIXED: Handle time changes - uses DB route
   const handleStartTimeChange = (startTime: string) => {
     updateSettingsMutation.mutate({
       ...settings,
@@ -233,7 +252,6 @@ export default function NotificationSettings() {
     });
   };
 
-  // Handle end time change - matching web exactly
   const handleEndTimeChange = (endTime: string) => {
     updateSettingsMutation.mutate({
       ...settings,
@@ -241,67 +259,47 @@ export default function NotificationSettings() {
     });
   };
 
-  // Request notification permission - matching web exactly
-  const requestNotificationPermission = async () => {
-    try {
-      const { status } = await Notifications.requestPermissionsAsync();
-      setNotificationPermission(status);
-      
-      if (status === 'granted') {
-        updateSettingsMutation.mutate({
-          ...settings,
-          notificationsEnabled: true,
-        });
-        
-        Alert.alert(
-          'Notifications enabled!',
-          "You'll now receive learning reminders at your chosen frequency.",
-          [{ text: 'OK' }]
-        );
-      } else {
-        Alert.alert(
-          'Permission denied',
-          'Please enable notifications in your device settings.',
-          [{ text: 'OK' }]
-        );
-      }
-    } catch (error) {
-      Alert.alert(
-        'Error',
-        'Failed to enable notifications. Please try again.',
-        [{ text: 'OK' }]
-      );
-    }
-  };
-
-  // Test notification functions - matching web exactly
+  // FIXED: Test notification functions - check both DB and device state
   const handleSimpleTest = async () => {
     try {
-      if (notificationPermission === 'granted') {
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: '🔔 LingoToday Test',
-            body: 'This is a test notification. If you see this, notifications are working!',
-            sound: true,
-          },
-          trigger: null, // Show immediately
-        });
-        
+      // Check database state first
+      if (!settings?.notificationsEnabled) {
         Alert.alert(
-          'Simple test sent',
-          'Check if you received the notification.',
+          'Notifications Disabled',
+          'Please enable notifications in settings first.',
           [{ text: 'OK' }]
         );
-      } else {
-        Alert.alert(
-          'Permission Issue',
-          'Notification permission is not granted. Check your device settings.',
-          [{ text: 'OK' }]
-        );
+        return;
       }
-    } catch (error) {
+
+      // Check device permission
+      if (devicePermissionStatus !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow notifications in your device settings.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '🔔 LingoToday Test',
+          body: 'This is a test notification. If you see this, notifications are working!',
+          sound: true,
+        },
+        trigger: null, // Show immediately
+      });
+      
       Alert.alert(
-        'Error',
+        'Test Sent',
+        'Check if you received the notification.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('❌ Test notification error:', error);
+      Alert.alert(
+        'Test Failed',
         'Failed to send test notification.',
         [{ text: 'OK' }]
       );
@@ -310,84 +308,95 @@ export default function NotificationSettings() {
 
   const handleFullTest = async () => {
     try {
-      if (notificationPermission === 'granted') {
-        const language = getLanguageDisplayName(settings.selectedLanguage);
-        
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: `${language} Learning Reminder`,
-            body: `Time for your ${language} lesson! Keep your streak going! 🔥`,
-            sound: true,
-          },
-          trigger: null, // Show immediately
-        });
-        
+      if (!settings?.notificationsEnabled) {
         Alert.alert(
-          'Full test sent',
-          'This simulates a real learning notification.',
+          'Notifications Disabled',
+          'Please enable notifications in settings first.',
           [{ text: 'OK' }]
         );
-      } else {
-        Alert.alert(
-          'Permission Issue',
-          'Notification permission is not granted.',
-          [{ text: 'OK' }]
-        );
+        return;
       }
-    } catch (error) {
+
+      if (devicePermissionStatus !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow notifications in your device settings.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      const language = getLanguageDisplayName(settings.language || 'italian');
+      
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${language} Learning Reminder`,
+          body: `Time for your ${language} lesson! Keep your streak going! 🔥`,
+          sound: true,
+        },
+        trigger: null, // Show immediately
+      });
+      
       Alert.alert(
-        'Error',
+        'Full Test Sent',
+        'This simulates a real learning notification.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('❌ Full test error:', error);
+      Alert.alert(
+        'Test Failed',
         'Failed to send test notification.',
         [{ text: 'OK' }]
       );
     }
   };
 
-  const handleForceSchedule = async () => {
+  const handleScheduleTest = async () => {
     try {
-      if (notificationPermission === 'granted') {
-        // Schedule a test notification for 1 minute
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: 'Scheduled Test',
-            body: 'This notification was scheduled 1 minute ago for testing.',
-            sound: true,
-          },
-          trigger: null
-        });
-        
+      if (!settings?.notificationsEnabled) {
         Alert.alert(
-          'Scheduled test notification',
-          'You should receive a notification in 1 minute.',
+          'Notifications Disabled',
+          'Please enable notifications in settings first.',
           [{ text: 'OK' }]
         );
-      } else {
-        Alert.alert(
-          'Cannot schedule',
-          'Permission not granted.',
-          [{ text: 'OK' }]
-        );
+        return;
       }
+
+      if (devicePermissionStatus !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow notifications in your device settings.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Scheduled Test',
+          body: 'This notification was scheduled 1 minute ago for testing.',
+          sound: true,
+        },
+        trigger: { type: SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 60 },
+      });
+      
+      Alert.alert(
+        'Test Scheduled',
+        'You should receive a notification in 1 minute.',
+        [{ text: 'OK' }]
+      );
     } catch (error) {
       Alert.alert(
-        'Error',
+        'Schedule Failed',
         'Failed to schedule test notification.',
         [{ text: 'OK' }]
       );
     }
   };
-  
-  const refreshPermission = async () => {
-    console.log('🔄 Refreshing permission status');
-    await checkNotificationPermission();
-    Alert.alert(
-      'Permission refreshed',
-      `Current permission: ${notificationPermission}`,
-      [{ text: 'OK' }]
-    );
-  };
 
-  if (!dashboardData && !settings) {
+  // Loading state
+  if (isLoading) {
     return (
       <Card style={styles.card}>
         <CardContent style={styles.loadingContent}>
@@ -401,6 +410,22 @@ export default function NotificationSettings() {
     );
   }
 
+  // Error state (shouldn't happen with fallback)
+  if (!settings) {
+    return (
+      <Card style={styles.card}>
+        <CardContent style={styles.errorContent}>
+          <Text style={styles.errorText}>Unable to load notification settings</Text>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // FIXED: Determine notification status based on DB state
+  const isNotificationsEnabled = settings.notificationsEnabled;
+  const needsDevicePermission = isNotificationsEnabled && devicePermissionStatus !== 'granted';
+  const isFullyEnabled = isNotificationsEnabled && devicePermissionStatus === 'granted';
+
   return (
     <Card style={styles.card}>
       <CardHeader>
@@ -410,19 +435,19 @@ export default function NotificationSettings() {
             <Text style={styles.titleText}>Notifications</Text>
           </View>
           <Switch
-            checked={settings.notificationsEnabled}
+            checked={isNotificationsEnabled}
             onCheckedChange={handleNotificationToggle}
           />
         </CardTitle>
       </CardHeader>
       
       <CardContent style={styles.cardContent}>
-        {/* Language Setting - matching web exactly */}
+        {/* Language Setting */}
         <View style={styles.settingSection}>
           <Text style={styles.sectionLabel}>Language</Text>
           <View style={styles.selectWrapper}>
             <Select
-              value={settings.selectedLanguage}
+              value={settings.language || 'italian'}
               onValueChange={handleLanguageChange}
               options={[
                 { label: 'Spanish', value: 'spanish' },
@@ -435,7 +460,7 @@ export default function NotificationSettings() {
           </View>
         </View>
 
-        {/* Frequency Setting - matching web exactly */}
+        {/* Frequency Setting */}
         <View style={styles.settingSection}>
           <Text style={styles.sectionLabel}>Frequency</Text>
           <View style={styles.selectWrapper}>
@@ -452,7 +477,7 @@ export default function NotificationSettings() {
           </View>
         </View>
 
-        {/* Start Time Setting - matching web exactly */}
+        {/* Start Time Setting */}
         <View style={styles.settingSection}>
           <Text style={styles.sectionLabel}>Start Time</Text>
           <View style={styles.selectWrapper}>
@@ -465,7 +490,7 @@ export default function NotificationSettings() {
           </View>
         </View>
 
-        {/* End Time Setting - matching web exactly */}
+        {/* End Time Setting */}
         <View style={styles.settingSection}>
           <Text style={styles.sectionLabel}>End Time</Text>
           <View style={styles.selectWrapper}>
@@ -473,188 +498,117 @@ export default function NotificationSettings() {
               value={settings.notificationEndTime || "18:00"}
               onValueChange={handleEndTimeChange}
               options={timeOptions}
-              style={styles.select}
             />
           </View>
         </View>
 
-        {/* Permission Warning - matching web exactly */}
-        {notificationPermission !== 'granted' && (
-          <View style={styles.warningContainer}>
-            <View style={styles.warningContent}>
-              <Ionicons 
-                name="information-circle" 
-                size={16} 
-                color="#D97706" 
-                style={styles.warningIcon} 
-              />
-              <View style={styles.warningText}>
-                <Text style={styles.warningTitle}>
-                  {notificationPermission === 'denied' ? 'Permission Blocked' : 'Permission Required'}
+        {/* Status Section - FIXED: Based on DB state */}
+        <View style={styles.statusSection}>
+          {!isNotificationsEnabled ? (
+            // Disabled in database
+            <View style={styles.disabledContainer}>
+              <View style={styles.disabledIcon}>
+                <Ionicons name="notifications-off" size={20} color="#9CA3AF" />
+              </View>
+              <View style={styles.disabledText}>
+                <Text style={styles.disabledTitle}>Notifications Disabled</Text>
+                <Text style={styles.disabledDescription}>
+                  Enable the toggle above to start receiving learning reminders
                 </Text>
-                {notificationPermission === 'denied' ? (
-                  <View>
-                    <Text style={styles.warningDescription}>
-                      Notifications are blocked. To enable:
-                    </Text>
-                    <View style={styles.warningSteps}>
-                      <Text style={styles.warningStep}>1. Go to device Settings</Text>
-                      <Text style={styles.warningStep}>2. Find LingoToday app</Text>
-                      <Text style={styles.warningStep}>3. Enable Notifications</Text>
-                      <Text style={styles.warningStep}>4. Return to this screen</Text>
-                    </View>
-                  </View>
-                ) : (
+              </View>
+            </View>
+          ) : needsDevicePermission ? (
+            // Enabled in DB but needs device permission
+            <View style={styles.warningContainer}>
+              <View style={styles.warningContent}>
+                <Ionicons name="warning" size={16} color="#D97706" style={styles.warningIcon} />
+                <View style={styles.warningText}>
+                  <Text style={styles.warningTitle}>Device Permission Required</Text>
                   <Text style={styles.warningDescription}>
-                    Tap "Allow" when prompted for notification permission.
+                    Notifications are enabled in your LingoToday settings, but your device hasn't granted permission yet.
                   </Text>
-                )}
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Action Buttons - matching web exactly */}
-        {notificationPermission !== 'granted' ? (
-          <View style={styles.actionSection}>
-            <Button
-              onPress={requestNotificationPermission}
-              disabled={notificationPermission === 'denied'}
-              style={[
-                styles.primaryButton,
-                notificationPermission === 'denied' && styles.disabledButton
-              ]}
-            >
-              <Ionicons 
-                name="notifications" 
-                size={16} 
-                color="#ffffff" 
-                style={styles.buttonIcon} 
-              />
-              <Text style={styles.primaryButtonText}>
-                {notificationPermission === 'denied' ? 'Permission Blocked - See Instructions Above' : 'Enable Notifications'}
-              </Text>
-            </Button>
-
-            {/* Debug info when permission not granted - matching web exactly */}
-            <View style={styles.debugSection}>
-              <Text style={styles.debugTitle}>Debug Info</Text>
-              <View style={styles.debugInfo}>
-                <View style={styles.debugItem}>
-                  <Text style={styles.debugLabel}>Permission:</Text>
-                  <Text style={styles.debugValue}>{notificationPermission}</Text>
-                </View>
-                <View style={styles.debugItem}>
-                  <Text style={styles.debugLabel}>API Support:</Text>
-                  <Text style={styles.debugValue}>React Native Expo</Text>
-                </View>
-                <View style={styles.debugItem}>
-                  <Text style={styles.debugLabel}>Platform:</Text>
-                  <Text style={styles.debugValue}>{Platform.OS}</Text>
+                  <View style={styles.warningSteps}>
+                    <Text style={styles.warningStep}>1. Toggle notifications off and on again</Text>
+                    <Text style={styles.warningStep}>2. Tap "Allow" when prompted</Text>
+                    <Text style={styles.warningStep}>3. Or go to device Settings → LingoToday → Notifications</Text>
+                  </View>
                 </View>
               </View>
-              
-              <Button 
-                variant="outline"
-                onPress={refreshPermission}
-                style={styles.debugButton}
-              >
-                <Text style={styles.debugButtonText}>Refresh Permission</Text>
-              </Button>
             </View>
-          </View>
-        ) : (
-          <View style={styles.actionSection}>
-            {/* Enabled State - matching web exactly */}
+          ) : (
+            // Fully enabled
             <View style={styles.enabledContainer}>
               <View style={styles.enabledIcon}>
                 <Ionicons name="checkmark-circle" size={20} color="#059669" />
               </View>
-              <Text style={styles.enabledText}>
-                Notifications {settings.notificationsEnabled ? 'Enabled' : 'Available'}
-              </Text>
-            </View>
-
-            {/* Test Buttons - matching web exactly */}
-            {settings.notificationsEnabled && (
-              <View style={styles.testSection}>
-                <View style={styles.testButtons}>
-                  <Button 
-                    variant="outline" 
-                    onPress={handleSimpleTest}
-                    style={styles.testButton}
-                  >
-                    <Text style={styles.testButtonText}>Simple Test</Text>
-                  </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    onPress={handleFullTest}
-                    style={styles.testButton}
-                  >
-                    <Text style={styles.testButtonText}>Full Test</Text>
-                  </Button>
-                </View>
-
-                {/* Debug Panel for notifications - matching web exactly */}
-                <View style={styles.debugSection}>
-                  <Text style={styles.debugTitle}>Debug Info</Text>
-                  <View style={styles.debugInfo}>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>Permission:</Text>
-                      <Text style={styles.debugValue}>{notificationPermission}</Text>
-                    </View>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>Enabled:</Text>
-                      <Text style={styles.debugValue}>{settings.notificationsEnabled ? 'true' : 'false'}</Text>
-                    </View>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>Language:</Text>
-                      <Text style={styles.debugValue}>{settings.selectedLanguage}</Text>
-                    </View>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>Frequency:</Text>
-                      <Text style={styles.debugValue}>{settings.notificationFrequency} min</Text>
-                    </View>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>Start Time:</Text>
-                      <Text style={styles.debugValue}>{settings.notificationStartTime}</Text>
-                    </View>
-                    <View style={styles.debugItem}>
-                      <Text style={styles.debugLabel}>End Time:</Text>
-                      <Text style={styles.debugValue}>{settings.notificationEndTime}</Text>
-                    </View>
-                  </View>
-                  
-                  <View style={styles.debugButtons}>
-                    <Button 
-                      variant="outline"
-                      onPress={handleForceSchedule}
-                      style={styles.debugButton}
-                    >
-                      <Text style={styles.debugButtonText}>Force Schedule (1min test)</Text>
-                    </Button>
-                    
-                    <Button 
-                      variant="outline"
-                      onPress={refreshPermission}
-                      style={styles.debugButton}
-                    >
-                      <Text style={styles.debugButtonText}>Refresh Permission</Text>
-                    </Button>
-                  </View>
-                </View>
+              <View style={styles.enabledText}>
+                <Text style={styles.enabledTitle}>Notifications Active</Text>
+                <Text style={styles.enabledDescription}>
+                  You'll receive {getLanguageDisplayName(settings.language || 'italian')} reminders every {settings.notificationFrequency} minutes
+                </Text>
               </View>
-            )}
+            </View>
+          )}
+        </View>
+
+        {/* Test Section - only show when fully enabled */}
+        {isFullyEnabled && (
+          <View style={styles.testSection}>
+            <Text style={styles.testTitle}>Test Notifications</Text>
+            <View style={styles.testButtons}>
+              <Button 
+                variant="outline" 
+                onPress={handleSimpleTest}
+                style={styles.testButton}
+              >
+                <Ionicons name="notifications" size={16} color="#374151" />
+                <Text style={styles.testButtonText}>Test Now</Text>
+              </Button>
+{/*               
+              <Button 
+                variant="outline" 
+                onPress={handleFullTest}
+                style={styles.testButton}
+              >
+                <Text style={styles.testButtonText}>Full Test</Text>
+              </Button> */}
+            </View>
+{/*             
+            <Button 
+              variant="outline" 
+              onPress={handleScheduleTest}
+              style={styles.fullWidthButton}
+            >
+              <Text style={styles.testButtonText}>Schedule Test (1 min)</Text>
+            </Button> */}
           </View>
         )}
+
+        {/* Debug Section */}
+        <View style={styles.debugSection}>
+          <Text style={styles.debugTitle}>Settings</Text>
+          <View style={styles.debugInfo}>
+            <View style={styles.debugItem}>
+              <Text style={styles.debugLabel}>Language</Text>
+              <Text style={styles.debugValue}>{settings.language || 'italian'}</Text>
+            </View>
+            <View style={styles.debugItem}>
+              <Text style={styles.debugLabel}>Level</Text>
+              <Text style={styles.debugValue}>{settings.difficultyLevel || 'beginner'}</Text>
+            </View>
+            <View style={styles.debugItem}>
+              <Text style={styles.debugLabel}>Notifications</Text>
+              <Text style={styles.debugValue}>{isNotificationsEnabled ? 'Enabled' : 'Disabled'}</Text>
+            </View>
+          </View>
+        </View>
       </CardContent>
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  // Card - enhanced design matching web
+  // Card styles
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
@@ -673,7 +627,7 @@ const styles = StyleSheet.create({
     }),
   },
   
-  // Header - matching web exactly
+  // Header styles
   cardTitle: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -682,8 +636,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    paddingRight: 6,
+    gap: 8,
   },
   titleText: {
     fontSize: 18,
@@ -691,12 +644,12 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   
-  // Content - matching web exactly
+  // Content styles
   cardContent: {
-    gap: 16,
+    gap: 20,
   },
   
-  // Loading
+  // Loading styles
   loadingContent: {
     padding: 24,
   },
@@ -710,7 +663,17 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   
-  // Setting Sections - matching web exactly
+  // Error styles
+  errorContent: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#EF4444',
+  },
+  
+  // Setting section styles
   settingSection: {
     gap: 8,
   },
@@ -718,7 +681,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#374151',
-    marginBottom: 8,
   },
   selectWrapper: {
     flex: 1,
@@ -729,11 +691,51 @@ const styles = StyleSheet.create({
     borderColor: '#D1D5DB',
     borderRadius: 6,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
     fontSize: 14,
   },
   
-  // Warning - matching web exactly
+  // Status section styles
+  statusSection: {
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  
+  // Disabled state
+  disabledContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 12,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  disabledIcon: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  disabledText: {
+    flex: 1,
+  },
+  disabledTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  disabledDescription: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 2,
+  },
+  
+  // Warning state
   warningContainer: {
     backgroundColor: '#FEF3C7',
     borderWidth: 1,
@@ -751,7 +753,6 @@ const styles = StyleSheet.create({
   },
   warningText: {
     flex: 1,
-    gap: 8,
   },
   warningTitle: {
     fontSize: 14,
@@ -761,47 +762,18 @@ const styles = StyleSheet.create({
   warningDescription: {
     fontSize: 12,
     color: '#A16207',
+    marginTop: 4,
   },
   warningSteps: {
-    gap: 4,
     marginTop: 8,
+    gap: 4,
   },
   warningStep: {
     fontSize: 12,
     color: '#A16207',
   },
   
-  // Action Section
-  actionSection: {
-    gap: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  
-  // Primary Button
-  primaryButton: {
-    backgroundColor: theme.colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 6,
-    gap: 8,
-  },
-  disabledButton: {
-    backgroundColor: '#9CA3AF',
-  },
-  buttonIcon: {
-    marginRight: 4,
-  },
-  primaryButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  
-  // Enabled State
+  // Enabled state
   enabledContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -813,22 +785,38 @@ const styles = StyleSheet.create({
     borderColor: '#BBF7D0',
   },
   enabledIcon: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     backgroundColor: '#DCFCE7',
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   enabledText: {
+    flex: 1,
+  },
+  enabledTitle: {
     fontSize: 14,
-    color: '#047857',
     fontWeight: '500',
+    color: '#047857',
+  },
+  enabledDescription: {
+    fontSize: 12,
+    color: '#059669',
+    marginTop: 2,
   },
   
-  // Test Section
+  // Test section styles
   testSection: {
     gap: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  testTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
   },
   testButtons: {
     flexDirection: 'row',
@@ -842,28 +830,37 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 6,
   },
+  fullWidthButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
   testButtonText: {
     fontSize: 12,
     color: '#374151',
     textAlign: 'center',
+    fontWeight: '500',
   },
   
-  // Debug Section - matching web exactly
+  // Debug section styles
   debugSection: {
     backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 8,
     padding: 12,
-    gap: 12,
+    gap: 8,
   },
   debugTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
+    color: '#6B7280',
+    letterSpacing: 0.5,
   },
   debugInfo: {
-    gap: 6,
+    gap: 4,
   },
   debugItem: {
     flexDirection: 'row',
@@ -872,26 +869,12 @@ const styles = StyleSheet.create({
   },
   debugLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#9CA3AF',
   },
   debugValue: {
     fontSize: 12,
     color: '#374151',
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-  },
-  debugButtons: {
-    gap: 8,
-  },
-  debugButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  debugButtonText: {
-    fontSize: 12,
-    color: '#374151',
-    textAlign: 'center',
+    fontWeight: '500',
   },
 });
