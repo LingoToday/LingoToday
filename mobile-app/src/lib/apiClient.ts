@@ -65,11 +65,15 @@ export interface DashboardData {
 }
 
 interface UserSettings {
+  userId: string;
+  language: string;
+  theme: string;
+  soundEnabled: boolean;
   notificationsEnabled: boolean;
   notificationFrequency: number;
   notificationStartTime: string;
   notificationEndTime: string;
-  selectedLanguage: string;
+  difficultyLevel: string;
 }
 
 export interface CourseStats {
@@ -85,56 +89,19 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
-// Enhanced API base URL detection with proper backend port
-function getApiBaseUrl(): string {
-  // Production environment
-  if (!__DEV__) {
-    return 'https://languagemate.replit.app';
-  }
-  
-  // Development environment - check for custom API URL in app config
-  const customApiUrl = Constants.expoConfig?.extra?.apiUrl;
-  if (customApiUrl) {
-    return customApiUrl;
-  }
-  
-  // Development environment - detect device type and use appropriate localhost
-  if (Platform.OS === 'web') {
-    return 'http://localhost:8080'; // Changed to port 8080
-  }
-  
-  // Get development machine IP from Expo Constants for physical devices
-  const debuggerHost = Constants.expoConfig?.hostUri?.split(':')[0];
-  
-  if (Platform.OS === 'android') {
-    // Android emulator uses 10.0.2.2 to access host machine's localhost
-    // For real Android devices, use the debugger host IP if available
-    if (debuggerHost && !debuggerHost.includes('localhost') && !debuggerHost.includes('127.0.0.1')) {
-      return `http://${debuggerHost}:8080`; // Changed to port 8080
-    }
-    return 'http://10.0.2.2:8080'; // Changed to port 8080
-  }
-  
-  if (Platform.OS === 'ios') {
-    // iOS simulator can use localhost
-    // For real iOS devices, use the debugger host IP if available
-    if (debuggerHost && !debuggerHost.includes('localhost') && !debuggerHost.includes('127.0.0.1')) {
-      return `http://${debuggerHost}:8080`; // Changed to port 8080
-    }
-    return 'http://localhost:8080'; // Changed to port 8080
-  }
-  
-  return 'http://localhost:8080'; // Changed to port 8080
-}
-
-const API_BASE_URL = getApiBaseUrl();
-
-// const API_BASE_URL = 'https://159e17ee3712.ngrok-free.app'
+const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl;
 
 export class ApiClient {
+  // Platform-aware secure storage
   private async getAuthToken(): Promise<string | null> {
     try {
-      return await SecureStore.getItemAsync('authToken');
+      if (Platform.OS === 'web') {
+        // Use localStorage on web
+        return localStorage.getItem('authToken');
+      } else {
+        // Use SecureStore on native platforms
+        return await SecureStore.getItemAsync('authToken');
+      }
     } catch (error) {
       console.error('Error getting auth token:', error);
       return null;
@@ -143,7 +110,13 @@ export class ApiClient {
 
   private async setAuthToken(token: string): Promise<void> {
     try {
-      await SecureStore.setItemAsync('authToken', token);
+      if (Platform.OS === 'web') {
+        // Use localStorage on web
+        localStorage.setItem('authToken', token);
+      } else {
+        // Use SecureStore on native platforms
+        await SecureStore.setItemAsync('authToken', token);
+      }
     } catch (error) {
       console.error('Error setting auth token:', error);
     }
@@ -151,7 +124,13 @@ export class ApiClient {
 
   private async removeAuthToken(): Promise<void> {
     try {
-      await SecureStore.deleteItemAsync('authToken');
+      if (Platform.OS === 'web') {
+        // Use localStorage on web
+        localStorage.removeItem('authToken');
+      } else {
+        // Use SecureStore on native platforms
+        await SecureStore.deleteItemAsync('authToken');
+      }
     } catch (error) {
       console.error('Error removing auth token:', error);
     }
@@ -169,12 +148,19 @@ export class ApiClient {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
 
+    // Platform-aware credentials handling
+    const requestOptions: RequestInit = {
+      ...options,
+      headers,
+    };
+
+    // Only include credentials on native platforms or when not using wildcards
+    if (Platform.OS !== 'web') {
+      requestOptions.credentials = 'include';
+    }
+
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-        credentials: 'include', // Include cookies for session-based auth
-      });
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
 
       // Handle non-200 responses
       if (!response.ok) {
@@ -301,10 +287,9 @@ export class ApiClient {
   }
 
   // Subscription routes - matching web routes exactly
-  async createSubscription(priceId: string) {
+  async createSubscription() {
     return this.makeRequest('/api/create-subscription', {
       method: 'POST',
-      body: JSON.stringify({ priceId }),
     });
   }
 
