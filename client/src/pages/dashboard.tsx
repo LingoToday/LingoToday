@@ -1177,13 +1177,6 @@ export default function Dashboard() {
                     Test Now
                   </Button>
                 </div>
-
-                <div className="pt-4 border-t space-y-2 text-xs text-gray-600">
-                  <div>Settings</div>
-                  <div>Language: {user.selectedLanguage ? getLanguageDisplayName(user.selectedLanguage) : 'Not selected'}</div>
-                  <div>Level: {user.selectedLevel ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase() : 'Not selected'}</div>
-                  <div>Notifications: {settings?.notificationsEnabled ? 'Enabled' : 'Disabled'}</div>
-                </div>
               </CardContent>
             </Card>
 
