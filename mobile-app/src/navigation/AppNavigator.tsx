@@ -127,12 +127,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             <Stack.Screen 
               name="Lesson" 
               component={LessonScreenNew}
-              options={{ presentation: 'modal' }}
             />
             <Stack.Screen 
               name="Checkpoint" 
               component={CheckpointScreen as any}
-              options={{ presentation: 'modal' }}
             />
             
             {/* Static pages */}
@@ -164,12 +162,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             <Stack.Screen 
               name="Lesson" 
               component={LessonScreenNew}
-              options={{ presentation: 'modal' }}
             />
             <Stack.Screen 
               name="Checkpoint" 
               component={CheckpointScreen as any}
-              options={{ presentation: 'modal' }}
             />
             
             {/* Static pages */}
