@@ -350,14 +350,14 @@ export default function Onboarding() {
           onRequestPermission={requestNotificationPermission}
         />;
       case 5:
+        return <TestimonialsScreen onContinue={nextScreen} />;
+      case 6:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 6:
-        return <TestimonialsScreen onContinue={nextScreen} />;
       case 7:
         return <PaymentScreen />;
       default:
