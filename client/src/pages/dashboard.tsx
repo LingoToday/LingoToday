@@ -980,7 +980,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Frequency</span>
                       <Select 
-                        value={dashboardData?.settings?.mobileNotificationFrequency?.toString() || "15"}
+                        value={dashboardData?.settings?.mobileNotificationFrequency?.toString() || "60"}
                         onValueChange={(value) => {
                           updateSettingsMutation.mutate({
                             mobileNotificationFrequency: parseInt(value),
@@ -1101,7 +1101,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Frequency</span>
                       <Select 
-                        value={dashboardData?.settings?.desktopNotificationFrequency?.toString() || "15"}
+                        value={dashboardData?.settings?.desktopNotificationFrequency?.toString() || "60"}
                         onValueChange={(value) => {
                           updateSettingsMutation.mutate({
                             desktopNotificationFrequency: parseInt(value),

@@ -178,7 +178,7 @@ export default function NotificationSettings() {
             <div>
               <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
               <Select 
-                value={settings.mobileNotificationFrequency?.toString() || "15"} 
+                value={settings.mobileNotificationFrequency?.toString() || "60"} 
                 onValueChange={(value) => {
                   updateSettingsMutation.mutate({
                     ...settings,
@@ -294,7 +294,7 @@ export default function NotificationSettings() {
             <div>
               <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
               <Select 
-                value={settings.desktopNotificationFrequency?.toString() || "15"} 
+                value={settings.desktopNotificationFrequency?.toString() || "60"} 
                 onValueChange={(value) => {
                   updateSettingsMutation.mutate({
                     ...settings,
