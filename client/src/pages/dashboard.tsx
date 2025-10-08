@@ -927,20 +927,9 @@ export default function Dashboard() {
 
                 {/* Mobile Notifications */}
                 <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Smartphone className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-semibold">Mobile</span>
-                    </div>
-                    <Switch 
-                      checked={dashboardData?.settings?.mobileNotificationsEnabled || false}
-                      onCheckedChange={(enabled) => {
-                        updateSettingsMutation.mutate({
-                          mobileNotificationsEnabled: enabled,
-                        });
-                      }}
-                      data-testid="toggle-mobile-notifications"
-                    />
+                  <div className="flex items-center space-x-2">
+                    <Smartphone className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-semibold">Mobile</span>
                   </div>
 
                   {/* Days Circles for Mobile */}
@@ -973,94 +962,95 @@ export default function Dashboard() {
                     })}
                   </div>
 
-                  {dashboardData?.settings?.mobileNotificationsEnabled && (
-                    <div className="space-y-2 pt-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Frequency</span>
-                        <Select 
-                          value={dashboardData?.settings?.mobileNotificationFrequency?.toString() || "15"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              mobileNotificationFrequency: parseInt(value),
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="15">15 min</SelectItem>
-                            <SelectItem value="30">30 min</SelectItem>
-                            <SelectItem value="60">60 min</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Start Time</span>
-                        <Select 
-                          value={dashboardData?.settings?.mobileNotificationStartTime || "09:00"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              mobileNotificationStartTime: value,
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {timeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">End Time</span>
-                        <Select 
-                          value={dashboardData?.settings?.mobileNotificationEndTime || "18:00"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              mobileNotificationEndTime: value,
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {timeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  {/* Mobile Controls */}
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Enable</span>
+                      <Switch 
+                        checked={dashboardData?.settings?.mobileNotificationsEnabled || false}
+                        onCheckedChange={(enabled) => {
+                          updateSettingsMutation.mutate({
+                            mobileNotificationsEnabled: enabled,
+                          });
+                        }}
+                        data-testid="toggle-mobile-notifications"
+                      />
                     </div>
-                  )}
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Frequency</span>
+                      <Select 
+                        value={dashboardData?.settings?.mobileNotificationFrequency?.toString() || "15"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            mobileNotificationFrequency: parseInt(value),
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="15">15 min</SelectItem>
+                          <SelectItem value="30">30 min</SelectItem>
+                          <SelectItem value="60">60 min</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Start Time</span>
+                      <Select 
+                        value={dashboardData?.settings?.mobileNotificationStartTime || "09:00"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            mobileNotificationStartTime: value,
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">End Time</span>
+                      <Select 
+                        value={dashboardData?.settings?.mobileNotificationEndTime || "18:00"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            mobileNotificationEndTime: value,
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Desktop Notifications */}
                 <div className="space-y-3 pt-3 border-t">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Monitor className="w-4 h-4 text-purple-600" />
-                      <span className="text-sm font-semibold">Desktop</span>
-                    </div>
-                    <Switch 
-                      checked={dashboardData?.settings?.desktopNotificationsEnabled || false}
-                      onCheckedChange={(enabled) => {
-                        updateSettingsMutation.mutate({
-                          desktopNotificationsEnabled: enabled,
-                        });
-                      }}
-                      data-testid="toggle-desktop-notifications"
-                    />
+                  <div className="flex items-center space-x-2">
+                    <Monitor className="w-4 h-4 text-purple-600" />
+                    <span className="text-sm font-semibold">Desktop</span>
                   </div>
 
                   {/* Days Circles for Desktop */}
@@ -1093,76 +1083,88 @@ export default function Dashboard() {
                     })}
                   </div>
 
-                  {dashboardData?.settings?.desktopNotificationsEnabled && (
-                    <div className="space-y-2 pt-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Frequency</span>
-                        <Select 
-                          value={dashboardData?.settings?.desktopNotificationFrequency?.toString() || "15"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              desktopNotificationFrequency: parseInt(value),
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="15">15 min</SelectItem>
-                            <SelectItem value="30">30 min</SelectItem>
-                            <SelectItem value="60">60 min</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Start Time</span>
-                        <Select 
-                          value={dashboardData?.settings?.desktopNotificationStartTime || "09:00"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              desktopNotificationStartTime: value,
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {timeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">End Time</span>
-                        <Select 
-                          value={dashboardData?.settings?.desktopNotificationEndTime || "18:00"}
-                          onValueChange={(value) => {
-                            updateSettingsMutation.mutate({
-                              desktopNotificationEndTime: value,
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-24 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {timeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  {/* Desktop Controls */}
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Enable</span>
+                      <Switch 
+                        checked={dashboardData?.settings?.desktopNotificationsEnabled || false}
+                        onCheckedChange={(enabled) => {
+                          updateSettingsMutation.mutate({
+                            desktopNotificationsEnabled: enabled,
+                          });
+                        }}
+                        data-testid="toggle-desktop-notifications"
+                      />
                     </div>
-                  )}
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Frequency</span>
+                      <Select 
+                        value={dashboardData?.settings?.desktopNotificationFrequency?.toString() || "15"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            desktopNotificationFrequency: parseInt(value),
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="15">15 min</SelectItem>
+                          <SelectItem value="30">30 min</SelectItem>
+                          <SelectItem value="60">60 min</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Start Time</span>
+                      <Select 
+                        value={dashboardData?.settings?.desktopNotificationStartTime || "09:00"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            desktopNotificationStartTime: value,
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">End Time</span>
+                      <Select 
+                        value={dashboardData?.settings?.desktopNotificationEndTime || "18:00"}
+                        onValueChange={(value) => {
+                          updateSettingsMutation.mutate({
+                            desktopNotificationEndTime: value,
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-24 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
 
                 {notificationPermission !== "granted" && (
