@@ -494,13 +494,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         user,
-        settings: {
-          notificationsEnabled: settings.notificationsEnabled,
-          notificationFrequency: settings.notificationFrequency || 15,
-          notificationStartTime: settings.notificationStartTime || "09:00",
-          notificationEndTime: settings.notificationEndTime || "18:00",
-          selectedLanguage: settings.language,
-        },
+        settings,
         stats: {
           ...stats,
           lessonsCompleted: stats.lessonsCompleted || 0,
