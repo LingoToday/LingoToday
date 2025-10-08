@@ -918,13 +918,6 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Language</span>
-                    <span className="text-sm text-gray-600">{user.selectedLanguage ? getLanguageDisplayName(user.selectedLanguage) : 'Not selected'}</span>
-                  </div>
-                </div>
-
                 {/* Mobile Notifications */}
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center space-x-2">
