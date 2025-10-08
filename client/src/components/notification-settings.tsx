@@ -133,21 +133,9 @@ export default function NotificationSettings() {
 
         {/* Mobile Notifications Section */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Smartphone className="h-5 w-5 text-blue-600" />
-              <h3 className="text-lg font-semibold">Mobile</h3>
-            </div>
-            <Switch
-              checked={settings.mobileNotificationsEnabled}
-              onCheckedChange={(enabled) => {
-                updateSettingsMutation.mutate({
-                  ...settings,
-                  mobileNotificationsEnabled: enabled,
-                });
-              }}
-              data-testid="toggle-mobile-notifications"
-            />
+          <div className="flex items-center space-x-2">
+            <Smartphone className="h-5 w-5 text-blue-600" />
+            <h3 className="text-lg font-semibold">Mobile</h3>
           </div>
 
           {/* Days Circles for Mobile */}
@@ -171,98 +159,99 @@ export default function NotificationSettings() {
             })}
           </div>
 
-          {settings.mobileNotificationsEnabled && (
-            <div className="space-y-4 pt-2">
+          {/* Mobile Controls */}
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium text-gray-700">Enable</Label>
+              <Switch
+                checked={settings.mobileNotificationsEnabled}
+                onCheckedChange={(enabled) => {
+                  updateSettingsMutation.mutate({
+                    ...settings,
+                    mobileNotificationsEnabled: enabled,
+                  });
+                }}
+                data-testid="toggle-mobile-notifications"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
+              <Select 
+                value={settings.mobileNotificationFrequency?.toString() || "15"} 
+                onValueChange={(value) => {
+                  updateSettingsMutation.mutate({
+                    ...settings,
+                    mobileNotificationFrequency: parseInt(value),
+                  });
+                }}
+              >
+                <SelectTrigger data-testid="select-mobile-frequency">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="15">15 min</SelectItem>
+                  <SelectItem value="30">30 min</SelectItem>
+                  <SelectItem value="60">60 min</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">Start Time</Label>
                 <Select 
-                  value={settings.mobileNotificationFrequency?.toString() || "15"} 
+                  value={settings.mobileNotificationStartTime || "09:00"} 
                   onValueChange={(value) => {
                     updateSettingsMutation.mutate({
                       ...settings,
-                      mobileNotificationFrequency: parseInt(value),
+                      mobileNotificationStartTime: value,
                     });
                   }}
                 >
-                  <SelectTrigger data-testid="select-mobile-frequency">
+                  <SelectTrigger data-testid="select-mobile-start-time">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="15">15 min</SelectItem>
-                    <SelectItem value="30">30 min</SelectItem>
-                    <SelectItem value="60">60 min</SelectItem>
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hour = i.toString().padStart(2, '0');
+                      return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
+                    })}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Start Time</Label>
-                  <Select 
-                    value={settings.mobileNotificationStartTime || "09:00"} 
-                    onValueChange={(value) => {
-                      updateSettingsMutation.mutate({
-                        ...settings,
-                        mobileNotificationStartTime: value,
-                      });
-                    }}
-                  >
-                    <SelectTrigger data-testid="select-mobile-start-time">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, '0');
-                        return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">End Time</Label>
-                  <Select 
-                    value={settings.mobileNotificationEndTime || "18:00"} 
-                    onValueChange={(value) => {
-                      updateSettingsMutation.mutate({
-                        ...settings,
-                        mobileNotificationEndTime: value,
-                      });
-                    }}
-                  >
-                    <SelectTrigger data-testid="select-mobile-end-time">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, '0');
-                        return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">End Time</Label>
+                <Select 
+                  value={settings.mobileNotificationEndTime || "18:00"} 
+                  onValueChange={(value) => {
+                    updateSettingsMutation.mutate({
+                      ...settings,
+                      mobileNotificationEndTime: value,
+                    });
+                  }}
+                >
+                  <SelectTrigger data-testid="select-mobile-end-time">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hour = i.toString().padStart(2, '0');
+                      return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Desktop Notifications Section */}
         <div className="space-y-4 pt-4 border-t">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Monitor className="h-5 w-5 text-purple-600" />
-              <h3 className="text-lg font-semibold">Desktop</h3>
-            </div>
-            <Switch
-              checked={settings.desktopNotificationsEnabled}
-              onCheckedChange={(enabled) => {
-                updateSettingsMutation.mutate({
-                  ...settings,
-                  desktopNotificationsEnabled: enabled,
-                });
-              }}
-              data-testid="toggle-desktop-notifications"
-            />
+          <div className="flex items-center space-x-2">
+            <Monitor className="h-5 w-5 text-purple-600" />
+            <h3 className="text-lg font-semibold">Desktop</h3>
           </div>
 
           {/* Days Circles for Desktop */}
@@ -286,79 +275,92 @@ export default function NotificationSettings() {
             })}
           </div>
 
-          {settings.desktopNotificationsEnabled && (
-            <div className="space-y-4 pt-2">
+          {/* Desktop Controls */}
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium text-gray-700">Enable</Label>
+              <Switch
+                checked={settings.desktopNotificationsEnabled}
+                onCheckedChange={(enabled) => {
+                  updateSettingsMutation.mutate({
+                    ...settings,
+                    desktopNotificationsEnabled: enabled,
+                  });
+                }}
+                data-testid="toggle-desktop-notifications"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
+              <Select 
+                value={settings.desktopNotificationFrequency?.toString() || "15"} 
+                onValueChange={(value) => {
+                  updateSettingsMutation.mutate({
+                    ...settings,
+                    desktopNotificationFrequency: parseInt(value),
+                  });
+                }}
+              >
+                <SelectTrigger data-testid="select-desktop-frequency">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="15">15 min</SelectItem>
+                  <SelectItem value="30">30 min</SelectItem>
+                  <SelectItem value="60">60 min</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">Start Time</Label>
                 <Select 
-                  value={settings.desktopNotificationFrequency?.toString() || "15"} 
+                  value={settings.desktopNotificationStartTime || "09:00"} 
                   onValueChange={(value) => {
                     updateSettingsMutation.mutate({
                       ...settings,
-                      desktopNotificationFrequency: parseInt(value),
+                      desktopNotificationStartTime: value,
                     });
                   }}
                 >
-                  <SelectTrigger data-testid="select-desktop-frequency">
+                  <SelectTrigger data-testid="select-desktop-start-time">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="15">15 min</SelectItem>
-                    <SelectItem value="30">30 min</SelectItem>
-                    <SelectItem value="60">60 min</SelectItem>
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hour = i.toString().padStart(2, '0');
+                      return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
+                    })}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Start Time</Label>
-                  <Select 
-                    value={settings.desktopNotificationStartTime || "09:00"} 
-                    onValueChange={(value) => {
-                      updateSettingsMutation.mutate({
-                        ...settings,
-                        desktopNotificationStartTime: value,
-                      });
-                    }}
-                  >
-                    <SelectTrigger data-testid="select-desktop-start-time">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, '0');
-                        return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">End Time</Label>
-                  <Select 
-                    value={settings.desktopNotificationEndTime || "18:00"} 
-                    onValueChange={(value) => {
-                      updateSettingsMutation.mutate({
-                        ...settings,
-                        desktopNotificationEndTime: value,
-                      });
-                    }}
-                  >
-                    <SelectTrigger data-testid="select-desktop-end-time">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, '0');
-                        return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">End Time</Label>
+                <Select 
+                  value={settings.desktopNotificationEndTime || "18:00"} 
+                  onValueChange={(value) => {
+                    updateSettingsMutation.mutate({
+                      ...settings,
+                      desktopNotificationEndTime: value,
+                    });
+                  }}
+                >
+                  <SelectTrigger data-testid="select-desktop-end-time">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hour = i.toString().padStart(2, '0');
+                      return <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>;
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {notificationPermission !== "granted" && (
