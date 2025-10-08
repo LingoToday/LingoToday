@@ -15,6 +15,7 @@ import ProgressScreenNew from '../screens/ProgressScreenNew';
 import LessonScreenNew from '../screens/LessonScreenNew';
 import CheckpointScreen from '../screens/CheckpointScreen';
 import SubscribeScreen from '../screens/SubscribeScreen';
+import SubscriptionScreen from '../screens/SubscriptionScreen';
 import TermsScreen from '../screens/TermsScreen';
 import PrivacyScreen from '../screens/PrivacyScreen';
 import ContactScreen from '../screens/ContactScreen';
@@ -42,6 +43,7 @@ export type RootStackParamList = {
   Lesson: { lessonId: string; language?: string; courseId?: string; from?: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
+  Subscription: undefined;
   Terms: undefined;
   Privacy: undefined;
   Contact: undefined;
@@ -184,6 +186,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             
             <Stack.Screen name="Desktop" component={DesktopScreen} />
             <Stack.Screen name="Subscribe" component={SubscribeScreen} />
+            <Stack.Screen name="Subscription" component={SubscriptionScreen} />
             <Stack.Screen name="Analytics" component={AnalyticsScreen} />
             <Stack.Screen name="CourseManager" component={CourseManagerScreen} />
             
