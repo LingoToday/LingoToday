@@ -301,18 +301,18 @@ export const userSettings = pgTable('user_settings', {
   theme: text('theme').default('light').notNull(),
   soundEnabled: boolean('sound_enabled').default(true).notNull(),
   notificationsEnabled: boolean('notifications_enabled').default(true).notNull(),
-  notificationFrequency: integer('notification_frequency').default(15).notNull(), // in minutes
+  notificationFrequency: integer('notification_frequency').default(60).notNull(), // in minutes
   notificationStartTime: text('notification_start_time').default('09:00').notNull(), // 24-hour format HH:MM
   notificationEndTime: text('notification_end_time').default('18:00').notNull(), // 24-hour format HH:MM
   // Mobile notification settings
   mobileNotificationsEnabled: boolean('mobile_notifications_enabled').default(true).notNull(),
-  mobileNotificationFrequency: integer('mobile_notification_frequency').default(15).notNull(),
+  mobileNotificationFrequency: integer('mobile_notification_frequency').default(60).notNull(),
   mobileNotificationStartTime: text('mobile_notification_start_time').default('09:00').notNull(),
   mobileNotificationEndTime: text('mobile_notification_end_time').default('18:00').notNull(),
   mobileNotificationDays: text('mobile_notification_days').array().default(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']).notNull(),
   // Desktop notification settings
   desktopNotificationsEnabled: boolean('desktop_notifications_enabled').default(true).notNull(),
-  desktopNotificationFrequency: integer('desktop_notification_frequency').default(15).notNull(),
+  desktopNotificationFrequency: integer('desktop_notification_frequency').default(60).notNull(),
   desktopNotificationStartTime: text('desktop_notification_start_time').default('09:00').notNull(),
   desktopNotificationEndTime: text('desktop_notification_end_time').default('18:00').notNull(),
   desktopNotificationDays: text('desktop_notification_days').array().default(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']).notNull(),

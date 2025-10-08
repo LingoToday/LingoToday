@@ -654,7 +654,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const defaultSettings = await storage.upsertUserSettings({
           userId,
           language: "spanish",
-          notificationFrequency: 30,
+          notificationFrequency: 60,
           notificationsEnabled: false,
         });
         return res.json(defaultSettings);
@@ -678,7 +678,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         theme: existingSettings?.theme || "light",
         soundEnabled: existingSettings?.soundEnabled ?? true,
         notificationsEnabled: req.body.notificationsEnabled ?? (existingSettings?.notificationsEnabled ?? false),
-        notificationFrequency: req.body.notificationFrequency ?? (existingSettings?.notificationFrequency ?? 15),
+        notificationFrequency: req.body.notificationFrequency ?? (existingSettings?.notificationFrequency ?? 60),
         notificationStartTime: req.body.notificationStartTime ?? (existingSettings?.notificationStartTime ?? "09:00"),
         notificationEndTime: req.body.notificationEndTime ?? (existingSettings?.notificationEndTime ?? "18:00"),
         difficultyLevel: existingSettings?.difficultyLevel || "beginner",
