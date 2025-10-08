@@ -614,22 +614,6 @@ const RegistrationScreen = ({
             </Link>
           </p>
         </div>
-        
-        {/* Features */}
-        <div className="bg-white rounded-xl p-6 shadow-sm mt-6 text-left">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">Take advantage of:</h3>
-          <div className="space-y-3">
-            {[
-              "• Micro-lessons that fit your lifestyle",
-              "• Smart reminders to stay consistent without pressure", 
-              "• Desktop + mobile sync so you can learn anywhere",
-              "• Real-world videos: Practice in video scenes like cafés, shops, and travel moments",
-              "• Backed by proven methods (spaced repetition & retrieval practice)"
-            ].map((feature, index) => (
-              <div key={index} className="text-gray-900 font-semibold text-lg leading-relaxed">{feature}</div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
