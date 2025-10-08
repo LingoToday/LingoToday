@@ -1072,7 +1072,7 @@ export default function Dashboard() {
                           }}
                           className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
                             isSelected
-                              ? 'bg-purple-600 text-white'
+                              ? 'bg-blue-600 text-white'
                               : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                           data-testid={`desktop-day-${day.toLowerCase()}`}

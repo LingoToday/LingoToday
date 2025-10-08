@@ -264,7 +264,7 @@ export default function NotificationSettings() {
                   onClick={() => toggleDay('desktop', day)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                     isSelected
-                      ? 'bg-purple-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                   }`}
                   data-testid={`desktop-day-${day.toLowerCase()}`}
