@@ -389,7 +389,7 @@ export default function Onboarding() {
             <Button
               onClick={nextScreen}
               disabled={!canContinueFromScreen(currentScreen) || isTransitioning}
-              className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full disabled:opacity-50 text-sm"
               data-testid={`button-continue-${currentScreen}`}
             >
               Continue
@@ -409,10 +409,10 @@ const LanguageSelectionScreen = ({ selectedLanguage, onLanguageSelect, languages
   languages: { code: string; name: string; flag: string; }[];
 }) => (
   <div className="text-center">
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <h1 className="text-[28px] font-bold text-gray-900 mb-2">
       Pick your language to master
     </h1>
-    <p className="text-gray-600 mb-8 text-lg">
+    <p className="text-gray-600 mb-8 text-base">
       Learn with science backed micro lessons, designed for your day.
     </p>
     
@@ -442,10 +442,10 @@ const LevelSelectionScreen = ({ selectedLevel, onLevelSelect, levels }: {
   levels: { value: string; title: string; description: string; }[];
 }) => (
   <div className="text-center">
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <h1 className="text-[28px] font-bold text-gray-900 mb-2">
       What's your starting point?
     </h1>
-    <p className="text-gray-600 mb-8 text-lg">
+    <p className="text-gray-600 mb-8 text-base">
       Your plan will adapt to your current skill level.
     </p>
     
@@ -475,10 +475,10 @@ const LearningStyleScreen = ({ selectedStyle, onStyleSelect, styles }: {
   styles: { value: string; title: string; icon: string; description: string; }[];
 }) => (
   <div className="text-center">
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <h1 className="text-[28px] font-bold text-gray-900 mb-2">
       Where will you learn?
     </h1>
-    <p className="text-gray-600 mb-8 text-lg">
+    <p className="text-gray-600 mb-8 text-base">
       LingoToday works everywhere—your progress follows you.
     </p>
     
@@ -519,10 +519,10 @@ const RegistrationScreen = ({
   onRegister: () => void;
 }) => (
     <div className="text-center">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className="text-[28px] font-bold text-gray-900 mb-2">
         Create your free account
       </h1>
-      <p className="text-gray-600 mb-8 text-lg">
+      <p className="text-gray-600 mb-8 text-base">
         Let's set up your account and get you learning!
       </p>
       
@@ -595,7 +595,7 @@ const RegistrationScreen = ({
         <Button 
           onClick={onRegister}
           disabled={isRegistering}
-          className="w-full mt-6 bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full disabled:opacity-50"
+          className="w-full mt-6 bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full disabled:opacity-50 text-sm"
           data-testid="button-register"
         >
           {isRegistering ? 'Creating Account...' : 'Create Account'}
@@ -644,10 +644,10 @@ const NotificationScreen = ({
             <BellOff className="w-8 h-8 text-yellow-600" />
           )}
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[28px] font-bold text-gray-900 mb-2">
           {notificationsEnabled ? 'Notifications Enabled!' : 'No Problem!'}
         </h1>
-        <p className="text-gray-600 text-lg">
+        <p className="text-gray-600 text-base">
           {notificationsEnabled 
             ? "We'll send gentle reminders to keep you on track." 
             : "You can always enable notifications later in settings."}
@@ -661,17 +661,17 @@ const NotificationScreen = ({
       <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
         <Bell className="w-8 h-8 text-primary" />
       </div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className="text-[28px] font-bold text-gray-900 mb-2">
         Stay on track with gentle nudges
       </h1>
-      <p className="text-gray-600 mb-8 text-lg">
+      <p className="text-gray-600 mb-8 text-base">
         We'll remind you at the perfect moments so you never miss a lesson.
       </p>
       
       <div className="space-y-3 max-w-sm mx-auto">
         <Button
           onClick={handleEnableNotifications}
-          className="w-full py-3 text-lg"
+          className="w-full py-3 text-base"
           data-testid="button-enable-notifications"
         >
           Enable Notifications
@@ -693,7 +693,7 @@ const LearningPlanScreen = ({
   onStartTrial: () => void;
 }) => (
   <div className="text-center">
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <h1 className="text-[28px] font-bold text-gray-900 mb-2">
       Your Learning Plan is Ready
     </h1>
     
@@ -751,7 +751,7 @@ const LearningPlanScreen = ({
       <div>
         <Button 
           onClick={onStartTrial}
-          className="w-full bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full"
+          className="w-full bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-sm"
           data-testid="button-start-trial"
         >
           Start Free Trial
@@ -961,7 +961,7 @@ const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
       <Button
         type="submit"
         disabled={!stripe || !elements || isProcessing}
-        className="w-full py-4 text-lg font-semibold bg-primary hover:bg-primary/90 disabled:opacity-50"
+        className="w-full py-4 text-base font-semibold bg-primary hover:bg-primary/90 disabled:opacity-50"
         data-testid="button-complete-payment"
       >
         {getButtonIcon()}
@@ -1052,8 +1052,8 @@ const PaymentScreen = () => {
   if (!stripePromiseInstance) {
     return (
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Payment Unavailable</h1>
-        <p className="text-gray-600">Payment system is currently unavailable. Please try again later.</p>
+        <h1 className="text-[28px] font-bold text-gray-900 mb-2">Payment Unavailable</h1>
+        <p className="text-gray-600 text-base">Payment system is currently unavailable. Please try again later.</p>
       </div>
     );
   }
@@ -1061,10 +1061,10 @@ const PaymentScreen = () => {
   if (loading) {
     return (
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Setting up Payment</h1>
+        <h1 className="text-[28px] font-bold text-gray-900 mb-2">Setting up Payment</h1>
         <div className="flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin" />
-          <span className="ml-2 text-gray-600">Loading payment form...</span>
+          <span className="ml-2 text-gray-600 text-base">Loading payment form...</span>
         </div>
       </div>
     );
@@ -1075,10 +1075,10 @@ const PaymentScreen = () => {
     
     return (
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[28px] font-bold text-gray-900 mb-2">
           {isAuthError ? 'Registration Required' : 'Payment Setup Failed'}
         </h1>
-        <p className="text-gray-600 mb-4">{error || 'Unable to setup payment'}</p>
+        <p className="text-gray-600 mb-4 text-base">{error || 'Unable to setup payment'}</p>
         <div className="space-y-3">
           {isAuthError && (
             <Button 
@@ -1102,10 +1102,10 @@ const PaymentScreen = () => {
   
   return (
     <div className="text-center max-w-md mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className="text-[28px] font-bold text-gray-900 mb-2">
         Complete Your Subscription
       </h1>
-      <p className="text-gray-600 mb-6 text-lg">
+      <p className="text-gray-600 mb-6 text-base">
         Start your 5-day free trial now
       </p>
       
