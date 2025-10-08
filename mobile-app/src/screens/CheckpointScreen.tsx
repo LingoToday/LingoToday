@@ -117,7 +117,7 @@ export default function CheckpointScreen({ navigation, route }: CheckpointScreen
   };
 
   const handleReturnToDashboard = () => {
-    navigation.navigate('Main', { screen: 'Dashboard' });
+    navigation.goBack();
   };
 
   const calculatePassingStatus = () => {
