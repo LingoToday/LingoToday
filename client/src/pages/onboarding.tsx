@@ -795,7 +795,7 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
     {
       id: 3,
       text: "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!",
-      name: "Anna Liu",
+      name: "Sophie Liu",
       title: "Software Engineer, London",
       initials: "AL",
       bgColor: "bg-purple-100",
