@@ -138,7 +138,8 @@ export default function Onboarding() {
   const [registerData, setRegisterData] = useState({
     firstName: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
@@ -164,7 +165,7 @@ export default function Onboarding() {
       case 0: return selectedLanguage !== '';
       case 1: return selectedLevel !== '';
       case 2: return selectedLearningStyle !== '';
-      case 3: return registerData.firstName.trim() && registerData.email.trim() && registerData.password.length >= 6;
+      case 3: return registerData.firstName.trim() && registerData.email.trim() && registerData.password.length >= 6 && registerData.confirmPassword && registerData.password === registerData.confirmPassword;
       case 4: return true; // Notifications screen always allows continue
       case 5: return true; // Learning plan screen
       case 6: return true; // Payment screen
@@ -219,6 +220,8 @@ export default function Onboarding() {
     if (!registerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
     if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
+    if (!registerData.confirmPassword) errors.confirmPassword = 'Please confirm your password';
+    else if (registerData.password !== registerData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
     
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
@@ -509,7 +512,7 @@ const RegistrationScreen = ({
   onInputChange, 
   onRegister
 }: {
-  registerData: { firstName: string; email: string; password: string; };
+  registerData: { firstName: string; email: string; password: string; confirmPassword: string; };
   registerErrors: Record<string, string>;
   isRegistering: boolean;
   onInputChange: (field: keyof typeof registerData, value: string) => void;
@@ -573,6 +576,20 @@ const RegistrationScreen = ({
             data-testid="input-password"
           />
           {registerErrors.password && <p className="text-red-500 text-sm mt-1">{registerErrors.password}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            value={registerData.confirmPassword}
+            onChange={(e) => onInputChange('confirmPassword', e.target.value)}
+            className={registerErrors.confirmPassword ? 'border-red-500' : ''}
+            data-testid="input-confirmPassword"
+          />
+          {registerErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerErrors.confirmPassword}</p>}
         </div>
 
         <Button 
