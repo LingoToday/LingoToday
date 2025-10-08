@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft, Star, Smartphone, Monitor, RotateCcw, Bell, BellOff, Calendar, Video, Zap, Target, Users } from "lucide-react";
+import { Globe, User, GraduationCap, Mail, Lock, AlertCircle, CheckCircle, ArrowRight, ArrowLeft, Star, Smartphone, Monitor, RotateCcw, Bell, BellOff, Calendar, Video, Zap, Target, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link, useLocation } from "wouter";
 import Footer from "@/components/ui/footer";
@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import useEmblaCarousel from 'embla-carousel-react';
 
 const languages = [
   { code: 'italian', name: 'Italian', flag: '🇮🇹' },
@@ -768,100 +769,146 @@ const LearningPlanScreen = ({
   </div>
 );
 
-const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => (
-  <div className="text-center">
-    <h1 className="text-[28px] font-bold text-gray-900 mb-8">
-      They Started Where You Are - Now They're Speaking With Confidence
-    </h1>
-    
-    <div className="space-y-4 max-w-2xl mx-auto mb-8">
-      {/* Testimonial 1 - Paul Martinez */}
-      <Card className="bg-white border-gray-200">
-        <CardContent className="p-6 text-left">
-          <div className="flex gap-1 mb-3">
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-          </div>
-          <p className="text-gray-700 text-base mb-4">
-            "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday..."
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-semibold text-sm">SM</span>
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">Paul Martinez</div>
-              <div className="text-sm text-gray-600">Product Manager, London</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-      {/* Testimonial 2 - Anna Liu */}
-      <Card className="bg-white border-gray-200">
-        <CardContent className="p-6 text-left">
-          <div className="flex gap-1 mb-3">
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-          </div>
-          <p className="text-gray-700 text-base mb-4">
-            "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!"
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-              <span className="text-purple-600 font-semibold text-sm">AL</span>
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">Anna Liu</div>
-              <div className="text-sm text-gray-600">Software Engineer, London</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+  const testimonials = [
+    {
+      id: 1,
+      text: "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations.",
+      name: "Anna Müller",
+      title: "Property Manager, Berlin",
+      initials: "AM",
+      bgColor: "bg-green-100",
+      textColor: "text-green-600"
+    },
+    {
+      id: 2,
+      text: "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday...",
+      name: "Paul Martinez",
+      title: "Product Manager, London",
+      initials: "SM",
+      bgColor: "bg-blue-100",
+      textColor: "text-blue-600"
+    },
+    {
+      id: 3,
+      text: "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!",
+      name: "Anna Liu",
+      title: "Software Engineer, London",
+      initials: "AL",
+      bgColor: "bg-purple-100",
+      textColor: "text-purple-600"
+    }
+  ];
 
-      {/* Testimonial 3 - Anna Müller */}
-      <Card className="bg-white border-gray-200">
-        <CardContent className="p-6 text-left">
-          <div className="flex gap-1 mb-3">
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
+
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
+
+  return (
+    <div className="text-center">
+      <h1 className="text-[28px] font-bold text-gray-900 mb-8">
+        They Started Where You Are - Now They're Speaking With Confidence
+      </h1>
+      
+      <div className="max-w-2xl mx-auto mb-8">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="flex-[0_0_100%] min-w-0 px-4">
+                <Card className="bg-white border-gray-200">
+                  <CardContent className="p-6 text-left">
+                    <div className="flex gap-1 mb-3">
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    </div>
+                    <p className="text-gray-700 text-base mb-4">
+                      "{testimonial.text}"
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full ${testimonial.bgColor} flex items-center justify-center`}>
+                        <span className={`${testimonial.textColor} font-semibold text-sm`}>{testimonial.initials}</span>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                        <div className="text-sm text-gray-600">{testimonial.title}</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
           </div>
-          <p className="text-gray-700 text-base mb-4">
-            "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations."
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-              <span className="text-green-600 font-semibold text-sm">AM</span>
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">Anna Müller</div>
-              <div className="text-sm text-gray-600">Property Manager, Berlin</div>
-            </div>
+        </div>
+
+        {/* Navigation arrows and dots */}
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={scrollPrev}
+            className="rounded-full h-10 w-10"
+            data-testid="button-testimonial-prev"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+
+          <div className="flex gap-2">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => emblaApi?.scrollTo(index)}
+                className={`h-2 rounded-full transition-all ${
+                  index === selectedIndex ? 'w-8 bg-primary' : 'w-2 bg-gray-300'
+                }`}
+                data-testid={`dot-testimonial-${index}`}
+              />
+            ))}
           </div>
-        </CardContent>
-      </Card>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={scrollNext}
+            className="rounded-full h-10 w-10"
+            data-testid="button-testimonial-next"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Continue Button */}
+      <Button
+        onClick={onContinue}
+        className="w-full max-w-md mx-auto bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-sm"
+        data-testid="button-continue-testimonials"
+      >
+        Continue
+        <ArrowRight className="ml-2 h-5 w-5" />
+      </Button>
     </div>
-
-    {/* Continue Button */}
-    <Button
-      onClick={onContinue}
-      className="w-full max-w-md mx-auto bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-sm"
-      data-testid="button-continue-testimonials"
-    >
-      Continue
-      <ArrowRight className="ml-2 h-5 w-5" />
-    </Button>
-  </div>
-);
+  );
+};
 
 // Load Stripe (moved from module level to avoid crash)
 let stripePromise: Promise<any> | null = null;
