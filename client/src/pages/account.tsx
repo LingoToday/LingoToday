@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
-import { ArrowLeft, User, Mail, Calendar, BookOpen, Award, Globe, Crown } from 'lucide-react';
+import { ArrowLeft, User, Mail, Calendar, BookOpen, Award, Globe, Crown, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
 
 // Type definitions
@@ -291,17 +291,10 @@ export default function Account() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/dashboard">
-                <Button variant="outline" className="w-full justify-start" data-testid="go-to-dashboard">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Continue Learning
-                </Button>
-              </Link>
-              
-              <Link href="/courses">
-                <Button variant="outline" className="w-full justify-start" data-testid="browse-courses">
-                  <Globe className="w-4 h-4 mr-2" />
-                  Browse Courses
+              <Link href="/subscription">
+                <Button variant="outline" className="w-full justify-start" data-testid="subscription-details">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Subscription details
                 </Button>
               </Link>
               

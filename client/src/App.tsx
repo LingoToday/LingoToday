@@ -13,6 +13,7 @@ import Onboarding from "@/pages/onboarding";
 import SignIn from "@/pages/sign-in";
 import Dashboard from "@/pages/dashboard";
 import Account from "@/pages/account";
+import Subscription from "@/pages/subscription";
 import Lesson from "@/pages/lesson";
 import Courses from "@/pages/courses";
 import CourseManager from "@/pages/course-manager";
@@ -83,6 +84,7 @@ function Router() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/account" component={Account} />
+          <Route path="/subscription" component={Subscription} />
           <Route path="/subscribe" component={Subscribe} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/courses" component={Courses} />
