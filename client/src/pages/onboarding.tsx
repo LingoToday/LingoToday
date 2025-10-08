@@ -148,7 +148,7 @@ export default function Onboarding() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const totalScreens = 7;
+  const totalScreens = 8;
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -356,6 +356,8 @@ export default function Onboarding() {
           onStartTrial={nextScreen}
         />;
       case 6:
+        return <TestimonialsScreen onContinue={nextScreen} />;
+      case 7:
         return <PaymentScreen />;
       default:
         return null;
@@ -383,8 +385,8 @@ export default function Onboarding() {
           {renderScreen()}
         </div>
 
-        {/* Continue button - hide on registration, payment, and learning plan screens */}
-        {currentScreen < 6 && !(currentScreen === 3 && !registrationComplete) && currentScreen !== 5 && (
+        {/* Continue button - hide on registration, payment, learning plan, and testimonials screens */}
+        {currentScreen < 7 && !(currentScreen === 3 && !registrationComplete) && currentScreen !== 5 && currentScreen !== 6 && (
           <div className="mt-8 flex justify-center">
             <Button
               onClick={nextScreen}
@@ -763,6 +765,101 @@ const LearningPlanScreen = ({
         </div>
       </div>
     </div>
+  </div>
+);
+
+const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => (
+  <div className="text-center">
+    <h1 className="text-[28px] font-bold text-gray-900 mb-8">
+      They Started Where You Are - Now They're Speaking With Confidence
+    </h1>
+    
+    <div className="space-y-4 max-w-2xl mx-auto mb-8">
+      {/* Testimonial 1 - Paul Martinez */}
+      <Card className="bg-white border-gray-200">
+        <CardContent className="p-6 text-left">
+          <div className="flex gap-1 mb-3">
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+          </div>
+          <p className="text-gray-700 text-base mb-4">
+            "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday..."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="text-blue-600 font-semibold text-sm">SM</span>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">Paul Martinez</div>
+              <div className="text-sm text-gray-600">Product Manager, London</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Testimonial 2 - Anna Liu */}
+      <Card className="bg-white border-gray-200">
+        <CardContent className="p-6 text-left">
+          <div className="flex gap-1 mb-3">
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+          </div>
+          <p className="text-gray-700 text-base mb-4">
+            "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!"
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+              <span className="text-purple-600 font-semibold text-sm">AL</span>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">Anna Liu</div>
+              <div className="text-sm text-gray-600">Software Engineer, London</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Testimonial 3 - Anna Müller */}
+      <Card className="bg-white border-gray-200">
+        <CardContent className="p-6 text-left">
+          <div className="flex gap-1 mb-3">
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+          </div>
+          <p className="text-gray-700 text-base mb-4">
+            "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <span className="text-green-600 font-semibold text-sm">AM</span>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">Anna Müller</div>
+              <div className="text-sm text-gray-600">Property Manager, Berlin</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    {/* Continue Button */}
+    <Button
+      onClick={onContinue}
+      className="w-full max-w-md mx-auto bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full text-sm"
+      data-testid="button-continue-testimonials"
+    >
+      Continue
+      <ArrowRight className="ml-2 h-5 w-5" />
+    </Button>
   </div>
 );
 
