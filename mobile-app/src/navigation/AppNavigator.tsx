@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainerRef } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 
 // Import screens
 import LandingScreen from '../screens/LandingScreen';
@@ -37,7 +39,7 @@ export type RootStackParamList = {
   Account: undefined;
   Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
   Progress: undefined;
-  Lesson: { lessonId: string; language?: string; courseId?: string };
+  Lesson: { lessonId: string; language?: string; courseId?: string; from?: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
   Terms: undefined;
@@ -73,6 +75,32 @@ interface AppNavigatorProps {
 }
 
 export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNavigatorProps) {
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
+
+  // Handle notification taps
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const data = response.notification.request.content.data;
+      
+      // If there's lesson data in the notification, navigate to it
+      if (data?.lessonId && data?.language && data?.courseId && navigationRef.current) {
+        const lessonId = String(data.lessonId);
+        const language = String(data.language);
+        const courseId = String(data.courseId);
+        
+        // Navigate to lesson using push navigation (not modal)
+        navigationRef.current.navigate('Lesson', {
+          lessonId,
+          language,
+          courseId,
+          from: 'notification',
+        });
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   // Show loading screen during authentication check - matching web exactly
   if (isLoading) {
     return (
@@ -109,7 +137,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isAuthenticated ? (
           // Unauthenticated flow - matches client exactly: Landing → Sign-in → Onboarding
