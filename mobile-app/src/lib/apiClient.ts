@@ -28,13 +28,6 @@ export interface ProgressData {
   courseTitle?: string;
 }
 
-interface UserSettings {
-  notificationsEnabled: boolean;
-  notificationFrequency: number;
-  notificationStartTime: string;
-  notificationEndTime: string;
-  selectedLanguage: string;
-}
 
 interface NextLessonData {
   courseId: string;
@@ -64,7 +57,7 @@ export interface DashboardData {
   progress: ProgressData[];
 }
 
-interface UserSettings {
+export interface UserSettings {
   userId: string;
   language: string;
   theme: string;
@@ -73,6 +66,16 @@ interface UserSettings {
   notificationFrequency: number;
   notificationStartTime: string;
   notificationEndTime: string;
+  mobileNotificationsEnabled: boolean;
+  mobileNotificationFrequency: number;
+  mobileNotificationStartTime: string;
+  mobileNotificationEndTime: string;
+  mobileNotificationDays: string[];
+  desktopNotificationsEnabled: boolean;
+  desktopNotificationFrequency: number;
+  desktopNotificationStartTime: string;
+  desktopNotificationEndTime: string;
+  desktopNotificationDays: string[];
   difficultyLevel: string;
 }
 
