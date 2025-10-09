@@ -79,6 +79,45 @@ interface AppNavigatorProps {
 export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNavigatorProps) {
   const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
 
+  // Initialize notifications on app startup
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      const initializeNotifications = async () => {
+        try {
+          const { getUserNotificationSettings, scheduleLanguageLearningReminders } = await import('../lib/notifications');
+          
+          // Get user's notification settings from backend
+          const settings = await getUserNotificationSettings();
+          
+          if (settings && settings.enabled) {
+            console.log('🔔 Restoring notifications on app startup:', settings);
+            
+            // Schedule notifications based on saved settings
+            await scheduleLanguageLearningReminders(
+              settings.startTime,
+              settings.endTime,
+              settings.frequency,
+              settings.days
+            );
+            
+            console.log('✅ Notifications restored successfully');
+          } else {
+            console.log('ℹ️ Notifications are disabled or settings not found');
+          }
+        } catch (error) {
+          console.error('Error initializing notifications:', error);
+        }
+      };
+      
+      // Small delay to ensure auth is fully settled
+      const timer = setTimeout(() => {
+        initializeNotifications();
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, isLoading]);
+
   // Handle notification taps
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
