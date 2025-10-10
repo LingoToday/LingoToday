@@ -187,6 +187,24 @@ export function CheckpointPage({ params }: CheckpointPageProps) {
                 </Badge>
               </div>
 
+              {/* Teaser for next course - shown only when passed */}
+              {passed && checkpoint.teaser && (
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg p-6 border-2 border-indigo-200 dark:border-indigo-700">
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">🎉</div>
+                    <h3 className="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">
+                      Coming Up Next!
+                    </h3>
+                    <p className="text-indigo-800 dark:text-indigo-200 text-lg mb-2">
+                      {(checkpoint.teaser as any)?.title || 'Next Course Preview'}
+                    </p>
+                    <p className="text-indigo-600 dark:text-indigo-300">
+                      {(checkpoint.teaser as any)?.description || 'Continue your learning journey!'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-3">
                 <h3 className="font-semibold">Review Your Answers:</h3>
                 {questions.map((question, index) => {
