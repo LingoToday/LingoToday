@@ -694,14 +694,16 @@ export class DatabaseStorage implements IStorage {
       return undefined;
     }
 
-    // Find the course
+    // Find the most recent active course (handles versioning/updates)
     const courseResults = await db.select()
       .from(courses)
       .where(and(
         eq(courses.languageId, language.id),
         eq(courses.skillLevelId, skillLevel.id),
-        eq(courses.courseNumber, courseNumber)
-      ));
+        eq(courses.courseNumber, courseNumber),
+        eq(courses.isActive, true)
+      ))
+      .orderBy(desc(courses.createdAt));
     
     if (courseResults.length === 0) {
       return undefined;
