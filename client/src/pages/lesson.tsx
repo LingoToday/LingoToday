@@ -1605,7 +1605,15 @@ export default function Lesson() {
                        'Did You Know?'}
                     </h2>
                     <div className="text-amber-800 text-lg whitespace-pre-line max-w-2xl mx-auto">
-                      {stepData.prompt}
+                      {(() => {
+                        // Remove the prefix from the content to avoid duplication
+                        let content = stepData.prompt;
+                        if (content.startsWith('Bonus Tip:')) content = content.replace('Bonus Tip:', '').trim();
+                        else if (content.startsWith('Cultural Snack:')) content = content.replace('Cultural Snack:', '').trim();
+                        else if (content.startsWith('Mini Challenge:')) content = content.replace('Mini Challenge:', '').trim();
+                        else if (content.startsWith('Did You Know?:')) content = content.replace('Did You Know?:', '').trim();
+                        return content;
+                      })()}
                     </div>
                   </div>
                 </div>
