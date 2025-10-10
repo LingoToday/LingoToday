@@ -465,6 +465,15 @@ export default function Lesson() {
             answer: currentStepData.content.answer || ''
           };
         }
+        
+        if (currentStepData.stepType === 'text_tip') {
+          return {
+            type: 'text_tip',
+            prompt: currentStepData.content.prompt || '',
+            answerPrompt: currentStepData.content.answer_prompt || 'Press continue to move on.',
+            uiAction: currentStepData.content.ui_action || 'continue'
+          };
+        }
       }
     }
     
@@ -966,14 +975,17 @@ export default function Lesson() {
         completeLessonMutation.mutate(score);
       }
     } else {
-      // Handle regular lessons
-      if (currentStep < 4) {
+      // Handle regular lessons - check if there's a step 5
+      const hasStep5 = currentLesson?.lesson?.steps?.some((step: any) => step.stepNumber === 5);
+      const maxStep = hasStep5 ? 5 : 4;
+      
+      if (currentStep < maxStep) {
         setCurrentStep(currentStep + 1);
         setSelectedAnswer("");
         setShowResult(false);
         setIsCorrect(false);
       } else {
-        // Calculate final score based on all steps
+        // Calculate final score based on all steps (steps 2, 3, 4 are graded, step 1 and 5 are informational)
         const correctSteps = Object.values(stepResults).filter(Boolean).length;
         const totalSteps = 3;
         const score = Math.round((correctSteps / totalSteps) * 100);
@@ -1538,6 +1550,36 @@ export default function Lesson() {
                       Play Audio
                     </Button>
                   </div>
+                </div>
+              </>
+            )}
+
+            {stepData && stepData.type === 'text_tip' && (
+              <>
+                {/* Text Tip Step - Cultural tips, bonus info, mini challenges */}
+                <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">💡</div>
+                    <h2 className="text-2xl font-bold text-amber-700 mb-4">
+                      {stepData.prompt.startsWith('Bonus Tip') ? 'Bonus Tip' :
+                       stepData.prompt.startsWith('Cultural Snack') ? 'Cultural Snack' :
+                       stepData.prompt.startsWith('Mini Challenge') ? 'Mini Challenge' :
+                       'Did You Know?'}
+                    </h2>
+                    <div className="text-amber-800 text-lg whitespace-pre-line max-w-2xl mx-auto">
+                      {stepData.prompt}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center mt-4">
+                  <p className="text-gray-600 mb-4">{stepData.answerPrompt}</p>
+                  <Button 
+                    onClick={handleNextStep}
+                    className="bg-amber-500 hover:bg-amber-600 text-white"
+                    data-testid="button-continue-text-tip"
+                  >
+                    Continue
+                  </Button>
                 </div>
               </>
             )}
