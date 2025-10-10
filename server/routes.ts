@@ -3251,9 +3251,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const objectStorageService = new ObjectStorageService();
-      const uploadURL = await objectStorageService.getVideoUploadURL(filename);
+      const result = await objectStorageService.getVideoUploadURL(filename);
       
-      res.json({ uploadURL });
+      // Return both the upload URL and the object path for later reference
+      const objectPath = objectStorageService.normalizeObjectPath(result);
+      res.json({ uploadURL: result, objectPath });
     } catch (error: any) {
       console.error('Error generating video upload URL:', error);
       res.status(500).json({ error: 'Failed to generate upload URL: ' + error.message });
@@ -3263,16 +3265,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save video upload metadata as draft
   app.post('/api/admin/videos/draft', isAdmin, async (req: any, res) => {
     try {
-      const { fileName, fileUrl, fileSize, languageId, courseId, lessonNumber, stepNumber } = req.body;
+      const { fileName, objectPath, fileSize, languageId, courseId, lessonNumber, stepNumber } = req.body;
       const userId = req.user.claims.sub;
 
-      const objectStorageService = new ObjectStorageService();
-      const normalizedUrl = objectStorageService.normalizeObjectPath(fileUrl);
+      if (!objectPath) {
+        return res.status(400).json({ error: 'Object path is required' });
+      }
 
       const draft = await storage.createDraftUpload({
         uploadType: 'video',
         fileName,
-        fileUrl: normalizedUrl,
+        fileUrl: objectPath, // Store the object path, not the presigned URL
         fileSize,
         metadata: { languageId, courseId, lessonNumber, stepNumber },
         uploadedBy: userId,
@@ -3295,9 +3298,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const objectStorageService = new ObjectStorageService();
-      const uploadURL = await objectStorageService.getJSONUploadURL(filename);
+      const result = await objectStorageService.getJSONUploadURL(filename);
       
-      res.json({ uploadURL });
+      // Return both the upload URL and the object path for later reference
+      const objectPath = objectStorageService.normalizeObjectPath(result);
+      res.json({ uploadURL: result, objectPath });
     } catch (error: any) {
       console.error('Error generating JSON upload URL:', error);
       res.status(500).json({ error: 'Failed to generate upload URL: ' + error.message });
@@ -3307,8 +3312,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Parse and save JSON upload as draft
   app.post('/api/admin/json/draft', isAdmin, async (req: any, res) => {
     try {
-      const { fileName, fileUrl, jsonContent } = req.body;
+      const { fileName, objectPath, jsonContent } = req.body;
       const userId = req.user.claims.sub;
+
+      if (!objectPath) {
+        return res.status(400).json({ error: 'Object path is required' });
+      }
 
       // Parse JSON to create preview metadata
       const courseKey = Object.keys(jsonContent)[0];
@@ -3328,13 +3337,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       };
 
-      const objectStorageService = new ObjectStorageService();
-      const normalizedUrl = objectStorageService.normalizeObjectPath(fileUrl);
-
       const draft = await storage.createDraftUpload({
         uploadType: 'json',
         fileName,
-        fileUrl: normalizedUrl,
+        fileUrl: objectPath, // Store the object path
         fileSize: JSON.stringify(jsonContent).length,
         metadata,
         uploadedBy: userId,

@@ -147,7 +147,7 @@ function VideoUploadForm() {
       setUploading(true);
 
       // Get presigned URL
-      const { uploadURL } = await apiRequest('/api/admin/videos/upload-url', {
+      const { uploadURL, objectPath } = await apiRequest('/api/admin/videos/upload-url', {
         method: 'POST',
         body: JSON.stringify({ filename: selectedFile.name }),
       });
@@ -166,8 +166,8 @@ function VideoUploadForm() {
         method: 'POST',
         body: JSON.stringify({
           fileName: selectedFile.name,
-          fileUrl: uploadURL,
-          fileSize: selectedFile.fileSize,
+          objectPath: objectPath, // Use object path instead of upload URL
+          fileSize: selectedFile.size, // Use .size instead of .fileSize
           languageId: parseInt(languageId),
           courseId: parseInt(courseId),
           lessonNumber: parseInt(lessonNumber),
@@ -452,7 +452,7 @@ function JSONUploadForm() {
       setUploading(true);
 
       // Get presigned URL
-      const { uploadURL } = await apiRequest('/api/admin/json/upload-url', {
+      const { uploadURL, objectPath } = await apiRequest('/api/admin/json/upload-url', {
         method: 'POST',
         body: JSON.stringify({ filename: selectedFile.name }),
       });
@@ -471,7 +471,7 @@ function JSONUploadForm() {
         method: 'POST',
         body: JSON.stringify({
           fileName: selectedFile.name,
-          fileUrl: uploadURL,
+          objectPath: objectPath, // Use object path instead of upload URL
           jsonContent,
         }),
       });
