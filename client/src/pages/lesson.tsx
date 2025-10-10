@@ -1001,7 +1001,7 @@ export default function Lesson() {
       // Note: steps can be an array or an object, so we need to handle both
       const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
         ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
-        : false;
+        : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
       const maxStep = hasStep5 ? 5 : 4;
       
       if (currentStep < maxStep) {
