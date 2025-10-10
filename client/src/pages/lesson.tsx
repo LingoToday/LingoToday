@@ -1429,34 +1429,6 @@ export default function Lesson() {
               </>
             )}
 
-            {stepData && stepData.type === 'text_tip' && (
-              <>
-                {/* Text Tip Step - Bonus educational content */}
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
-                  <div className="text-center">
-                    <div className="text-3xl mb-4">💡</div>
-                    <p className="text-green-800 text-lg mb-4 whitespace-pre-line">{stepData.prompt}</p>
-                    <p className="text-green-600 text-sm">{stepData.answerPrompt}</p>
-                  </div>
-                </div>
-
-                {/* Continue Button */}
-                <div className="flex justify-center">
-                  <Button 
-                    onClick={() => {
-                      // Complete the lesson - user has finished all 5 steps
-                      completeLessonMutation.mutate(100);
-                    }}
-                    disabled={completeLessonMutation.isPending}
-                    className="max-w-md"
-                    data-testid="button-continue-text-tip"
-                  >
-                    {completeLessonMutation.isPending ? 'Completing...' : 'Complete Lesson'}
-                  </Button>
-                </div>
-              </>
-            )}
-
             {stepData && stepData.type === 'review_mcq' && (
               <>
                 {/* Review MCQ Question */}
@@ -1796,8 +1768,8 @@ export default function Lesson() {
                   </div>
                 )}
                 
-                {/* Don't show submit/next buttons for pro_video when user doesn't have access (handled in pro_video section) */}
-                {!showResult && !(stepData?.type === 'pro_video' && !stepData.hasAccess) && (
+                {/* Don't show submit/next buttons for pro_video when user doesn't have access or text_tip (they have their own buttons) */}
+                {!showResult && !(stepData?.type === 'pro_video' && !stepData.hasAccess) && stepData?.type !== 'text_tip' && (
                   <Button 
                     onClick={handleStepSubmit}
                     disabled={stepData?.type === 'word_review' ? false : (!selectedAnswer || (stepData?.type === 'type' && !selectedAnswer.trim()))}
