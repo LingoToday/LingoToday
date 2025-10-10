@@ -319,9 +319,10 @@ export default function Lesson() {
     if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
       const stepMapping = {
         1: 'word_review',
-        2: 'typing', 
-        3: 'comprehension',
-        4: 'pro_video'
+        2: 'quick_check', 
+        3: 'typing',
+        4: 'video_choice',
+        5: 'text_tip'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
       console.log('🔧 Object-based step mapping:', {
@@ -601,9 +602,10 @@ export default function Lesson() {
     if (currentLesson.lesson.steps) {
       const stepMapping = {
         1: 'word_review',
-        2: 'typing', 
-        3: 'comprehension',
-        4: 'pro_video'
+        2: 'quick_check', 
+        3: 'typing',
+        4: 'video_choice',
+        5: 'text_tip'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
       console.log('🔧 Step mapping debug:', {

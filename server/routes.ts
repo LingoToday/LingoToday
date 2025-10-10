@@ -1668,6 +1668,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
               options: mcq.options,
               answer: mcq.answer
             };
+          } else if (step.stepType === 'typing') {
+            // Typing step from JSON (step 3)
+            const content = step.content as any;
+            allSteps.typing = {
+              type: 'type',
+              stepType: step.stepType,
+              requiredTier: step.requiredTier,
+              prompt: content.type_prompt,
+              expected: content.expected_answer,
+              alternatives: content.alt_answers || []
+            };
           } else if (step.stepType === 'typing_practice') {
             // New 4-step structure: typing practice step
             const content = step.content as any;
