@@ -933,6 +933,15 @@ export class DatabaseStorage implements IStorage {
             });
           }
 
+          // Handle step 5 - text-based educational content (bonus tips, cultural snacks, mini challenges)
+          if (lesson.step5 && lesson.step5.type === 'text') {
+            steps.push({
+              stepNumber: 5,
+              stepType: 'text_tip',
+              content: lesson.step5
+            });
+          }
+
           for (const step of steps) {
             await this.createLessonStep({
               lessonId: createdLesson.id,
@@ -955,12 +964,16 @@ export class DatabaseStorage implements IStorage {
         }
         const review = lessonData as any;
 
+        // Extract teaser content if present (lesson_teaser1)
+        const teaserContent = review.lesson_teaser1 || null;
+
         await this.createCheckpoint({
           courseId: createdCourse.id,
           checkpointNumber,
           title: review.title,
           description: review.title, // Use title as description for now
           questions: review.questions,
+          teaser: teaserContent,
         });
       }
     }
