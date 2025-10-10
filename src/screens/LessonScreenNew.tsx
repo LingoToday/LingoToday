@@ -250,6 +250,9 @@ export default function LessonScreen() {
   const normalizeAssetUrl = (url: string): string => {
     if (!url) return '';
     
+    // Remote URLs (http/https) - return as-is for {uri: ...} usage
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    
     // Already correct format
     if (url.startsWith('/attached_assets/')) return url;
     
@@ -654,8 +657,8 @@ export default function LessonScreen() {
       
       Alert.alert(
         "Lesson completed!",
-        "Great job! Returning to dashboard...",
-        [{ text: "OK", onPress: () => navigation.navigate('Dashboard' as never) }]
+        "Great job!",
+        [{ text: "OK", onPress: () => navigation.goBack() }]
       );
     },
     onError: (error) => {
@@ -862,7 +865,7 @@ export default function LessonScreen() {
             <Text style={styles.errorText}>
               The requested lesson could not be found.
             </Text>
-            <Button title="Back to Dashboard" onPress={() => navigation.navigate('Dashboard' as never)} />
+            <Button title="Back to Dashboard" onPress={() => navigation.goBack()} />
           </CardContent>
         </Card>
       </SafeAreaView>
@@ -882,9 +885,9 @@ export default function LessonScreen() {
                  courseId === 'course3' ? 'Welcome to Italian Beginners Course 3!' : 'Welcome to Italian Beginners Course!'}
               </Text>
               
-              <View style={styles.videoContainer}>
+              <View style={styles.introVideoContainer}>
                 <Video
-                  style={styles.video}
+                  style={styles.introVideo}
                   source={
                     courseId === 'course1' ? require('../attached_assets/Italian_beginner_course1_intro_1757082612339.MP4') :
                     courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
@@ -1024,7 +1027,22 @@ export default function LessonScreen() {
                       <View style={styles.videoContainer}>
                         <Video
                           style={styles.video}
-                          source={{ uri: stepData.videoUrl }}
+                          source={(() => {
+                            const url = stepData.videoUrl;
+                            // Comprehensive static mapping for local video files
+                            if (url.includes('lesson1_hi_neutral')) return require('../attached_assets/videos/lesson1_hi_neutral.mp4');
+                            if (url.includes('lesson1_hi_female')) return require('../attached_assets/videos/lesson1_hi_female.mp4');
+                            if (url.includes('lesson1_hi_male')) return require('../attached_assets/videos/lesson1_hi_male.mp4');
+                            if (url.includes('lesson2.mp4')) return require('../attached_assets/lesson2_pro_1757880304019.mp4');
+                            if (url.includes('lesson3.mp4')) return require('../attached_assets/italian_beginner_course1_lesson3_pro_1757945484920.MOV');
+                            if (url.includes('lesson4.mp4')) return require('../attached_assets/italian_beginner_course1_lesson4_pro_1757945484921.MOV');
+                            if (url.includes('lesson5.mp4')) return require('../attached_assets/italian_beginner_course1_lesson5_pro_1757945484922.MOV');
+                            if (url.includes('lesson6.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl1_street_or_cafe_greeting_1757253302709.MOV');
+                            if (url.includes('lesson7.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl2_cafe_farewell_1757252991579.MP4');
+                            if (url.includes('lesson8.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl3_doorway_goodbye.mp4_1757252991578.MOV');
+                            // Fallback for any remote URLs or unmapped files
+                            return { uri: url };
+                          })()}
                           useNativeControls
                           resizeMode={ResizeMode.CONTAIN}
                           shouldPlay={false}
@@ -1042,21 +1060,77 @@ export default function LessonScreen() {
                       </View>
                     </>
                   ) : (
-                    <View style={styles.upgradeContainer}>
-                      <Ionicons name="diamond" size={48} color="#F59E0B" />
-                      <Text style={styles.upgradeTitle}>Upgrade to Pro</Text>
-                      <Text style={styles.upgradeText}>
-                        Access video lessons and advanced features with our Pro subscription.
-                      </Text>
-                      <Button
-                        title="Skip for now"
-                        onPress={() => {
-                          setSelectedAnswer('skip');
-                          handleStepSubmit();
+                    <>
+                      <View style={styles.videoContainer}>
+                        <View style={styles.blurredVideoWrapper}>
+                          <Video
+                            style={styles.video}
+                            source={(() => {
+                              const url = stepData.videoUrl;
+                              // Comprehensive static mapping for local video files
+                              if (url.includes('lesson1_hi_neutral')) return require('../attached_assets/videos/lesson1_hi_neutral.mp4');
+                              if (url.includes('lesson1_hi_female')) return require('../attached_assets/videos/lesson1_hi_female.mp4');
+                              if (url.includes('lesson1_hi_male')) return require('../attached_assets/videos/lesson1_hi_male.mp4');
+                              if (url.includes('lesson2.mp4')) return require('../attached_assets/lesson2_pro_1757880304019.mp4');
+                              if (url.includes('lesson3.mp4')) return require('../attached_assets/italian_beginner_course1_lesson3_pro_1757945484920.MOV');
+                              if (url.includes('lesson4.mp4')) return require('../attached_assets/italian_beginner_course1_lesson4_pro_1757945484921.MOV');
+                              if (url.includes('lesson5.mp4')) return require('../attached_assets/italian_beginner_course1_lesson5_pro_1757945484922.MOV');
+                              if (url.includes('lesson6.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl1_street_or_cafe_greeting_1757253302709.MOV');
+                              if (url.includes('lesson7.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl2_cafe_farewell_1757252991579.MP4');
+                              if (url.includes('lesson8.mp4')) return require('../attached_assets/Italian_beginners_course1_lesson_irl3_doorway_goodbye.mp4_1757252991578.MOV');
+                              // Fallback for any remote URLs or unmapped files
+                              return { uri: url };
+                            })()}
+                            useNativeControls
+                            resizeMode={ResizeMode.CONTAIN}
+                            shouldPlay={false}
+                          />
+                          <View style={styles.videoOverlay}>
+                            <View style={styles.upgradeProCard}>
+                              <Ionicons name="diamond" size={48} color="#F59E0B" />
+                              <Text style={styles.overlayTitle}>Unlock Pro Learner video lessons</Text>
+                              <Text style={styles.overlayTitle}>to accelerate your learning!</Text>
+                              <Text style={styles.overlayPrice}>
+                                <Text style={styles.strikethrough}>£4.99</Text> £2.49/month
+                              </Text>
+                              <TouchableOpacity 
+                                style={styles.upgradeButton}
+                                onPress={() => navigation.navigate('Subscription' as never)}
+                              >
+                                <Text style={styles.upgradeButtonText}>Upgrade & Unlock All Videos</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity 
+                        onPress={async () => {
+                          // Mark lesson as complete with 0 score for skipped lessons
+                          await apiClient.updateProgress({
+                            language,
+                            courseId: courseId || "course1",
+                            lessonId: lessonId || currentLesson!.id,
+                            stepNumber: 4,
+                            completed: true,
+                            score: 0,
+                            completedAt: new Date(),
+                          });
+                          // Invalidate queries to refresh dashboard
+                          queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+                          queryClient.invalidateQueries({ queryKey: ["/api/progress", language] });
+                          queryClient.invalidateQueries({ queryKey: ["/api/stats", language] });
+                          // Navigate to dashboard
+                          navigation.navigate('Dashboard' as never);
                         }}
-                        style={styles.skipButton}
-                      />
-                    </View>
+                        style={{ paddingVertical: 12, alignItems: 'center' }}
+                        data-testid="button-skip-video"
+                      >
+                        <Text style={{ fontSize: 13, color: '#6b7280', textAlign: 'center' }}>
+                          Skip this step and continue with free lessons
+                        </Text>
+                      </TouchableOpacity>
+                    </>
                   )}
                 </>
               )}
@@ -1384,6 +1458,16 @@ const styles = StyleSheet.create({
     color: theme.colors.foreground,
     textAlign: 'center',
   },
+  introVideoContainer: {
+    alignItems: 'center',
+    marginVertical: theme.spacing.lg,
+    width: '100%',
+  },
+  introVideo: {
+    width: Math.min(screenWidth - (theme.spacing.md * 4), 400),
+    height: Math.min(screenWidth - (theme.spacing.md * 4), 400) * (16 / 9),
+    borderRadius: theme.borderRadius.lg,
+  },
 
   // Notification Banner
   notificationBanner: {
@@ -1449,7 +1533,7 @@ const styles = StyleSheet.create({
   },
   video: {
     width: Math.min(screenWidth - (theme.spacing.md * 4), 320),
-    height: Math.min(((screenWidth - (theme.spacing.md * 4)) * 9) / 16, 240), // 16:9 aspect ratio with max height
+    height: Math.min(((screenWidth - (theme.spacing.md * 4)) * 16) / 9, 568), // 9:16 portrait aspect ratio for mobile videos
     borderRadius: theme.borderRadius.lg,
   },
 
@@ -1537,7 +1621,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     borderWidth: 2,
     borderColor: theme.colors.border,
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md, // Reduced from lg (24) to md (16)
     alignItems: 'center',
   },
   selectedOption: {
@@ -1613,7 +1697,7 @@ const styles = StyleSheet.create({
     fontWeight: '600' as any,
   },
 
-  // Upgrade Container
+  // Upgrade Container (old style - kept for compatibility)
   upgradeContainer: {
     alignItems: 'center',
     gap: theme.spacing.lg,
@@ -1636,6 +1720,75 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     backgroundColor: theme.colors.mutedForeground,
+  },
+
+  // Blurred Video Overlay (new style - matching website)
+  blurredVideoWrapper: {
+    position: 'relative',
+    width: Math.min(screenWidth - (theme.spacing.md * 4), 320),
+    height: Math.min(((screenWidth - (theme.spacing.md * 4)) * 16) / 9, 568), // 9:16 portrait aspect ratio for mobile videos
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.lg,
+    overflow: 'hidden',
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(107, 114, 128, 0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.lg,
+  },
+  upgradeProCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    marginHorizontal: theme.spacing.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  overlayTitle: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '700' as any,
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  overlayPrice: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700' as any,
+    color: '#1F2937',
+    marginTop: theme.spacing.sm,
+  },
+  strikethrough: {
+    textDecorationLine: 'line-through',
+    color: '#9CA3AF',
+  },
+  upgradeButton: {
+    backgroundColor: '#8B5CF6',
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    marginTop: theme.spacing.md,
+  },
+  upgradeButtonText: {
+    color: '#FFFFFF',
+    fontSize: theme.fontSize.base,
+    fontWeight: '600' as any,
+    textAlign: 'center',
+  },
+  skipVideoButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    marginTop: theme.spacing.lg,
   },
 
   // Quiz Section

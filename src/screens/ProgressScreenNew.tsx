@@ -57,7 +57,7 @@ export default function ProgressScreenNew() {
           } as DashboardData['user'],
           settings: {
             notificationsEnabled: false,
-            notificationFrequency: 15,
+            notificationFrequency: 60,
             notificationStartTime: '08:00',
             notificationEndTime: '22:00',
             selectedLanguage: user?.selectedLanguage || 'italian',

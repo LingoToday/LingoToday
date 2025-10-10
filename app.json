@@ -34,7 +34,7 @@
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
     "extra": {
-      "apiBaseUrl": "https://c7756cd61072.ngrok-free.app",
+      "apiBaseUrl": "https://b76f5715-9af2-4a63-9e9d-ca7505e3a5c4-00-yf9x4tv2j3jv.worf.replit.dev",
       "stripePublishableKey": "pk_test_51S3GKG3dMgplFeCzCy8okVARwbR41NONkQQGjxeiH0nwHCr6lVT4wtDyqFmm7sGdM5Z1vNMS6RKE5V9c0nk6wu6b00RPir2zbq"
     }
   }

@@ -90,13 +90,54 @@ function getLanguageDisplayName(code: string): string {
   return languages[code?.toLowerCase()] || code?.charAt(0).toUpperCase() + code?.slice(1) || 'Language';
 }
 
+// Helper function to get language-specific notification messages
+export const getLanguageSpecificNotification = (languageCode: string) => {
+  const notifications = {
+    italian: {
+      title: "LingoToday",
+      body: "Ciao! It's time for your next quick lesson. Keep the consistency and you will be fluent in no time. Andiamo! 🇮🇹"
+    },
+    spanish: {
+      title: "LingoToday", 
+      body: "¡Hola! Es hora de tu próxima lección rápida. Mantén la consistencia y serás fluente en poco tiempo. ¡Vamos! 🇪🇸"
+    },
+    french: {
+      title: "LingoToday",
+      body: "Salut! Il est temps pour votre prochaine leçon rapide. Gardez la consistance et vous serez fluent en un rien de temps. Allons-y! 🇫🇷"
+    },
+    german: {
+      title: "LingoToday",
+      body: "Hallo! Es ist Zeit für Ihre nächste schnelle Lektion. Bleiben Sie konsequent und Sie werden in kürzester Zeit fließend sprechen. Los geht's! 🇩🇪"
+    },
+    portuguese: {
+      title: "LingoToday",
+      body: "Olá! É hora da sua próxima lição rápida. Mantenha a consistência e você será fluente em pouco tempo. Vamos! 🇵🇹"
+    },
+    mandarin: {
+      title: "LingoToday",
+      body: "你好! It's time for your next quick lesson. Keep the consistency and you will be fluent in no time. 加油! 🇨🇳"
+    },
+    japanese: {
+      title: "LingoToday",
+      body: "こんにちは! It's time for your next quick lesson. Keep the consistency and you will be fluent in no time. 頑張って! 🇯🇵"
+    },
+    korean: {
+      title: "LingoToday",
+      body: "안녕하세요! It's time for your next quick lesson. Keep the consistency and you will be fluent in no time. 화이팅! 🇰🇷"
+    }
+  };
+
+  const normalizedCode = languageCode?.toLowerCase();
+  return notifications[normalizedCode as keyof typeof notifications] || notifications.italian;
+}
+
 export default function DashboardScreenNew() {
   const { user, logout } = useAuth();
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
-  
+
   // REMOVED: const [isDailySessionActive, setIsDailySessionActive] = useState(false);
   // We'll calculate this dynamically instead
 
@@ -148,6 +189,42 @@ export default function DashboardScreenNew() {
       isIRLLesson: false,
     },
   ];
+
+  // ADDED: Notification listeners for handling taps
+useEffect(() => {
+    // Handle notification received while app is in foreground
+  const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+    console.log('📱 Notification received in foreground:', notification);
+  });
+
+  // Handle notification tapped (app in background/closed)
+  const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+    console.log('👆 Notification tapped:', response);
+
+    const data = response.notification.request.content.data;
+
+    if (data?.action === 'openLesson' && data?.courseId && data?.lessonId && data?.language) {
+      console.log('🎯 Navigating to lesson:', {
+        language: data.language,
+        courseId: data.courseId,
+        lessonId: data.lessonId
+      });
+
+      // Navigate to the lesson
+      navigation.navigate('Lesson', {
+        language: data.language,
+        courseId: data.courseId,
+        lessonId: data.lessonId
+      });
+    }
+  });
+
+  // Cleanup subscriptions
+  return () => {
+    foregroundSubscription.remove();
+    responseSubscription.remove();
+  };
+}, [navigation]);
 
   // Fetch dashboard data with proper error handling and fallback
   const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
@@ -260,14 +337,14 @@ export default function DashboardScreenNew() {
 
   // ADDED: Dynamic calculation of daily session status
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
-  
+
   // Calculate if daily session is active dynamically
   const isDailySessionActive = React.useMemo(() => {
     const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
     const hasSessionTime = sessionStartTime !== null;
     const isWithinSessionWindow = hasSessionTime && sessionStartTime && 
       (Date.now() - sessionStartTime) < (8 * 60 * 60 * 1000); // 8 hours window
-    
+
     return notificationsEnabled && hasSessionTime && isWithinSessionWindow;
   }, [
     effectiveDashboardData?.settings?.notificationsEnabled, 
@@ -277,7 +354,7 @@ export default function DashboardScreenNew() {
   // ADDED: Effect to clear session when notifications are disabled
   useEffect(() => {
     const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
-    
+
     if (!notificationsEnabled && sessionStartTime) {
       console.log('🔕 Notifications disabled - clearing daily session');
       setSessionStartTime(null);
@@ -291,7 +368,7 @@ export default function DashboardScreenNew() {
     try {
       // Check current permission status
       const { status: currentStatus } = await Notifications.getPermissionsAsync();
-      
+
       console.log('🔍 Checking daily session start:', {
         currentPermission: currentStatus,
         settingsEnabled: effectiveDashboardData?.settings?.notificationsEnabled,
@@ -301,11 +378,11 @@ export default function DashboardScreenNew() {
 
       // Check if notifications are enabled in settings AND permission is granted
       const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
-      
+
       if (currentStatus !== "granted") {
         // Request permission if not granted
         const { status: newStatus } = await Notifications.requestPermissionsAsync();
-        
+
         if (newStatus !== "granted") {
           Alert.alert(
             "Permission required",
@@ -340,13 +417,13 @@ export default function DashboardScreenNew() {
 
       if (user?.selectedLanguage) {
         const frequency = effectiveDashboardData?.settings?.notificationFrequency || 15;
-        
+
         // FIXED: Set session start time
         setSessionStartTime(Date.now());
-        
+
         // Schedule actual notifications
         await scheduleNotificationSession(user.selectedLanguage, frequency);
-        
+
         Alert.alert(
           "Daily session started!",
           `You'll receive ${getLanguageDisplayName(user.selectedLanguage)} lesson reminders every ${frequency} minutes.`,
@@ -373,13 +450,13 @@ export default function DashboardScreenNew() {
   const handleStopDailySession = async () => {
     try {
       console.log('🛑 Stopping daily session');
-      
+
       // Cancel all scheduled notifications
       await Notifications.cancelAllScheduledNotificationsAsync();
-      
+
       // Clear session time
       setSessionStartTime(null);
-      
+
       Alert.alert(
         "Daily session stopped",
         "All scheduled lesson reminders have been cancelled.",
@@ -400,35 +477,49 @@ export default function DashboardScreenNew() {
     try {
       // Cancel any existing notifications first
       await Notifications.cancelAllScheduledNotificationsAsync();
-      
+
+      // Get language-specific notification content
+      const notificationContent = getLanguageSpecificNotification(language);
+
+      // Get next lesson info for navigation
+      const nextLesson = upcomingLessons[0] || {
+        courseId: 'course1',
+        lessonId: 'lesson1'
+      };
+
       // Schedule notifications for the next 8 hours
       const notifications = [];
       const now = new Date();
       const endTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // 8 hours from now
-      
+
       let nextTime = new Date(now.getTime() + (frequency * 60 * 1000)); // First notification after frequency minutes
-      
+
       while (nextTime <= endTime) {
         notifications.push(
           Notifications.scheduleNotificationAsync({
             content: {
-              title: `${getLanguageDisplayName(language)} Learning Reminder`,
-              body: `Time for your ${getLanguageDisplayName(language)} lesson! Keep your streak going! 🔥`,
+              title: notificationContent.title,
+              body: notificationContent.body,
               sound: true,
               data: { 
                 language, 
                 sessionId: sessionStartTime || Date.now(),
-                frequency 
+                frequency,
+                // Add navigation data
+                action: 'openLesson',
+                courseId: nextLesson.courseId,
+                lessonId: nextLesson.lessonId,
+                timestamp: Date.now()
               },
             },
             trigger: { type: SchedulableTriggerInputTypes.DATE, date: nextTime },
           })
         );
-        
+
         // Schedule next notification
         nextTime = new Date(nextTime.getTime() + (frequency * 60 * 1000));
       }
-      
+
       await Promise.all(notifications);
       console.log(`📅 Scheduled ${notifications.length} notifications for ${language} session`);
     } catch (error) {
@@ -561,13 +652,13 @@ export default function DashboardScreenNew() {
   ];
 
   const totalPossibleLessons = courseData.reduce((sum, course) => sum + course.totalLessons, 0);
-  
+
   const learningPath = courseData.map((course, index) => {
     const courseProgress = allProgress.filter(p => p.courseId === `course${index + 1}`);
     const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
     const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
-    
+
     let status = 'locked';
     if (index === 0) {
       status = completion === 100 ? 'completed' : completion > 0 ? 'current' : 'available';
@@ -576,7 +667,7 @@ export default function DashboardScreenNew() {
     } else if (completion > 0) {
       status = 'current';
     }
-    
+
     return {
       name: course.name,
       progress: `${completed}/${total}`,
@@ -588,22 +679,22 @@ export default function DashboardScreenNew() {
   // FIXED: Update the condition for showing daily session button
   const shouldShowDailySessionButton = !isDailySessionActive && 
     effectiveDashboardData?.settings?.notificationsEnabled;
-  
+
   const shouldShowActiveSession = isDailySessionActive && 
     effectiveDashboardData?.settings?.notificationsEnabled;
 
   // ADDED: Get session remaining time for display
   const getSessionRemainingTime = (): string => {
     if (!sessionStartTime) return '';
-    
+
     const elapsed = Date.now() - sessionStartTime;
     const remaining = (8 * 60 * 60 * 1000) - elapsed; // 8 hours total
-    
+
     if (remaining <= 0) return 'Session expired';
-    
+
     const hours = Math.floor(remaining / (60 * 60 * 1000));
     const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m remaining`;
     } else {
@@ -624,12 +715,12 @@ export default function DashboardScreenNew() {
                 </View>
                 <Text style={styles.logoText}>LingoToday</Text>
               </View>
-              
+
               <TouchableOpacity style={styles.dashboardButton}>
                 <Text style={styles.dashboardButtonText}>Dashboard</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.headerRight}>
               <TouchableOpacity 
                 style={styles.accountButton}
@@ -677,7 +768,7 @@ export default function DashboardScreenNew() {
                         {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')}
                       </Text> learning journey
                     </Text>
-                    
+
                     {/* Level and Progress */}
                     <View style={styles.levelContainer}>
                       <Badge style={styles.levelBadge}>
@@ -702,12 +793,12 @@ export default function DashboardScreenNew() {
                         <Text style={[styles.statValue, { color: '#2563eb' }]}>{stats.streak}</Text>
                         <Text style={[styles.statLabel, { color: '#1e40af' }]}>Day Streak</Text>
                       </View>
-                      
+
                       <View style={[styles.statCard, styles.statCardGreen]}>
                         <Text style={[styles.statValue, { color: '#059669' }]}>{stats.lessonsCompleted}</Text>
                         <Text style={[styles.statLabel, { color: '#047857' }]}>Lessons Done</Text>
                       </View>
-                      
+
                       <View style={[styles.statCard, styles.statCardPurple]}>
                         <Text style={[styles.statValue, { color: '#7c3aed' }]}>{stats.wordsLearned}</Text>
                         <Text style={[styles.statLabel, { color: '#6b21a8' }]}>Words Learned</Text>
@@ -922,7 +1013,7 @@ export default function DashboardScreenNew() {
                         </View>
                       </View>
                     ))}
-                    
+
                     <TouchableOpacity style={styles.viewAllButton}>
                       <Text style={styles.viewAllButtonText}>View all lessons</Text>
                     </TouchableOpacity>
@@ -973,7 +1064,7 @@ export default function DashboardScreenNew() {
                         </Text>
                       </View>
                     ))}
-                    
+
                     <View style={styles.pathFooter}>
                       <Text style={styles.pathFooterTitle}>
                         Complete {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} Course
@@ -1035,7 +1126,7 @@ export default function DashboardScreenNew() {
             <Footer />
           </View>
         </ScrollView>
-        
+
         {/* Notification Setup Overlay */}
         <NotificationSetupOverlay 
           isVisible={showNotificationSetup} 
@@ -1707,7 +1798,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  
+
   disabledNotificationCard: {
     borderRadius: 8,
     borderWidth: 2,

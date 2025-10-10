@@ -2,6 +2,7 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
+import { getLanguageSpecificNotification } from '../screens/DashboardScreenNew';
 
 // Configure notifications behavior
 Notifications.setNotificationHandler({
@@ -32,17 +33,17 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-    
+
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    
+
     if (finalStatus !== 'granted') {
       console.log('Failed to get push token for push notification!');
       return null;
     }
-    
+
     try {
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log('Push token:', token);
@@ -60,13 +61,13 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
 function isWithinNotificationWindow(startTime: string = "09:00", endTime: string = "18:00"): boolean {
   const now = new Date();
   const currentTime = now.getHours() * 60 + now.getMinutes();
-  
+
   const [startHour, startMin] = startTime.split(':').map(Number);
   const [endHour, endMin] = endTime.split(':').map(Number);
-  
+
   const startTimeMinutes = startHour * 60 + startMin;
   const endTimeMinutes = endHour * 60 + endMin;
-  
+
   if (endTimeMinutes <= startTimeMinutes) {
     return currentTime >= startTimeMinutes || currentTime <= endTimeMinutes;
   } else {
@@ -74,44 +75,108 @@ function isWithinNotificationWindow(startTime: string = "09:00", endTime: string
   }
 }
 
-// Schedule language learning reminder notifications
+// // Schedule language learning reminder notifications
+// export async function scheduleLanguageLearningReminders(
+//   startTime: string = "09:00",
+//   endTime: string = "18:00",
+//   frequency: number = 4 // times per day
+// ): Promise<boolean> {
+//   try {
+//     // Cancel existing notifications
+//     if (notificationScheduleId) {
+//       await Notifications.cancelScheduledNotificationAsync(notificationScheduleId);
+//     }
+
+//     // Clear all scheduled notifications
+//     await Notifications.cancelAllScheduledNotificationsAsync();
+
+//     if (!isWithinNotificationWindow(startTime, endTime)) {
+//       console.log('Outside notification window, not scheduling reminders');
+//       return false;
+//     }
+
+//     const [startHour, startMin] = startTime.split(':').map(Number);
+//     const [endHour, endMin] = endTime.split(':').map(Number);
+
+//     const startMinutes = startHour * 60 + startMin;
+//     const endMinutes = endHour * 60 + endMin;
+//     const windowDuration = endMinutes - startMinutes;
+//     const interval = Math.floor(windowDuration / frequency);
+
+//     const encouragingMessages = [
+//       "Time for a quick language lesson! 🌟",
+//       "Ready to practice your new language? 📚",
+//       "Your language skills are waiting! ⚡",
+//       "Quick lesson break? Your brain will thank you! 🧠",
+//       "Language learning time! Let's go! 🚀",
+//       "Practice makes perfect! Time for a lesson 💪",
+//       "Your daily dose of language learning awaits! 🎯",
+//       "Ready to unlock new words today? 🔑"
+//     ];
+
+//     // Schedule multiple notifications throughout the day
+//     for (let i = 0; i < frequency; i++) {
+//       const notificationTime = startMinutes + (interval * i) + Math.random() * 30; // Add some randomness
+//       const hour = Math.floor(notificationTime / 60);
+//       const minute = Math.floor(notificationTime % 60);
+
+//       const message = encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)];
+
+//       await Notifications.scheduleNotificationAsync({
+//         content: {
+//           title: "LingoToday Reminder",
+//           body: message,
+//           sound: 'default',
+//           data: { 
+//             type: 'language_reminder',
+//             timestamp: Date.now()
+//           },
+//         },
+//         trigger: {
+//           hour,
+//           minute,
+//           repeats: true,
+//         } as Notifications.CalendarTriggerInput,
+//       });
+//     }
+
+//     console.log(`Scheduled ${frequency} language learning reminders between ${startTime} and ${endTime}`);
+//     return true;
+//   } catch (error) {
+//     console.error('Error scheduling notifications:', error);
+//     return false;
+//   }
+// }
+
+// UPDATED: Schedule language learning reminders with custom content and navigation data
 export async function scheduleLanguageLearningReminders(
   startTime: string = "09:00",
-  endTime: string = "18:00",
-  frequency: number = 4 // times per day
+  endTime: string = "18:00", 
+  frequency: number = 3,
+  language: string = "italian",
+  nextLessonData?: { courseId: string; lessonId: string }
 ): Promise<boolean> {
   try {
-    // Cancel existing notifications
-    if (notificationScheduleId) {
-      await Notifications.cancelScheduledNotificationAsync(notificationScheduleId);
-    }
-
-    // Clear all scheduled notifications
+    // Clear any existing notifications
     await Notifications.cancelAllScheduledNotificationsAsync();
 
-    if (!isWithinNotificationWindow(startTime, endTime)) {
-      console.log('Outside notification window, not scheduling reminders');
-      return false;
-    }
+    // Get language-specific notification content
+    const notificationContent = getLanguageSpecificNotification(language);
 
-    const [startHour, startMin] = startTime.split(':').map(Number);
-    const [endHour, endMin] = endTime.split(':').map(Number);
-    
-    const startMinutes = startHour * 60 + startMin;
-    const endMinutes = endHour * 60 + endMin;
+    // Default lesson data if none provided
+    const lessonData = nextLessonData || {
+      courseId: 'course1',
+      lessonId: 'lesson1'
+    };
+
+    // Parse start and end times
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const startMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
     const windowDuration = endMinutes - startMinutes;
     const interval = Math.floor(windowDuration / frequency);
-
-    const encouragingMessages = [
-      "Time for a quick language lesson! 🌟",
-      "Ready to practice your new language? 📚",
-      "Your language skills are waiting! ⚡",
-      "Quick lesson break? Your brain will thank you! 🧠",
-      "Language learning time! Let's go! 🚀",
-      "Practice makes perfect! Time for a lesson 💪",
-      "Your daily dose of language learning awaits! 🎯",
-      "Ready to unlock new words today? 🔑"
-    ];
 
     // Schedule multiple notifications throughout the day
     for (let i = 0; i < frequency; i++) {
@@ -119,15 +184,17 @@ export async function scheduleLanguageLearningReminders(
       const hour = Math.floor(notificationTime / 60);
       const minute = Math.floor(notificationTime % 60);
 
-      const message = encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)];
-
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: "LingoToday Reminder",
-          body: message,
+          title: notificationContent.title,
+          body: notificationContent.body,
           sound: 'default',
-          data: { 
+          data: {
             type: 'language_reminder',
+            language: language,
+            action: 'openLesson',
+            courseId: lessonData.courseId,
+            lessonId: lessonData.lessonId,
             timestamp: Date.now()
           },
         },
@@ -138,8 +205,7 @@ export async function scheduleLanguageLearningReminders(
         } as Notifications.CalendarTriggerInput,
       });
     }
-
-    console.log(`Scheduled ${frequency} language learning reminders between ${startTime} and ${endTime}`);
+    console.log(`Scheduled ${frequency} language learning reminders for ${language} between ${startTime} and ${endTime}`);
     return true;
   } catch (error) {
     console.error('Error scheduling notifications:', error);
@@ -222,7 +288,7 @@ export async function saveUserNotificationSettings(settings: {
   try {
     // This would typically save to your backend API
     console.log('Saving notification settings:', settings);
-    
+
     if (settings.enabled) {
       return await scheduleLanguageLearningReminders(
         settings.startTime,

@@ -119,12 +119,8 @@ export default function AccountScreen() {
     );
   };
 
-  const handleNavigateToDashboard = () => {
-    navigation.navigate('Dashboard' as never);
-  };
-
-  const handleNavigateToCourses = () => {
-    navigation.navigate('Courses' as never);
+  const handleNavigateToSubscription = () => {
+    navigation.navigate('Subscription' as never);
   };
 
   // Loading state - matching web exactly
@@ -167,7 +163,7 @@ export default function AccountScreen() {
           <View style={styles.headerLeft}>
             <TouchableOpacity 
               style={styles.backButton}
-              onPress={handleNavigateToDashboard}
+              onPress={() => navigation.navigate('Dashboard' as never)}
               testID="back-to-dashboard"
             >
               <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
@@ -378,20 +374,11 @@ export default function AccountScreen() {
               <View style={styles.actionsContainer}>
                 <TouchableOpacity 
                   style={styles.actionButton}
-                  onPress={handleNavigateToDashboard}
-                  testID="go-to-dashboard"
+                  onPress={handleNavigateToSubscription}
+                  testID="subscription-details"
                 >
-                  <Ionicons name="book" size={16} color={theme.colors.foreground} />
-                  <Text style={styles.actionButtonText}>Continue Learning</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={styles.actionButton}
-                  onPress={handleNavigateToCourses}
-                  testID="browse-courses"
-                >
-                  <Ionicons name="globe" size={16} color={theme.colors.foreground} />
-                  <Text style={styles.actionButtonText}>Browse Courses</Text>
+                  <Ionicons name="card" size={16} color={theme.colors.foreground} />
+                  <Text style={styles.actionButtonText}>Subscription details</Text>
                 </TouchableOpacity>
                 
                 <TouchableOpacity 

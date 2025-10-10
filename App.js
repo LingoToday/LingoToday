@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Audio } from 'expo-av';
 import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/contexts/AuthContext'; // Import from AuthContext
 import { useAuth } from './src/hooks/useAuth'; // Import from useAuth hook
@@ -24,6 +25,22 @@ function AppContent() {
 }
 
 export default function App() {
+  useEffect(() => {
+    const configureAudio = async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          playsInSilentMode: true,
+          allowsRecordingIOS: false,
+        });
+        console.log('✅ Audio configured to play in silent mode');
+      } catch (error) {
+        console.error('❌ Failed to configure audio mode:', error);
+      }
+    };
+
+    configureAudio();
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

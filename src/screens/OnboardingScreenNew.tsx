@@ -32,6 +32,9 @@ import { StripeProvider, CardField, useStripe, useConfirmPayment } from '@stripe
 // Import API client
 import { apiClient } from '../lib/apiClient';
 
+// Import Legal Document Modal
+import { LegalDocumentModal } from '../components/LegalDocumentModal';
+
 const { width } = Dimensions.get('window');
 
 const languages = [
@@ -98,12 +101,17 @@ export default function OnboardingScreen() {
   const [registerData, setRegisterData] = useState({
     firstName: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
+  
+  // Legal document modal state
+  const [legalModalVisible, setLegalModalVisible] = useState(false);
+  const [legalDocumentType, setLegalDocumentType] = useState<'terms' | 'privacy' | null>(null);
 
-  const totalScreens = 7;
+  const totalScreens = 8;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -170,8 +178,9 @@ export default function OnboardingScreen() {
       case 2: return selectedLearningStyle !== '';
       case 3: return false; // Registration screen should never allow continue - user must create account first
       case 4: return true; // Notifications screen always allows continue
-      case 5: return true; // Learning plan screen
-      case 6: return true; // Payment screen
+      case 5: return true; // Testimonials screen
+      case 6: return true; // Learning plan screen
+      case 7: return true; // Payment screen
       default: return false;
     }
   };
@@ -213,6 +222,8 @@ export default function OnboardingScreen() {
     if (!registerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
     if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
+    if (!registerData.confirmPassword) errors.confirmPassword = 'Please confirm your password';
+    else if (registerData.password !== registerData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
     
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
@@ -253,7 +264,7 @@ export default function OnboardingScreen() {
           
           const settingsResponse = await apiClient.updateUserSettings({
             notificationsEnabled: notificationsEnabled,
-            notificationFrequency: 15,
+            notificationFrequency: 60,
             notificationStartTime: '09:00',
             notificationEndTime: '18:00',
             language: selectedLanguage,
@@ -319,6 +330,17 @@ export default function OnboardingScreen() {
     }
   };
 
+  // Legal modal handlers
+  const handleOpenLegalModal = (type: 'terms' | 'privacy') => {
+    setLegalDocumentType(type);
+    setLegalModalVisible(true);
+  };
+
+  const handleCloseLegalModal = () => {
+    setLegalModalVisible(false);
+    setLegalDocumentType(null);
+  };
+
   const selectedLanguageData = languages.find(l => l.code === selectedLanguage);
   const selectedLevelData = levels.find(l => l.value === selectedLevel);
   const selectedLearningStyleData = learningStyles.find(l => l.value === selectedLearningStyle);
@@ -350,6 +372,7 @@ export default function OnboardingScreen() {
           isRegistering={isRegistering}
           onInputChange={handleRegisterInputChange}
           onRegister={handleRegister}
+          onOpenLegalModal={handleOpenLegalModal}
         />;
       case 4:
         return <NotificationScreen 
@@ -357,13 +380,15 @@ export default function OnboardingScreen() {
           onRequestPermission={requestNotificationPermission}
         />;
       case 5:
+        return <TestimonialsScreen onContinue={nextScreen} />;
+      case 6:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 6:
+      case 7:
         return (
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
             <PaymentScreen onSuccess={handlePaymentSuccess} />
@@ -431,7 +456,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 6 ? (
+          {currentScreen === 7 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -448,8 +473,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on registration, payment, and learning plan screens - matching web logic */}
-          {currentScreen < 6 && currentScreen !== 3 && currentScreen !== 5 && (
+          {/* Continue button - hide on registration, payment, learning plan, and testimonials screens - matching web logic */}
+          {currentScreen < 7 && currentScreen !== 3 && currentScreen !== 5 && currentScreen !== 6 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
@@ -478,6 +503,13 @@ const handlePaymentSuccess = async () => {
           )}
         </View>
       </SafeAreaView>
+      
+      {/* Legal Document Modal */}
+      <LegalDocumentModal
+        visible={legalModalVisible}
+        documentType={legalDocumentType}
+        onClose={handleCloseLegalModal}
+      />
     </View>
   );
 }
@@ -613,13 +645,15 @@ const RegistrationScreen = ({
   registerErrors, 
   isRegistering, 
   onInputChange, 
-  onRegister
+  onRegister,
+  onOpenLegalModal
 }: {
-  registerData: { firstName: string; email: string; password: string; };
+  registerData: { firstName: string; email: string; password: string; confirmPassword: string; };
   registerErrors: Record<string, string>;
   isRegistering: boolean;
   onInputChange: (field: keyof typeof registerData, value: string) => void;
   onRegister: () => void;
+  onOpenLegalModal: (type: 'terms' | 'privacy') => void;
 }) => (
     <View style={styles.screenContent}>
       <Text style={styles.screenTitle}>
@@ -693,6 +727,25 @@ const RegistrationScreen = ({
           {registerErrors.password && <Text style={styles.fieldErrorText}>{registerErrors.password}</Text>}
         </View>
 
+        <View style={styles.formField}>
+          <Label htmlFor="confirmPassword" style={styles.formLabel}>Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            placeholder="Confirm your password"
+            value={registerData.confirmPassword}
+            onChangeText={(text: string) => onInputChange('confirmPassword', text)}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={[
+              styles.formInput,
+              registerErrors.confirmPassword && styles.formInputError
+            ]}
+            testID="input-confirmPassword"
+          />
+          {registerErrors.confirmPassword && <Text style={styles.fieldErrorText}>{registerErrors.confirmPassword}</Text>}
+        </View>
+
         <Button 
           onPress={onRegister}
           disabled={isRegistering}
@@ -707,26 +760,22 @@ const RegistrationScreen = ({
         <View style={styles.termsSection}>
           <Text style={styles.termsText}>
             By creating an account, you indicate that you have read and agreed to the{' '}
-            <Text style={styles.termsLink}>Privacy Policy</Text>
+            <Text 
+              style={styles.termsLink} 
+              onPress={() => onOpenLegalModal('privacy')}
+              testID="link-privacy-policy"
+            >
+              Privacy Policy
+            </Text>
             {' '}and{' '}
-            <Text style={styles.termsLink}>Terms of Use</Text>
+            <Text 
+              style={styles.termsLink} 
+              onPress={() => onOpenLegalModal('terms')}
+              testID="link-terms"
+            >
+              Terms of Use
+            </Text>
           </Text>
-        </View>
-        
-        {/* Features - matching web exactly */}
-        <View style={styles.featuresCard}>
-          <Text style={styles.featuresTitle}>Take advantage of:</Text>
-          <View style={styles.featuresSpace}>
-            {[
-              "• Micro-lessons that fit your lifestyle",
-              "• Smart reminders to stay consistent without pressure", 
-              "• Desktop + mobile sync so you can learn anywhere",
-              "• Real-world videos: Practice in video scenes like cafés, shops, and travel moments",
-              "• Backed by proven methods (spaced repetition & retrieval practice)"
-            ].map((feature, index) => (
-              <Text key={index} style={styles.featureItem}>{feature}</Text>
-            ))}
-          </View>
         </View>
       </View>
     </View>
@@ -842,6 +891,130 @@ const NotificationScreen = ({
           </Text>
         </Button>
       </View>
+    </View>
+  );
+};
+
+const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const testimonials = [
+    {
+      id: 1,
+      text: "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations.",
+      name: "Anna Müller",
+      title: "Property Manager, Berlin",
+      initials: "AM",
+      bgColor: "#D1FAE5",
+      textColor: "#059669"
+    },
+    {
+      id: 2,
+      text: "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday...",
+      name: "Paul Martinez",
+      title: "Product Manager, London",
+      initials: "SM",
+      bgColor: "#DBEAFE",
+      textColor: "#2563EB"
+    },
+    {
+      id: 3,
+      text: "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!",
+      name: "Sophie Liu",
+      title: "Software Engineer, London",
+      initials: "AL",
+      bgColor: "#EDE9FE",
+      textColor: "#7C3AED"
+    }
+  ];
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const currentTestimonial = testimonials[currentIndex];
+
+  return (
+    <View style={styles.screenContent}>
+      <Text style={styles.screenTitle}>
+        They Started Where You Are - Now They're Speaking With Confidence
+      </Text>
+      
+      {/* Testimonial Card */}
+      <View style={styles.testimonialCard}>
+        {/* Stars */}
+        <View style={styles.testimonialStars}>
+          {[...Array(5)].map((_, i) => (
+            <Ionicons key={i} name="star" size={20} color="#FBBF24" />
+          ))}
+        </View>
+        
+        {/* Quote */}
+        <Text style={styles.testimonialText}>
+          "{currentTestimonial.text}"
+        </Text>
+        
+        {/* Author */}
+        <View style={styles.testimonialAuthor}>
+          <View style={[styles.testimonialInitials, { backgroundColor: currentTestimonial.bgColor }]}>
+            <Text style={[styles.testimonialInitialsText, { color: currentTestimonial.textColor }]}>
+              {currentTestimonial.initials}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.testimonialName}>{currentTestimonial.name}</Text>
+            <Text style={styles.testimonialTitle}>{currentTestimonial.title}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Navigation */}
+      <View style={styles.testimonialNavigation}>
+        <TouchableOpacity 
+          onPress={handlePrevious} 
+          style={styles.testimonialNavButton}
+          testID="button-testimonial-prev"
+        >
+          <Ionicons name="chevron-back" size={24} color="#6B7280" />
+        </TouchableOpacity>
+
+        <View style={styles.testimonialDots}>
+          {testimonials.map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setCurrentIndex(index)}
+              style={[
+                styles.testimonialDot,
+                index === currentIndex && styles.testimonialDotActive
+              ]}
+              testID={`dot-testimonial-${index}`}
+            />
+          ))}
+        </View>
+
+        <TouchableOpacity 
+          onPress={handleNext} 
+          style={styles.testimonialNavButton}
+          testID="button-testimonial-next"
+        >
+          <Ionicons name="chevron-forward" size={24} color="#6B7280" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Continue Button */}
+      <Button
+        onPress={onContinue}
+        style={styles.testimonialContinueButton}
+      >
+        <View style={styles.continueButtonContent}>
+          <Text style={styles.testimonialContinueButtonText}>Continue</Text>
+          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" style={styles.continueButtonIcon} />
+        </View>
+      </Button>
     </View>
   );
 };
@@ -1295,7 +1468,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14, // Reduced by 2pts from 16
     fontWeight: '600', // font-semibold - slightly bolder
   },
   continueButtonTextDisabled: {
@@ -1324,17 +1497,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   screenTitle: {
-    fontSize: 30, // text-3xl
+    fontSize: 28, // Reduced by 2pts from 30
     fontWeight: '700', // font-bold
     color: '#111827', // text-gray-900
     textAlign: 'center',
     marginBottom: 8, // mb-2
   },
   screenSubtitle: {
-    fontSize: 18, // text-lg
+    fontSize: 16, // Reduced by 2pts from 18
     color: '#6B7280', // text-gray-600
     textAlign: 'center',
-    marginBottom: 32, // mb-8
+    marginBottom: 20, // Reduced from 32 to 20
     lineHeight: 28,
   },
 
@@ -1457,18 +1630,18 @@ const styles = StyleSheet.create({
     color: '#B91C1C', // text-red-700
   },
   formSpace: {
-    gap: 12, // Reduced from 16 to 12
+    gap: 6, // Reduced from 12 to 6
     maxWidth: 384, // max-w-md
     width: '100%',
   },
   formField: {
-    marginBottom: 8, // Reduced from 16 to 8
+    marginBottom: 4, // Reduced from 8 to 4
   },
   formLabel: {
     fontSize: 14,
     fontWeight: '500',
     color: '#111827',
-    marginBottom: 4, // Reduced from 6 to 4
+    marginBottom: 2, // Reduced from 4 to 2
   },
   formInput: {
     // Input component handles its own styling
@@ -1495,7 +1668,7 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     color: '#FFFFFF', // text-white
-    fontSize: 16, // font-medium
+    fontSize: 14, // Reduced by 2pts from 16
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -1517,32 +1690,6 @@ const styles = StyleSheet.create({
   termsLink: {
     color: '#374151', // text-gray-700
     textDecorationLine: 'underline',
-  },
-  featuresCard: {
-    backgroundColor: '#FFFFFF', // bg-white
-    borderRadius: 12, // rounded-xl
-    padding: 20, // Reduced from 24 to 20
-    marginTop: 16, // Reduced from 24 to 16
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2, // shadow-sm
-  },
-  featuresTitle: {
-    fontSize: 16, // Reduced from 18 to 16
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 12, // Reduced from 16 to 12
-  },
-  featuresSpace: {
-    gap: 8, // Reduced from 12 to 8
-  },
-  featureItem: {
-    fontSize: 16, // Reduced from 18 to 16
-    color: '#111827', // text-gray-900
-    fontWeight: '600', // font-semibold
-    lineHeight: 24, // Reduced from 28 to 24
   },
 
   // Notification Screen
@@ -1576,7 +1723,7 @@ const styles = StyleSheet.create({
   },
   notificationButtonText: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16, // Reduced by 2pts from 18
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -1595,7 +1742,7 @@ const styles = StyleSheet.create({
   },
   notificationSkipButtonText: {
     color: '#6366f1',
-    fontSize: 18,
+    fontSize: 16, // Reduced by 2pts from 18
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -1644,7 +1791,7 @@ const styles = StyleSheet.create({
     paddingTop: 4, // pt-1
   },
   timelineText: {
-    fontSize: 18, // text-lg
+    fontSize: 16, // Reduced by 2pts from 18
     color: '#111827', // text-gray-900
     fontWeight: '600', // font-semibold
     lineHeight: 28, // leading-relaxed
@@ -1674,7 +1821,7 @@ const styles = StyleSheet.create({
   },
   startTrialButtonText: {
     color: '#FFFFFF', // text-white
-    fontSize: 16, // font-medium
+    fontSize: 14, // Reduced by 2pts from 16
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -1717,7 +1864,7 @@ const styles = StyleSheet.create({
   },
   errorButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14, // Reduced by 2pts from 16
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -1822,7 +1969,7 @@ const styles = StyleSheet.create({
   },
   stripeSubmitButtonText: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16, // Reduced by 2pts from 18
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -1851,5 +1998,98 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     paddingHorizontal: 16,
+  },
+
+  // Testimonials Screen Styles
+  testimonialCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    padding: 24,
+    marginBottom: 24,
+    width: '100%',
+    maxWidth: 512,
+  },
+  testimonialStars: {
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 12,
+  },
+  testimonialText: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  testimonialAuthor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  testimonialInitials: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  testimonialInitialsText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  testimonialName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  testimonialTitle: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  testimonialNavigation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    marginBottom: 32,
+  },
+  testimonialNavButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  testimonialDots: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  testimonialDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#D1D5DB',
+  },
+  testimonialDotActive: {
+    width: 32,
+    backgroundColor: '#6366f1',
+  },
+  testimonialContinueButton: {
+    backgroundColor: '#6366f1',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 9999,
+    width: '100%',
+    maxWidth: 448,
+  },
+  testimonialContinueButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });

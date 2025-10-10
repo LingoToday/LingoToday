@@ -17,7 +17,6 @@ import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
-import { Footer } from '../components/ui/Footer';
 import { AuthContext } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
@@ -209,8 +208,6 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
           </View>
-
-          <Footer />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
