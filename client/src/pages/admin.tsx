@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -6,12 +6,15 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle, Lock, BarChart3 } from "lucide-react";
-import { useState } from "react";
+import { BookOpen, Users, Clock, FileText, ChevronDown, CheckCircle, Lock, BarChart3, Upload, Video, FileJson, Trash2, Check, X, Play } from "lucide-react";
+import { useState, useRef } from "react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 import { Eye } from "lucide-react";
 import { format } from "date-fns";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import UploadsManager from "@/components/UploadsManager";
 
 interface Course {
   id: number;
@@ -946,10 +949,14 @@ export default function AdminPage() {
 
         {/* Sub Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6" data-testid="admin-nav-tabs">
+          <TabsList className="grid w-full grid-cols-4 mb-6" data-testid="admin-nav-tabs">
             <TabsTrigger value="course-structure" data-testid="tab-course-structure" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               Course Structure
+            </TabsTrigger>
+            <TabsTrigger value="uploads" data-testid="tab-uploads" className="flex items-center gap-2">
+              <Upload className="w-4 h-4" />
+              Uploads
             </TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -963,6 +970,10 @@ export default function AdminPage() {
 
           <TabsContent value="course-structure">
             <CourseStructurePage />
+          </TabsContent>
+
+          <TabsContent value="uploads">
+            <UploadsManager />
           </TabsContent>
 
           <TabsContent value="analytics">
