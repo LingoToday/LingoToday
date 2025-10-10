@@ -321,7 +321,7 @@ export default function Lesson() {
         1: 'word_review',
         2: 'quick_check', 
         3: 'typing',
-        4: 'video_choice',
+        4: 'pro_video',
         5: 'text_tip'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
@@ -604,7 +604,7 @@ export default function Lesson() {
         1: 'word_review',
         2: 'quick_check', 
         3: 'typing',
-        4: 'video_choice',
+        4: 'pro_video',
         5: 'text_tip'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
