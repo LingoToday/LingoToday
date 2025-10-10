@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "LingoToday",
-    "slug": "lingotoday",
+    "slug": "lingotoday-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,7 +35,11 @@
     "sdkVersion": "54.0.0",
     "extra": {
       "apiBaseUrl": "https://b76f5715-9af2-4a63-9e9d-ca7505e3a5c4-00-yf9x4tv2j3jv.worf.replit.dev",
-      "stripePublishableKey": "pk_test_51S3GKG3dMgplFeCzCy8okVARwbR41NONkQQGjxeiH0nwHCr6lVT4wtDyqFmm7sGdM5Z1vNMS6RKE5V9c0nk6wu6b00RPir2zbq"
-    }
+      "stripePublishableKey": "pk_test_51S3GKG3dMgplFeCzCy8okVARwbR41NONkQQGjxeiH0nwHCr6lVT4wtDyqFmm7sGdM5Z1vNMS6RKE5V9c0nk6wu6b00RPir2zbq",
+      "eas": {
+        "projectId": "b5c4ecbe-0f0f-4f0f-8f8e-b155460d2f03"
+      }
+    },
+    "owner": "lingotoday"
   }
 }
