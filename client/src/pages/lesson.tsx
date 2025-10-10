@@ -976,7 +976,10 @@ export default function Lesson() {
       }
     } else {
       // Handle regular lessons - check if there's a step 5
-      const hasStep5 = currentLesson?.lesson?.steps?.some((step: any) => step.stepNumber === 5);
+      // Note: steps can be an array or an object, so we need to handle both
+      const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
+        ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
+        : false;
       const maxStep = hasStep5 ? 5 : 4;
       
       if (currentStep < maxStep) {
