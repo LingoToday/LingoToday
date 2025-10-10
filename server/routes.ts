@@ -1742,6 +1742,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
               expected_answers: content.expected_answers || content.expectedAnswers || [],
               isRestricted: content.isRestricted || false
             };
+          } else if (step.stepType === 'text_tip') {
+            // Step 5: Educational text tip (cultural notes, challenges, etc.)
+            const content = step.content as any;
+            allSteps.text_tip = {
+              type: 'text_tip',
+              stepType: step.stepType,
+              stepNumber: 5,
+              prompt: content.prompt,
+              answer_prompt: content.answer_prompt || 'Press continue to move on.',
+              ui_action: content.ui_action || 'continue'
+            };
           } else if (step.stepType === 'introduction') {
             // Old 3-step structure: introduction step (contains both word review and MCQ)
             const content = step.content as any;
