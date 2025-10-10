@@ -317,11 +317,17 @@ export default function Lesson() {
 
     // Handle API lessons with steps object (object with named keys like word_review, pro_video)
     if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+      // Step 4 can be either video_choice or pro_video, check which one exists
+      let step4Name = 'video_choice';
+      if (!currentLesson.lesson.steps.video_choice && currentLesson.lesson.steps.pro_video) {
+        step4Name = 'pro_video';
+      }
+      
       const stepMapping = {
         1: 'word_review',
         2: 'quick_check', 
         3: 'typing',
-        4: 'pro_video',
+        4: step4Name,
         5: 'text_tip'
       };
       const stepName = stepMapping[currentStep as keyof typeof stepMapping];
@@ -336,6 +342,16 @@ export default function Lesson() {
       if (stepName && currentLesson.lesson.steps[stepName]) {
         const stepData = currentLesson.lesson.steps[stepName];
         console.log('🔧 Found step in object format:', { currentStep, stepName, stepData });
+        
+        // Handle text_tip step type (step 5 bonus tips)
+        if (stepData.stepType === 'text_tip' || stepData.type === 'text_tip') {
+          return {
+            type: 'text_tip',
+            prompt: stepData.prompt || stepData.content?.prompt || '',
+            answerPrompt: stepData.answer_prompt || stepData.content?.answer_prompt || 'Press continue to move on.',
+            uiAction: stepData.ui_action || stepData.content?.ui_action || 'continue'
+          };
+        }
         
         // Handle pro_video step type (tier-restricted videos)
         if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
@@ -819,6 +835,10 @@ export default function Lesson() {
       correct = selectedAnswer === stepData.answer;
     } else if (stepData.type === 'word_review') {
       // Step 1: Word review - go directly to next step without showing result
+      handleNextStep();
+      return;
+    } else if (stepData.type === 'text_tip') {
+      // Step 5: Text tip - just go to next step (complete lesson)
       handleNextStep();
       return;
     } else if (stepData.type === 'quick_check') {
@@ -1406,6 +1426,34 @@ export default function Lesson() {
                     </Button>
                   </div>
                 )}
+              </>
+            )}
+
+            {stepData && stepData.type === 'text_tip' && (
+              <>
+                {/* Text Tip Step - Bonus educational content */}
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-4">💡</div>
+                    <p className="text-green-800 text-lg mb-4 whitespace-pre-line">{stepData.prompt}</p>
+                    <p className="text-green-600 text-sm">{stepData.answerPrompt}</p>
+                  </div>
+                </div>
+
+                {/* Continue Button */}
+                <div className="flex justify-center">
+                  <Button 
+                    onClick={() => {
+                      // Complete the lesson - user has finished all 5 steps
+                      completeLessonMutation.mutate(100);
+                    }}
+                    disabled={completeLessonMutation.isPending}
+                    className="max-w-md"
+                    data-testid="button-continue-text-tip"
+                  >
+                    {completeLessonMutation.isPending ? 'Completing...' : 'Complete Lesson'}
+                  </Button>
+                </div>
               </>
             )}
 
