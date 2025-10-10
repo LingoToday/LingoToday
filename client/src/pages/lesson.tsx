@@ -1765,9 +1765,19 @@ export default function Lesson() {
                        currentStep < stepData.totalQuestions ? `Next Question (${currentStep + 1}/${stepData.totalQuestions})` : 'Complete Review'
                      ) : stepData?.type === 'irl_video' ? (
                        'Complete Challenge'
-                     ) : (
-                       currentStep < 4 ? `Next Step (${currentStep + 1}/4)` : 'Complete Lesson'
-                     )}
+                     ) : (() => {
+                       const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
+                         ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
+                         : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
+                       
+                       if (currentStep === 4 && hasStep5) {
+                         return 'Continue';
+                       } else if (currentStep < 4) {
+                         return `Next Step (${currentStep + 1}/4)`;
+                       } else {
+                         return 'Complete Lesson';
+                       }
+                     })()}
                   </Button>
                 )}
               </div>
