@@ -482,3 +482,29 @@ export type LessonWithSteps = Lesson & {
 export type Step1Content = z.infer<typeof step1ContentSchema>;
 export type Step2Content = z.infer<typeof step2ContentSchema>;
 export type Step3Content = z.infer<typeof step3ContentSchema>;
+
+// Draft uploads table - for tracking video and JSON uploads before publishing
+export const draftUploads = pgTable('draft_uploads', {
+  id: serial('id').primaryKey(),
+  uploadType: varchar('upload_type', { length: 20 }).notNull(), // 'video' or 'json'
+  fileName: text('file_name').notNull(),
+  fileUrl: text('file_url').notNull(), // Object storage URL or temp path
+  fileSize: integer('file_size'), // in bytes
+  metadata: jsonb('metadata'), // For videos: { languageId, courseId, lessonId, stepNumber }, For JSON: parsed structure preview
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft', 'published', 'failed'
+  uploadedBy: text('uploaded_by').notNull(), // user ID who uploaded
+  publishedAt: timestamp('published_at'),
+  errorMessage: text('error_message'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Insert schemas and types for draft uploads
+export const insertDraftUploadSchema = createInsertSchema(draftUploads).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type DraftUpload = typeof draftUploads.$inferSelect;
+export type InsertDraftUpload = z.infer<typeof insertDraftUploadSchema>;
