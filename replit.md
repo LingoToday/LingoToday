@@ -7,7 +7,18 @@ LingoToday is a full-stack language learning application designed to deliver mic
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
-## Recent Changes (September 3, 2025)
+## Recent Changes (October 10, 2025)
+- **Implemented Step 5 (text_tip) Support in React Native Mobile App**:
+  - Added text_tip type definitions to mobile lesson screen component
+  - Implemented step parsing logic to handle text_tip steps in both array and object-based API responses
+  - Updated handleNextStep navigation to check for step 5 existence before completing lessons
+  - Added UI rendering for text_tip with amber background styling and dynamic titles (Bonus Tip, Cultural Snack, Mini Challenge, Did You Know?)
+  - Updated skip button logic for free users to navigate to step 5 when it exists instead of completing lesson
+  - Updated button text logic to show "Next" when step 5 exists and "Complete Lesson" only after final step
+  - Implementation mirrors web app behavior for consistency across platforms
+  - Supports universal usage across all courses and languages
+
+## Previous Changes (September 3, 2025)
 - **Updated Italian Course 10 (Directions and Places) with Inline Reviews**:
   - Replaced the existing Italian Directions and Places course with enhanced version that includes reviews after every 4 lessons
   - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
