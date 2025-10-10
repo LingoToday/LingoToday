@@ -1402,10 +1402,10 @@ export default function Lesson() {
                     <Button 
                       variant="outline"
                       onClick={() => {
-                        // Check if there's a step 5
+                        // Check if there's a step 5 in both array and object formats
                         const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
                           ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
-                          : false;
+                          : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
                         
                         if (hasStep5) {
                           // Go to step 5 (text tip)
@@ -1422,7 +1422,7 @@ export default function Lesson() {
                       className="mt-4"
                       data-testid="skip-pro-video-button"
                     >
-                      {completeLessonMutation.isPending ? 'Completing Lesson...' : 'Skip This Video (Continue with Free Content)'}
+                      {completeLessonMutation.isPending ? 'Completing Lesson...' : 'Continue'}
                     </Button>
                   </div>
                 )}
@@ -1796,7 +1796,8 @@ export default function Lesson() {
                   </div>
                 )}
                 
-                {!showResult ? (
+                {/* Don't show submit/next buttons for pro_video when user doesn't have access (handled in pro_video section) */}
+                {!showResult && !(stepData?.type === 'pro_video' && !stepData.hasAccess) && (
                   <Button 
                     onClick={handleStepSubmit}
                     disabled={stepData?.type === 'word_review' ? false : (!selectedAnswer || (stepData?.type === 'type' && !selectedAnswer.trim()))}
@@ -1804,7 +1805,9 @@ export default function Lesson() {
                   >
                     {stepData?.type === 'word_review' ? 'Continue' : 'Submit Answer'}
                   </Button>
-                ) : (
+                )}
+                
+                {showResult && (
                   <Button 
                     onClick={handleNextStep}
                     disabled={completeLessonMutation.isPending}
