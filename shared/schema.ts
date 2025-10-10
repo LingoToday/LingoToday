@@ -45,12 +45,12 @@ export const lessons = pgTable('lessons', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Lesson steps table - stores the 4 steps for each lesson
+// Lesson steps table - stores the 5 steps for each lesson
 export const lessonSteps = pgTable('lesson_steps', {
   id: serial('id').primaryKey(),
   lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
-  stepNumber: integer('step_number').notNull(), // 1, 2, 3, or 4
-  stepType: varchar('step_type', { length: 20 }).notNull(), // 'word_review', 'quick_check', 'typing', 'comprehension'
+  stepNumber: integer('step_number').notNull(), // 1, 2, 3, 4, or 5
+  stepType: varchar('step_type', { length: 30 }).notNull(), // 'word_review', 'quick_check', 'typing', 'comprehension', 'text_tip', 'irl_video', 'pro_video', 'video_choice'
   content: jsonb('content').notNull(), // Flexible JSON to store step-specific content
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -64,6 +64,7 @@ export const checkpoints = pgTable('checkpoints', {
   title: text('title').notNull(),
   description: text('description'),
   questions: jsonb('questions').notNull(), // Array of checkpoint questions
+  teaser: jsonb('teaser'), // Optional teaser content for next course (lesson_teaser1)
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
