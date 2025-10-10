@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupOAuthStrategies, setupOAuthRoutes } from './googleAuth';
+import { ObjectStorageService } from './objectStorage';
 import Stripe from "stripe";
 import { 
   insertUserSettingsSchema, 
@@ -19,6 +20,13 @@ import {
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
+import multer from "multer";
+
+// Configure multer for file uploads
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 500 * 1024 * 1024 } // 500MB limit for videos
+});
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -3221,6 +3229,267 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('❌ Error refreshing subscription:', error);
       res.json({ success: false, error: error.message });
+    }
+  });
+
+  // ===== ADMIN UPLOAD ROUTES (from blueprint:javascript_object_storage) =====
+  // Admin check middleware
+  const isAdmin = async (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    // Add your admin check logic here if needed
+    next();
+  };
+
+  // Get presigned URL for video upload
+  app.post('/api/admin/videos/upload-url', isAdmin, async (req: any, res) => {
+    try {
+      const { filename } = req.body;
+      if (!filename) {
+        return res.status(400).json({ error: 'Filename is required' });
+      }
+
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getVideoUploadURL(filename);
+      
+      res.json({ uploadURL });
+    } catch (error: any) {
+      console.error('Error generating video upload URL:', error);
+      res.status(500).json({ error: 'Failed to generate upload URL: ' + error.message });
+    }
+  });
+
+  // Save video upload metadata as draft
+  app.post('/api/admin/videos/draft', isAdmin, async (req: any, res) => {
+    try {
+      const { fileName, fileUrl, fileSize, languageId, courseId, lessonNumber, stepNumber } = req.body;
+      const userId = req.user.claims.sub;
+
+      const objectStorageService = new ObjectStorageService();
+      const normalizedUrl = objectStorageService.normalizeObjectPath(fileUrl);
+
+      const draft = await storage.createDraftUpload({
+        uploadType: 'video',
+        fileName,
+        fileUrl: normalizedUrl,
+        fileSize,
+        metadata: { languageId, courseId, lessonNumber, stepNumber },
+        uploadedBy: userId,
+        status: 'draft',
+      });
+
+      res.json(draft);
+    } catch (error: any) {
+      console.error('Error saving video draft:', error);
+      res.status(500).json({ error: 'Failed to save video draft: ' + error.message });
+    }
+  });
+
+  // Get presigned URL for JSON upload
+  app.post('/api/admin/json/upload-url', isAdmin, async (req: any, res) => {
+    try {
+      const { filename } = req.body;
+      if (!filename) {
+        return res.status(400).json({ error: 'Filename is required' });
+      }
+
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getJSONUploadURL(filename);
+      
+      res.json({ uploadURL });
+    } catch (error: any) {
+      console.error('Error generating JSON upload URL:', error);
+      res.status(500).json({ error: 'Failed to generate upload URL: ' + error.message });
+    }
+  });
+
+  // Parse and save JSON upload as draft
+  app.post('/api/admin/json/draft', isAdmin, async (req: any, res) => {
+    try {
+      const { fileName, fileUrl, jsonContent } = req.body;
+      const userId = req.user.claims.sub;
+
+      // Parse JSON to create preview metadata
+      const courseKey = Object.keys(jsonContent)[0];
+      const courseData = jsonContent[courseKey];
+      const lessons = courseData.lessons || {};
+      const lessonCount = Object.keys(lessons).filter(k => k.startsWith('lesson')).length;
+
+      const metadata = {
+        courseKey,
+        courseTitle: courseData.title,
+        courseDescription: courseData.description,
+        lessonCount,
+        preview: {
+          title: courseData.title,
+          description: courseData.description,
+          totalLessons: lessonCount,
+        }
+      };
+
+      const objectStorageService = new ObjectStorageService();
+      const normalizedUrl = objectStorageService.normalizeObjectPath(fileUrl);
+
+      const draft = await storage.createDraftUpload({
+        uploadType: 'json',
+        fileName,
+        fileUrl: normalizedUrl,
+        fileSize: JSON.stringify(jsonContent).length,
+        metadata,
+        uploadedBy: userId,
+        status: 'draft',
+      });
+
+      res.json({ draft, preview: metadata.preview });
+    } catch (error: any) {
+      console.error('Error saving JSON draft:', error);
+      res.status(500).json({ error: 'Failed to save JSON draft: ' + error.message });
+    }
+  });
+
+  // Get all draft uploads
+  app.get('/api/admin/drafts', isAdmin, async (req: any, res) => {
+    try {
+      const { type } = req.query;
+      const drafts = await storage.getDraftUploads(type as 'video' | 'json' | undefined);
+      res.json(drafts);
+    } catch (error: any) {
+      console.error('Error fetching drafts:', error);
+      res.status(500).json({ error: 'Failed to fetch drafts: ' + error.message });
+    }
+  });
+
+  // Publish a video draft
+  app.post('/api/admin/videos/:id/publish', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const draft = await storage.getDraftUpload(parseInt(id));
+
+      if (!draft || draft.uploadType !== 'video') {
+        return res.status(404).json({ error: 'Video draft not found' });
+      }
+
+      const metadata = draft.metadata as any;
+      const { languageId, courseId, lessonNumber, stepNumber } = metadata;
+
+      // Find the lesson and step
+      const lessons = await storage.getLessons(courseId);
+      const lesson = lessons.find(l => l.lessonNumber === lessonNumber);
+      
+      if (!lesson) {
+        return res.status(404).json({ error: 'Lesson not found' });
+      }
+
+      const steps = await storage.getLessonSteps(lesson.id);
+      const step = steps.find(s => s.stepNumber === stepNumber);
+
+      if (!step) {
+        return res.status(404).json({ error: 'Step not found' });
+      }
+
+      // Get public URL for the video
+      const objectStorageService = new ObjectStorageService();
+      const videoUrl = await objectStorageService.getPublicVideoURL(draft.fileUrl);
+
+      // Update the step content with the video URL
+      const updatedContent = {
+        ...(step.content as any),
+        video_url: videoUrl,
+      };
+
+      await storage.updateLessonStep(step.id, {
+        content: updatedContent,
+      });
+
+      // Mark draft as published
+      await storage.updateDraftUpload(parseInt(id), {
+        status: 'published',
+        publishedAt: new Date(),
+      });
+
+      res.json({ success: true, message: 'Video published successfully', videoUrl });
+    } catch (error: any) {
+      console.error('Error publishing video:', error);
+      
+      // Mark draft as failed with error message
+      try {
+        await storage.updateDraftUpload(parseInt(req.params.id), {
+          status: 'failed',
+          errorMessage: error.message,
+        });
+      } catch (updateError) {
+        console.error('Error updating draft status:', updateError);
+      }
+
+      res.status(500).json({ error: 'Failed to publish video: ' + error.message });
+    }
+  });
+
+  // Publish a JSON draft
+  app.post('/api/admin/json/:id/publish', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { languageCode, skillLevelCode } = req.body;
+
+      if (!languageCode || !skillLevelCode) {
+        return res.status(400).json({ error: 'languageCode and skillLevelCode are required' });
+      }
+
+      const draft = await storage.getDraftUpload(parseInt(id));
+
+      if (!draft || draft.uploadType !== 'json') {
+        return res.status(404).json({ error: 'JSON draft not found' });
+      }
+
+      // Fetch the JSON content from the stored URL
+      // For now, we expect it to be passed in the request
+      const { jsonContent } = req.body;
+      
+      if (!jsonContent) {
+        return res.status(400).json({ error: 'jsonContent is required in request body' });
+      }
+
+      // Import the course from JSON
+      const course = await storage.importCourseFromJSON(languageCode, skillLevelCode, jsonContent);
+
+      // Mark draft as published
+      await storage.updateDraftUpload(parseInt(id), {
+        status: 'published',
+        publishedAt: new Date(),
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'Course imported successfully', 
+        course 
+      });
+    } catch (error: any) {
+      console.error('Error publishing JSON:', error);
+      
+      // Mark draft as failed with error message
+      try {
+        await storage.updateDraftUpload(parseInt(req.params.id), {
+          status: 'failed',
+          errorMessage: error.message,
+        });
+      } catch (updateError) {
+        console.error('Error updating draft status:', updateError);
+      }
+
+      res.status(500).json({ error: 'Failed to publish JSON: ' + error.message });
+    }
+  });
+
+  // Delete a draft
+  app.delete('/api/admin/drafts/:id', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteDraftUpload(parseInt(id));
+      res.json({ success: true, message: 'Draft deleted successfully' });
+    } catch (error: any) {
+      console.error('Error deleting draft:', error);
+      res.status(500).json({ error: 'Failed to delete draft: ' + error.message });
     }
   });
 

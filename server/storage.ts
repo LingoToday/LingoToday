@@ -12,6 +12,7 @@ import {
   lessonSteps,
   checkpoints,
   checkpointProgress,
+  draftUploads,
   type User,
   type UpsertUser,
   type UserSettings,
@@ -40,6 +41,8 @@ import {
   type InsertCheckpointProgress,
   type CourseWithRelations,
   type LessonWithSteps,
+  type DraftUpload,
+  type InsertDraftUpload,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -137,6 +140,13 @@ export interface IStorage {
   trackPageView(pageView: InsertPageView): Promise<PageView>;
   getPageViewsCount(startDate?: Date, endDate?: Date, page?: string): Promise<{date: string, count: number, page?: string}[]>;
   getPageViewsByPage(startDate?: Date, endDate?: Date): Promise<{page: string, count: number}[]>;
+  
+  // Draft uploads operations (from blueprint:javascript_object_storage)
+  getDraftUploads(uploadType?: 'video' | 'json'): Promise<DraftUpload[]>;
+  getDraftUpload(id: number): Promise<DraftUpload | undefined>;
+  createDraftUpload(upload: InsertDraftUpload): Promise<DraftUpload>;
+  updateDraftUpload(id: number, data: Partial<InsertDraftUpload>): Promise<DraftUpload>;
+  deleteDraftUpload(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1184,6 +1194,38 @@ export class DatabaseStorage implements IStorage {
 
     const results = await db.execute(query);
     return results.rows as {page: string, count: number}[];
+  }
+
+  // Draft uploads operations (from blueprint:javascript_object_storage)
+  async getDraftUploads(uploadType?: 'video' | 'json'): Promise<DraftUpload[]> {
+    if (uploadType) {
+      return await db.select().from(draftUploads)
+        .where(eq(draftUploads.uploadType, uploadType))
+        .orderBy(desc(draftUploads.createdAt));
+    }
+    return await db.select().from(draftUploads).orderBy(desc(draftUploads.createdAt));
+  }
+
+  async getDraftUpload(id: number): Promise<DraftUpload | undefined> {
+    const [upload] = await db.select().from(draftUploads).where(eq(draftUploads.id, id));
+    return upload;
+  }
+
+  async createDraftUpload(upload: InsertDraftUpload): Promise<DraftUpload> {
+    const [newUpload] = await db.insert(draftUploads).values(upload).returning();
+    return newUpload;
+  }
+
+  async updateDraftUpload(id: number, data: Partial<InsertDraftUpload>): Promise<DraftUpload> {
+    const [updated] = await db.update(draftUploads)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(draftUploads.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteDraftUpload(id: number): Promise<void> {
+    await db.delete(draftUploads).where(eq(draftUploads.id, id));
   }
 }
 
