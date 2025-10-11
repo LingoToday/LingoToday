@@ -3279,7 +3279,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/videos/draft', isAdmin, async (req: any, res) => {
     try {
       const { fileName, objectPath, fileSize, languageId, courseId, lessonNumber, stepNumber, parentDraftId, videoLabel } = req.body;
-      const userId = req.user.claims.sub;
+      // Get user ID from authenticated user OR use 'admin' for access code users
+      const userId = req.user?.claims?.sub || req.user?.id || 'admin';
 
       if (!objectPath) {
         return res.status(400).json({ error: 'Object path is required' });
@@ -3339,7 +3340,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/json/draft', isAdmin, async (req: any, res) => {
     try {
       const { fileName, objectPath, jsonContent } = req.body;
-      const userId = req.user.claims.sub;
+      // Get user ID from authenticated user OR use 'admin' for access code users
+      const userId = req.user?.claims?.sub || req.user?.id || 'admin';
 
       if (!objectPath) {
         return res.status(400).json({ error: 'Object path is required' });
