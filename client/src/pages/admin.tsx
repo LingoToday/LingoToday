@@ -876,12 +876,24 @@ function AccessCodeForm({ onAccessGranted }: { onAccessGranted: () => void }) {
   const [accessCode, setAccessCode] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (accessCode === "crazy00") {
-      onAccessGranted();
-    } else {
-      setError("Invalid access code");
+    try {
+      const response = await fetch('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessCode }),
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        onAccessGranted();
+      } else {
+        setError("Invalid access code");
+        setAccessCode("");
+      }
+    } catch (error) {
+      setError("Verification failed");
       setAccessCode("");
     }
   };

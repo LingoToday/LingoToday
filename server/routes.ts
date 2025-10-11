@@ -3233,13 +3233,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ===== ADMIN UPLOAD ROUTES (from blueprint:javascript_object_storage) =====
+  
+  // Admin access verification endpoint
+  app.post('/api/admin/verify', async (req: any, res) => {
+    const { accessCode } = req.body;
+    if (accessCode === 'crazy00') {
+      req.session.isAdmin = true;
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: 'Invalid access code' });
+    }
+  });
+  
   // Admin check middleware
   const isAdmin = async (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
+    // Check if user has admin session OR is authenticated
+    if (req.session?.isAdmin || (req.isAuthenticated && req.isAuthenticated())) {
+      next();
+    } else {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-    // Add your admin check logic here if needed
-    next();
   };
 
   // Get presigned URL for video upload
