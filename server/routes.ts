@@ -3319,28 +3319,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Object path is required' });
       }
 
-      // Parse JSON to create preview metadata
-      const courseKey = Object.keys(jsonContent)[0];
+      // Extract metadata from new JSON format
+      const languageCode = jsonContent.language_code;
+      const skillLevelCode = jsonContent.skill_level_code;
+      
+      // Find course key (course1, course2, etc.)
+      const courseKey = Object.keys(jsonContent).find(k => k.startsWith('course'));
+      if (!courseKey) {
+        return res.status(400).json({ error: 'No course found in JSON (expected course1, course2, etc.)' });
+      }
+      
+      const courseNumber = parseInt(courseKey.replace('course', ''));
       const courseData = jsonContent[courseKey];
       const lessons = courseData.lessons || {};
-      const lessonCount = Object.keys(lessons).filter(k => k.startsWith('lesson')).length;
+      
+      // Count lessons and identify video requirements
+      const lessonKeys = Object.keys(lessons).filter(k => k.startsWith('lesson'));
+      const videoRequirements = [];
+      
+      for (const lessonKey of lessonKeys) {
+        const lesson = lessons[lessonKey];
+        const lessonNumber = parseInt(lessonKey.replace('lesson', ''));
+        
+        if (lesson.step4) {
+          const step4 = lesson.step4;
+          const videoType = step4.type === 'video_choice' ? 'video_choice' : 'video';
+          
+          if (videoType === 'video_choice' && step4.options) {
+            // Multiple videos needed for video_choice
+            videoRequirements.push({
+              lessonNumber,
+              lessonTitle: lesson.title,
+              stepNumber: 4,
+              videoType: 'video_choice',
+              videosNeeded: step4.options.map((opt: any) => ({
+                label: opt.label,
+                videoUrl: opt.video_url
+              }))
+            });
+          } else if (videoType === 'video' && step4.video_url) {
+            // Single video needed
+            videoRequirements.push({
+              lessonNumber,
+              lessonTitle: lesson.title,
+              stepNumber: 4,
+              videoType: 'video',
+              videosNeeded: [{ videoUrl: step4.video_url }]
+            });
+          }
+        }
+      }
 
       const metadata = {
+        languageCode,
+        skillLevelCode,
+        courseNumber,
         courseKey,
         courseTitle: courseData.title,
         courseDescription: courseData.description,
-        lessonCount,
+        lessonCount: lessonKeys.length,
+        videoRequirements,
+        videosUploaded: 0,
+        videosRequired: videoRequirements.reduce((sum, req) => sum + req.videosNeeded.length, 0),
         preview: {
           title: courseData.title,
           description: courseData.description,
-          totalLessons: lessonCount,
+          totalLessons: lessonKeys.length,
+          language: languageCode,
+          skillLevel: skillLevelCode,
+          courseNumber,
+          videosRequired: videoRequirements.reduce((sum, req) => sum + req.videosNeeded.length, 0),
         }
       };
 
       const draft = await storage.createDraftUpload({
         uploadType: 'json',
         fileName,
-        fileUrl: objectPath, // Store the object path
+        fileUrl: objectPath,
         fileSize: JSON.stringify(jsonContent).length,
         metadata,
         uploadedBy: userId,
