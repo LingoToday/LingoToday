@@ -3265,7 +3265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save video upload metadata as draft
   app.post('/api/admin/videos/draft', isAdmin, async (req: any, res) => {
     try {
-      const { fileName, objectPath, fileSize, languageId, courseId, lessonNumber, stepNumber } = req.body;
+      const { fileName, objectPath, fileSize, languageId, courseId, lessonNumber, stepNumber, parentDraftId, videoLabel } = req.body;
       const userId = req.user.claims.sub;
 
       if (!objectPath) {
@@ -3277,10 +3277,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fileName,
         fileUrl: objectPath, // Store the object path, not the presigned URL
         fileSize,
-        metadata: { languageId, courseId, lessonNumber, stepNumber },
+        metadata: { languageId, courseId, lessonNumber, stepNumber, parentDraftId, videoLabel },
         uploadedBy: userId,
         status: 'draft',
       });
+
+      // Update parent draft's video upload count if linked
+      if (parentDraftId) {
+        const parentDraft = await storage.getDraftUpload(parentDraftId);
+        if (parentDraft && parentDraft.uploadType === 'json') {
+          const metadata = parentDraft.metadata as any;
+          const updatedMetadata = {
+            ...metadata,
+            videosUploaded: (metadata.videosUploaded || 0) + 1,
+          };
+          await storage.updateDraftUpload(parentDraftId, { metadata: updatedMetadata });
+        }
+      }
 
       res.json(draft);
     } catch (error: any) {
@@ -3491,24 +3504,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/json/:id/publish', isAdmin, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const { languageCode, skillLevelCode } = req.body;
-
-      if (!languageCode || !skillLevelCode) {
-        return res.status(400).json({ error: 'languageCode and skillLevelCode are required' });
-      }
-
       const draft = await storage.getDraftUpload(parseInt(id));
 
       if (!draft || draft.uploadType !== 'json') {
         return res.status(404).json({ error: 'JSON draft not found' });
       }
 
-      // Fetch the JSON content from the stored URL
-      // For now, we expect it to be passed in the request
+      const metadata = draft.metadata as any;
+      const { languageCode, skillLevelCode, videosUploaded, videosRequired } = metadata;
+
+      // Validate video completeness
+      if (videosRequired > 0 && (!videosUploaded || videosUploaded < videosRequired)) {
+        return res.status(400).json({ 
+          error: `Missing videos: ${videosUploaded || 0}/${videosRequired} uploaded. Please upload all required videos before publishing.`,
+          videosUploaded: videosUploaded || 0,
+          videosRequired,
+        });
+      }
+
+      // Fetch the JSON content from the request
       const { jsonContent } = req.body;
       
       if (!jsonContent) {
         return res.status(400).json({ error: 'jsonContent is required in request body' });
+      }
+
+      // Check for duplicate course
+      const existingCourses = await storage.getCoursesByLanguageAndSkillLevel(languageCode, skillLevelCode);
+      const duplicate = existingCourses.find(c => c.courseNumber === metadata.courseNumber);
+      
+      if (duplicate) {
+        return res.status(400).json({ 
+          error: `Course already exists: ${languageCode.toUpperCase()} ${skillLevelCode} Course ${metadata.courseNumber}. Delete the existing course first or use a different course number.`
+        });
       }
 
       // Import the course from JSON

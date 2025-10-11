@@ -108,13 +108,20 @@ export default function UploadsManager() {
 
 function VideoUploadForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedDraftId, setSelectedDraftId] = useState('');
   const [languageId, setLanguageId] = useState('');
   const [courseId, setCourseId] = useState('');
   const [lessonNumber, setLessonNumber] = useState('');
   const [stepNumber, setStepNumber] = useState('4'); // Default to step 4
+  const [videoLabel, setVideoLabel] = useState(''); // For video_choice types
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const { data: jsonDrafts = [] } = useQuery<DraftUpload[]>({
+    queryKey: ['/api/admin/drafts'],
+    select: (data) => data.filter(d => d.uploadType === 'json' && d.status === 'draft'),
+  });
 
   const { data: languages = [] } = useQuery<Array<{ id: number; code: string; name: string }>>({
     queryKey: ['/api/languages'],
@@ -125,7 +132,12 @@ function VideoUploadForm() {
     enabled: !!languageId,
   });
 
+  const selectedDraft = jsonDrafts.find(d => d.id.toString() === selectedDraftId);
+  const draftMetadata = selectedDraft?.metadata as any;
   const filteredCourses = courses.filter(c => c.languageId === parseInt(languageId));
+  
+  // Get available lessons that need videos from the draft
+  const availableLessons = draftMetadata?.videoRequirements || [];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -166,12 +178,14 @@ function VideoUploadForm() {
         method: 'POST',
         body: JSON.stringify({
           fileName: selectedFile.name,
-          objectPath: objectPath, // Use object path instead of upload URL
-          fileSize: selectedFile.size, // Use .size instead of .fileSize
+          objectPath: objectPath,
+          fileSize: selectedFile.size,
           languageId: parseInt(languageId),
           courseId: parseInt(courseId),
           lessonNumber: parseInt(lessonNumber),
           stepNumber: parseInt(stepNumber),
+          parentDraftId: selectedDraftId ? parseInt(selectedDraftId) : undefined,
+          videoLabel: videoLabel || undefined,
         }),
       });
 
@@ -180,15 +194,13 @@ function VideoUploadForm() {
 
       toast({
         title: "Success",
-        description: "Video uploaded successfully. Click 'Publish' to make it live.",
+        description: "Video uploaded successfully. Upload more or publish when ready.",
       });
 
-      // Reset form
+      // Reset file but keep draft selection
       setSelectedFile(null);
-      setLanguageId('');
-      setCourseId('');
       setLessonNumber('');
-      setStepNumber('4');
+      setVideoLabel('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -205,6 +217,39 @@ function VideoUploadForm() {
 
   return (
     <div className="space-y-4">
+      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+        <label className="block text-sm font-medium mb-2">Select Course Draft (Optional)</label>
+        <Select value={selectedDraftId} onValueChange={(value) => {
+          setSelectedDraftId(value);
+          const draft = jsonDrafts.find(d => d.id.toString() === value);
+          if (draft) {
+            const meta = draft.metadata as any;
+            // Auto-select language if available
+            const lang = languages.find(l => l.code === meta.languageCode);
+            if (lang) setLanguageId(lang.id.toString());
+          }
+        }}>
+          <SelectTrigger data-testid="select-course-draft">
+            <SelectValue placeholder="Select a JSON course draft or upload manually" />
+          </SelectTrigger>
+          <SelectContent>
+            {jsonDrafts.map(draft => {
+              const meta = draft.metadata as any;
+              return (
+                <SelectItem key={draft.id} value={draft.id.toString()}>
+                  {meta?.languageCode?.toUpperCase()} {meta?.skillLevelCode} Course{meta?.courseNumber} - {meta?.courseTitle}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+        {draftMetadata && (
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            Videos: {draftMetadata.videosUploaded || 0} / {draftMetadata.videosRequired || 0} uploaded
+          </p>
+        )}
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-2">Language</label>
@@ -239,14 +284,31 @@ function VideoUploadForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Lesson Number</label>
-          <Input
-            type="number"
-            value={lessonNumber}
-            onChange={(e) => setLessonNumber(e.target.value)}
-            placeholder="e.g., 1"
-            data-testid="input-lesson-number"
-          />
+          <label className="block text-sm font-medium mb-2">
+            Lesson {availableLessons.length > 0 ? "(from draft)" : "Number"}
+          </label>
+          {availableLessons.length > 0 ? (
+            <Select value={lessonNumber} onValueChange={setLessonNumber}>
+              <SelectTrigger data-testid="select-lesson">
+                <SelectValue placeholder="Select lesson" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableLessons.map((req: any) => (
+                  <SelectItem key={req.lessonNumber} value={req.lessonNumber.toString()}>
+                    Lesson {req.lessonNumber}: {req.lessonTitle}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <Input
+              type="number"
+              value={lessonNumber}
+              onChange={(e) => setLessonNumber(e.target.value)}
+              placeholder="e.g., 1"
+              data-testid="input-lesson-number"
+            />
+          )}
         </div>
 
         <div>
@@ -260,6 +322,24 @@ function VideoUploadForm() {
           />
         </div>
       </div>
+
+      {availableLessons.find((req: any) => req.lessonNumber === parseInt(lessonNumber))?.videoType === 'video_choice' && (
+        <div>
+          <label className="block text-sm font-medium mb-2">Video Label (for video_choice)</label>
+          <Select value={videoLabel} onValueChange={setVideoLabel}>
+            <SelectTrigger data-testid="select-video-label">
+              <SelectValue placeholder="Select video option" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableLessons.find((req: any) => req.lessonNumber === parseInt(lessonNumber))?.videosNeeded.map((vid: any, idx: number) => (
+                <SelectItem key={idx} value={vid.label}>
+                  {vid.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium mb-2">Video File</label>
@@ -554,17 +634,26 @@ function JSONUploadForm() {
 function JSONDraftCard({ draft }: { draft: DraftUpload }) {
   const { toast } = useToast();
   const [publishing, setPublishing] = useState(false);
-  const [languageCode, setLanguageCode] = useState('');
-  const [skillLevelCode, setSkillLevelCode] = useState('');
   const [jsonContent, setJsonContent] = useState<any>(null);
 
   const metadata = draft.metadata as any;
+  const videosComplete = metadata.videosRequired === 0 || (metadata.videosUploaded >= metadata.videosRequired);
+  const missingVideos = metadata.videosRequired - (metadata.videosUploaded || 0);
 
   const handlePublish = async () => {
-    if (!languageCode || !skillLevelCode || !jsonContent) {
+    if (!jsonContent) {
       toast({
-        title: "Missing Information",
-        description: "Please provide language code, skill level, and reload the JSON content",
+        title: "Missing JSON Content",
+        description: "Please reload the JSON file before publishing",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!videosComplete) {
+      toast({
+        title: "Videos Incomplete",
+        description: `Please upload ${missingVideos} more video(s) before publishing`,
         variant: "destructive",
       });
       return;
@@ -575,8 +664,6 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
       await apiRequest(`/api/admin/json/${draft.id}/publish`, {
         method: 'POST',
         body: JSON.stringify({
-          languageCode,
-          skillLevelCode,
           jsonContent,
         }),
       });
@@ -636,7 +723,19 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
               {metadata?.preview && (
                 <>
                   <p><strong>Course:</strong> {metadata.preview.title}</p>
+                  <p><strong>Language:</strong> {metadata.languageCode?.toUpperCase()} - {metadata.skillLevelCode}</p>
+                  <p><strong>Course Number:</strong> {metadata.courseNumber}</p>
                   <p><strong>Total Lessons:</strong> {metadata.preview.totalLessons}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <p className={videosComplete ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'}>
+                      Videos: {metadata.videosUploaded || 0} / {metadata.videosRequired || 0}
+                    </p>
+                    {videosComplete ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <X className="w-4 h-4 text-orange-600" />
+                    )}
+                  </div>
                 </>
               )}
               <p>Uploaded: {format(new Date(draft.createdAt), 'MMM d, yyyy HH:mm')}</p>
@@ -647,30 +746,26 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
             {draft.status === 'draft' && (
               <div className="mt-4 space-y-2">
                 <Input
-                  placeholder="Language code (e.g., it, es)"
-                  value={languageCode}
-                  onChange={(e) => setLanguageCode(e.target.value)}
-                  data-testid="input-language-code"
-                />
-                <Input
-                  placeholder="Skill level code (e.g., beginner)"
-                  value={skillLevelCode}
-                  onChange={(e) => setSkillLevelCode(e.target.value)}
-                  data-testid="input-skill-level-code"
-                />
-                <Input
                   type="file"
                   accept=".json"
                   onChange={async (e) => {
                     if (e.target.files && e.target.files[0]) {
                       const text = await e.target.files[0].text();
                       setJsonContent(JSON.parse(text));
+                      toast({
+                        title: "JSON Loaded",
+                        description: "Ready to publish when videos are complete",
+                      });
                     }
                   }}
                   data-testid="input-reload-json"
                 />
                 <p className="text-xs text-gray-500">
-                  Note: You need to reload the JSON file before publishing
+                  {!videosComplete 
+                    ? `⚠️ Upload ${missingVideos} more video(s) before publishing`
+                    : !jsonContent 
+                      ? "Load the JSON file above, then click Publish"
+                      : "✓ Ready to publish!"}
                 </p>
               </div>
             )}
@@ -680,7 +775,7 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
             {draft.status === 'draft' && (
               <Button
                 onClick={handlePublish}
-                disabled={publishing}
+                disabled={publishing || !videosComplete || !jsonContent}
                 size="sm"
                 data-testid={`button-publish-json-${draft.id}`}
               >
