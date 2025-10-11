@@ -159,10 +159,8 @@ function VideoUploadForm() {
       setUploading(true);
 
       // Get presigned URL
-      const { uploadURL, objectPath } = await apiRequest('/api/admin/videos/upload-url', {
-        method: 'POST',
-        body: JSON.stringify({ filename: selectedFile.name }),
-      });
+      const uploadResponse = await apiRequest('POST', '/api/admin/videos/upload-url', { filename: selectedFile.name });
+      const { uploadURL, objectPath } = await uploadResponse.json();
 
       // Upload to object storage
       await fetch(uploadURL, {
@@ -174,19 +172,16 @@ function VideoUploadForm() {
       });
 
       // Save draft metadata
-      await apiRequest('/api/admin/videos/draft', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName: selectedFile.name,
-          objectPath: objectPath,
-          fileSize: selectedFile.size,
-          languageId: parseInt(languageId),
-          courseId: parseInt(courseId),
-          lessonNumber: parseInt(lessonNumber),
-          stepNumber: parseInt(stepNumber),
-          parentDraftId: selectedDraftId ? parseInt(selectedDraftId) : undefined,
-          videoLabel: videoLabel || undefined,
-        }),
+      await apiRequest('POST', '/api/admin/videos/draft', {
+        fileName: selectedFile.name,
+        objectPath: objectPath,
+        fileSize: selectedFile.size,
+        languageId: parseInt(languageId),
+        courseId: parseInt(courseId),
+        lessonNumber: parseInt(lessonNumber),
+        stepNumber: parseInt(stepNumber),
+        parentDraftId: selectedDraftId ? parseInt(selectedDraftId) : undefined,
+        videoLabel: videoLabel || undefined,
       });
 
       // Refresh drafts
@@ -386,9 +381,7 @@ function VideoDraftCard({ draft }: { draft: DraftUpload }) {
   const handlePublish = async () => {
     try {
       setPublishing(true);
-      await apiRequest(`/api/admin/videos/${draft.id}/publish`, {
-        method: 'POST',
-      });
+      await apiRequest('POST', `/api/admin/videos/${draft.id}/publish`);
 
       queryClient.invalidateQueries({ queryKey: ['/api/admin/drafts'] });
 
@@ -409,9 +402,7 @@ function VideoDraftCard({ draft }: { draft: DraftUpload }) {
 
   const handleDelete = async () => {
     try {
-      await apiRequest(`/api/admin/drafts/${draft.id}`, {
-        method: 'DELETE',
-      });
+      await apiRequest('DELETE', `/api/admin/drafts/${draft.id}`);
 
       queryClient.invalidateQueries({ queryKey: ['/api/admin/drafts'] });
 
@@ -532,10 +523,8 @@ function JSONUploadForm() {
       setUploading(true);
 
       // Get presigned URL
-      const { uploadURL, objectPath } = await apiRequest('/api/admin/json/upload-url', {
-        method: 'POST',
-        body: JSON.stringify({ filename: selectedFile.name }),
-      });
+      const response = await apiRequest('POST', '/api/admin/json/upload-url', { filename: selectedFile.name });
+      const { uploadURL, objectPath } = await response.json();
 
       // Upload to object storage
       await fetch(uploadURL, {
@@ -547,14 +536,12 @@ function JSONUploadForm() {
       });
 
       // Save draft with preview
-      const result = await apiRequest('/api/admin/json/draft', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName: selectedFile.name,
-          objectPath: objectPath, // Use object path instead of upload URL
-          jsonContent,
-        }),
+      const draftResponse = await apiRequest('POST', '/api/admin/json/draft', {
+        fileName: selectedFile.name,
+        objectPath: objectPath, // Use object path instead of upload URL
+        jsonContent,
       });
+      const result = await draftResponse.json();
 
       setPreview(result.preview);
 
@@ -661,11 +648,8 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
 
     try {
       setPublishing(true);
-      await apiRequest(`/api/admin/json/${draft.id}/publish`, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonContent,
-        }),
+      await apiRequest('POST', `/api/admin/json/${draft.id}/publish`, {
+        jsonContent,
       });
 
       queryClient.invalidateQueries({ queryKey: ['/api/admin/drafts'] });
@@ -687,9 +671,7 @@ function JSONDraftCard({ draft }: { draft: DraftUpload }) {
 
   const handleDelete = async () => {
     try {
-      await apiRequest(`/api/admin/drafts/${draft.id}`, {
-        method: 'DELETE',
-      });
+      await apiRequest('DELETE', `/api/admin/drafts/${draft.id}`);
 
       queryClient.invalidateQueries({ queryKey: ['/api/admin/drafts'] });
 
