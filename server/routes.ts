@@ -3869,12 +3869,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Find the course key in the JSON (e.g., "course1", "course2", etc.)
+      console.log('🔍 JSON Content keys:', Object.keys(jsonContent));
       const courseKey = Object.keys(jsonContent).find(key => key.startsWith('course'));
+      console.log('🔍 Found course key:', courseKey);
+      
       if (!courseKey) {
         return res.status(400).json({ error: 'No course data found in JSON file' });
       }
 
       const courseData = jsonContent[courseKey];
+      console.log('🔍 Course data title:', courseData?.title);
 
       // Inject video URLs into the course lessons
       // The session stores parsedLessons as an array format, so we need to inject URLs based on session videos
