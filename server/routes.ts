@@ -3544,8 +3544,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'jsonContent is required in request body' });
       }
 
+      // Look up language and skill level IDs from codes
+      const language = await storage.getLanguageByCode(languageCode);
+      const skillLevel = await storage.getSkillLevelByCode(skillLevelCode);
+
+      if (!language) {
+        return res.status(400).json({ error: `Language not found: ${languageCode}` });
+      }
+
+      if (!skillLevel) {
+        return res.status(400).json({ error: `Skill level not found: ${skillLevelCode}` });
+      }
+
       // Check for duplicate course
-      const existingCourses = await storage.getCoursesByLanguageAndSkillLevel(languageCode, skillLevelCode);
+      const existingCourses = await storage.getCourses(language.id, skillLevel.id);
       const duplicate = existingCourses.find(c => c.courseNumber === metadata.courseNumber);
       
       if (duplicate) {
