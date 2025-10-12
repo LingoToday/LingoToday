@@ -13,6 +13,8 @@ import {
   checkpoints,
   checkpointProgress,
   draftUploads,
+  courseUploadSessions,
+  sessionVideos,
   type User,
   type UpsertUser,
   type UserSettings,
@@ -43,6 +45,11 @@ import {
   type LessonWithSteps,
   type DraftUpload,
   type InsertDraftUpload,
+  type CourseUploadSession,
+  type InsertCourseUploadSession,
+  type SessionVideo,
+  type InsertSessionVideo,
+  type CourseUploadSessionWithVideos,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql, notInArray } from "drizzle-orm";
@@ -153,6 +160,20 @@ export interface IStorage {
   createDraftUpload(upload: InsertDraftUpload): Promise<DraftUpload>;
   updateDraftUpload(id: number, data: Partial<InsertDraftUpload>): Promise<DraftUpload>;
   deleteDraftUpload(id: number): Promise<void>;
+  
+  // Course upload session operations
+  getCourseUploadSessions(status?: string): Promise<CourseUploadSession[]>;
+  getCourseUploadSession(id: number): Promise<CourseUploadSession | undefined>;
+  getCourseUploadSessionWithVideos(id: number): Promise<CourseUploadSessionWithVideos | undefined>;
+  createCourseUploadSession(session: InsertCourseUploadSession): Promise<CourseUploadSession>;
+  updateCourseUploadSession(id: number, data: Partial<InsertCourseUploadSession>): Promise<CourseUploadSession>;
+  deleteCourseUploadSession(id: number): Promise<void>;
+  
+  // Session video operations
+  getSessionVideos(sessionId: number): Promise<SessionVideo[]>;
+  getSessionVideo(sessionId: number, lessonNumber: number, stepNumber: number): Promise<SessionVideo | undefined>;
+  createSessionVideo(video: InsertSessionVideo): Promise<SessionVideo>;
+  deleteSessionVideo(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1366,6 +1387,82 @@ export class DatabaseStorage implements IStorage {
 
   async deleteDraftUpload(id: number): Promise<void> {
     await db.delete(draftUploads).where(eq(draftUploads.id, id));
+  }
+
+  // Course upload session operations
+  async getCourseUploadSessions(status?: string): Promise<CourseUploadSession[]> {
+    if (status) {
+      return await db.select().from(courseUploadSessions)
+        .where(eq(courseUploadSessions.status, status))
+        .orderBy(desc(courseUploadSessions.createdAt));
+    }
+    return await db.select().from(courseUploadSessions).orderBy(desc(courseUploadSessions.createdAt));
+  }
+
+  async getCourseUploadSession(id: number): Promise<CourseUploadSession | undefined> {
+    const [session] = await db.select().from(courseUploadSessions).where(eq(courseUploadSessions.id, id));
+    return session;
+  }
+
+  async getCourseUploadSessionWithVideos(id: number): Promise<CourseUploadSessionWithVideos | undefined> {
+    const session = await this.getCourseUploadSession(id);
+    if (!session) return undefined;
+
+    const videos = await this.getSessionVideos(id);
+    const language = await this.getLanguage(session.languageId);
+    const skillLevel = await this.getSkillLevel(session.skillLevelId);
+
+    if (!language || !skillLevel) return undefined;
+
+    return {
+      ...session,
+      language,
+      skillLevel,
+      videos,
+    };
+  }
+
+  async createCourseUploadSession(session: InsertCourseUploadSession): Promise<CourseUploadSession> {
+    const [newSession] = await db.insert(courseUploadSessions).values(session).returning();
+    return newSession;
+  }
+
+  async updateCourseUploadSession(id: number, data: Partial<InsertCourseUploadSession>): Promise<CourseUploadSession> {
+    const [updated] = await db.update(courseUploadSessions)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(courseUploadSessions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCourseUploadSession(id: number): Promise<void> {
+    await db.delete(courseUploadSessions).where(eq(courseUploadSessions.id, id));
+  }
+
+  // Session video operations
+  async getSessionVideos(sessionId: number): Promise<SessionVideo[]> {
+    return await db.select().from(sessionVideos)
+      .where(eq(sessionVideos.sessionId, sessionId))
+      .orderBy(sessionVideos.lessonNumber, sessionVideos.stepNumber);
+  }
+
+  async getSessionVideo(sessionId: number, lessonNumber: number, stepNumber: number): Promise<SessionVideo | undefined> {
+    const [video] = await db.select().from(sessionVideos)
+      .where(and(
+        eq(sessionVideos.sessionId, sessionId),
+        eq(sessionVideos.lessonNumber, lessonNumber),
+        eq(sessionVideos.stepNumber, stepNumber)
+      ));
+    return video;
+  }
+
+  async createSessionVideo(video: InsertSessionVideo): Promise<SessionVideo> {
+    const [newVideo] = await db.insert(sessionVideos).values(video).returning();
+    return newVideo;
+  }
+
+  async deleteSessionVideo(id: number): Promise<void> {
+    await db.delete(sessionVideos).where(eq(sessionVideos.id, id));
   }
 }
 

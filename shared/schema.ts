@@ -509,3 +509,81 @@ export const insertDraftUploadSchema = createInsertSchema(draftUploads).omit({
 
 export type DraftUpload = typeof draftUploads.$inferSelect;
 export type InsertDraftUpload = z.infer<typeof insertDraftUploadSchema>;
+
+// Course upload sessions table - tracks multi-step JSON + video upload workflow
+export const courseUploadSessions = pgTable('course_upload_sessions', {
+  id: serial('id').primaryKey(),
+  status: varchar('status', { length: 20 }).default('in_progress').notNull(), // 'in_progress', 'published', 'cancelled'
+  languageId: integer('language_id').notNull().references(() => languages.id),
+  skillLevelId: integer('skill_level_id').notNull().references(() => skillLevels.id),
+  courseNumber: integer('course_number').notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  parsedLessons: jsonb('parsed_lessons').notNull(), // Full parsed lesson structure from JSON
+  requiredVideoCount: integer('required_video_count').default(0).notNull(),
+  uploadedVideoCount: integer('uploaded_video_count').default(0).notNull(),
+  jsonFileUrl: text('json_file_url').notNull(), // Object storage URL for the JSON file
+  metadata: jsonb('metadata'), // Additional metadata (notes, etc.)
+  uploadedBy: text('uploaded_by').notNull(), // admin user ID
+  publishedAt: timestamp('published_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Session videos table - tracks video uploads for specific lesson/step combinations
+export const sessionVideos = pgTable('session_videos', {
+  id: serial('id').primaryKey(),
+  sessionId: integer('session_id').notNull().references(() => courseUploadSessions.id, { onDelete: 'cascade' }),
+  lessonNumber: integer('lesson_number').notNull(),
+  stepNumber: integer('step_number').notNull(),
+  videoFileUrl: text('video_file_url').notNull(), // Object storage URL
+  videoFileName: text('video_file_name').notNull(),
+  fileSize: integer('file_size'), // in bytes
+  uploadedAt: timestamp('uploaded_at').defaultNow().notNull(),
+});
+
+// Relations
+export const courseUploadSessionsRelations = relations(courseUploadSessions, ({ one, many }) => ({
+  language: one(languages, {
+    fields: [courseUploadSessions.languageId],
+    references: [languages.id],
+  }),
+  skillLevel: one(skillLevels, {
+    fields: [courseUploadSessions.skillLevelId],
+    references: [skillLevels.id],
+  }),
+  videos: many(sessionVideos),
+}));
+
+export const sessionVideosRelations = relations(sessionVideos, ({ one }) => ({
+  session: one(courseUploadSessions, {
+    fields: [sessionVideos.sessionId],
+    references: [courseUploadSessions.id],
+  }),
+}));
+
+// Insert schemas
+export const insertCourseUploadSessionSchema = createInsertSchema(courseUploadSessions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSessionVideoSchema = createInsertSchema(sessionVideos).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+// Types
+export type CourseUploadSession = typeof courseUploadSessions.$inferSelect;
+export type InsertCourseUploadSession = z.infer<typeof insertCourseUploadSessionSchema>;
+
+export type SessionVideo = typeof sessionVideos.$inferSelect;
+export type InsertSessionVideo = z.infer<typeof insertSessionVideoSchema>;
+
+// Extended types with relations
+export type CourseUploadSessionWithVideos = CourseUploadSession & {
+  language: Language;
+  skillLevel: SkillLevel;
+  videos: SessionVideo[];
+};

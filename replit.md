@@ -8,6 +8,20 @@ Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
 ## Recent Changes (October 12, 2025)
+- **Implemented New Course Upload Session Workflow**:
+  - **Problem Solved**: Fixed critical chicken-and-egg issue where JSON couldn't publish without all videos, but videos couldn't be uploaded without lessons existing in database
+  - **New Architecture**: Added course_upload_sessions and session_videos tables to support staged upload workflow
+  - **Workflow**: 1) Upload JSON → 2) Preview course structure (language, skill level, lessons, video requirements) → 3) Upload videos per lesson/step → 4) Atomic publish (injects video URLs into JSON, imports course + lessons + videos together)
+  - **Database**: 
+    - course_upload_sessions table stores parsed JSON structure, tracks video upload progress
+    - session_videos table maps videos to specific lesson/step combinations
+  - **API Endpoints**:
+    - POST /api/admin/upload-sessions - Create session from JSON upload
+    - GET /api/admin/upload-sessions/:id - Fetch session with video progress
+    - POST /api/admin/upload-sessions/:id/videos - Upload video for specific lesson/step
+    - POST /api/admin/upload-sessions/:id/publish - Atomic commit (fetches JSON from storage, injects video URLs, imports course)
+  - **Frontend**: New CourseUploadSessionWizard component with 4-step flow in admin "New Upload" tab
+  - **Preserves User Progress**: Uses existing importCourseFromJSON upsert logic to update courses without losing student data
 - **Fixed JSON Course Import System**:
   - Identified critical bug where JSON courses were not importing lessons (courses had 0 lessons in database)
   - Root cause: Publish endpoint expected JSON content from frontend request body, but data was only stored in object storage

@@ -3612,6 +3612,248 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== Course Upload Session Routes ==========
+  
+  // Create a new upload session from JSON
+  app.post('/api/admin/upload-sessions', isAdmin, async (req: any, res) => {
+    try {
+      const { jsonFileUrl, jsonContent } = req.body;
+      
+      if (!jsonFileUrl || !jsonContent) {
+        return res.status(400).json({ error: 'Missing jsonFileUrl or jsonContent' });
+      }
+
+      // Parse the JSON to extract metadata
+      const { language, level, course_number, course_title, course_description, lessons } = jsonContent;
+      
+      if (!language || !level || !course_number || !course_title || !lessons) {
+        return res.status(400).json({ error: 'Invalid JSON structure' });
+      }
+
+      // Look up language and skill level
+      const languageRecord = await storage.getLanguageByCode(language);
+      const skillLevelRecord = await storage.getSkillLevelByCode(level);
+
+      if (!languageRecord) {
+        return res.status(400).json({ error: `Language not found: ${language}` });
+      }
+
+      if (!skillLevelRecord) {
+        return res.status(400).json({ error: `Skill level not found: ${level}` });
+      }
+
+      // Count required videos
+      let requiredVideoCount = 0;
+      const parsedLessons = lessons.map((lesson: any, lessonIndex: number) => {
+        const steps = lesson.steps?.map((step: any, stepIndex: number) => {
+          const stepNumber = stepIndex + 1;
+          const stepType = step.type === 'irl_video' || step.type === 'pro_video' ? step.type : 'other';
+          
+          if (stepType === 'irl_video' || stepType === 'pro_video') {
+            requiredVideoCount++;
+          }
+
+          return {
+            stepNumber,
+            stepType,
+            content: step,
+          };
+        }) || [];
+
+        return {
+          lessonNumber: lessonIndex + 1,
+          title: lesson.title || `Lesson ${lessonIndex + 1}`,
+          steps,
+        };
+      });
+
+      // Create the session
+      const userId = req.user?.claims?.sub || req.user?.id || 'admin';
+      const session = await storage.createCourseUploadSession({
+        status: 'in_progress',
+        languageId: languageRecord.id,
+        skillLevelId: skillLevelRecord.id,
+        courseNumber: course_number,
+        title: course_title,
+        description: course_description || '',
+        parsedLessons,
+        requiredVideoCount,
+        uploadedVideoCount: 0,
+        jsonFileUrl,
+        metadata: {},
+        uploadedBy: userId,
+      });
+
+      res.json({ 
+        success: true, 
+        session,
+      });
+    } catch (error: any) {
+      console.error('Error creating upload session:', error);
+      res.status(500).json({ error: 'Failed to create upload session: ' + error.message });
+    }
+  });
+
+  // Get all upload sessions
+  app.get('/api/admin/upload-sessions', isAdmin, async (req: any, res) => {
+    try {
+      const { status } = req.query;
+      const sessions = await storage.getCourseUploadSessions(status);
+      res.json(sessions);
+    } catch (error: any) {
+      console.error('Error fetching upload sessions:', error);
+      res.status(500).json({ error: 'Failed to fetch upload sessions: ' + error.message });
+    }
+  });
+
+  // Get a specific upload session with videos
+  app.get('/api/admin/upload-sessions/:id', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const session = await storage.getCourseUploadSessionWithVideos(parseInt(id));
+      
+      if (!session) {
+        return res.status(404).json({ error: 'Upload session not found' });
+      }
+
+      res.json(session);
+    } catch (error: any) {
+      console.error('Error fetching upload session:', error);
+      res.status(500).json({ error: 'Failed to fetch upload session: ' + error.message });
+    }
+  });
+
+  // Upload a video for a specific lesson/step in a session
+  app.post('/api/admin/upload-sessions/:id/videos', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { lessonNumber, stepNumber, videoFileUrl, videoFileName, fileSize } = req.body;
+
+      if (!lessonNumber || !stepNumber || !videoFileUrl || !videoFileName) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      const session = await storage.getCourseUploadSession(parseInt(id));
+      if (!session) {
+        return res.status(404).json({ error: 'Upload session not found' });
+      }
+
+      // Check if video already exists for this lesson/step
+      const existingVideo = await storage.getSessionVideo(parseInt(id), lessonNumber, stepNumber);
+      if (existingVideo) {
+        return res.status(400).json({ error: 'Video already uploaded for this lesson/step' });
+      }
+
+      // Create the session video
+      const video = await storage.createSessionVideo({
+        sessionId: parseInt(id),
+        lessonNumber,
+        stepNumber,
+        videoFileUrl,
+        videoFileName,
+        fileSize: fileSize || 0,
+      });
+
+      // Update session uploaded count
+      const videos = await storage.getSessionVideos(parseInt(id));
+      await storage.updateCourseUploadSession(parseInt(id), {
+        uploadedVideoCount: videos.length,
+      });
+
+      res.json({ 
+        success: true, 
+        video,
+      });
+    } catch (error: any) {
+      console.error('Error uploading video to session:', error);
+      res.status(500).json({ error: 'Failed to upload video: ' + error.message });
+    }
+  });
+
+  // Publish a session (atomic commit to database)
+  app.post('/api/admin/upload-sessions/:id/publish', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const session = await storage.getCourseUploadSessionWithVideos(parseInt(id));
+      
+      if (!session) {
+        return res.status(404).json({ error: 'Upload session not found' });
+      }
+
+      // Verify all videos are uploaded
+      if (session.uploadedVideoCount < session.requiredVideoCount) {
+        return res.status(400).json({ 
+          error: `Missing videos: ${session.uploadedVideoCount}/${session.requiredVideoCount} uploaded`,
+        });
+      }
+
+      // Fetch the JSON content from object storage
+      const objectStorageService = new ObjectStorageService();
+      const jsonContent = await objectStorageService.downloadJSONContent(session.jsonFileUrl);
+      
+      if (!jsonContent) {
+        return res.status(400).json({ error: 'Failed to download JSON content from storage' });
+      }
+
+      // Map session videos to lesson steps
+      const videoMap = new Map();
+      session.videos.forEach(video => {
+        const key = `${video.lessonNumber}-${video.stepNumber}`;
+        videoMap.set(key, video.videoFileUrl);
+      });
+
+      // Inject video URLs into JSON content
+      if (jsonContent.lessons) {
+        jsonContent.lessons.forEach((lesson: any, lessonIndex: number) => {
+          if (lesson.steps) {
+            lesson.steps.forEach((step: any, stepIndex: number) => {
+              const key = `${lessonIndex + 1}-${stepIndex + 1}`;
+              const videoUrl = videoMap.get(key);
+              
+              if (videoUrl && (step.type === 'irl_video' || step.type === 'pro_video')) {
+                step.video_url = videoUrl;
+              }
+            });
+          }
+        });
+      }
+
+      // Get language and skill level codes
+      const languageCode = session.language.code;
+      const skillLevelCode = session.skillLevel.code;
+
+      // Import the course from JSON
+      const course = await storage.importCourseFromJSON(languageCode, skillLevelCode, jsonContent);
+
+      // Mark session as published
+      await storage.updateCourseUploadSession(parseInt(id), {
+        status: 'published',
+        publishedAt: new Date(),
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'Course published successfully', 
+        course,
+      });
+    } catch (error: any) {
+      console.error('Error publishing session:', error);
+      res.status(500).json({ error: 'Failed to publish session: ' + error.message });
+    }
+  });
+
+  // Delete an upload session
+  app.delete('/api/admin/upload-sessions/:id', isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteCourseUploadSession(parseInt(id));
+      res.json({ success: true, message: 'Upload session deleted successfully' });
+    } catch (error: any) {
+      console.error('Error deleting upload session:', error);
+      res.status(500).json({ error: 'Failed to delete upload session: ' + error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

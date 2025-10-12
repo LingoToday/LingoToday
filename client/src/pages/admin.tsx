@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import UploadsManager from "@/components/UploadsManager";
+import { CourseUploadSessionWizard } from "@/components/CourseUploadSessionWizard";
 
 interface Course {
   id: number;
@@ -961,14 +962,18 @@ export default function AdminPage() {
 
         {/* Sub Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6" data-testid="admin-nav-tabs">
+          <TabsList className="grid w-full grid-cols-5 mb-6" data-testid="admin-nav-tabs">
             <TabsTrigger value="course-structure" data-testid="tab-course-structure" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               Course Structure
             </TabsTrigger>
-            <TabsTrigger value="uploads" data-testid="tab-uploads" className="flex items-center gap-2">
+            <TabsTrigger value="upload-session" data-testid="tab-upload-session" className="flex items-center gap-2">
               <Upload className="w-4 h-4" />
-              Uploads
+              New Upload
+            </TabsTrigger>
+            <TabsTrigger value="uploads" data-testid="tab-uploads" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Old Uploads
             </TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -982,6 +987,12 @@ export default function AdminPage() {
 
           <TabsContent value="course-structure">
             <CourseStructurePage />
+          </TabsContent>
+
+          <TabsContent value="upload-session">
+            <CourseUploadSessionWizard onComplete={() => {
+              queryClient.invalidateQueries({ queryKey: ['/api/admin/courses'] });
+            }} />
           </TabsContent>
 
           <TabsContent value="uploads">
