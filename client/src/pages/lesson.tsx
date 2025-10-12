@@ -214,6 +214,9 @@ export default function Lesson() {
   const normalizeAssetUrl = (url: string): string => {
     if (!url) return '';
     
+    // Absolute URLs (cloud storage, external links) - return as-is
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    
     // Already correct format
     if (url.startsWith('/attached_assets/')) return url;
     
