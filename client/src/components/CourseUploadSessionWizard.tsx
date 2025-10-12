@@ -4,8 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import { Upload, CheckCircle, FileJson, Video, Play } from 'lucide-react';
+import { Upload, CheckCircle, FileJson, Video } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -40,10 +39,10 @@ interface UploadSession {
 }
 
 export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWizardProps) {
-  const [step, setStep] = useState<'upload' | 'preview' | 'videos' | 'complete'>('upload');
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [uploadingJson, setUploadingJson] = useState(false);
+  const [uploadingVideos, setUploadingVideos] = useState<Set<string>>(new Set());
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -88,7 +87,6 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const response = await sessionRes.json() as { session: UploadSession };
 
       setSessionId(response.session.id);
-      setStep('preview');
       toast({
         title: 'JSON uploaded successfully',
         description: `Course: ${response.session.title}`,
@@ -104,36 +102,56 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
     }
   };
 
-  // Video slots that need uploads
-  const videoSlots = session?.parsedLessons.flatMap(lesson =>
-    lesson.steps
-      .filter(step => step.stepType === 'irl_video' || step.stepType === 'pro_video')
-      .map(step => ({
-        lessonNumber: lesson.lessonNumber,
-        stepNumber: step.stepNumber,
-        lessonTitle: lesson.title,
-        stepType: step.stepType,
-      }))
-  ) || [];
-
-  // Check if video is already uploaded
-  const isVideoUploaded = (lessonNumber: number, stepNumber: number) => {
-    return session?.videos.some(
-      v => v.lessonNumber === lessonNumber && v.stepNumber === stepNumber
+  // Get video step for a lesson
+  const getVideoStep = (lesson: ParsedLesson) => {
+    return lesson.steps.find(step => 
+      step.stepType === 'irl_video' || 
+      step.stepType === 'pro_video' || 
+      step.stepType === 'video_choice' || 
+      step.stepType === 'video'
     );
   };
 
-  // Upload video mutation
-  const uploadVideoMutation = useMutation({
-    mutationFn: async (data: { lessonNumber: number; stepNumber: number; file: File }) => {
+  // Check if video is uploaded for a lesson
+  const isVideoUploaded = (lessonNumber: number) => {
+    const videoStep = session?.parsedLessons
+      .find(l => l.lessonNumber === lessonNumber)
+      ?.steps.find(s => s.stepType === 'irl_video' || s.stepType === 'pro_video' || s.stepType === 'video_choice' || s.stepType === 'video');
+    
+    if (!videoStep) return false;
+
+    return session?.videos.some(
+      v => v.lessonNumber === lessonNumber && v.stepNumber === videoStep.stepNumber
+    );
+  };
+
+  // Handle video upload for a lesson
+  const handleVideoUpload = async (lessonNumber: number, file: File) => {
+    const videoStep = session?.parsedLessons
+      .find(l => l.lessonNumber === lessonNumber)
+      ?.steps.find(s => s.stepType === 'irl_video' || s.stepType === 'pro_video' || s.stepType === 'video_choice' || s.stepType === 'video');
+
+    if (!videoStep) {
+      toast({
+        title: 'Error',
+        description: 'No video step found for this lesson',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const key = `${lessonNumber}-${videoStep.stepNumber}`;
+    setUploadingVideos(prev => new Set(prev).add(key));
+
+    try {
       // Get upload URL
-      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { filename: data.file.name });
+      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { filename: file.name });
       const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
 
       // Upload to object storage
       await fetch(uploadUrlResponse.uploadURL, {
         method: 'PUT',
-        body: data.file,
+        body: file,
         headers: {
           'Content-Type': 'video/mp4',
         },
@@ -144,28 +162,33 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const videoFileUrl = `${url.origin}${url.pathname}`;
 
       // Add video to session
-      return apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/videos`, {
-        lessonNumber: data.lessonNumber,
-        stepNumber: data.stepNumber,
+      await apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/videos`, {
+        lessonNumber,
+        stepNumber: videoStep.stepNumber,
         videoFileUrl,
-        videoFileName: data.file.name,
-        fileSize: data.file.size,
+        videoFileName: file.name,
+        fileSize: file.size,
       });
-    },
-    onSuccess: () => {
-      refetchSession();
+
+      await refetchSession();
       toast({
         title: 'Video uploaded successfully',
+        description: `Lesson ${lessonNumber}: ${file.name}`,
       });
-    },
-    onError: (error: any) => {
+    } catch (error: any) {
       toast({
         title: 'Video upload failed',
         description: error.message,
         variant: 'destructive',
       });
-    },
-  });
+    } finally {
+      setUploadingVideos(prev => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+    }
+  };
 
   // Publish session mutation
   const publishMutation = useMutation({
@@ -173,11 +196,12 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       return apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/publish`);
     },
     onSuccess: () => {
-      setStep('complete');
       queryClient.invalidateQueries({ queryKey: ['/api/admin/courses'] });
       toast({
         title: 'Course published successfully',
+        description: 'The course is now live!',
       });
+      onComplete?.();
     },
     onError: (error: any) => {
       toast({
@@ -188,16 +212,20 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
     },
   });
 
-  const canPublish = session && session.uploadedVideoCount === session.requiredVideoCount;
+  const canPublish = session && session.requiredVideoCount === session.uploadedVideoCount;
 
   return (
-    <div className="space-y-6" data-testid="course-upload-wizard">
-      {/* Step 1: Upload JSON */}
-      {step === 'upload' && (
+    <div className="space-y-6">
+      {/* JSON Upload Section */}
+      {!session && (
         <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Step 1: Upload Course JSON</h3>
           <div className="space-y-4">
-            <div>
+            <div className="flex items-center gap-2">
+              <FileJson className="h-5 w-5" />
+              <h3 className="text-lg font-semibold">Upload Course JSON</h3>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="json-file">Course JSON File</Label>
               <Input
                 id="json-file"
@@ -207,150 +235,154 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
                 data-testid="input-json-file"
               />
             </div>
+
             <Button
               onClick={handleJsonUpload}
               disabled={!jsonFile || uploadingJson}
+              className="w-full"
               data-testid="button-upload-json"
             >
-              <FileJson className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4 mr-2" />
               {uploadingJson ? 'Uploading...' : 'Upload JSON'}
             </Button>
           </div>
         </Card>
       )}
 
-      {/* Step 2: Preview Course Structure */}
-      {step === 'preview' && session && (
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Step 2: Course Preview</h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Language</p>
-              <p className="font-medium">{session.languageId === 1 ? 'Italian' : session.languageId === 2 ? 'German' : 'French'} - Beginner</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Course Number</p>
-              <p className="font-medium">{session.courseNumber}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Title</p>
-              <p className="font-medium">{session.title}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Description</p>
-              <p className="font-medium">{session.description || 'No description'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Total Lessons</p>
-              <p className="font-medium">{session.parsedLessons.length}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Required Videos</p>
-              <p className="font-medium">{session.requiredVideoCount}</p>
-            </div>
+      {/* Course Preview & Video Upload Section */}
+      {session && (
+        <div className="space-y-6">
+          {/* Course Info */}
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4">Course Preview</h3>
             
-            <Alert>
-              <AlertDescription>
-                {session.requiredVideoCount === 0
-                  ? 'This course has no video steps. You can publish it immediately.'
-                  : `This course requires ${session.requiredVideoCount} video(s). Upload them in the next step.`}
-              </AlertDescription>
-            </Alert>
-
-            <Button
-              onClick={() => session.requiredVideoCount > 0 ? setStep('videos') : publishMutation.mutate()}
-              disabled={publishMutation.isPending}
-              data-testid="button-next-step"
-            >
-              {session.requiredVideoCount > 0 ? 'Upload Videos' : 'Publish Now'}
-            </Button>
-          </div>
-        </Card>
-      )}
-
-      {/* Step 3: Upload Videos */}
-      {step === 'videos' && session && (
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Step 3: Upload Videos</h3>
-          <div className="mb-4">
-            <Progress value={(session.uploadedVideoCount / session.requiredVideoCount) * 100} />
-            <p className="text-sm text-muted-foreground mt-2">
-              {session.uploadedVideoCount} / {session.requiredVideoCount} videos uploaded
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {videoSlots.map((slot, index) => {
-              const uploaded = isVideoUploaded(slot.lessonNumber, slot.stepNumber);
-              
-              return (
-                <div key={index} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">
-                        Lesson {slot.lessonNumber}, Step {slot.stepNumber}: {slot.lessonTitle}
-                      </p>
-                      <p className="text-sm text-muted-foreground">Type: {slot.stepType}</p>
-                    </div>
-                    {uploaded ? (
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    ) : (
-                      <Input
-                        type="file"
-                        accept="video/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            uploadVideoMutation.mutate({
-                              lessonNumber: slot.lessonNumber,
-                              stepNumber: slot.stepNumber,
-                              file,
-                            });
-                          }
-                        }}
-                        disabled={uploadVideoMutation.isPending}
-                        className="w-64"
-                        data-testid={`input-video-${slot.lessonNumber}-${slot.stepNumber}`}
-                      />
-                    )}
-                  </div>
+            <div className="space-y-3">
+              <div>
+                <div className="text-sm text-muted-foreground">Language</div>
+                <div className="font-medium" data-testid="text-course-language">
+                  {session.parsedLessons[0] ? 'Italian - Beginner' : 'Unknown'}
                 </div>
-              );
-            })}
-          </div>
+              </div>
 
-          <div className="mt-6">
+              <div>
+                <div className="text-sm text-muted-foreground">Course Number</div>
+                <div className="font-medium" data-testid="text-course-number">{session.courseNumber}</div>
+              </div>
+
+              <div>
+                <div className="text-sm text-muted-foreground">Title</div>
+                <div className="font-medium" data-testid="text-course-title">{session.title}</div>
+              </div>
+
+              <div>
+                <div className="text-sm text-muted-foreground">Description</div>
+                <div className="font-medium" data-testid="text-course-description">{session.description}</div>
+              </div>
+
+              <div>
+                <div className="text-sm text-muted-foreground">Total Lessons</div>
+                <div className="font-medium" data-testid="text-total-lessons">{session.parsedLessons.length}</div>
+              </div>
+
+              <div>
+                <div className="text-sm text-muted-foreground">Required Videos</div>
+                <div className="font-medium" data-testid="text-required-videos">
+                  {session.uploadedVideoCount} / {session.requiredVideoCount}
+                </div>
+              </div>
+            </div>
+
+            {session.requiredVideoCount === 0 ? (
+              <Alert className="mt-4">
+                <AlertDescription>
+                  This course has no video steps. You can publish it immediately.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <Alert className="mt-4">
+                <AlertDescription>
+                  This course requires {session.requiredVideoCount} video(s). Upload them below.
+                </AlertDescription>
+              </Alert>
+            )}
+          </Card>
+
+          {/* Video Upload Section */}
+          {session.requiredVideoCount > 0 && (
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Video className="h-5 w-5" />
+                <h3 className="text-lg font-semibold">Upload Videos</h3>
+              </div>
+
+              <div className="space-y-3">
+                {session.parsedLessons.map(lesson => {
+                  const videoStep = getVideoStep(lesson);
+                  if (!videoStep) return null;
+
+                  const isUploaded = isVideoUploaded(lesson.lessonNumber);
+                  const isUploading = uploadingVideos.has(`${lesson.lessonNumber}-${videoStep.stepNumber}`);
+
+                  return (
+                    <div 
+                      key={lesson.lessonNumber}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                      data-testid={`lesson-upload-${lesson.lessonNumber}`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium">Lesson {lesson.lessonNumber}: {lesson.title}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Step {videoStep.stepNumber} ({videoStep.stepType})
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {isUploaded ? (
+                          <div className="flex items-center gap-2 text-green-600">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="text-sm font-medium">Uploaded</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="file"
+                              accept="video/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  handleVideoUpload(lesson.lessonNumber, file);
+                                }
+                              }}
+                              disabled={isUploading}
+                              className="max-w-[200px]"
+                              data-testid={`input-video-lesson-${lesson.lessonNumber}`}
+                            />
+                            {isUploading && (
+                              <span className="text-sm text-muted-foreground">Uploading...</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+
+          {/* Publish Button */}
+          <Card className="p-6">
             <Button
               onClick={() => publishMutation.mutate()}
               disabled={!canPublish || publishMutation.isPending}
-              data-testid="button-publish"
+              className="w-full"
+              size="lg"
+              data-testid="button-publish-course"
             >
-              <Play className="mr-2 h-4 w-4" />
               {publishMutation.isPending ? 'Publishing...' : 'Publish Course'}
             </Button>
-          </div>
-        </Card>
-      )}
-
-      {/* Step 4: Complete */}
-      {step === 'complete' && (
-        <Card className="p-6">
-          <div className="text-center space-y-4">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
-            <h3 className="text-2xl font-semibold">Course Published Successfully!</h3>
-            <p className="text-muted-foreground">
-              Your course has been published and is now available to students.
-            </p>
-            <Button onClick={() => {
-              setStep('upload');
-              setJsonFile(null);
-              setSessionId(null);
-              onComplete?.();
-            }} data-testid="button-upload-another">
-              Upload Another Course
-            </Button>
-          </div>
-        </Card>
+          </Card>
+        </div>
       )}
     </div>
   );
