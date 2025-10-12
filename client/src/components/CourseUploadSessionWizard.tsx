@@ -64,7 +64,7 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const jsonContent = JSON.parse(fileContent);
 
       // Get upload URL
-      const uploadUrlRes = await apiRequest('POST', '/api/admin/json/upload-url', { fileName: jsonFile.name });
+      const uploadUrlRes = await apiRequest('POST', '/api/admin/json/upload-url', { filename: jsonFile.name });
       const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
 
       // Upload to object storage
@@ -127,7 +127,7 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
   const uploadVideoMutation = useMutation({
     mutationFn: async (data: { lessonNumber: number; stepNumber: number; file: File }) => {
       // Get upload URL
-      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { fileName: data.file.name });
+      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { filename: data.file.name });
       const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
 
       // Upload to object storage
