@@ -64,10 +64,8 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const jsonContent = JSON.parse(fileContent);
 
       // Get upload URL
-      const uploadUrlResponse = await apiRequest<{ uploadURL: string }>('/api/admin/json/upload-url', {
-        method: 'POST',
-        body: JSON.stringify({ fileName: jsonFile.name }),
-      });
+      const uploadUrlRes = await apiRequest('POST', '/api/admin/json/upload-url', { fileName: jsonFile.name });
+      const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
 
       // Upload to object storage
       await fetch(uploadUrlResponse.uploadURL, {
@@ -83,13 +81,11 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const jsonFileUrl = `${url.origin}${url.pathname}`;
 
       // Create upload session
-      const response = await apiRequest<{ session: UploadSession }>('/api/admin/upload-sessions', {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonFileUrl,
-          jsonContent,
-        }),
+      const sessionRes = await apiRequest('POST', '/api/admin/upload-sessions', {
+        jsonFileUrl,
+        jsonContent,
       });
+      const response = await sessionRes.json() as { session: UploadSession };
 
       setSessionId(response.session.id);
       setStep('preview');
@@ -131,10 +127,8 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
   const uploadVideoMutation = useMutation({
     mutationFn: async (data: { lessonNumber: number; stepNumber: number; file: File }) => {
       // Get upload URL
-      const uploadUrlResponse = await apiRequest<{ uploadURL: string }>('/api/admin/videos/upload-url', {
-        method: 'POST',
-        body: JSON.stringify({ fileName: data.file.name }),
-      });
+      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { fileName: data.file.name });
+      const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
 
       // Upload to object storage
       await fetch(uploadUrlResponse.uploadURL, {
@@ -150,15 +144,12 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
       const videoFileUrl = `${url.origin}${url.pathname}`;
 
       // Add video to session
-      return apiRequest(`/api/admin/upload-sessions/${sessionId}/videos`, {
-        method: 'POST',
-        body: JSON.stringify({
-          lessonNumber: data.lessonNumber,
-          stepNumber: data.stepNumber,
-          videoFileUrl,
-          videoFileName: data.file.name,
-          fileSize: data.file.size,
-        }),
+      return apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/videos`, {
+        lessonNumber: data.lessonNumber,
+        stepNumber: data.stepNumber,
+        videoFileUrl,
+        videoFileName: data.file.name,
+        fileSize: data.file.size,
       });
     },
     onSuccess: () => {
@@ -179,9 +170,7 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
   // Publish session mutation
   const publishMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/admin/upload-sessions/${sessionId}/publish`, {
-        method: 'POST',
-      });
+      return apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/publish`);
     },
     onSuccess: () => {
       setStep('complete');
