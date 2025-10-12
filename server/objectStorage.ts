@@ -165,17 +165,43 @@ export class ObjectStorageService {
   }
 
   async downloadJSONContent(objectPath: string): Promise<any> {
-    const { bucketName, objectName } = parseObjectPath(objectPath);
-    const bucket = objectStorageClient.bucket(bucketName);
-    const file = bucket.file(objectName);
+    // Handle both URL format and path format
+    let path = objectPath;
+    if (objectPath.startsWith('https://storage.googleapis.com/')) {
+      const url = new URL(objectPath);
+      // Extract bucket name and object path from URL
+      // Format: https://storage.googleapis.com/bucket-name/path/to/file.json
+      const pathParts = url.pathname.split('/').filter(part => part.length > 0);
+      if (pathParts.length < 2) {
+        throw new Error('Invalid object storage URL format');
+      }
+      const bucketName = pathParts[0];
+      const objectName = pathParts.slice(1).join('/');
+      
+      const bucket = objectStorageClient.bucket(bucketName);
+      const file = bucket.file(objectName);
 
-    const [exists] = await file.exists();
-    if (!exists) {
-      throw new ObjectNotFoundError();
+      const [exists] = await file.exists();
+      if (!exists) {
+        throw new ObjectNotFoundError();
+      }
+
+      const [contents] = await file.download();
+      return JSON.parse(contents.toString('utf-8'));
+    } else {
+      // Use existing parseObjectPath for path format
+      const { bucketName, objectName } = parseObjectPath(path);
+      const bucket = objectStorageClient.bucket(bucketName);
+      const file = bucket.file(objectName);
+
+      const [exists] = await file.exists();
+      if (!exists) {
+        throw new ObjectNotFoundError();
+      }
+
+      const [contents] = await file.download();
+      return JSON.parse(contents.toString('utf-8'));
     }
-
-    const [contents] = await file.download();
-    return JSON.parse(contents.toString('utf-8'));
   }
 }
 
