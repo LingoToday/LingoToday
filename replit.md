@@ -1,129 +1,11 @@
 # LingoToday - Language Learning Application
 
 ## Overview
-LingoToday is a full-stack language learning application designed to deliver micro-lessons through desktop notifications. It aims to provide passive language learning and interactive lessons using a modern tech stack. The project's vision is to make language acquisition seamless and integrated into daily routines, leveraging notifications as a primary learning mechanism.
+LingoToday is a full-stack language learning application designed to deliver micro-lessons through desktop notifications. It aims to provide passive language learning and interactive lessons using a modern tech stack. The project's vision is to make language acquisition seamless and integrated into daily routines, leveraging notifications as a primary learning mechanism. It supports multiple languages (Italian, Spanish, French, German) and features a system for managing and delivering structured courses, including checkpoint reviews.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
-
-## Recent Changes (October 12, 2025)
-- **Implemented New Course Upload Session Workflow**:
-  - **Problem Solved**: Fixed critical chicken-and-egg issue where JSON couldn't publish without all videos, but videos couldn't be uploaded without lessons existing in database
-  - **New Architecture**: Added course_upload_sessions and session_videos tables to support staged upload workflow
-  - **Workflow**: 1) Upload JSON → 2) Preview course structure (language, skill level, lessons, video requirements) → 3) Upload videos per lesson/step → 4) Atomic publish (injects video URLs into JSON, imports course + lessons + videos together)
-  - **Database**: 
-    - course_upload_sessions table stores parsed JSON structure, tracks video upload progress
-    - session_videos table maps videos to specific lesson/step combinations
-  - **API Endpoints**:
-    - POST /api/admin/upload-sessions - Create session from JSON upload
-    - GET /api/admin/upload-sessions/:id - Fetch session with video progress
-    - POST /api/admin/upload-sessions/:id/videos - Upload video for specific lesson/step
-    - POST /api/admin/upload-sessions/:id/publish - Atomic commit (fetches JSON from storage, injects video URLs, imports course)
-  - **Frontend**: New CourseUploadSessionWizard component with 4-step flow in admin "New Upload" tab
-  - **Preserves User Progress**: Uses existing importCourseFromJSON upsert logic to update courses without losing student data
-- **Fixed JSON Course Import System**:
-  - Identified critical bug where JSON courses were not importing lessons (courses had 0 lessons in database)
-  - Root cause: Publish endpoint expected JSON content from frontend request body, but data was only stored in object storage
-  - Solution: Added `downloadJSONContent()` method to object storage service to fetch JSON files from storage
-  - Updated `/api/admin/json/:id/publish` endpoint to retrieve JSON content from object storage during publish
-  - Now properly imports all lessons, steps, and checkpoints from uploaded JSON files into database
-  - Fixes video publishing errors ("Lesson not found") by ensuring lessons exist in database
-- **Fixed Skill Level Tracking for User Progress**:
-  - Added `skillLevelId` to user_settings table to track user's chosen skill level (beginner/intermediate/advanced)
-  - Updated `getNextLesson` logic to filter courses by user's skill level instead of hardcoding 'beginner'
-  - Fixed `/api/next-lesson` and `/api/upcoming-lessons` endpoints to respect user's skill level
-  - Prevents users from jumping to wrong courses when multiple skill levels exist
-  - All new users default to beginner (skillLevelId = 1) via SQL migration
-
-## Previous Changes (October 10, 2025)
-- **Implemented Step 5 (text_tip) Support in React Native Mobile App**:
-  - Added text_tip type definitions to mobile lesson screen component
-  - Implemented step parsing logic to handle text_tip steps in both array and object-based API responses
-  - Updated handleNextStep navigation to check for step 5 existence before completing lessons
-  - Added UI rendering for text_tip with amber background styling and dynamic titles (Bonus Tip, Cultural Snack, Mini Challenge, Did You Know?)
-  - Updated skip button logic for free users to navigate to step 5 when it exists instead of completing lesson
-  - Updated button text logic to show "Next" when step 5 exists and "Complete Lesson" only after final step
-  - Implementation mirrors web app behavior for consistency across platforms
-  - Supports universal usage across all courses and languages
-
-## Previous Changes (September 3, 2025)
-- **Updated Italian Course 10 (Directions and Places) with Inline Reviews**:
-  - Replaced the existing Italian Directions and Places course with enhanced version that includes reviews after every 4 lessons
-  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
-  - Successfully imported 21 lessons with 63 lesson steps plus 7 checkpoints
-  - Reviews include multiple-choice questions covering direction words, location terms, and asking for directions
-  - Course now covers essential navigation vocabulary with structured review intervals
-- **Updated Italian Course 9 (Food and Drinks) with Inline Reviews**:
-  - Replaced the existing Italian Food and Drinks course with enhanced version that includes reviews after every 4 lessons
-  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
-  - Successfully imported 22 lessons with 66 lesson steps plus 7 checkpoints
-  - Reviews include multiple-choice questions covering beverages, food items, and restaurant phrases
-  - Course now covers comprehensive food and drink vocabulary with structured review intervals
-- **Updated Italian Course 8 (Weather and Seasons) with Inline Reviews**:
-  - Replaced the existing Italian Weather and Seasons course with enhanced version that includes reviews after every 4 lessons
-  - Added 6 checkpoint reviews throughout the course (5 regular reviews + 1 final review)
-  - Successfully imported 18 lessons with 54 lesson steps plus 6 checkpoints
-  - Reviews include multiple-choice questions covering weather expressions, seasonal vocabulary, and personal temperature feelings
-  - Course now covers comprehensive weather and season vocabulary with structured review intervals
-- **Updated Italian Course 7 (Describing Things - Colors & Adjectives) with Inline Reviews**:
-  - Replaced the existing Italian Colors & Adjectives course with enhanced version that includes reviews after every 4 lessons
-  - Added 7 checkpoint reviews throughout the course (6 regular reviews + 1 final review)
-  - Successfully imported 22 lessons with 66 lesson steps plus 7 checkpoints
-  - Reviews include multiple-choice questions covering colors with gender agreement and basic descriptive adjectives
-  - Course now covers essential color vocabulary and adjective usage with structured review intervals
-- **Updated Italian Course 6 (Travel Basics) with Inline Reviews**:
-  - Replaced the existing Italian Travel Basics course with enhanced version that includes reviews after every 4 lessons
-  - Added 10 checkpoint reviews throughout the course (9 regular reviews + 1 final review)
-  - Successfully imported 34 lessons with 102 lesson steps plus 10 checkpoints
-  - Reviews include multiple-choice questions covering travel phrases, directions, transportation, and emergency needs
-  - Course now covers essential travel vocabulary with structured review intervals for better retention
-- **Updated Italian Course 5 (Time and Date) with Inline Reviews**:
-  - Replaced the existing Italian Time and Date course with enhanced version that includes reviews after every 4 lessons
-  - Added 11 checkpoint reviews throughout the course (10 regular reviews + 1 final review)
-  - Successfully imported 38 lessons with 114 lesson steps plus 11 checkpoints
-  - Reviews include multiple-choice questions covering days of the week, months, time expressions, and date phrases
-  - Course now covers comprehensive time and date vocabulary with structured review intervals
-- **Updated Italian Course 4 (Numbers) with Inline Reviews**:
-  - Replaced the existing Italian Numbers course with enhanced version that includes reviews after every 4 lessons
-  - Added 9 checkpoint reviews throughout the course (8 regular reviews + 1 final review)
-  - Updated database storage system to handle both regular lessons and review checkpoints during course import
-  - Enhanced `importCourseFromJSON` method to process review sections and create checkpoint records
-  - Successfully imported 32 lessons with 96 lesson steps plus 9 checkpoints
-  - Reviews include multiple-choice questions with pass/fail rules and retry logic
-
-## Previous Changes (August 13, 2025)
-- Added Italian Beginner Courses 9-13 to the database:
-  - Course 9: Food and Drinks (22 lessons)
-  - Course 10: Directions and Places (21 lessons) 
-  - Course 11: Shopping (13 lessons)
-  - Course 12: Expressing Likes and Dislikes (14 lessons)
-  - Course 13: Basic Grammar Essentials (29 lessons)
-- Total Italian Beginner content now: 13 courses with 282 lessons
-- Updated seed-database.ts to include new course files
-- **Added Complete German Beginner Course Collection**:
-  - Added German language to database (code: 'de')
-  - Imported 7 complete German beginner courses with 110 total lessons:
-    - Course 1: Greetings (13 lessons)
-    - Course 2: Introducing Yourself (13 lessons)
-    - Course 3: Noun Gender & Articles (8 lessons)
-    - Course 4: Essential Courtesy Phrases (13 lessons)
-    - Course 5: Numbers (6 lessons)
-    - Course 6: Days, Months, Seasons (46 lessons)
-    - Course 7: Telling Time (11 lessons)
-  - Users who sign up for German Beginner will now access this complete curriculum
-- **Implemented Checkpoint Review System**:
-  - Added checkpoint reviews that appear after every 4 lessons completed
-  - New API endpoint `/api/available-checkpoints` tracks user eligibility 
-  - Dashboard displays checkpoint availability prominently
-  - Integrated checkpoint notifications into existing notification system (30% of notifications when available)
-  - Checkpoint notifications are clickable and direct users to review quizzes
-- **Fixed Notification Loading Issue**:
-  - Identified root cause: notifications were creating URLs for non-existent courses (course3)
-  - Fixed client-side URL mapping to use actual existing course files (course1, course2, course4)
-  - Fixed server-side getNextLesson logic to only return existing course numbers
-  - Improved error handling in lesson component for failed notification scenarios
-  - Added debugging logs for better notification tracking
 
 ## System Architecture
 
@@ -149,9 +31,10 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
 
 ### Key Components
 - **Authentication System**: Supports Google, GitHub, and email/password login, with PostgreSQL-backed sessions.
-- **Learning System**: JSON-based lesson structure, tracks user progress (per language, week, day), streaks, and words learned.
+- **Learning System**: JSON-based lesson structure with dynamic step handling, tracks user progress (per language, week, day), streaks, and words learned.
 - **Checkpoint Review System**: Automatic checkpoint reviews after every 4 lessons completed, with progress tracking and quiz functionality.
 - **Notifications**: Browser notifications for learning reminders and checkpoint reviews, with controlled daily sessions and robust deduplication.
+- **Course Upload Session Workflow**: A staged upload workflow for courses, allowing JSON definition upload, video asset management, and atomic publishing to ensure data integrity.
 - **Data Models**: Users, User Settings, User Progress, User Stats, Sessions, Checkpoints, Checkpoint Progress.
 
 ### UI/UX Design
