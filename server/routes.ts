@@ -3688,10 +3688,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const numB = parseInt(b.replace('lesson', ''));
             return numA - numB;
           })
-          .map(key => ({
-            title: lessons[key].title,
-            steps: lessons[key],
-          }));
+          .map(key => lessons[key]);
       }
 
       // Count required videos
@@ -3702,20 +3699,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (lesson.steps && Array.isArray(lesson.steps)) {
           stepsArray = lesson.steps;
         } else {
-          // Extract steps from object format
-          const stepKeys = Object.keys(lesson).filter(key => key.startsWith('step'));
-          stepsArray = stepKeys.sort((a, b) => {
-            const numA = parseInt(a.replace('step', ''));
-            const numB = parseInt(b.replace('step', ''));
-            return numA - numB;
-          }).map(key => lesson[key]);
+          // Extract steps from object format (step1, step2, step3, etc.)
+          const stepKeys = Object.keys(lesson)
+            .filter(key => key.startsWith('step'))
+            .sort((a, b) => {
+              const numA = parseInt(a.replace('step', ''));
+              const numB = parseInt(b.replace('step', ''));
+              return numA - numB;
+            });
+          stepsArray = stepKeys.map(key => lesson[key]);
         }
 
         const steps = stepsArray.map((step: any, stepIndex: number) => {
           const stepNumber = stepIndex + 1;
-          const stepType = step.type === 'irl_video' || step.type === 'pro_video' || step.type === 'video_choice' ? step.type : 'other';
+          // Check for video types - could be at step.type or step itself for certain structures
+          const stepType = step.type === 'irl_video' || step.type === 'pro_video' || step.type === 'video_choice' || step.type === 'video' ? step.type : 'other';
           
-          if (stepType === 'irl_video' || stepType === 'pro_video' || stepType === 'video_choice') {
+          if (stepType === 'irl_video' || stepType === 'pro_video' || stepType === 'video_choice' || stepType === 'video') {
             requiredVideoCount++;
           }
 
