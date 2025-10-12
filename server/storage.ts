@@ -45,7 +45,7 @@ import {
   type InsertDraftUpload,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, notInArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -110,23 +110,29 @@ export interface IStorage {
   getLesson(id: number): Promise<Lesson | undefined>;
   getLessonWithSteps(id: number): Promise<LessonWithSteps | undefined>;
   getLessonByCourseAndNumber(languageCode: string, courseNumber: number, lessonNumber: number): Promise<LessonWithSteps | undefined>;
+  getLessonByCourseIdAndNumber(courseId: number, lessonNumber: number): Promise<Lesson | undefined>;
   createLesson(lesson: InsertLesson): Promise<Lesson>;
   updateLesson(id: number, lesson: Partial<InsertLesson>): Promise<Lesson>;
   deleteLesson(id: number): Promise<void>;
+  deleteLessonsNotInList(courseId: number, lessonNumbers: number[]): Promise<void>;
   
   // Lesson step operations
   getLessonSteps(lessonId: number): Promise<LessonStep[]>;
+  getLessonStepByNumber(lessonId: number, stepNumber: number): Promise<LessonStep | undefined>;
   createLessonStep(step: InsertLessonStep): Promise<LessonStep>;
   updateLessonStep(id: number, step: Partial<InsertLessonStep>): Promise<LessonStep>;
   deleteLessonStep(id: number): Promise<void>;
+  deleteStepsNotInList(lessonId: number, stepNumbers: number[]): Promise<void>;
   
   // Checkpoint operations
   getCheckpoints(courseId: number): Promise<Checkpoint[]>;
   getAllCheckpoints(): Promise<Checkpoint[]>;
   getCheckpoint(id: number): Promise<Checkpoint | undefined>;
+  getCheckpointByCourseAndNumber(courseId: number, checkpointNumber: number): Promise<Checkpoint | undefined>;
   createCheckpoint(checkpoint: InsertCheckpoint): Promise<Checkpoint>;
   updateCheckpoint(id: number, checkpoint: Partial<InsertCheckpoint>): Promise<Checkpoint>;
   deleteCheckpoint(id: number): Promise<void>;
+  deleteCheckpointsNotInList(courseId: number, checkpointNumbers: number[]): Promise<void>;
   
   // Checkpoint progress operations
   getCheckpointProgress(userId: string, checkpointId?: number): Promise<CheckpointProgress[]>;
@@ -755,6 +761,27 @@ export class DatabaseStorage implements IStorage {
     await db.delete(lessons).where(eq(lessons.id, id));
   }
 
+  async getLessonByCourseIdAndNumber(courseId: number, lessonNumber: number): Promise<Lesson | undefined> {
+    const [lesson] = await db.select().from(lessons)
+      .where(and(eq(lessons.courseId, courseId), eq(lessons.lessonNumber, lessonNumber)));
+    return lesson;
+  }
+
+  async deleteLessonsNotInList(courseId: number, lessonNumbers: number[]): Promise<void> {
+    if (lessonNumbers.length === 0) {
+      // Delete all lessons if no lesson numbers provided
+      await db.delete(lessons).where(eq(lessons.courseId, courseId));
+    } else {
+      // Delete lessons not in the provided list
+      await db.delete(lessons).where(
+        and(
+          eq(lessons.courseId, courseId),
+          notInArray(lessons.lessonNumber, lessonNumbers)
+        )
+      );
+    }
+  }
+
   // Lesson step operations
   async getLessonSteps(lessonId: number): Promise<LessonStep[]> {
     return await db.select().from(lessonSteps).where(eq(lessonSteps.lessonId, lessonId)).orderBy(lessonSteps.stepNumber);
@@ -776,6 +803,27 @@ export class DatabaseStorage implements IStorage {
 
   async deleteLessonStep(id: number): Promise<void> {
     await db.delete(lessonSteps).where(eq(lessonSteps.id, id));
+  }
+
+  async getLessonStepByNumber(lessonId: number, stepNumber: number): Promise<LessonStep | undefined> {
+    const [step] = await db.select().from(lessonSteps)
+      .where(and(eq(lessonSteps.lessonId, lessonId), eq(lessonSteps.stepNumber, stepNumber)));
+    return step;
+  }
+
+  async deleteStepsNotInList(lessonId: number, stepNumbers: number[]): Promise<void> {
+    if (stepNumbers.length === 0) {
+      // Delete all steps if no step numbers provided
+      await db.delete(lessonSteps).where(eq(lessonSteps.lessonId, lessonId));
+    } else {
+      // Delete steps not in the provided list
+      await db.delete(lessonSteps).where(
+        and(
+          eq(lessonSteps.lessonId, lessonId),
+          notInArray(lessonSteps.stepNumber, stepNumbers)
+        )
+      );
+    }
   }
 
   // Bulk import operations
@@ -808,8 +856,10 @@ export class DatabaseStorage implements IStorage {
     );
 
     let createdCourse: Course;
-    if (existingCourse.length > 0) {
-      // Update existing course
+    const isUpdate = existingCourse.length > 0;
+    
+    if (isUpdate) {
+      // Update existing course metadata
       [createdCourse] = await db
         .update(courses)
         .set({
@@ -819,10 +869,6 @@ export class DatabaseStorage implements IStorage {
         })
         .where(eq(courses.id, existingCourse[0].id))
         .returning();
-
-      // Delete existing lessons, steps, and checkpoints
-      await db.delete(lessons).where(eq(lessons.courseId, createdCourse.id));
-      await db.delete(checkpoints).where(eq(checkpoints.courseId, createdCourse.id));
     } else {
       // Create new course
       createdCourse = await this.createCourse({
@@ -833,6 +879,10 @@ export class DatabaseStorage implements IStorage {
         description: course.description,
       });
     }
+
+    // Track lesson and checkpoint numbers from JSON to know what to keep
+    const jsonLessonNumbers: number[] = [];
+    const jsonCheckpointNumbers: number[] = [];
 
     // Import lessons and reviews
     for (const [lessonKey, lessonData] of Object.entries(course.lessons)) {
@@ -859,12 +909,23 @@ export class DatabaseStorage implements IStorage {
         }
         
         const lesson = lessonData as any;
+        jsonLessonNumbers.push(lessonNumber);
 
-        const createdLesson = await this.createLesson({
-          courseId: createdCourse.id,
-          lessonNumber,
-          title: lesson.title,
-        });
+        // Check if lesson already exists (for updates)
+        let createdLesson: Lesson;
+        const existingLesson = await this.getLessonByCourseIdAndNumber(createdCourse.id, lessonNumber);
+        
+        if (existingLesson) {
+          // Update existing lesson
+          createdLesson = await this.updateLesson(existingLesson.id, { title: lesson.title });
+        } else {
+          // Create new lesson
+          createdLesson = await this.createLesson({
+            courseId: createdCourse.id,
+            lessonNumber,
+            title: lesson.title,
+          });
+        }
 
         if (isIRLLesson) {
           // Handle IRL video lesson structure - support both old (step1) and new (steps array) format
@@ -882,12 +943,18 @@ export class DatabaseStorage implements IStorage {
             answerPrompt: stepData.answer_prompt || '' // Add the new answer_prompt field
           };
 
-          await this.createLessonStep({
-            lessonId: createdLesson.id,
-            stepNumber: 1,
-            stepType: 'irl_video',
-            content: irlContent,
-          });
+          // Check if step already exists (for updates)
+          const existingStep = await this.getLessonStepByNumber(createdLesson.id, 1);
+          if (existingStep) {
+            await this.updateLessonStep(existingStep.id, { stepType: 'irl_video', content: irlContent });
+          } else {
+            await this.createLessonStep({
+              lessonId: createdLesson.id,
+              stepNumber: 1,
+              stepType: 'irl_video',
+              content: irlContent,
+            });
+          }
         } else {
           // Import steps - split original step1 into word review and quick check
           const originalStep1 = lesson.step1;
@@ -954,14 +1021,26 @@ export class DatabaseStorage implements IStorage {
             });
           }
 
+          // Track step numbers for cleanup
+          const stepNumbers = steps.map(s => s.stepNumber);
+          
           for (const step of steps) {
-            await this.createLessonStep({
-              lessonId: createdLesson.id,
-              stepNumber: step.stepNumber,
-              stepType: step.stepType,
-              content: step.content,
-            });
+            // Check if step already exists (for updates)
+            const existingStep = await this.getLessonStepByNumber(createdLesson.id, step.stepNumber);
+            if (existingStep) {
+              await this.updateLessonStep(existingStep.id, { stepType: step.stepType, content: step.content });
+            } else {
+              await this.createLessonStep({
+                lessonId: createdLesson.id,
+                stepNumber: step.stepNumber,
+                stepType: step.stepType,
+                content: step.content,
+              });
+            }
           }
+          
+          // Delete steps not in current JSON
+          await this.deleteStepsNotInList(createdLesson.id, stepNumbers);
         }
       } else if (lessonKey.startsWith('review')) {
         // Handle review checkpoints
@@ -975,19 +1054,40 @@ export class DatabaseStorage implements IStorage {
           }
         }
         const review = lessonData as any;
+        jsonCheckpointNumbers.push(checkpointNumber);
 
         // Extract teaser content if present (lesson_teaser1)
         const teaserContent = review.lesson_teaser1 || null;
 
-        await this.createCheckpoint({
-          courseId: createdCourse.id,
-          checkpointNumber,
-          title: review.title,
-          description: review.title, // Use title as description for now
-          questions: review.questions,
-          teaser: teaserContent,
-        });
+        // Check if checkpoint already exists (for updates)
+        const existingCheckpoint = await this.getCheckpointByCourseAndNumber(createdCourse.id, checkpointNumber);
+        
+        if (existingCheckpoint) {
+          // Update existing checkpoint (preserves user progress since we don't delete checkpoint)
+          await this.updateCheckpoint(existingCheckpoint.id, {
+            title: review.title,
+            description: review.title,
+            questions: review.questions,
+            teaser: teaserContent,
+          });
+        } else {
+          // Create new checkpoint
+          await this.createCheckpoint({
+            courseId: createdCourse.id,
+            checkpointNumber,
+            title: review.title,
+            description: review.title,
+            questions: review.questions,
+            teaser: teaserContent,
+          });
+        }
       }
+    }
+
+    // Clean up lessons and checkpoints not in the current JSON (only for updates)
+    if (isUpdate) {
+      await this.deleteLessonsNotInList(createdCourse.id, jsonLessonNumbers);
+      await this.deleteCheckpointsNotInList(createdCourse.id, jsonCheckpointNumbers);
     }
 
     return createdCourse;
@@ -1023,6 +1123,27 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCheckpoint(id: number): Promise<void> {
     await db.delete(checkpoints).where(eq(checkpoints.id, id));
+  }
+
+  async getCheckpointByCourseAndNumber(courseId: number, checkpointNumber: number): Promise<Checkpoint | undefined> {
+    const [checkpoint] = await db.select().from(checkpoints)
+      .where(and(eq(checkpoints.courseId, courseId), eq(checkpoints.checkpointNumber, checkpointNumber)));
+    return checkpoint;
+  }
+
+  async deleteCheckpointsNotInList(courseId: number, checkpointNumbers: number[]): Promise<void> {
+    if (checkpointNumbers.length === 0) {
+      // Delete all checkpoints if no checkpoint numbers provided
+      await db.delete(checkpoints).where(eq(checkpoints.courseId, courseId));
+    } else {
+      // Delete checkpoints not in the provided list
+      await db.delete(checkpoints).where(
+        and(
+          eq(checkpoints.courseId, courseId),
+          notInArray(checkpoints.checkpointNumber, checkpointNumbers)
+        )
+      );
+    }
   }
 
   // Checkpoint progress operations
