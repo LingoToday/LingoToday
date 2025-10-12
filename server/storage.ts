@@ -849,9 +849,15 @@ export class DatabaseStorage implements IStorage {
       throw new Error(`Skill level with code '${skillLevelCode}' not found`);
     }
 
+    console.log('📦 Starting course import...');
+    console.log('📦 Course data keys:', Object.keys(courseData));
+    
     // Extract course key and data
     const courseKey = Object.keys(courseData)[0];
     const course = courseData[courseKey];
+    
+    console.log('📦 Course key:', courseKey);
+    console.log('📦 Course object keys:', Object.keys(course || {}));
     
     // Parse course number from key (e.g., "course1" -> 1)
     const courseNumberMatch = courseKey.match(/\d+/);
