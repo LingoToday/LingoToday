@@ -3623,11 +3623,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Missing jsonFileUrl or jsonContent' });
       }
 
-      // Parse the JSON to extract metadata
-      const { language, level, course_number, course_title, course_description, lessons } = jsonContent;
+      // Handle different JSON structures
+      let language, level, course_number, course_title, course_description, lessons;
       
-      if (!language || !level || !course_number || !course_title || !lessons) {
-        return res.status(400).json({ error: 'Invalid JSON structure' });
+      // Check if it's the new flat structure
+      if (jsonContent.language && jsonContent.level) {
+        ({ language, level, course_number, course_title, course_description, lessons } = jsonContent);
+      } else {
+        // Handle legacy nested structure (e.g., { "course1": { ... } })
+        const courseKey = Object.keys(jsonContent).find(key => key.startsWith('course'));
+        if (!courseKey) {
+          return res.status(400).json({ error: 'Invalid JSON structure: no course data found' });
+        }
+        
+        const courseData = jsonContent[courseKey];
+        course_title = courseData.title;
+        course_description = courseData.description;
+        lessons = courseData.lessons;
+        
+        // Extract course number from key (e.g., "course1" -> 1)
+        course_number = parseInt(courseKey.replace('course', ''));
+        
+        // Extract language and level from filename in jsonFileUrl
+        const urlParts = jsonFileUrl.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        
+        if (filename.toLowerCase().includes('italian')) language = 'it';
+        else if (filename.toLowerCase().includes('german')) language = 'de';
+        else if (filename.toLowerCase().includes('french')) language = 'fr';
+        else language = 'it'; // default
+        
+        if (filename.toLowerCase().includes('beginner')) level = 'beginner';
+        else if (filename.toLowerCase().includes('intermediate')) level = 'intermediate';
+        else if (filename.toLowerCase().includes('advanced')) level = 'advanced';
+        else level = 'beginner'; // default
+      }
+      
+      if (!course_number || !course_title || !lessons) {
+        return res.status(400).json({ error: 'Invalid JSON structure: missing required fields' });
       }
 
       // Look up language and skill level
@@ -3642,14 +3675,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: `Skill level not found: ${level}` });
       }
 
+      // Convert lessons to array if it's an object
+      let lessonsArray;
+      if (Array.isArray(lessons)) {
+        lessonsArray = lessons;
+      } else {
+        // Convert object format { lesson1: {...}, lesson2: {...} } to array
+        lessonsArray = Object.keys(lessons)
+          .filter(key => key.startsWith('lesson'))
+          .sort((a, b) => {
+            const numA = parseInt(a.replace('lesson', ''));
+            const numB = parseInt(b.replace('lesson', ''));
+            return numA - numB;
+          })
+          .map(key => ({
+            title: lessons[key].title,
+            steps: lessons[key],
+          }));
+      }
+
       // Count required videos
       let requiredVideoCount = 0;
-      const parsedLessons = lessons.map((lesson: any, lessonIndex: number) => {
-        const steps = lesson.steps?.map((step: any, stepIndex: number) => {
+      const parsedLessons = lessonsArray.map((lesson: any, lessonIndex: number) => {
+        // Handle both array format (lesson.steps) and object format (lesson has step1, step2, etc.)
+        let stepsArray;
+        if (lesson.steps && Array.isArray(lesson.steps)) {
+          stepsArray = lesson.steps;
+        } else {
+          // Extract steps from object format
+          const stepKeys = Object.keys(lesson).filter(key => key.startsWith('step'));
+          stepsArray = stepKeys.sort((a, b) => {
+            const numA = parseInt(a.replace('step', ''));
+            const numB = parseInt(b.replace('step', ''));
+            return numA - numB;
+          }).map(key => lesson[key]);
+        }
+
+        const steps = stepsArray.map((step: any, stepIndex: number) => {
           const stepNumber = stepIndex + 1;
-          const stepType = step.type === 'irl_video' || step.type === 'pro_video' ? step.type : 'other';
+          const stepType = step.type === 'irl_video' || step.type === 'pro_video' || step.type === 'video_choice' ? step.type : 'other';
           
-          if (stepType === 'irl_video' || stepType === 'pro_video') {
+          if (stepType === 'irl_video' || stepType === 'pro_video' || stepType === 'video_choice') {
             requiredVideoCount++;
           }
 
@@ -3658,7 +3724,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             stepType,
             content: step,
           };
-        }) || [];
+        });
 
         return {
           lessonNumber: lessonIndex + 1,
