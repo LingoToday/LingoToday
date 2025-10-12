@@ -7,7 +7,22 @@ LingoToday is a full-stack language learning application designed to deliver mic
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., specify what to enter in typing exercises).
 
-## Recent Changes (October 10, 2025)
+## Recent Changes (October 12, 2025)
+- **Fixed JSON Course Import System**:
+  - Identified critical bug where JSON courses were not importing lessons (courses had 0 lessons in database)
+  - Root cause: Publish endpoint expected JSON content from frontend request body, but data was only stored in object storage
+  - Solution: Added `downloadJSONContent()` method to object storage service to fetch JSON files from storage
+  - Updated `/api/admin/json/:id/publish` endpoint to retrieve JSON content from object storage during publish
+  - Now properly imports all lessons, steps, and checkpoints from uploaded JSON files into database
+  - Fixes video publishing errors ("Lesson not found") by ensuring lessons exist in database
+- **Fixed Skill Level Tracking for User Progress**:
+  - Added `skillLevelId` to user_settings table to track user's chosen skill level (beginner/intermediate/advanced)
+  - Updated `getNextLesson` logic to filter courses by user's skill level instead of hardcoding 'beginner'
+  - Fixed `/api/next-lesson` and `/api/upcoming-lessons` endpoints to respect user's skill level
+  - Prevents users from jumping to wrong courses when multiple skill levels exist
+  - All new users default to beginner (skillLevelId = 1) via SQL migration
+
+## Previous Changes (October 10, 2025)
 - **Implemented Step 5 (text_tip) Support in React Native Mobile App**:
   - Added text_tip type definitions to mobile lesson screen component
   - Implemented step parsing logic to handle text_tip steps in both array and object-based API responses

@@ -3550,6 +3550,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'JSON file URL not found in draft' });
       }
 
+      const objectStorageService = new ObjectStorageService();
       const jsonContent = await objectStorageService.downloadJSONContent(draft.fileUrl);
       
       if (!jsonContent) {
