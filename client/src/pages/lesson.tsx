@@ -256,58 +256,60 @@ export default function Lesson() {
       };
     }
 
-    // Normalize legacy lesson format (step1, step2, step3, step4) to steps[] array
+    // Normalize legacy lesson format (step1, step2, step3, step4, step5, ...) to steps[] array
     if (!currentLesson.lesson?.steps && currentLesson.lesson?.step1) {
-      console.log('🔄 Normalizing legacy 4-step format to steps[]');
+      console.log('🔄 Normalizing legacy step format to steps[]');
       const normalizedSteps = [];
       
-      // Map legacy steps to normalized format
-      for (let i = 1; i <= 4; i++) {
-        const stepKey = `step${i}`;
+      // Dynamically detect all steps (step1, step2, step3, ..., stepN)
+      let stepIndex = 1;
+      while (currentLesson.lesson[`step${stepIndex}`]) {
+        const stepKey = `step${stepIndex}`;
         const stepData = currentLesson.lesson[stepKey];
-        if (stepData) {
-          let stepType = 'unknown';
-          let content = stepData;
-          
-          // Determine step type based on step data structure
-          if (stepData.type) {
-            if (stepData.type === 'video_choice') {
-              stepType = 'video_choice';
-            } else if (stepData.type === 'video') {
-              stepType = 'pro_video';
-              // Normalize video step to pro_video format
-              content = {
-                video_url: stepData.video_url || '',
-                prompt: stepData.prompt || '',
-                answer_prompt: stepData.answer_prompt || '',
-                expected_answers: stepData.expected_answers || [],
-                requiredTier: stepData.requiredTier || ['pro']
-              };
-              console.log('🎬 Pro Video Step Found:', {
-                lessonId,
-                currentStep,
-                stepType,
-                content,
-                originalStepData: stepData
-              });
-            }
-          } else {
-            // Infer step type from content structure
-            if (stepData.italian && stepData.english) {
-              stepType = 'word_review';
-            } else if (stepData.type_prompt || stepData.expectedAnswer) {
-              stepType = 'typing';
-            } else if (stepData.audio_sentence || stepData.options) {
-              stepType = 'comprehension';
-            }
+        let stepType = 'unknown';
+        let content = stepData;
+        
+        // Determine step type based on step data structure
+        if (stepData.type) {
+          if (stepData.type === 'video_choice') {
+            stepType = 'video_choice';
+          } else if (stepData.type === 'video') {
+            stepType = 'pro_video';
+            // Normalize video step to pro_video format
+            content = {
+              video_url: stepData.video_url || '',
+              prompt: stepData.prompt || '',
+              answer_prompt: stepData.answer_prompt || '',
+              expected_answers: stepData.expected_answers || [],
+              requiredTier: stepData.requiredTier || ['pro']
+            };
+          } else if (stepData.type === 'text') {
+            stepType = 'text_tip';
+            // Step 5 bonus tips, cultural snacks, etc.
+            content = {
+              prompt: stepData.prompt || '',
+              answer_prompt: stepData.answer_prompt || 'Press continue to move on.',
+              ui_action: stepData.ui_action || 'continue'
+            };
           }
-          
-          normalizedSteps.push({
-            stepNumber: i,
-            stepType: stepType,
-            content: content
-          });
+        } else {
+          // Infer step type from content structure
+          if (stepData.italian && stepData.english) {
+            stepType = 'word_review';
+          } else if (stepData.type_prompt || stepData.expected_answer) {
+            stepType = 'typing';
+          } else if (stepData.audio_sentence || stepData.options) {
+            stepType = 'comprehension';
+          }
         }
+        
+        normalizedSteps.push({
+          stepNumber: stepIndex,
+          stepType: stepType,
+          content: content
+        });
+        
+        stepIndex++;
       }
       
       // Add normalized steps to lesson object
@@ -694,11 +696,16 @@ export default function Lesson() {
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
+      // Calculate max step dynamically
+      const maxStep = Array.isArray(currentLesson?.lesson?.steps) 
+        ? Math.max(...currentLesson.lesson.steps.map((s: any) => s.stepNumber))
+        : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps) ? 5 : 4;
+      
       await apiRequest("POST", "/api/progress", {
         language,
         courseId: courseId || "course1", // Use URL courseId or default
         lessonId: lessonId || currentLesson!.id,
-        stepNumber: 4, // All 4 steps completed
+        stepNumber: maxStep, // All steps completed
         completed: true,
         score,
         completedAt: new Date(),
