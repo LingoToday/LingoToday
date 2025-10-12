@@ -269,6 +269,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNextLesson(userId: string, language: string): Promise<{courseId: string, lessonId: string} | null> {
+    // Get user's skill level from settings
+    const userSettingsData = await db
+      .select()
+      .from(userSettings)
+      .where(eq(userSettings.userId, userId))
+      .limit(1);
+    
+    const skillLevelId = userSettingsData.length > 0 ? userSettingsData[0].skillLevelId : 1; // Default to beginner (1) if no settings
+    
     // Get all completed lessons for the user
     const completedLessons = await db
       .select()
@@ -312,12 +321,13 @@ export class DatabaseStorage implements IStorage {
           for (const courseId of courseOrder) {
             const courseNumber = parseInt(courseId.replace('course', ''));
             
-            // Get course and its lessons and checkpoints from database
+            // Get course and its lessons and checkpoints from database (filtering by skill level!)
             const course = await db
               .select()
               .from(courses)
               .where(and(
                 eq(courses.languageId, languageRecord[0].id),
+                eq(courses.skillLevelId, skillLevelId), // Filter by user's skill level
                 eq(courses.courseNumber, courseNumber)
               ))
               .limit(1);

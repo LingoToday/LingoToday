@@ -731,13 +731,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (language === 'italian' || language === 'spanish') {
         const languageCode = language === 'italian' ? 'it' : 'es';
         const dbLanguage = await storage.getLanguageByCode(languageCode);
-        const beginnerLevel = await storage.getSkillLevelByCode('beginner');
         
-        if (!dbLanguage || !beginnerLevel) {
+        // Get user's skill level from settings
+        const userSettingsData = await storage.getUserSettings(userId);
+        const userSkillLevelId = userSettingsData?.skillLevelId || 1; // Default to beginner (1) if no settings
+        const userSkillLevel = await storage.getSkillLevel(userSkillLevelId);
+        
+        if (!dbLanguage || !userSkillLevel) {
           return res.status(404).json({ message: `Language ${language} not found in database` });
         }
         
-        const courses = await storage.getCoursesWithRelations(dbLanguage.id, beginnerLevel.id);
+        const courses = await storage.getCoursesWithRelations(dbLanguage.id, userSkillLevel.id);
         const course = courses.find(c => `course${c.courseNumber}` === nextLesson.courseId);
         
         if (!course) {
@@ -804,9 +808,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         else if (language === 'german') languageCode = 'de';
         else if (language === 'french') languageCode = 'fr';
         
+        // Get user's skill level from settings
+        const userSettingsData = await storage.getUserSettings(userId);
+        const userSkillLevelId = userSettingsData?.skillLevelId || 1; // Default to beginner (1) if no settings
+        
         // Get all courses from database with their lessons
         const dbLanguage = await storage.getLanguageByCode(languageCode);
-        const skillLevel = await storage.getSkillLevelByCode('beginner');
+        const skillLevel = await storage.getSkillLevel(userSkillLevelId);
         
         if (dbLanguage && skillLevel) {
           const coursesWithRelations = await storage.getCoursesWithRelations(dbLanguage.id, skillLevel.id);
