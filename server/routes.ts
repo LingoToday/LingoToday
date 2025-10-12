@@ -3556,17 +3556,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: `Skill level not found: ${skillLevelCode}` });
       }
 
-      // Check for duplicate course
-      const existingCourses = await storage.getCourses(language.id, skillLevel.id);
-      const duplicate = existingCourses.find(c => c.courseNumber === metadata.courseNumber);
-      
-      if (duplicate) {
-        return res.status(400).json({ 
-          error: `Course already exists: ${languageCode.toUpperCase()} ${skillLevelCode} Course ${metadata.courseNumber}. Delete the existing course first or use a different course number.`
-        });
-      }
-
-      // Import the course from JSON
+      // Import the course from JSON (will update existing or create new)
       const course = await storage.importCourseFromJSON(languageCode, skillLevelCode, jsonContent);
 
       // Mark draft as published
