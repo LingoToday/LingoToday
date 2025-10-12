@@ -1004,12 +1004,10 @@ export default function Lesson() {
         completeLessonMutation.mutate(score);
       }
     } else {
-      // Handle regular lessons - check if there's a step 5
-      // Note: steps can be an array or an object, so we need to handle both
-      const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
-        ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
-        : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
-      const maxStep = hasStep5 ? 5 : 4;
+      // Handle regular lessons - dynamically determine max step
+      const maxStep = Array.isArray(currentLesson?.lesson?.steps) 
+        ? Math.max(...currentLesson.lesson.steps.map((s: any) => s.stepNumber))
+        : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps) ? 5 : 4;
       
       if (currentStep < maxStep) {
         setCurrentStep(currentStep + 1);
@@ -1017,10 +1015,11 @@ export default function Lesson() {
         setShowResult(false);
         setIsCorrect(false);
       } else {
-        // Calculate final score based on all steps (steps 2, 3, 4 are graded, step 1 and 5 are informational)
+        // Calculate final score based on graded steps (typically steps 2, 3, 4)
+        // Step 1 (word_review) and optional step 5 (text_tip) are informational
         const correctSteps = Object.values(stepResults).filter(Boolean).length;
-        const totalSteps = 3;
-        const score = Math.round((correctSteps / totalSteps) * 100);
+        const totalGradedSteps = Math.max(maxStep - 2, 1); // Usually 3 graded steps (2,3,4)
+        const score = Math.round((correctSteps / totalGradedSteps) * 100);
         completeLessonMutation.mutate(score);
       }
     }
@@ -1405,18 +1404,18 @@ export default function Lesson() {
                     
                     
                     
-                    {/* Skip video and continue to step 5 or complete lesson */}
+                    {/* Skip video and continue to next step or complete lesson */}
                     <Button 
                       variant="outline"
                       onClick={() => {
-                        // Check if there's a step 5 in both array and object formats
-                        const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
-                          ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
-                          : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
+                        // Dynamically determine max step
+                        const maxStep = Array.isArray(currentLesson?.lesson?.steps) 
+                          ? Math.max(...currentLesson.lesson.steps.map((s: any) => s.stepNumber))
+                          : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps) ? 5 : 4;
                         
-                        if (hasStep5) {
-                          // Go to step 5 (text tip)
-                          setCurrentStep(5);
+                        if (currentStep < maxStep) {
+                          // Go to next step (e.g., step 5 text tip)
+                          setCurrentStep(currentStep + 1);
                           setSelectedAnswer("");
                           setShowResult(false);
                           setIsCorrect(false);
@@ -1806,14 +1805,13 @@ export default function Lesson() {
                      ) : stepData?.type === 'irl_video' ? (
                        'Complete Challenge'
                      ) : (() => {
-                       const hasStep5 = Array.isArray(currentLesson?.lesson?.steps) 
-                         ? currentLesson.lesson.steps.some((step: any) => step.stepNumber === 5)
-                         : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps);
+                       // Dynamically determine max step
+                       const maxStep = Array.isArray(currentLesson?.lesson?.steps) 
+                         ? Math.max(...currentLesson.lesson.steps.map((s: any) => s.stepNumber))
+                         : (currentLesson?.lesson?.steps && 'text_tip' in currentLesson.lesson.steps) ? 5 : 4;
                        
-                       if (currentStep === 4 && hasStep5) {
+                       if (currentStep < maxStep) {
                          return 'Continue';
-                       } else if (currentStep < 4) {
-                         return `Next Step (${currentStep + 1}/4)`;
                        } else {
                          return 'Complete Lesson';
                        }
