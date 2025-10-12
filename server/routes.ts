@@ -3868,28 +3868,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         videoMap.set(key, video.videoFileUrl);
       });
 
-      // Inject video URLs into JSON content
-      if (jsonContent.lessons) {
-        jsonContent.lessons.forEach((lesson: any, lessonIndex: number) => {
-          if (lesson.steps) {
-            lesson.steps.forEach((step: any, stepIndex: number) => {
-              const key = `${lessonIndex + 1}-${stepIndex + 1}`;
-              const videoUrl = videoMap.get(key);
-              
-              if (videoUrl && (step.type === 'irl_video' || step.type === 'pro_video')) {
-                step.video_url = videoUrl;
-              }
-            });
-          }
-        });
+      // Find the course key in the JSON (e.g., "course1", "course2", etc.)
+      const courseKey = Object.keys(jsonContent).find(key => key.startsWith('course'));
+      if (!courseKey) {
+        return res.status(400).json({ error: 'No course data found in JSON file' });
       }
 
-      // Get language and skill level codes
-      const languageCode = session.language.code;
-      const skillLevelCode = session.skillLevel.code;
+      const courseData = jsonContent[courseKey];
 
-      // Import the course from JSON
-      const course = await storage.importCourseFromJSON(languageCode, skillLevelCode, jsonContent);
+      // Inject video URLs into the course lessons
+      // The session stores parsedLessons as an array format, so we need to inject URLs based on session videos
+      session.videos.forEach(video => {
+        const { lessonNumber, stepNumber, videoFileUrl } = video;
+        
+        // Find the lesson in the course structure
+        // Support both nested structure (courseData.lessons.lesson1) and flat structure (courseData.lesson1)
+        const lessonsSource = courseData.lessons || courseData;
+        const lessonKey = `lesson${lessonNumber}`;
+        const lesson = lessonsSource[lessonKey];
+        
+        if (lesson) {
+          // Inject video URL into the appropriate step
+          const stepKey = `step${stepNumber}`;
+          if (lesson[stepKey]) {
+            lesson[stepKey].video_url = videoFileUrl;
+          }
+        }
+      });
+
+      // Import the course from JSON - pass the entire structure with courseKey
+      const course = await storage.importCourseFromJSON(
+        session.language.code, 
+        session.skillLevel.code, 
+        { [courseKey]: courseData }
+      );
 
       // Mark session as published
       await storage.updateCourseUploadSession(parseInt(id), {
