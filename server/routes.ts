@@ -3545,11 +3545,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Fetch the JSON content from the request
-      const { jsonContent } = req.body;
+      // Fetch the JSON content from object storage
+      if (!draft.fileUrl) {
+        return res.status(400).json({ error: 'JSON file URL not found in draft' });
+      }
+
+      const jsonContent = await objectStorageService.downloadJSONContent(draft.fileUrl);
       
       if (!jsonContent) {
-        return res.status(400).json({ error: 'jsonContent is required in request body' });
+        return res.status(400).json({ error: 'Failed to download JSON content from storage' });
       }
 
       // Look up language and skill level IDs from codes
