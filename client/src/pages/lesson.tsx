@@ -1380,15 +1380,24 @@ export default function Lesson() {
                   /* Upgrade to Pro UI */
                   <div className="text-center">
                     <div className="relative inline-block mb-6">
-                      <video 
-                        autoPlay
-                        muted
-                        loop
-                        className="w-72 h-[28rem] rounded-lg shadow-lg blur-md opacity-50"
-                        data-testid="blurred-pro-video"
-                      >
-                        <source src={stepData.videoUrl} type="video/mp4" />
-                      </video>
+                      {/* Fallback background with gradient */}
+                      <div className="w-72 h-[28rem] rounded-lg shadow-lg bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center">
+                        <video 
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="w-full h-full object-cover rounded-lg blur-md opacity-30"
+                          data-testid="blurred-pro-video"
+                          onError={(e) => {
+                            console.error('Video failed to load:', stepData.videoUrl);
+                            // Hide video element if it fails to load
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        >
+                          <source src={stepData.videoUrl} type="video/mp4" />
+                        </video>
+                      </div>
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 bg-opacity-40 rounded-lg">
                         <p className="text-white text-center font-semibold mb-4 px-4">
                           Unlock Pro Learner video lessons to accelerate your learning! <span className="line-through">£4.99</span> £2.49/month
