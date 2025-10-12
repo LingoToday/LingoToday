@@ -3795,7 +3795,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const { lessonNumber, stepNumber } = req.body;
 
+      console.log('📹 Video upload request:', { 
+        sessionId: id,
+        body: req.body, 
+        hasFile: !!req.file,
+        fileName: req.file?.originalname 
+      });
+
       if (!lessonNumber || !stepNumber || !req.file) {
+        console.error('❌ Missing fields:', { lessonNumber, stepNumber, hasFile: !!req.file });
         return res.status(400).json({ error: 'Missing required fields: lessonNumber, stepNumber, or video file' });
       }
 
