@@ -922,8 +922,11 @@ export class DatabaseStorage implements IStorage {
     const jsonLessonNumbers: number[] = [];
     const jsonCheckpointNumbers: number[] = [];
 
+    // Handle nested lessons structure (course.lessons.lesson1) or flat structure (course.lesson1)
+    const lessonsSource = course.lessons || course;
+    
     // Import lessons and reviews (iterate over course object, excluding metadata)
-    for (const [lessonKey, lessonData] of Object.entries(course).filter(([key]) => 
+    for (const [lessonKey, lessonData] of Object.entries(lessonsSource).filter(([key]) => 
       key.startsWith('lesson') || key.startsWith('review')
     )) {
       if (lessonKey.startsWith('lesson')) {
