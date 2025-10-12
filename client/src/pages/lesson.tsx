@@ -1162,7 +1162,7 @@ export default function Lesson() {
                       courseId === 'course2' ? '/attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV' :
                       courseId === 'course3' ? '/attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV' :
                       '/attached_assets/Italian_beginner_course1_intro_1757082612339.MP4'
-                    } type="video/mp4" />
+                    } />
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -1251,7 +1251,7 @@ export default function Lesson() {
                       video.style.backgroundColor = 'transparent';
                     }}
                   >
-                    <source src={stepData.videoUrl} type="video/mp4" />
+                    <source src={stepData.videoUrl} />
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -1309,7 +1309,7 @@ export default function Lesson() {
                         user?.firstName && detectGender(user.firstName) === 'male' ? '/attached_assets/videos/lesson1_hi_male.mp4' :
                         user?.firstName && detectGender(user.firstName) === 'female' ? '/attached_assets/videos/lesson1_hi_female.mp4' :
                         '/attached_assets/videos/lesson1_hi_neutral.mp4'
-                      } type="video/mp4" />
+                      } />
                       Your browser does not support the video tag.
                     </video>
 
@@ -1357,7 +1357,7 @@ export default function Lesson() {
                         className="w-72 h-[28rem] rounded-lg shadow-lg"
                         data-testid="pro-lesson-video"
                       >
-                        <source src={stepData.videoUrl} type="video/mp4" />
+                        <source src={stepData.videoUrl} />
                         Your browser does not support the video tag.
                       </video>
                     </div>
@@ -1388,7 +1388,7 @@ export default function Lesson() {
                         className="w-72 h-[28rem] rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
-                        <source src={stepData.videoUrl} type="video/mp4" />
+                        <source src={stepData.videoUrl} />
                       </video>
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-transparent via-gray-900/50 to-transparent rounded-lg">
                         <p className="text-white text-center font-semibold mb-4 px-4">
