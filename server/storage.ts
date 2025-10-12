@@ -873,8 +873,11 @@ export class DatabaseStorage implements IStorage {
     console.log('📦 Starting course import...');
     console.log('📦 Course data keys:', Object.keys(courseData));
     
-    // Extract course key and data
-    const courseKey = Object.keys(courseData)[0];
+    // Extract course key and data - must start with 'course'
+    const courseKey = Object.keys(courseData).find(key => key.startsWith('course'));
+    if (!courseKey) {
+      throw new Error('No course key found in JSON data. Expected a key like "course1", "course2", etc.');
+    }
     const course = courseData[courseKey];
     
     console.log('📦 Course key:', courseKey);
