@@ -885,8 +885,10 @@ export class DatabaseStorage implements IStorage {
     const jsonLessonNumbers: number[] = [];
     const jsonCheckpointNumbers: number[] = [];
 
-    // Import lessons and reviews
-    for (const [lessonKey, lessonData] of Object.entries(course.lessons)) {
+    // Import lessons and reviews (iterate over course object, excluding metadata)
+    for (const [lessonKey, lessonData] of Object.entries(course).filter(([key]) => 
+      key.startsWith('lesson') || key.startsWith('review')
+    )) {
       if (lessonKey.startsWith('lesson')) {
         let lessonNumber: number;
         let isIRLLesson = false;
