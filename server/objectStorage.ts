@@ -163,6 +163,20 @@ export class ObjectStorageService {
     const { bucketName, objectName } = parseObjectPath(objectPath);
     return `https://storage.googleapis.com/${bucketName}/${objectName}`;
   }
+
+  async downloadJSONContent(objectPath: string): Promise<any> {
+    const { bucketName, objectName } = parseObjectPath(objectPath);
+    const bucket = objectStorageClient.bucket(bucketName);
+    const file = bucket.file(objectName);
+
+    const [exists] = await file.exists();
+    if (!exists) {
+      throw new ObjectNotFoundError();
+    }
+
+    const [contents] = await file.download();
+    return JSON.parse(contents.toString('utf-8'));
+  }
 }
 
 function parseObjectPath(path: string): {
