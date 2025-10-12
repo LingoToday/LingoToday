@@ -844,7 +844,8 @@ export class DatabaseStorage implements IStorage {
     const course = courseData[courseKey];
     
     // Parse course number from key (e.g., "course1" -> 1)
-    const courseNumber = parseInt(courseKey.replace('course', ''));
+    const courseNumberMatch = courseKey.match(/\d+/);
+    const courseNumber = courseNumberMatch ? parseInt(courseNumberMatch[0]) : 1;
 
     // Create or update course
     const existingCourse = await db.select().from(courses).where(
