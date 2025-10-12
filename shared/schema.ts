@@ -299,6 +299,7 @@ export const users = pgTable('users', {
 export const userSettings = pgTable('user_settings', {
   userId: text('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
   language: text('language').default('en').notNull(),
+  skillLevelId: integer('skill_level_id').default(1).notNull().references(() => skillLevels.id), // Track user's current skill level (1=beginner by default)
   theme: text('theme').default('light').notNull(),
   soundEnabled: boolean('sound_enabled').default(true).notNull(),
   notificationsEnabled: boolean('notifications_enabled').default(true).notNull(),
