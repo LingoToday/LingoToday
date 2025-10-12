@@ -1354,6 +1354,7 @@ export default function Lesson() {
                     <div className="flex justify-center mb-6">
                       <video 
                         controls 
+                        crossOrigin="anonymous"
                         className="w-72 h-[28rem] rounded-lg shadow-lg"
                         data-testid="pro-lesson-video"
                       >
@@ -1385,6 +1386,7 @@ export default function Lesson() {
                         muted
                         loop
                         playsInline
+                        crossOrigin="anonymous"
                         className="w-72 h-[28rem] rounded-lg shadow-lg blur-md opacity-50"
                         data-testid="blurred-pro-video"
                       >
