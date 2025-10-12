@@ -144,31 +144,23 @@ export function CourseUploadSessionWizard({ onComplete }: CourseUploadSessionWiz
     setUploadingVideos(prev => new Set(prev).add(key));
 
     try {
-      // Get upload URL
-      const uploadUrlRes = await apiRequest('POST', '/api/admin/videos/upload-url', { filename: file.name });
-      const uploadUrlResponse = await uploadUrlRes.json() as { uploadURL: string };
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('video', file);
+      formData.append('lessonNumber', lessonNumber.toString());
+      formData.append('stepNumber', videoStep.stepNumber.toString());
 
-      // Upload to object storage
-      await fetch(uploadUrlResponse.uploadURL, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': 'video/mp4',
-        },
+      // Upload video directly to server
+      const response = await fetch(`/api/admin/upload-sessions/${sessionId}/videos`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include', // Include session cookie
       });
 
-      // Extract the object storage URL
-      const url = new URL(uploadUrlResponse.uploadURL);
-      const videoFileUrl = `${url.origin}${url.pathname}`;
-
-      // Add video to session
-      await apiRequest('POST', `/api/admin/upload-sessions/${sessionId}/videos`, {
-        lessonNumber,
-        stepNumber: videoStep.stepNumber,
-        videoFileUrl,
-        videoFileName: file.name,
-        fileSize: file.size,
-      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload video');
+      }
 
       await refetchSession();
       toast({

@@ -3790,13 +3790,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Upload a video for a specific lesson/step in a session
-  app.post('/api/admin/upload-sessions/:id/videos', isAdmin, async (req: any, res) => {
+  app.post('/api/admin/upload-sessions/:id/videos', isAdmin, upload.single('video'), async (req: any, res) => {
     try {
       const { id } = req.params;
-      const { lessonNumber, stepNumber, videoFileUrl, videoFileName, fileSize } = req.body;
+      const { lessonNumber, stepNumber } = req.body;
 
-      if (!lessonNumber || !stepNumber || !videoFileUrl || !videoFileName) {
-        return res.status(400).json({ error: 'Missing required fields' });
+      if (!lessonNumber || !stepNumber || !req.file) {
+        return res.status(400).json({ error: 'Missing required fields: lessonNumber, stepNumber, or video file' });
       }
 
       const session = await storage.getCourseUploadSession(parseInt(id));
@@ -3810,14 +3810,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Video already uploaded for this lesson/step' });
       }
 
+      // Create attached_assets/videos directory if it doesn't exist
+      const videosDir = path.join(process.cwd(), 'attached_assets', 'videos');
+      if (!fs.existsSync(videosDir)) {
+        fs.mkdirSync(videosDir, { recursive: true });
+      }
+
+      // Generate unique filename with original extension
+      const fileExt = path.extname(req.file.originalname);
+      const fileName = `course_lesson${lessonNumber}_step${stepNumber}_${Date.now()}${fileExt}`;
+      const filePath = path.join(videosDir, fileName);
+      
+      // Save file to local disk
+      fs.writeFileSync(filePath, req.file.buffer);
+      
+      // Store relative path in database
+      const videoFileUrl = `/attached_assets/videos/${fileName}`;
+
       // Create the session video
       const video = await storage.createSessionVideo({
         sessionId: parseInt(id),
         lessonNumber,
         stepNumber,
         videoFileUrl,
-        videoFileName,
-        fileSize: fileSize || 0,
+        videoFileName: req.file.originalname,
+        fileSize: req.file.size,
       });
 
       // Update session uploaded count
@@ -3829,6 +3846,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         success: true, 
         video,
+        videoUrl: videoFileUrl,
       });
     } catch (error: any) {
       console.error('Error uploading video to session:', error);
