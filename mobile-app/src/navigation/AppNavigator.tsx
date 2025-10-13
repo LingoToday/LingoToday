@@ -1,5 +1,5 @@
   import React, { useEffect, useRef } from 'react';
-  import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+  import { NavigationContainer, NavigationContainerRef, NavigatorScreenParams } from '@react-navigation/native';
   import { createNativeStackNavigator } from '@react-navigation/native-stack';
   import * as Notifications from 'expo-notifications';
 
@@ -28,7 +28,7 @@
   import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 
   // Import Tab Navigator
-  import MainTabNavigator from './MainTabNavigator';
+  import MainTabNavigator, { MainTabParamList } from './MainTabNavigator';
 
   import { theme } from '../lib/theme';
   import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,7 +37,7 @@
     Landing: undefined;
     Login: undefined;
     Onboarding: undefined;
-    MainTabs: undefined;
+    MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
     Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
     Progress: undefined;
     Lesson: { lessonId: string; language?: string; courseId?: string };
