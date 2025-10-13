@@ -332,7 +332,7 @@ export default function Subscribe() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-800">
+          <CardTitle className="text-2xl font-bold text-gray-800 mt-[10px]">
             Upgrade to Pro Learner
           </CardTitle>
         </CardHeader>

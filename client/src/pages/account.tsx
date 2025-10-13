@@ -113,7 +113,7 @@ export default function Account() {
             </div>
             
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900">Account Settings</h1>
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 mt-[10px]">Account Settings</h1>
             </div>
             
             <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
