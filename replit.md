@@ -10,12 +10,23 @@ UI/UX preferences: Clear, descriptive instructions for user interactions (e.g., 
 ## System Architecture
 
 ### Frontend Architecture
+**Web Application:**
 - **Framework**: React 18 with TypeScript
 - **Routing**: Wouter
 - **State Management**: TanStack React Query
 - **UI Components**: Radix UI primitives with shadcn/ui
 - **Styling**: Tailwind CSS with custom design tokens
 - **Build Tool**: Vite
+
+**Mobile Application (React Native):**
+- **Framework**: React Native with Expo
+- **Navigation**: React Navigation with bottom tab navigation
+  - MainTabNavigator: Home (Dashboard) and Profile (Account) tabs with blue accent (#3B82F6)
+  - Stack navigation for other screens (Lessons, Subscriptions, etc.)
+  - Nested navigation structure: MainTabs contains Home/Profile tabs
+- **State Management**: TanStack React Query
+- **UI Components**: Custom React Native components
+- **Styling**: React Native StyleSheet with theme system
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
