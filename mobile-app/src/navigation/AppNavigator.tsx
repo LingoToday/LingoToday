@@ -7,9 +7,7 @@
   import LandingScreen from '../screens/LandingScreen';
   import LoginScreenNew from '../screens/LoginScreenNew';
   import OnboardingScreenNew from '../screens/OnboardingScreenNew';
-  import DashboardScreenNew from '../screens/DashboardScreenNew';
   import CoursesScreenNew from '../screens/CoursesScreenNew';
-  import AccountScreenNew from '../screens/AccountScreenNew';
   import ProgressScreenNew from '../screens/ProgressScreenNew';
   import LessonScreenNew from '../screens/LessonScreenNew';
   import CheckpointScreen from '../screens/CheckpointScreen';
@@ -29,6 +27,9 @@
   import LessonExampleScreen from '../screens/LessonExampleScreen';
   import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 
+  // Import Tab Navigator
+  import MainTabNavigator from './MainTabNavigator';
+
   import { theme } from '../lib/theme';
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -36,8 +37,7 @@
     Landing: undefined;
     Login: undefined;
     Onboarding: undefined;
-    Dashboard: undefined;
-    Account: undefined;
+    MainTabs: undefined;
     Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
     Progress: undefined;
     Lesson: { lessonId: string; language?: string; courseId?: string };
@@ -239,10 +239,9 @@
               <Stack.Screen name="Admin" component={AdminScreen} />
             </>
           ) : (
-            // Main app screens for authenticated users (Dashboard as home exactly like client)
+            // Main app screens for authenticated users (MainTabs as home with Dashboard and Account)
             <>
-              <Stack.Screen name="Dashboard" component={DashboardScreenNew} />
-              <Stack.Screen name="Account" component={AccountScreenNew} />
+              <Stack.Screen name="MainTabs" component={MainTabNavigator} />
               <Stack.Screen name="Progress" component={ProgressScreenNew} />
               <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
 
