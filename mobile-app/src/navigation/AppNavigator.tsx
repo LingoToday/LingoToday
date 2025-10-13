@@ -27,6 +27,7 @@
   import CourseManagerScreen from '../screens/CourseManagerScreen';
   import CourseTestScreen from '../screens/CourseTestScreen';
   import LessonExampleScreen from '../screens/LessonExampleScreen';
+  import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 
   import { theme } from '../lib/theme';
   import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,6 +43,7 @@
     Lesson: { lessonId: string; language?: string; courseId?: string };
     Checkpoint: { courseId: string; checkpointId: string };
     Subscribe: undefined;
+    Subscription: undefined;
     Terms: undefined;
     Privacy: undefined;
     Contact: undefined;
@@ -242,6 +244,7 @@
               <Stack.Screen name="Dashboard" component={DashboardScreenNew} />
               <Stack.Screen name="Account" component={AccountScreenNew} />
               <Stack.Screen name="Progress" component={ProgressScreenNew} />
+              <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
 
               {/* Course screens - available for authenticated users too */}
               <Stack.Screen name="Courses" component={CoursesScreenNew} />
