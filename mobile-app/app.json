@@ -41,13 +41,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-notifications",
-      [
-        "expo-task-manager",
-        {
-          "backgroundFetchInterval": 900
-        }
-      ]
+      "expo-notifications"
     ],
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
