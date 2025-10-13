@@ -1,0 +1,1371 @@
+{
+  "course5": {
+    "title": "Numbers",
+    "description": "Learn to count in German, from 0 to 20, with each number in its own lesson.",
+    "lessons": {
+      "lesson1": {
+        "title": "Zero",
+        "step1": {
+          "german": "null",
+          "english": "zero",
+          "audio": "null",
+          "note": "'null' means 'zero'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'zero' in German?",
+            "options": [
+              "null",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "null"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = zero",
+          "expected_answer": "null",
+          "alt_answers": [
+            "Null",
+            "null"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "null",
+          "options": [
+            "zero",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "zero"
+        }
+      },
+      "lesson2": {
+        "title": "One",
+        "step1": {
+          "german": "eins",
+          "english": "one",
+          "audio": "eins",
+          "note": "'eins' means 'one'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'one' in German?",
+            "options": [
+              "eins",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "eins"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = one",
+          "expected_answer": "eins",
+          "alt_answers": [
+            "Eins",
+            "eins"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "eins",
+          "options": [
+            "one",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "one"
+        }
+      },
+      "lesson3": {
+        "title": "Two",
+        "step1": {
+          "german": "zwei",
+          "english": "two",
+          "audio": "zwei",
+          "note": "'zwei' means 'two'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'two' in German?",
+            "options": [
+              "zwei",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "zwei"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = two",
+          "expected_answer": "zwei",
+          "alt_answers": [
+            "Zwei",
+            "zwei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zwei",
+          "options": [
+            "two",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "two"
+        }
+      },
+      "lesson4": {
+        "title": "Three",
+        "step1": {
+          "german": "drei",
+          "english": "three",
+          "audio": "drei",
+          "note": "'drei' means 'three'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'three' in German?",
+            "options": [
+              "drei",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "drei"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = three",
+          "expected_answer": "drei",
+          "alt_answers": [
+            "Drei",
+            "drei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "drei",
+          "options": [
+            "three",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "three"
+        }
+      },
+      "lesson5": {
+        "title": "Four",
+        "step1": {
+          "german": "vier",
+          "english": "four",
+          "audio": "vier",
+          "note": "'vier' means 'four'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'four' in German?",
+            "options": [
+              "vier",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "vier"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = four",
+          "expected_answer": "vier",
+          "alt_answers": [
+            "Vier",
+            "vier"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vier",
+          "options": [
+            "four",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "four"
+        }
+      },
+      "lesson6": {
+        "title": "Five",
+        "step1": {
+          "german": "fünf",
+          "english": "five",
+          "audio": "fünf",
+          "note": "'fünf' means 'five'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'five' in German?",
+            "options": [
+              "fünf",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "fünf"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = five",
+          "expected_answer": "fünf",
+          "alt_answers": [
+            "Fünf",
+            "fuenf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünf",
+          "options": [
+            "five",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "five"
+        }
+      },
+      "lesson7": {
+        "title": "Six",
+        "step1": {
+          "german": "sechs",
+          "english": "six",
+          "audio": "sechs",
+          "note": "'sechs' means 'six'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'six' in German?",
+            "options": [
+              "sechs",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "sechs"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = six",
+          "expected_answer": "sechs",
+          "alt_answers": [
+            "Sechs",
+            "sechs"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sechs",
+          "options": [
+            "six",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "six"
+        }
+      },
+      "lesson8": {
+        "title": "Seven",
+        "step1": {
+          "german": "sieben",
+          "english": "seven",
+          "audio": "sieben",
+          "note": "'sieben' means 'seven'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'seven' in German?",
+            "options": [
+              "sieben",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "sieben"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = seven",
+          "expected_answer": "sieben",
+          "alt_answers": [
+            "Sieben",
+            "sieben"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sieben",
+          "options": [
+            "seven",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "seven"
+        }
+      },
+      "lesson9": {
+        "title": "Eight",
+        "step1": {
+          "german": "acht",
+          "english": "eight",
+          "audio": "acht",
+          "note": "'acht' means 'eight'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'eight' in German?",
+            "options": [
+              "acht",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "acht"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = eight",
+          "expected_answer": "acht",
+          "alt_answers": [
+            "Acht",
+            "acht"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "acht",
+          "options": [
+            "eight",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "eight"
+        }
+      },
+      "lesson10": {
+        "title": "Nine",
+        "step1": {
+          "german": "neun",
+          "english": "nine",
+          "audio": "neun",
+          "note": "'neun' means 'nine'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'nine' in German?",
+            "options": [
+              "neun",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "neun"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = nine",
+          "expected_answer": "neun",
+          "alt_answers": [
+            "Neun",
+            "neun"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "neun",
+          "options": [
+            "nine",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "nine"
+        }
+      },
+      "lesson11": {
+        "title": "Ten",
+        "step1": {
+          "german": "zehn",
+          "english": "ten",
+          "audio": "zehn",
+          "note": "'zehn' means 'ten'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'ten' in German?",
+            "options": [
+              "zehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "zehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = ten",
+          "expected_answer": "zehn",
+          "alt_answers": [
+            "Zehn",
+            "zehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zehn",
+          "options": [
+            "ten",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "ten"
+        }
+      },
+      "lesson12": {
+        "title": "Eleven",
+        "step1": {
+          "german": "elf",
+          "english": "eleven",
+          "audio": "elf",
+          "note": "'elf' means 'eleven'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'eleven' in German?",
+            "options": [
+              "elf",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "elf"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = eleven",
+          "expected_answer": "elf",
+          "alt_answers": [
+            "Elf",
+            "elf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "elf",
+          "options": [
+            "eleven",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "eleven"
+        }
+      },
+      "lesson13": {
+        "title": "Twelve",
+        "step1": {
+          "german": "zwölf",
+          "english": "twelve",
+          "audio": "zwölf",
+          "note": "'zwölf' means 'twelve'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'twelve' in German?",
+            "options": [
+              "zwölf",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "zwölf"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = twelve",
+          "expected_answer": "zwölf",
+          "alt_answers": [
+            "Zwölf",
+            "zwoelf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zwölf",
+          "options": [
+            "twelve",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "twelve"
+        }
+      },
+      "lesson14": {
+        "title": "Thirteen",
+        "step1": {
+          "german": "dreizehn",
+          "english": "thirteen",
+          "audio": "dreizehn",
+          "note": "'dreizehn' means 'thirteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'thirteen' in German?",
+            "options": [
+              "dreizehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "dreizehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = thirteen",
+          "expected_answer": "dreizehn",
+          "alt_answers": [
+            "Dreizehn",
+            "dreizehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dreizehn",
+          "options": [
+            "thirteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "thirteen"
+        }
+      },
+      "lesson15": {
+        "title": "Fourteen",
+        "step1": {
+          "german": "vierzehn",
+          "english": "fourteen",
+          "audio": "vierzehn",
+          "note": "'vierzehn' means 'fourteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'fourteen' in German?",
+            "options": [
+              "vierzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "vierzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = fourteen",
+          "expected_answer": "vierzehn",
+          "alt_answers": [
+            "Vierzehn",
+            "vierzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vierzehn",
+          "options": [
+            "fourteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "fourteen"
+        }
+      },
+      "lesson16": {
+        "title": "Fifteen",
+        "step1": {
+          "german": "fünfzehn",
+          "english": "fifteen",
+          "audio": "fünfzehn",
+          "note": "'fünfzehn' means 'fifteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'fifteen' in German?",
+            "options": [
+              "fünfzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "fünfzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = fifteen",
+          "expected_answer": "fünfzehn",
+          "alt_answers": [
+            "Fünfzehn",
+            "fuenfzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünfzehn",
+          "options": [
+            "fifteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "fifteen"
+        }
+      },
+      "lesson17": {
+        "title": "Sixteen",
+        "step1": {
+          "german": "sechzehn",
+          "english": "sixteen",
+          "audio": "sechzehn",
+          "note": "'sechzehn' means 'sixteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'sixteen' in German?",
+            "options": [
+              "sechzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "sechzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = sixteen",
+          "expected_answer": "sechzehn",
+          "alt_answers": [
+            "Sechzehn",
+            "sechzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sechzehn",
+          "options": [
+            "sixteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "sixteen"
+        }
+      },
+      "lesson18": {
+        "title": "Seventeen",
+        "step1": {
+          "german": "siebzehn",
+          "english": "seventeen",
+          "audio": "siebzehn",
+          "note": "'siebzehn' means 'seventeen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'seventeen' in German?",
+            "options": [
+              "siebzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "siebzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = seventeen",
+          "expected_answer": "siebzehn",
+          "alt_answers": [
+            "Siebzehn",
+            "siebzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "siebzehn",
+          "options": [
+            "seventeen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "seventeen"
+        }
+      },
+      "lesson19": {
+        "title": "Eighteen",
+        "step1": {
+          "german": "achtzehn",
+          "english": "eighteen",
+          "audio": "achtzehn",
+          "note": "'achtzehn' means 'eighteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'eighteen' in German?",
+            "options": [
+              "achtzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "achtzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = eighteen",
+          "expected_answer": "achtzehn",
+          "alt_answers": [
+            "Achtzehn",
+            "achtzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "achtzehn",
+          "options": [
+            "eighteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "eighteen"
+        }
+      },
+      "lesson20": {
+        "title": "Nineteen",
+        "step1": {
+          "german": "neunzehn",
+          "english": "nineteen",
+          "audio": "neunzehn",
+          "note": "'neunzehn' means 'nineteen'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'nineteen' in German?",
+            "options": [
+              "neunzehn",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "neunzehn"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = nineteen",
+          "expected_answer": "neunzehn",
+          "alt_answers": [
+            "Neunzehn",
+            "neunzehn"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "neunzehn",
+          "options": [
+            "nineteen",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "nineteen"
+        }
+      },
+      "lesson21": {
+        "title": "Twenty",
+        "step1": {
+          "german": "zwanzig",
+          "english": "twenty",
+          "audio": "zwanzig",
+          "note": "'zwanzig' means 'twenty'. Practice pronunciation.",
+          "mcq": {
+            "question": "What is 'twenty' in German?",
+            "options": [
+              "zwanzig",
+              "eins",
+              "zwei",
+              "drei"
+            ],
+            "answer": "zwanzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = twenty",
+          "expected_answer": "zwanzig",
+          "alt_answers": [
+            "Zwanzig",
+            "zwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zwanzig",
+          "options": [
+            "twenty",
+            "one",
+            "two",
+            "three"
+          ],
+          "answer": "twenty"
+        }
+      },
+      "lesson22": {
+        "title": "Twenty",
+        "step1": {
+          "german": "zwanzig",
+          "english": "twenty",
+          "audio": "zwanzig",
+          "note": "'zwanzig' means 'twenty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'twenty' in German?",
+            "options": [
+              "zwanzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "zwanzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = twenty",
+          "expected_answer": "zwanzig",
+          "alt_answers": [
+            "Zwanzig",
+            "zwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zwanzig",
+          "options": [
+            "twenty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "twenty"
+        }
+      },
+      "lesson23": {
+        "title": "Thirty",
+        "step1": {
+          "german": "dreißig",
+          "english": "thirty",
+          "audio": "dreißig",
+          "note": "'dreißig' means 'thirty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'thirty' in German?",
+            "options": [
+              "dreißig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "dreißig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = thirty",
+          "expected_answer": "dreißig",
+          "alt_answers": [
+            "Dreißig",
+            "dreissig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dreißig",
+          "options": [
+            "thirty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "thirty"
+        }
+      },
+      "lesson24": {
+        "title": "Forty",
+        "step1": {
+          "german": "vierzig",
+          "english": "forty",
+          "audio": "vierzig",
+          "note": "'vierzig' means 'forty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'forty' in German?",
+            "options": [
+              "vierzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "vierzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = forty",
+          "expected_answer": "vierzig",
+          "alt_answers": [
+            "Vierzig",
+            "vierzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vierzig",
+          "options": [
+            "forty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "forty"
+        }
+      },
+      "lesson25": {
+        "title": "Fifty",
+        "step1": {
+          "german": "fünfzig",
+          "english": "fifty",
+          "audio": "fünfzig",
+          "note": "'fünfzig' means 'fifty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'fifty' in German?",
+            "options": [
+              "fünfzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "fünfzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = fifty",
+          "expected_answer": "fünfzig",
+          "alt_answers": [
+            "Fünfzig",
+            "fuenfzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünfzig",
+          "options": [
+            "fifty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "fifty"
+        }
+      },
+      "lesson26": {
+        "title": "Sixty",
+        "step1": {
+          "german": "sechzig",
+          "english": "sixty",
+          "audio": "sechzig",
+          "note": "'sechzig' means 'sixty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'sixty' in German?",
+            "options": [
+              "sechzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "sechzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = sixty",
+          "expected_answer": "sechzig",
+          "alt_answers": [
+            "Sechzig",
+            "sechzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sechzig",
+          "options": [
+            "sixty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "sixty"
+        }
+      },
+      "lesson27": {
+        "title": "Seventy",
+        "step1": {
+          "german": "siebzig",
+          "english": "seventy",
+          "audio": "siebzig",
+          "note": "'siebzig' means 'seventy'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'seventy' in German?",
+            "options": [
+              "siebzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "siebzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = seventy",
+          "expected_answer": "siebzig",
+          "alt_answers": [
+            "Siebzig",
+            "siebzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "siebzig",
+          "options": [
+            "seventy",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "seventy"
+        }
+      },
+      "lesson28": {
+        "title": "Eighty",
+        "step1": {
+          "german": "achtzig",
+          "english": "eighty",
+          "audio": "achtzig",
+          "note": "'achtzig' means 'eighty'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'eighty' in German?",
+            "options": [
+              "achtzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "achtzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = eighty",
+          "expected_answer": "achtzig",
+          "alt_answers": [
+            "Achtzig",
+            "achtzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "achtzig",
+          "options": [
+            "eighty",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "eighty"
+        }
+      },
+      "lesson29": {
+        "title": "Ninety",
+        "step1": {
+          "german": "neunzig",
+          "english": "ninety",
+          "audio": "neunzig",
+          "note": "'neunzig' means 'ninety'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'ninety' in German?",
+            "options": [
+              "neunzig",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "neunzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = ninety",
+          "expected_answer": "neunzig",
+          "alt_answers": [
+            "Neunzig",
+            "neunzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "neunzig",
+          "options": [
+            "ninety",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "ninety"
+        }
+      },
+      "lesson30": {
+        "title": "Hundred",
+        "step1": {
+          "german": "hundert",
+          "english": "hundred",
+          "audio": "hundert",
+          "note": "'hundert' means 'hundred'. Watch for irregular forms like 'dreißig'.",
+          "mcq": {
+            "question": "What is 'hundred' in German?",
+            "options": [
+              "hundert",
+              "zwanzig",
+              "dreißig",
+              "vierzig"
+            ],
+            "answer": "hundert"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = hundred",
+          "expected_answer": "hundert",
+          "alt_answers": [
+            "Hundert",
+            "hundert"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "hundert",
+          "options": [
+            "hundred",
+            "twenty",
+            "thirty",
+            "forty"
+          ],
+          "answer": "hundred"
+        }
+      },
+      "lesson31": {
+        "title": "Twenty-one",
+        "step1": {
+          "german": "einundzwanzig",
+          "english": "twenty-one",
+          "audio": "einundzwanzig",
+          "note": "In German, the unit comes first, then 'und', then the tens: 'einundzwanzig' = 'twenty-one'.",
+          "mcq": {
+            "question": "What is 'twenty-one' in German?",
+            "options": [
+              "einundzwanzig",
+              "einsund...",
+              "undzwanzig",
+              "zwanzigeins"
+            ],
+            "answer": "einundzwanzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "____ = twenty-one",
+          "expected_answer": "einundzwanzig",
+          "alt_answers": [
+            "Einundzwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "einundzwanzig",
+          "options": [
+            "twenty-one",
+            "twenty-two",
+            "forty-three",
+            "fifty-six"
+          ],
+          "answer": "twenty-one"
+        }
+      },
+      "lesson32": {
+        "title": "Forty-five",
+        "step1": {
+          "german": "fünfundvierzig",
+          "english": "forty-five",
+          "audio": "fünfundvierzig",
+          "note": "In German, the unit comes first, then 'und', then the tens: 'fünfundvierzig' = 'forty-five'.",
+          "mcq": {
+            "question": "What is 'forty-five' in German?",
+            "options": [
+              "fünfundvierzig",
+              "einsund...",
+              "undzwanzig",
+              "zwanzigeins"
+            ],
+            "answer": "fünfundvierzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "____ = forty-five",
+          "expected_answer": "fünfundvierzig",
+          "alt_answers": [
+            "Fünfundvierzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünfundvierzig",
+          "options": [
+            "forty-five",
+            "twenty-two",
+            "forty-three",
+            "fifty-six"
+          ],
+          "answer": "forty-five"
+        }
+      },
+      "lesson33": {
+        "title": "Seventy-eight",
+        "step1": {
+          "german": "achtundsiebzig",
+          "english": "seventy-eight",
+          "audio": "achtundsiebzig",
+          "note": "In German, the unit comes first, then 'und', then the tens: 'achtundsiebzig' = 'seventy-eight'.",
+          "mcq": {
+            "question": "What is 'seventy-eight' in German?",
+            "options": [
+              "achtundsiebzig",
+              "einsund...",
+              "undzwanzig",
+              "zwanzigeins"
+            ],
+            "answer": "achtundsiebzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "____ = seventy-eight",
+          "expected_answer": "achtundsiebzig",
+          "alt_answers": [
+            "Achtundsiebzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "achtundsiebzig",
+          "options": [
+            "seventy-eight",
+            "twenty-two",
+            "forty-three",
+            "fifty-six"
+          ],
+          "answer": "seventy-eight"
+        }
+      },
+      "lesson34": {
+        "title": "Ninety-three",
+        "step1": {
+          "german": "dreiundneunzig",
+          "english": "ninety-three",
+          "audio": "dreiundneunzig",
+          "note": "In German, the unit comes first, then 'und', then the tens: 'dreiundneunzig' = 'ninety-three'.",
+          "mcq": {
+            "question": "What is 'ninety-three' in German?",
+            "options": [
+              "dreiundneunzig",
+              "einsund...",
+              "undzwanzig",
+              "zwanzigeins"
+            ],
+            "answer": "dreiundneunzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "____ = ninety-three",
+          "expected_answer": "dreiundneunzig",
+          "alt_answers": [
+            "Dreiundneunzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dreiundneunzig",
+          "options": [
+            "ninety-three",
+            "twenty-two",
+            "forty-three",
+            "fifty-six"
+          ],
+          "answer": "ninety-three"
+        }
+      },
+      "lesson35": {
+        "title": "Asking age (informal/formal)",
+        "step1": {
+          "german": "Wie alt bist du? / Wie alt sind Sie?",
+          "english": "How old are you? (informal/formal)",
+          "audio": "Wie alt bist du? / Wie alt sind Sie?",
+          "note": "Use 'bist du' with friends, 'sind Sie' with strangers or in formal contexts.",
+          "mcq": {
+            "question": "Which is the informal version of 'How old are you?'",
+            "options": [
+              "Wie alt bist du?",
+              "Wie alt sind Sie?",
+              "Was bist du alt?",
+              "Wie bist du alt?"
+            ],
+            "answer": "Wie alt bist du?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie alt ____ du? = How old are you? (informal)",
+          "expected_answer": "bist",
+          "alt_answers": [
+            "Bist"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie alt sind Sie?",
+          "options": [
+            "How old are you? (formal)",
+            "How old are you? (informal)",
+            "What time is it?",
+            "Where are you from?"
+          ],
+          "answer": "How old are you? (formal)"
+        }
+      },
+      "lesson36": {
+        "title": "Saying your age",
+        "step1": {
+          "german": "Ich bin ... Jahre alt",
+          "english": "I am ... years old",
+          "audio": "Ich bin ... Jahre alt",
+          "note": "Use a number in the gap: 'Ich bin dreißig Jahre alt'.",
+          "mcq": {
+            "question": "How do you say 'I am thirty years old' in German?",
+            "options": [
+              "Ich bin dreißig Jahre alt",
+              "Ich habe dreißig Jahre",
+              "Ich dreißig Jahre alt",
+              "Ich alt dreißig Jahre"
+            ],
+            "answer": "Ich bin dreißig Jahre alt"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich bin ___ Jahre alt = I am 25 years old",
+          "expected_answer": "fünfundzwanzig",
+          "alt_answers": [
+            "Fünfundzwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich bin fünfundzwanzig Jahre alt",
+          "options": [
+            "I am 25 years old",
+            "I am 35 years old",
+            "I am 20 years old",
+            "I am 15 years old"
+          ],
+          "answer": "I am 25 years old"
+        }
+      },
+      "lesson37": {
+        "title": "Euros and cents",
+        "step1": {
+          "german": "fünf Euro zehn",
+          "english": "five euros ten",
+          "audio": "fünf Euro zehn",
+          "note": "Prices are usually said as 'Euro' + cents without 'und': 'fünf Euro zehn' = €5.10.",
+          "mcq": {
+            "question": "What does 'fünf Euro zehn' mean?",
+            "options": [
+              "€5.10",
+              "€5.00",
+              "€10.50",
+              "€15.00"
+            ],
+            "answer": "€5.10"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ Euro zehn = €5.10",
+          "expected_answer": "fünf",
+          "alt_answers": [
+            "Fünf",
+            "fuenf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünf Euro zehn",
+          "options": [
+            "€5.10",
+            "€5.00",
+            "€10.50",
+            "€15.00"
+          ],
+          "answer": "€5.10"
+        }
+      }
+    }
+  }
+}

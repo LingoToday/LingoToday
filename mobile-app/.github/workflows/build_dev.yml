@@ -1,0 +1,45 @@
+name: Build Android (EAS)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  eas-build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Use Node 18+ so os.availableParallelism exists
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install yarn/npm deps
+        run: |
+          npm ci
+          # OR yarn install --frozen-lockfile
+
+      # Make sure EAS CLI is available — either in devDependencies or install globally
+      - name: Install EAS CLI
+        run: npm install -g eas-cli@latest
+
+      # EXPO_TOKEN stored as a GitHub repo secret
+      - name: Configure Expo token
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "EXPO_TOKEN is set"
+          # Optional: whoami to verify token
+          eas whoami || true
+
+      - name: Validate expo config (optional)
+        run: npx expo config --json
+
+      - name: EAS Build (non-interactive)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          # ensure the profile matches eas.json (development/profile name)
+          npx eas build --platform android --profile development --non-interactive

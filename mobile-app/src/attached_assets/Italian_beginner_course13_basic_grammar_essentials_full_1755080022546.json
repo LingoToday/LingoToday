@@ -1,0 +1,1058 @@
+{
+  "course13": {
+    "title": "Basic Grammar Essentials",
+    "description": "Subject pronouns and the verbs ‘essere’ (to be) and ‘avere’ (to have). Build simple sentences. Paired items are split into separate lessons. Step 3 only uses vocabulary from earlier courses or this course.",
+    "lessons": {
+      "lesson1": {
+        "title": "I",
+        "step1": {
+          "italian": "Io",
+          "english": "I",
+          "audio": "Io",
+          "note": "EE-oh — Subject pronoun; often dropped in Italian.",
+          "mcq": {
+            "question": "Which phrase means 'I'?",
+            "options": [
+              "Io",
+              "Tu",
+              "Lui",
+              "Lei"
+            ],
+            "answer": "Io"
+          }
+        },
+        "step2": {
+          "type_prompt": "Io  = I",
+          "expected_answer": "Io",
+          "alt_answers": [
+            "Io"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Io sono qui.",
+          "options": [
+            "I am here.",
+            "You are here.",
+            "He is here.",
+            "She is here."
+          ],
+          "answer": "I am here."
+        }
+      },
+      "lesson2": {
+        "title": "You (singular, informal)",
+        "step1": {
+          "italian": "Tu",
+          "english": "You (singular, informal)",
+          "audio": "Tu",
+          "note": "Too — Talking to friends/family.",
+          "mcq": {
+            "question": "Which phrase means 'You (singular, informal)'?",
+            "options": [
+              "Tu",
+              "Io",
+              "Lui",
+              "Lei"
+            ],
+            "answer": "Tu"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tu  = You (singular, informal)",
+          "expected_answer": "Tu",
+          "alt_answers": [
+            "Tu"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu sei qui.",
+          "options": [
+            "You (singular) are here.",
+            "I am here.",
+            "He is here.",
+            "She is here."
+          ],
+          "answer": "You (singular) are here."
+        }
+      },
+      "lesson3": {
+        "title": "He",
+        "step1": {
+          "italian": "Lui",
+          "english": "He",
+          "audio": "Lui",
+          "note": "LOO-ee — ‘He’.",
+          "mcq": {
+            "question": "Which phrase means 'He'?",
+            "options": [
+              "Lui",
+              "Lei",
+              "Tu",
+              "Noi"
+            ],
+            "answer": "Lui"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i  = He",
+          "expected_answer": "Lui",
+          "alt_answers": [
+            "Lui"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lui è lì.",
+          "options": [
+            "He is there.",
+            "She is there.",
+            "You are there.",
+            "We are there."
+          ],
+          "answer": "He is there."
+        }
+      },
+      "lesson4": {
+        "title": "She",
+        "step1": {
+          "italian": "Lei",
+          "english": "She",
+          "audio": "Lei",
+          "note": "LAY — ‘She’. (Note: ‘Lei’ also means formal ‘you’.)",
+          "mcq": {
+            "question": "Which phrase means 'She'?",
+            "options": [
+              "Lei",
+              "Lui",
+              "Tu",
+              "Noi"
+            ],
+            "answer": "Lei"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i  = She",
+          "expected_answer": "Lei",
+          "alt_answers": [
+            "Lei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei è qui.",
+          "options": [
+            "She is here.",
+            "He is here.",
+            "You (formal) are here.",
+            "We are here."
+          ],
+          "answer": "She is here."
+        }
+      },
+      "lesson5": {
+        "title": "You (formal)",
+        "step1": {
+          "italian": "Lei",
+          "english": "You (formal)",
+          "audio": "Lei",
+          "note": "Formal ‘you’. Capitalize ‘Lei’ in writing; context distinguishes it from ‘she’.",
+          "mcq": {
+            "question": "Which phrase means 'You (formal)'?",
+            "options": [
+              "Lei",
+              "Tu",
+              "Lui",
+              "Voi"
+            ],
+            "answer": "Lei"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i  = You (formal)",
+          "expected_answer": "Lei",
+          "alt_answers": [
+            "Lei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei è qui.",
+          "options": [
+            "You (formal) are here.",
+            "She is here.",
+            "You (plural) are here.",
+            "He is here."
+          ],
+          "answer": "You (formal) are here."
+        }
+      },
+      "lesson6": {
+        "title": "We",
+        "step1": {
+          "italian": "Noi",
+          "english": "We",
+          "audio": "Noi",
+          "note": "NOY — ‘We’.",
+          "mcq": {
+            "question": "Which phrase means 'We'?",
+            "options": [
+              "Noi",
+              "Voi",
+              "Loro",
+              "Io"
+            ],
+            "answer": "Noi"
+          }
+        },
+        "step2": {
+          "type_prompt": "N_i  = We",
+          "expected_answer": "Noi",
+          "alt_answers": [
+            "Noi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Noi siamo qui.",
+          "options": [
+            "We are here.",
+            "You (plural) are here.",
+            "They are here.",
+            "I am here."
+          ],
+          "answer": "We are here."
+        }
+      },
+      "lesson7": {
+        "title": "You (plural)",
+        "step1": {
+          "italian": "Voi",
+          "english": "You (plural)",
+          "audio": "Voi",
+          "note": "VOY — Addressing more than one person.",
+          "mcq": {
+            "question": "Which phrase means 'You (plural)'?",
+            "options": [
+              "Voi",
+              "Noi",
+              "Loro",
+              "Tu"
+            ],
+            "answer": "Voi"
+          }
+        },
+        "step2": {
+          "type_prompt": "V_i  = You (plural)",
+          "expected_answer": "Voi",
+          "alt_answers": [
+            "Voi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Voi siete lì.",
+          "options": [
+            "You (plural) are there.",
+            "We are there.",
+            "They are there.",
+            "You (singular) are there."
+          ],
+          "answer": "You (plural) are there."
+        }
+      },
+      "lesson8": {
+        "title": "They",
+        "step1": {
+          "italian": "Loro",
+          "english": "They",
+          "audio": "Loro",
+          "note": "LOH-ro — ‘They’.",
+          "mcq": {
+            "question": "Which phrase means 'They'?",
+            "options": [
+              "Loro",
+              "Voi",
+              "Noi",
+              "Lui"
+            ],
+            "answer": "Loro"
+          }
+        },
+        "step2": {
+          "type_prompt": "L__o  = They",
+          "expected_answer": "Loro",
+          "alt_answers": [
+            "Loro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Loro sono qui.",
+          "options": [
+            "They are here.",
+            "You (plural) are here.",
+            "We are here.",
+            "He is here."
+          ],
+          "answer": "They are here."
+        }
+      },
+      "lesson9": {
+        "title": "I am",
+        "step1": {
+          "italian": "Io sono",
+          "english": "I am",
+          "audio": "Io sono",
+          "note": "From ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'I am'?",
+            "options": [
+              "Io sono",
+              "Tu sei",
+              "Lui è",
+              "Noi siamo"
+            ],
+            "answer": "Io sono"
+          }
+        },
+        "step2": {
+          "type_prompt": "Io s__o  = I am",
+          "expected_answer": "Io sono",
+          "alt_answers": [
+            "Io sono"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Io sono di Milano.",
+          "options": [
+            "I am from Milan.",
+            "You are from Milan.",
+            "He is from Milan.",
+            "We are from Milan."
+          ],
+          "answer": "I am from Milan."
+        }
+      },
+      "lesson10": {
+        "title": "You are (singular)",
+        "step1": {
+          "italian": "Tu sei",
+          "english": "You are (singular)",
+          "audio": "Tu sei",
+          "note": "Informal ‘you’ form of ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'You are (singular)'?",
+            "options": [
+              "Tu sei",
+              "Io sono",
+              "Voi siete",
+              "Loro sono"
+            ],
+            "answer": "Tu sei"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tu s_i  = You are (singular)",
+          "expected_answer": "Tu sei",
+          "alt_answers": [
+            "Tu sei"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu sei qui.",
+          "options": [
+            "You (singular) are here.",
+            "I am here.",
+            "You (plural) are here.",
+            "They are here."
+          ],
+          "answer": "You (singular) are here."
+        }
+      },
+      "lesson11": {
+        "title": "He is",
+        "step1": {
+          "italian": "Lui è",
+          "english": "He is",
+          "audio": "Lui è",
+          "note": "3rd person singular ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'He is'?",
+            "options": [
+              "Lui è",
+              "Lei è",
+              "Tu sei",
+              "Noi siamo"
+            ],
+            "answer": "Lui è"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i è  = He is",
+          "expected_answer": "Lui è",
+          "alt_answers": [
+            "Lui è",
+            "Lui è"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lui è italiano.",
+          "options": [
+            "He is Italian.",
+            "She is Italian.",
+            "You are Italian.",
+            "We are Italian."
+          ],
+          "answer": "He is Italian."
+        }
+      },
+      "lesson12": {
+        "title": "She is",
+        "step1": {
+          "italian": "Lei è",
+          "english": "She is",
+          "audio": "Lei è",
+          "note": "3rd person singular ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'She is'?",
+            "options": [
+              "Lei è",
+              "Lui è",
+              "Tu sei",
+              "Voi siete"
+            ],
+            "answer": "Lei è"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i è  = She is",
+          "expected_answer": "Lei è",
+          "alt_answers": [
+            "Lei è",
+            "Lei è"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei è italiana.",
+          "options": [
+            "She is Italian.",
+            "He is Italian.",
+            "You (plural) are Italian.",
+            "I am Italian."
+          ],
+          "answer": "She is Italian."
+        }
+      },
+      "lesson13": {
+        "title": "You (formal) are",
+        "step1": {
+          "italian": "Lei è",
+          "english": "You (formal) are",
+          "audio": "Lei è",
+          "note": "Formal ‘you’ with ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'You (formal) are'?",
+            "options": [
+              "Lei è",
+              "Voi siete",
+              "Tu sei",
+              "Noi siamo"
+            ],
+            "answer": "Lei è"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i è  = You (formal) are",
+          "expected_answer": "Lei è",
+          "alt_answers": [
+            "Lei è",
+            "Lei è"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei è qui, signora.",
+          "options": [
+            "You (formal) are here, ma’am.",
+            "She is here, ma’am.",
+            "You (plural) are here.",
+            "We are here."
+          ],
+          "answer": "You (formal) are here, ma’am."
+        }
+      },
+      "lesson14": {
+        "title": "We are",
+        "step1": {
+          "italian": "Noi siamo",
+          "english": "We are",
+          "audio": "Noi siamo",
+          "note": "1st person plural ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'We are'?",
+            "options": [
+              "Noi siamo",
+              "Voi siete",
+              "Loro sono",
+              "Io sono"
+            ],
+            "answer": "Noi siamo"
+          }
+        },
+        "step2": {
+          "type_prompt": "N_i s___o  = We are",
+          "expected_answer": "Noi siamo",
+          "alt_answers": [
+            "Noi siamo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Noi siamo al museo.",
+          "options": [
+            "We are at the museum.",
+            "You (plural) are at the museum.",
+            "They are at the museum.",
+            "I am at the museum."
+          ],
+          "answer": "We are at the museum."
+        }
+      },
+      "lesson15": {
+        "title": "You (plural) are",
+        "step1": {
+          "italian": "Voi siete",
+          "english": "You (plural) are",
+          "audio": "Voi siete",
+          "note": "2nd person plural ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'You (plural) are'?",
+            "options": [
+              "Voi siete",
+              "Noi siamo",
+              "Loro sono",
+              "Tu sei"
+            ],
+            "answer": "Voi siete"
+          }
+        },
+        "step2": {
+          "type_prompt": "V_i s___e  = You (plural) are",
+          "expected_answer": "Voi siete",
+          "alt_answers": [
+            "Voi siete"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Voi siete in banca.",
+          "options": [
+            "You (plural) are at the bank.",
+            "We are at the bank.",
+            "They are at the bank.",
+            "You (singular) are at the bank."
+          ],
+          "answer": "You (plural) are at the bank."
+        }
+      },
+      "lesson16": {
+        "title": "They are",
+        "step1": {
+          "italian": "Loro sono",
+          "english": "They are",
+          "audio": "Loro sono",
+          "note": "3rd person plural ‘essere’.",
+          "mcq": {
+            "question": "Which phrase means 'They are'?",
+            "options": [
+              "Loro sono",
+              "Voi siete",
+              "Noi siamo",
+              "Lui è"
+            ],
+            "answer": "Loro sono"
+          }
+        },
+        "step2": {
+          "type_prompt": "L__o s__o  = They are",
+          "expected_answer": "Loro sono",
+          "alt_answers": [
+            "Loro sono"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Loro sono al ristorante.",
+          "options": [
+            "They are at the restaurant.",
+            "You (plural) are at the restaurant.",
+            "We are at the restaurant.",
+            "He is at the restaurant."
+          ],
+          "answer": "They are at the restaurant."
+        }
+      },
+      "lesson17": {
+        "title": "I have",
+        "step1": {
+          "italian": "Io ho",
+          "english": "I have",
+          "audio": "Io ho",
+          "note": "From ‘avere’. Note silent ‘h’.",
+          "mcq": {
+            "question": "Which phrase means 'I have'?",
+            "options": [
+              "Io ho",
+              "Tu hai",
+              "Lui ha",
+              "Noi abbiamo"
+            ],
+            "answer": "Io ho"
+          }
+        },
+        "step2": {
+          "type_prompt": "Io ho  = I have",
+          "expected_answer": "Io ho",
+          "alt_answers": [
+            "Io ho"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Io ho una mappa.",
+          "options": [
+            "I have a map.",
+            "You have a map.",
+            "He has a map.",
+            "We have a map."
+          ],
+          "answer": "I have a map."
+        }
+      },
+      "lesson18": {
+        "title": "You have (singular)",
+        "step1": {
+          "italian": "Tu hai",
+          "english": "You have (singular)",
+          "audio": "Tu hai",
+          "note": "Informal ‘you’ form of ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'You have (singular)'?",
+            "options": [
+              "Tu hai",
+              "Io ho",
+              "Voi avete",
+              "Loro hanno"
+            ],
+            "answer": "Tu hai"
+          }
+        },
+        "step2": {
+          "type_prompt": "Tu h_i  = You have (singular)",
+          "expected_answer": "Tu hai",
+          "alt_answers": [
+            "Tu hai"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu hai una pizza.",
+          "options": [
+            "You (singular) have a pizza.",
+            "I have a pizza.",
+            "You (plural) have a pizza.",
+            "They have a pizza."
+          ],
+          "answer": "You (singular) have a pizza."
+        }
+      },
+      "lesson19": {
+        "title": "He has",
+        "step1": {
+          "italian": "Lui ha",
+          "english": "He has",
+          "audio": "Lui ha",
+          "note": "3rd person singular ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'He has'?",
+            "options": [
+              "Lui ha",
+              "Lei ha",
+              "Tu hai",
+              "Noi abbiamo"
+            ],
+            "answer": "Lui ha"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i ha  = He has",
+          "expected_answer": "Lui ha",
+          "alt_answers": [
+            "Lui ha"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lui ha acqua.",
+          "options": [
+            "He has water.",
+            "She has water.",
+            "You have water.",
+            "We have water."
+          ],
+          "answer": "He has water."
+        }
+      },
+      "lesson20": {
+        "title": "She has",
+        "step1": {
+          "italian": "Lei ha",
+          "english": "She has",
+          "audio": "Lei ha",
+          "note": "3rd person singular ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'She has'?",
+            "options": [
+              "Lei ha",
+              "Lui ha",
+              "Tu hai",
+              "Voi avete"
+            ],
+            "answer": "Lei ha"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i ha  = She has",
+          "expected_answer": "Lei ha",
+          "alt_answers": [
+            "Lei ha"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei ha il pane.",
+          "options": [
+            "She has the bread.",
+            "He has the bread.",
+            "You (plural) have the bread.",
+            "I have the bread."
+          ],
+          "answer": "She has the bread."
+        }
+      },
+      "lesson21": {
+        "title": "You (formal) has",
+        "step1": {
+          "italian": "Lei ha",
+          "english": "You (formal) have",
+          "audio": "Lei ha",
+          "note": "Formal ‘you’ with ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'You (formal) have'?",
+            "options": [
+              "Lei ha",
+              "Voi avete",
+              "Tu hai",
+              "Noi abbiamo"
+            ],
+            "answer": "Lei ha"
+          }
+        },
+        "step2": {
+          "type_prompt": "L_i ha  = You (formal) have",
+          "expected_answer": "Lei ha",
+          "alt_answers": [
+            "Lei ha"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Lei ha il conto.",
+          "options": [
+            "You (formal) have the check.",
+            "She has the check.",
+            "You (plural) have the check.",
+            "We have the check."
+          ],
+          "answer": "You (formal) have the check."
+        }
+      },
+      "lesson22": {
+        "title": "We have",
+        "step1": {
+          "italian": "Noi abbiamo",
+          "english": "We have",
+          "audio": "Noi abbiamo",
+          "note": "1st person plural ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'We have'?",
+            "options": [
+              "Noi abbiamo",
+              "Voi avete",
+              "Loro hanno",
+              "Io ho"
+            ],
+            "answer": "Noi abbiamo"
+          }
+        },
+        "step2": {
+          "type_prompt": "N_i a_____o  = We have",
+          "expected_answer": "Noi abbiamo",
+          "alt_answers": [
+            "Noi abbiamo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Noi abbiamo una macchina.",
+          "options": [
+            "We have a car.",
+            "You (plural) have a car.",
+            "They have a car.",
+            "I have a car."
+          ],
+          "answer": "We have a car."
+        }
+      },
+      "lesson23": {
+        "title": "You (plural) have",
+        "step1": {
+          "italian": "Voi avete",
+          "english": "You (plural) have",
+          "audio": "Voi avete",
+          "note": "2nd person plural ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'You (plural) have'?",
+            "options": [
+              "Voi avete",
+              "Noi abbiamo",
+              "Loro hanno",
+              "Tu hai"
+            ],
+            "answer": "Voi avete"
+          }
+        },
+        "step2": {
+          "type_prompt": "V_i a___e  = You (plural) have",
+          "expected_answer": "Voi avete",
+          "alt_answers": [
+            "Voi avete"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Voi avete due biglietti.",
+          "options": [
+            "You (plural) have two tickets.",
+            "We have two tickets.",
+            "They have two tickets.",
+            "You (singular) have two tickets."
+          ],
+          "answer": "You (plural) have two tickets."
+        }
+      },
+      "lesson24": {
+        "title": "They have",
+        "step1": {
+          "italian": "Loro hanno",
+          "english": "They have",
+          "audio": "Loro hanno",
+          "note": "3rd person plural ‘avere’.",
+          "mcq": {
+            "question": "Which phrase means 'They have'?",
+            "options": [
+              "Loro hanno",
+              "Voi avete",
+              "Noi abbiamo",
+              "Lui ha"
+            ],
+            "answer": "Loro hanno"
+          }
+        },
+        "step2": {
+          "type_prompt": "L__o h___o  = They have",
+          "expected_answer": "Loro hanno",
+          "alt_answers": [
+            "Loro hanno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Loro hanno il menù.",
+          "options": [
+            "They have the menu.",
+            "You (plural) have the menu.",
+            "We have the menu.",
+            "He has the menu."
+          ],
+          "answer": "They have the menu."
+        }
+      },
+      "lesson25": {
+        "title": "I am from Milan",
+        "step1": {
+          "italian": "Sono di Milano",
+          "english": "I am from Milan",
+          "audio": "Sono di Milano",
+          "note": "Subject pronoun can be dropped: (Io) sono di Milano.",
+          "mcq": {
+            "question": "Which phrase means 'I am from Milan'?",
+            "options": [
+              "Sono di Milano",
+              "Io ho Milano",
+              "Io sono Milano",
+              "Vengo di Milano"
+            ],
+            "answer": "Sono di Milano"
+          }
+        },
+        "step2": {
+          "type_prompt": "S__o di M____o  = I am from Milan",
+          "expected_answer": "Sono di Milano",
+          "alt_answers": [
+            "Sono di milano",
+            "Sono di Milano"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Sono di Milano.",
+          "options": [
+            "I am from Milan.",
+            "I have Milan.",
+            "I am Milan.",
+            "I come of Milan."
+          ],
+          "answer": "I am from Milan."
+        }
+      },
+      "lesson26": {
+        "title": "We have a car",
+        "step1": {
+          "italian": "Abbiamo una macchina",
+          "english": "We have a car",
+          "audio": "Abbiamo una macchina",
+          "note": "From ‘avere’: (Noi) abbiamo una macchina.",
+          "mcq": {
+            "question": "Which phrase means 'We have a car'?",
+            "options": [
+              "Abbiamo una macchina",
+              "Siamo una macchina",
+              "Avete una macchina",
+              "Hanno una macchina"
+            ],
+            "answer": "Abbiamo una macchina"
+          }
+        },
+        "step2": {
+          "type_prompt": "A_____o u_a m______a  = We have a car",
+          "expected_answer": "Abbiamo una macchina",
+          "alt_answers": [
+            "Abbiamo una macchina"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Abbiamo una macchina.",
+          "options": [
+            "We have a car.",
+            "We are a car.",
+            "You (plural) have a car.",
+            "They have a car."
+          ],
+          "answer": "We have a car."
+        }
+      },
+      "lesson27": {
+        "title": "There is a problem",
+        "step1": {
+          "italian": "C'è un problema",
+          "english": "There is a problem",
+          "audio": "C'è un problema",
+          "note": "‘C’è’ = there is. ‘Problema’ (m.).",
+          "mcq": {
+            "question": "Which phrase means 'There is a problem'?",
+            "options": [
+              "C'è un problema",
+              "Ci sono due problemi",
+              "È un problema",
+              "Ho un problema"
+            ],
+            "answer": "C'è un problema"
+          }
+        },
+        "step2": {
+          "type_prompt": "C'è un p______a  = There is a problem",
+          "expected_answer": "C'è un problema",
+          "alt_answers": [
+            "C'è un problema",
+            "C'è un problema"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "C'è un problema.",
+          "options": [
+            "There is a problem.",
+            "There are two problems.",
+            "It is a problem.",
+            "I have a problem."
+          ],
+          "answer": "There is a problem."
+        }
+      },
+      "lesson28": {
+        "title": "There are two problems",
+        "step1": {
+          "italian": "Ci sono due problemi",
+          "english": "There are two problems",
+          "audio": "Ci sono due problemi",
+          "note": "‘Ci sono’ = there are.",
+          "mcq": {
+            "question": "Which phrase means 'There are two problems'?",
+            "options": [
+              "Ci sono due problemi",
+              "C'è un problema",
+              "Sono due problemi",
+              "Abbiamo due problemi"
+            ],
+            "answer": "Ci sono due problemi"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ci s__o d_e p______i  = There are two problems",
+          "expected_answer": "Ci sono due problemi",
+          "alt_answers": [
+            "Ci sono due problemi"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ci sono due problemi.",
+          "options": [
+            "There are two problems.",
+            "There is a problem.",
+            "They are two problems.",
+            "We have two problems."
+          ],
+          "answer": "There are two problems."
+        }
+      },
+      "lesson29": {
+        "title": "Today is Wednesday",
+        "step1": {
+          "italian": "Oggi è mercoledì",
+          "english": "Today is Wednesday",
+          "audio": "Oggi è mercoledì",
+          "note": "Days of the week: lunedì, martedì, mercoledì, giovedì, venerdì, sabato, domenica.",
+          "mcq": {
+            "question": "Which phrase means 'Today is Wednesday'?",
+            "options": [
+              "Oggi è mercoledì",
+              "Oggi è giovedì",
+              "Oggi è martedì",
+              "Oggi è venerdì"
+            ],
+            "answer": "Oggi è mercoledì"
+          }
+        },
+        "step2": {
+          "type_prompt": "O__i è m_______ì  = Today is Wednesday",
+          "expected_answer": "Oggi è mercoledì",
+          "alt_answers": [
+            "Oggi è mercoledì",
+            "Oggi è mercoledì"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Oggi è mercoledì.",
+          "options": [
+            "Today is Wednesday.",
+            "Today is Thursday.",
+            "Today is Tuesday.",
+            "Today is Friday."
+          ],
+          "answer": "Today is Wednesday."
+        }
+      }
+    }
+  }
+}

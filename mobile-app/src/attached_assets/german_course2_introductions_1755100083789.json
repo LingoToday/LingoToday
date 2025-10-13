@@ -1,0 +1,495 @@
+{
+  "course2": {
+    "title": "Introducing Yourself",
+    "description": "Introduce yourself, ask names, say where you’re from, and exchange basics. Distinguish informal 'du' from formal 'Sie'. Each lesson uses the 3-step micro-lesson flow (recognition → typing → listening).",
+    "lessons": {
+      "lesson1": {
+        "title": "What’s your name? (informal)",
+        "step1": {
+          "german": "Wie heißt du?",
+          "english": "What’s your name? (informal)",
+          "audio": "Wie heißt du?",
+          "note": "Use with friends/peers/children. The letter 'ß' can be typed as 'ss'.",
+          "mcq": {
+            "question": "Which question is informal?",
+            "options": [
+              "Wie heißt du?",
+              "Wie heißen Sie?",
+              "Wer sind Sie?",
+              "Woher kommen Sie?"
+            ],
+            "answer": "Wie heißt du?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie hei__t du? = What’s your name? (informal)",
+          "expected_answer": "Wie heißt du?",
+          "alt_answers": [
+            "Wie heisst du?",
+            "wie heißt du?",
+            "wie heisst du?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie heißt du?",
+          "options": [
+            "What’s your name? (informal)",
+            "Where are you from? (formal)",
+            "How are you? (informal)",
+            "Nice to meet you!"
+          ],
+          "answer": "What’s your name? (informal)"
+        }
+      },
+      "lesson2": {
+        "title": "What is your name? (formal)",
+        "step1": {
+          "german": "Wie heißen Sie?",
+          "english": "What is your name? (formal)",
+          "audio": "Wie heißen Sie?",
+          "note": "Formal address with 'Sie' (capital S). Use with strangers, in shops, business, or to show respect.",
+          "mcq": {
+            "question": "Which is the formal version of 'What’s your name?'",
+            "options": [
+              "Wie heißt du?",
+              "Wie heißen Sie?",
+              "Wer bist du?",
+              "Wie geht’s?"
+            ],
+            "answer": "Wie heißen Sie?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie hei__en Sie? = What is your name? (formal)",
+          "expected_answer": "Wie heißen Sie?",
+          "alt_answers": [
+            "Wie heissen Sie?",
+            "wie heißen Sie?",
+            "wie heissen sie?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie heißen Sie?",
+          "options": [
+            "What is your name? (formal)",
+            "How are you? (formal)",
+            "Where do you live?",
+            "Where are you from?"
+          ],
+          "answer": "What is your name? (formal)"
+        }
+      },
+      "lesson3": {
+        "title": "My name is…",
+        "step1": {
+          "german": "Ich heiße …",
+          "english": "My name is …",
+          "audio": "Ich heiße …",
+          "note": "You can also say 'Ich bin …' (I am …) in casual introductions.",
+          "mcq": {
+            "question": "How do you say 'My name is …'?",
+            "options": [
+              "Ich bin …",
+              "Ich heiße …",
+              "Mein Name bist …",
+              "Ich komme …"
+            ],
+            "answer": "Ich heiße …"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich hei__e __ = My name is …",
+          "expected_answer": "Ich heiße …",
+          "alt_answers": [
+            "Ich heisse …",
+            "Ich heiße...",
+            "Ich heisse ..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich heiße Maria.",
+          "options": [
+            "My name is Maria.",
+            "I am Maria.",
+            "Where are you from, Maria?",
+            "I live in Maria."
+          ],
+          "answer": "My name is Maria."
+        }
+      },
+      "lesson4": {
+        "title": "I am…",
+        "step1": {
+          "german": "Ich bin …",
+          "english": "I am …",
+          "audio": "Ich bin …",
+          "note": "Common alternative to 'Ich heiße …' in casual contexts.",
+          "mcq": {
+            "question": "Which phrase can introduce yourself informally?",
+            "options": [
+              "Ich bin …",
+              "Ich habe …",
+              "Ich mag …",
+              "Ich wohne …"
+            ],
+            "answer": "Ich bin …"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich b__ __ = I am …",
+          "expected_answer": "Ich bin …",
+          "alt_answers": [
+            "Ich bin...",
+            "ich bin …",
+            "ich bin..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich bin Tom.",
+          "options": [
+            "I am Tom.",
+            "My name is Tom.",
+            "I like Tom.",
+            "I live with Tom."
+          ],
+          "answer": "I am Tom."
+        }
+      },
+      "lesson5": {
+        "title": "Where are you from? (informal)",
+        "step1": {
+          "german": "Woher kommst du?",
+          "english": "Where are you from? (informal)",
+          "audio": "Woher kommst du?",
+          "note": "Use 'kommst' with 'du'. For 'Sie' use 'kommen'.",
+          "mcq": {
+            "question": "Choose the informal version of 'Where are you from?'",
+            "options": [
+              "Woher kommen Sie?",
+              "Woher kommst du?",
+              "Wo kommen du?",
+              "Woher bist du?"
+            ],
+            "answer": "Woher kommst du?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Woher ko__st du? = Where are you from? (informal)",
+          "expected_answer": "Woher kommst du?",
+          "alt_answers": [
+            "woher kommst du?",
+            "Woher kommst du"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Woher kommst du?",
+          "options": [
+            "Where are you from? (informal)",
+            "Where do you live?",
+            "How old are you?",
+            "What is your name?"
+          ],
+          "answer": "Where are you from? (informal)"
+        }
+      },
+      "lesson6": {
+        "title": "Where are you from? (formal)",
+        "step1": {
+          "german": "Woher kommen Sie?",
+          "english": "Where are you from? (formal)",
+          "audio": "Woher kommen Sie?",
+          "note": "Formal 'Sie' with verb 'kommen' in 3rd person plural form.",
+          "mcq": {
+            "question": "Which is the formal question?",
+            "options": [
+              "Woher kommst du?",
+              "Woher kommen Sie?",
+              "Woher bin ich?",
+              "Wo wohnen Sie?"
+            ],
+            "answer": "Woher kommen Sie?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Woher ko__en Sie? = Where are you from? (formal)",
+          "expected_answer": "Woher kommen Sie?",
+          "alt_answers": [
+            "woher kommen sie?",
+            "Woher kommen Sie"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Woher kommen Sie?",
+          "options": [
+            "Where are you from? (formal)",
+            "Where do you work?",
+            "How are you?",
+            "Do you like coffee?"
+          ],
+          "answer": "Where are you from? (formal)"
+        }
+      },
+      "lesson7": {
+        "title": "I come from…",
+        "step1": {
+          "german": "Ich komme aus …",
+          "english": "I come from …",
+          "audio": "Ich komme aus …",
+          "note": "Use country/city names: 'Ich komme aus London/Deutschland/Italien.'",
+          "mcq": {
+            "question": "How do you say 'I come from Germany'?",
+            "options": [
+              "Ich komme aus Deutschland.",
+              "Ich bin Deutschland.",
+              "Ich habe Deutschland.",
+              "Ich wohne Deutschland."
+            ],
+            "answer": "Ich komme aus Deutschland."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich komme a__ … = I come from …",
+          "expected_answer": "Ich komme aus …",
+          "alt_answers": [
+            "Ich komme aus...",
+            "ich komme aus …",
+            "ich komme aus..."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich komme aus Berlin.",
+          "options": [
+            "I come from Berlin.",
+            "I am Berlin.",
+            "I live in Berlin.",
+            "I like Berlin."
+          ],
+          "answer": "I come from Berlin."
+        }
+      },
+      "lesson8": {
+        "title": "I am German (male/female)",
+        "step1": {
+          "german": "Ich bin Deutscher. / Ich bin Deutsche.",
+          "english": "I am German. (male / female)",
+          "audio": "Ich bin Deutscher. Ich bin Deutsche.",
+          "note": "Nationalities are adjectives used as nouns; they agree with gender: '-er' for male, '-e' for female.",
+          "mcq": {
+            "question": "Choose the correct female form:",
+            "options": [
+              "Ich bin Deutscher.",
+              "Ich bin Deutsche.",
+              "Ich bin Deutschin.",
+              "Ich bin Deutschlanderin."
+            ],
+            "answer": "Ich bin Deutsche."
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich bin Deutsc__r. / Ich bin Deutsc__e. = I am German (m/f)",
+          "expected_answer": "Ich bin Deutscher. / Ich bin Deutsche.",
+          "alt_answers": [
+            "Ich bin Deutscher. Ich bin Deutsche.",
+            "Ich bin Deutscher/Ich bin Deutsche."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich bin Deutscher. / Ich bin Deutsche.",
+          "options": [
+            "I am German (male/female).",
+            "I am from Germany.",
+            "I live in Germany.",
+            "I speak German."
+          ],
+          "answer": "I am German (male/female)."
+        }
+      },
+      "lesson9": {
+        "title": "Nice to meet you!",
+        "step1": {
+          "german": "Freut mich!",
+          "english": "Nice to meet you!",
+          "audio": "Freut mich!",
+          "note": "Also: 'Schön, dich kennenzulernen' (informal) / 'Schön, Sie kennenzulernen' (formal).",
+          "mcq": {
+            "question": "Which phrase means 'Nice to meet you'?",
+            "options": [
+              "Freut mich!",
+              "Wie heißt du?",
+              "Guten Abend!",
+              "Bis später!"
+            ],
+            "answer": "Freut mich!"
+          }
+        },
+        "step2": {
+          "type_prompt": "Fr__t mich! = Nice to meet you!",
+          "expected_answer": "Freut mich!",
+          "alt_answers": [
+            "Freut mich",
+            "freut mich!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Freut mich!",
+          "options": [
+            "Nice to meet you!",
+            "How are you?",
+            "Good evening!",
+            "See you later!"
+          ],
+          "answer": "Nice to meet you!"
+        }
+      },
+      "lesson10": {
+        "title": "How are you? (informal)",
+        "step1": {
+          "german": "Wie geht’s?",
+          "english": "How are you? (informal)",
+          "audio": "Wie geht’s?",
+          "note": "Short for 'Wie geht es dir?'. Reply: 'Gut, danke.'",
+          "mcq": {
+            "question": "Which is an informal 'How are you?'",
+            "options": [
+              "Wie geht’s?",
+              "Wie geht es Ihnen?",
+              "Wie heißen Sie?",
+              "Woher kommen Sie?"
+            ],
+            "answer": "Wie geht’s?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie ge__’s? = How are you? (informal)",
+          "expected_answer": "Wie geht’s?",
+          "alt_answers": [
+            "Wie gehts?",
+            "Wie geht es dir?",
+            "wie geht’s?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie geht’s?",
+          "options": [
+            "How are you? (informal)",
+            "What’s your name?",
+            "Where are you from?",
+            "Goodbye!"
+          ],
+          "answer": "How are you? (informal)"
+        }
+      },
+      "lesson11": {
+        "title": "How are you? (formal)",
+        "step1": {
+          "german": "Wie geht es Ihnen?",
+          "english": "How are you? (formal)",
+          "audio": "Wie geht es Ihnen?",
+          "note": "Formal 'Ihnen' (dative of 'Sie').",
+          "mcq": {
+            "question": "Select the formal version of 'How are you?'",
+            "options": [
+              "Wie geht’s?",
+              "Wie geht es Ihnen?",
+              "Wie heißt du?",
+              "Wie alt sind Sie?"
+            ],
+            "answer": "Wie geht es Ihnen?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie geht es Ih__n? = How are you? (formal)",
+          "expected_answer": "Wie geht es Ihnen?",
+          "alt_answers": [
+            "wie geht es ihnen?",
+            "Wie geht es Ihnen"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie geht es Ihnen?",
+          "options": [
+            "How are you? (formal)",
+            "What is your name? (formal)",
+            "Do you speak English?",
+            "Where do you live?"
+          ],
+          "answer": "How are you? (formal)"
+        }
+      },
+      "lesson12": {
+        "title": "I’m fine, thank you",
+        "step1": {
+          "german": "Mir geht es gut, danke.",
+          "english": "I’m fine, thank you.",
+          "audio": "Mir geht es gut, danke.",
+          "note": "Other common replies: 'Gut, danke.' / 'Es geht.' (so-so).",
+          "mcq": {
+            "question": "Which reply means 'I’m fine, thank you'?",
+            "options": [
+              "Mir geht es gut, danke.",
+              "Ich bin müde.",
+              "Ich heiße Anna.",
+              "Ich komme aus Wien."
+            ],
+            "answer": "Mir geht es gut, danke."
+          }
+        },
+        "step2": {
+          "type_prompt": "Mir geht es __t, danke. = I’m fine, thank you.",
+          "expected_answer": "Mir geht es gut, danke.",
+          "alt_answers": [
+            "Mir geht es gut, danke",
+            "mir geht es gut, danke."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Mir geht es gut, danke.",
+          "options": [
+            "I’m fine, thank you.",
+            "I am tired.",
+            "My name is Anna.",
+            "I’m from Vienna."
+          ],
+          "answer": "I’m fine, thank you."
+        }
+      },
+      "lesson13": {
+        "title": "And you? (informal/formal)",
+        "step1": {
+          "german": "Und dir? / Und Ihnen?",
+          "english": "And you? (informal / formal)",
+          "audio": "Und dir? Und Ihnen?",
+          "note": "Use 'dir' after informal 'Wie geht’s?' and 'Ihnen' after formal 'Wie geht es Ihnen?'.",
+          "mcq": {
+            "question": "Which pair correctly shows informal/formal follow-ups?",
+            "options": [
+              "Und du? / Und Sie?",
+              "Und dich? / Und Sie?",
+              "Und dir? / Und Ihnen?",
+              "Und dich? / Und Ihnen?"
+            ],
+            "answer": "Und dir? / Und Ihnen?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Und d__? / Und Ih__n? = And you? (informal/formal)",
+          "expected_answer": "Und dir? / Und Ihnen?",
+          "alt_answers": [
+            "Und dir? Und Ihnen?",
+            "Und dir / Und Ihnen?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Und dir?",
+          "options": [
+            "And you? (informal)",
+            "And you? (formal)",
+            "How are you?",
+            "Where are you from?"
+          ],
+          "answer": "And you? (informal)"
+        }
+      }
+    }
+  }
+}

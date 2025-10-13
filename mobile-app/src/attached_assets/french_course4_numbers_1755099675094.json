@@ -1,0 +1,1200 @@
+{
+  "course4": {
+    "title": "Numbers",
+    "description": "Learn numbers in French (0–20 and round tens) and ask/give age. Each item is a separate micro-lesson for spaced repetition.",
+    "lessons": {
+      "lesson1": {
+        "title": "Zero",
+        "step1": {
+          "italian": "zéro",
+          "english": "zero",
+          "audio": "zéro",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'zéro' mean?",
+            "options": [
+              "zero",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "zero"
+          }
+        },
+        "step2": {
+          "type_prompt": "z__o  = zero",
+          "expected_answer": "zéro",
+          "alt_answers": [
+            "zéro",
+            "Zéro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zéro",
+          "options": [
+            "zero",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "zero"
+        }
+      },
+      "lesson2": {
+        "title": "One",
+        "step1": {
+          "italian": "un",
+          "english": "one",
+          "audio": "un",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'un' mean?",
+            "options": [
+              "one",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "one"
+          }
+        },
+        "step2": {
+          "type_prompt": "un  = one",
+          "expected_answer": "un",
+          "alt_answers": [
+            "un",
+            "Un"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "un",
+          "options": [
+            "one",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "one"
+        }
+      },
+      "lesson3": {
+        "title": "Two",
+        "step1": {
+          "italian": "deux",
+          "english": "two",
+          "audio": "deux",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'deux' mean?",
+            "options": [
+              "two",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "two"
+          }
+        },
+        "step2": {
+          "type_prompt": "d__x  = two",
+          "expected_answer": "deux",
+          "alt_answers": [
+            "deux",
+            "Deux"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "deux",
+          "options": [
+            "two",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "two"
+        }
+      },
+      "lesson4": {
+        "title": "Three",
+        "step1": {
+          "italian": "trois",
+          "english": "three",
+          "audio": "trois",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'trois' mean?",
+            "options": [
+              "three",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "three"
+          }
+        },
+        "step2": {
+          "type_prompt": "t___s  = three",
+          "expected_answer": "trois",
+          "alt_answers": [
+            "trois",
+            "Trois"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "trois",
+          "options": [
+            "three",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "three"
+        }
+      },
+      "lesson5": {
+        "title": "Four",
+        "step1": {
+          "italian": "quatre",
+          "english": "four",
+          "audio": "quatre",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'quatre' mean?",
+            "options": [
+              "four",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "four"
+          }
+        },
+        "step2": {
+          "type_prompt": "q____e  = four",
+          "expected_answer": "quatre",
+          "alt_answers": [
+            "quatre",
+            "Quatre"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quatre",
+          "options": [
+            "four",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "four"
+        }
+      },
+      "lesson6": {
+        "title": "Five",
+        "step1": {
+          "italian": "cinq",
+          "english": "five",
+          "audio": "cinq",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'cinq' mean?",
+            "options": [
+              "five",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "five"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__q  = five",
+          "expected_answer": "cinq",
+          "alt_answers": [
+            "cinq",
+            "Cinq"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cinq",
+          "options": [
+            "five",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "five"
+        }
+      },
+      "lesson7": {
+        "title": "Six",
+        "step1": {
+          "italian": "six",
+          "english": "six",
+          "audio": "six",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'six' mean?",
+            "options": [
+              "six",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "six"
+          }
+        },
+        "step2": {
+          "type_prompt": "s_x  = six",
+          "expected_answer": "six",
+          "alt_answers": [
+            "six",
+            "Six"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "six",
+          "options": [
+            "six",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "six"
+        }
+      },
+      "lesson8": {
+        "title": "Seven",
+        "step1": {
+          "italian": "sept",
+          "english": "seven",
+          "audio": "sept",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'sept' mean?",
+            "options": [
+              "seven",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "seven"
+          }
+        },
+        "step2": {
+          "type_prompt": "s__t  = seven",
+          "expected_answer": "sept",
+          "alt_answers": [
+            "sept",
+            "Sept"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "sept",
+          "options": [
+            "seven",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "seven"
+        }
+      },
+      "lesson9": {
+        "title": "Eight",
+        "step1": {
+          "italian": "huit",
+          "english": "eight",
+          "audio": "huit",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'huit' mean?",
+            "options": [
+              "eight",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "eight"
+          }
+        },
+        "step2": {
+          "type_prompt": "h__t  = eight",
+          "expected_answer": "huit",
+          "alt_answers": [
+            "huit",
+            "Huit"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "huit",
+          "options": [
+            "eight",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "eight"
+        }
+      },
+      "lesson10": {
+        "title": "Nine",
+        "step1": {
+          "italian": "neuf",
+          "english": "nine",
+          "audio": "neuf",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'neuf' mean?",
+            "options": [
+              "nine",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "nine"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__f  = nine",
+          "expected_answer": "neuf",
+          "alt_answers": [
+            "neuf",
+            "Neuf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "neuf",
+          "options": [
+            "nine",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "nine"
+        }
+      },
+      "lesson11": {
+        "title": "Ten",
+        "step1": {
+          "italian": "dix",
+          "english": "ten",
+          "audio": "dix",
+          "note": "French number 0–10.",
+          "mcq": {
+            "question": "What does 'dix' mean?",
+            "options": [
+              "ten",
+              "eleven",
+              "twenty",
+              "hundred"
+            ],
+            "answer": "ten"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_x  = ten",
+          "expected_answer": "dix",
+          "alt_answers": [
+            "dix",
+            "Dix"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dix",
+          "options": [
+            "ten",
+            "eleven",
+            "twenty",
+            "hundred"
+          ],
+          "answer": "ten"
+        }
+      },
+      "lesson12": {
+        "title": "Eleven",
+        "step1": {
+          "italian": "onze",
+          "english": "eleven",
+          "audio": "onze",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'onze' mean?",
+            "options": [
+              "eleven",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "eleven"
+          }
+        },
+        "step2": {
+          "type_prompt": "o__e  = eleven",
+          "expected_answer": "onze",
+          "alt_answers": [
+            "onze",
+            "Onze"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "onze",
+          "options": [
+            "eleven",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "eleven"
+        }
+      },
+      "lesson13": {
+        "title": "Twelve",
+        "step1": {
+          "italian": "douze",
+          "english": "twelve",
+          "audio": "douze",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'douze' mean?",
+            "options": [
+              "twelve",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "twelve"
+          }
+        },
+        "step2": {
+          "type_prompt": "d___e  = twelve",
+          "expected_answer": "douze",
+          "alt_answers": [
+            "douze",
+            "Douze"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "douze",
+          "options": [
+            "twelve",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "twelve"
+        }
+      },
+      "lesson14": {
+        "title": "Thirteen",
+        "step1": {
+          "italian": "treize",
+          "english": "thirteen",
+          "audio": "treize",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'treize' mean?",
+            "options": [
+              "thirteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "thirteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "t____e  = thirteen",
+          "expected_answer": "treize",
+          "alt_answers": [
+            "treize",
+            "Treize"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "treize",
+          "options": [
+            "thirteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "thirteen"
+        }
+      },
+      "lesson15": {
+        "title": "Fourteen",
+        "step1": {
+          "italian": "quatorze",
+          "english": "fourteen",
+          "audio": "quatorze",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'quatorze' mean?",
+            "options": [
+              "fourteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "fourteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "q______e  = fourteen",
+          "expected_answer": "quatorze",
+          "alt_answers": [
+            "quatorze",
+            "Quatorze"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quatorze",
+          "options": [
+            "fourteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "fourteen"
+        }
+      },
+      "lesson16": {
+        "title": "Fifteen",
+        "step1": {
+          "italian": "quinze",
+          "english": "fifteen",
+          "audio": "quinze",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'quinze' mean?",
+            "options": [
+              "fifteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "fifteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "q____e  = fifteen",
+          "expected_answer": "quinze",
+          "alt_answers": [
+            "quinze",
+            "Quinze"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quinze",
+          "options": [
+            "fifteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "fifteen"
+        }
+      },
+      "lesson17": {
+        "title": "Sixteen",
+        "step1": {
+          "italian": "seize",
+          "english": "sixteen",
+          "audio": "seize",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'seize' mean?",
+            "options": [
+              "sixteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "sixteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "s___e  = sixteen",
+          "expected_answer": "seize",
+          "alt_answers": [
+            "seize",
+            "Seize"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "seize",
+          "options": [
+            "sixteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "sixteen"
+        }
+      },
+      "lesson18": {
+        "title": "Seventeen",
+        "step1": {
+          "italian": "dix-sept",
+          "english": "seventeen",
+          "audio": "dix-sept",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'dix-sept' mean?",
+            "options": [
+              "seventeen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "seventeen"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_x-s__t  = seventeen",
+          "expected_answer": "dix-sept",
+          "alt_answers": [
+            "dix-sept",
+            "Dix-sept"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dix-sept",
+          "options": [
+            "seventeen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "seventeen"
+        }
+      },
+      "lesson19": {
+        "title": "Eighteen",
+        "step1": {
+          "italian": "dix-huit",
+          "english": "eighteen",
+          "audio": "dix-huit",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'dix-huit' mean?",
+            "options": [
+              "eighteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "eighteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_x-h__t  = eighteen",
+          "expected_answer": "dix-huit",
+          "alt_answers": [
+            "dix-huit",
+            "Dix-huit"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dix-huit",
+          "options": [
+            "eighteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "eighteen"
+        }
+      },
+      "lesson20": {
+        "title": "Nineteen",
+        "step1": {
+          "italian": "dix-neuf",
+          "english": "nineteen",
+          "audio": "dix-neuf",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'dix-neuf' mean?",
+            "options": [
+              "nineteen",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "nineteen"
+          }
+        },
+        "step2": {
+          "type_prompt": "d_x-n__f  = nineteen",
+          "expected_answer": "dix-neuf",
+          "alt_answers": [
+            "dix-neuf",
+            "Dix-neuf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "dix-neuf",
+          "options": [
+            "nineteen",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "nineteen"
+        }
+      },
+      "lesson21": {
+        "title": "Twenty",
+        "step1": {
+          "italian": "vingt",
+          "english": "twenty",
+          "audio": "vingt",
+          "note": "French number 11–20. Note hyphens in 17–19.",
+          "mcq": {
+            "question": "What does 'vingt' mean?",
+            "options": [
+              "twenty",
+              "nine",
+              "thirty",
+              "hundred"
+            ],
+            "answer": "twenty"
+          }
+        },
+        "step2": {
+          "type_prompt": "v___t  = twenty",
+          "expected_answer": "vingt",
+          "alt_answers": [
+            "vingt",
+            "Vingt"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vingt",
+          "options": [
+            "twenty",
+            "ten",
+            "twenty",
+            "thirty"
+          ],
+          "answer": "twenty"
+        }
+      },
+      "lesson22": {
+        "title": "Thirty",
+        "step1": {
+          "italian": "trente",
+          "english": "thirty",
+          "audio": "trente",
+          "note": "French round ten.",
+          "mcq": {
+            "question": "What does 'trente' mean?",
+            "options": [
+              "thirty",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "thirty"
+          }
+        },
+        "step2": {
+          "type_prompt": "t____e  = thirty",
+          "expected_answer": "trente",
+          "alt_answers": [
+            "trente",
+            "trente",
+            "Trente"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "trente",
+          "options": [
+            "thirty",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "thirty"
+        }
+      },
+      "lesson23": {
+        "title": "Forty",
+        "step1": {
+          "italian": "quarante",
+          "english": "forty",
+          "audio": "quarante",
+          "note": "French round ten.",
+          "mcq": {
+            "question": "What does 'quarante' mean?",
+            "options": [
+              "forty",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "forty"
+          }
+        },
+        "step2": {
+          "type_prompt": "q______e  = forty",
+          "expected_answer": "quarante",
+          "alt_answers": [
+            "quarante",
+            "quarante",
+            "Quarante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quarante",
+          "options": [
+            "forty",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "forty"
+        }
+      },
+      "lesson24": {
+        "title": "Fifty",
+        "step1": {
+          "italian": "cinquante",
+          "english": "fifty",
+          "audio": "cinquante",
+          "note": "French round ten.",
+          "mcq": {
+            "question": "What does 'cinquante' mean?",
+            "options": [
+              "fifty",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "fifty"
+          }
+        },
+        "step2": {
+          "type_prompt": "c_______e  = fifty",
+          "expected_answer": "cinquante",
+          "alt_answers": [
+            "cinquante",
+            "cinquante",
+            "Cinquante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cinquante",
+          "options": [
+            "fifty",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "fifty"
+        }
+      },
+      "lesson25": {
+        "title": "Sixty",
+        "step1": {
+          "italian": "soixante",
+          "english": "sixty",
+          "audio": "soixante",
+          "note": "French round ten.",
+          "mcq": {
+            "question": "What does 'soixante' mean?",
+            "options": [
+              "sixty",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "sixty"
+          }
+        },
+        "step2": {
+          "type_prompt": "s______e  = sixty",
+          "expected_answer": "soixante",
+          "alt_answers": [
+            "soixante",
+            "soixante",
+            "Soixante"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "soixante",
+          "options": [
+            "sixty",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "sixty"
+        }
+      },
+      "lesson26": {
+        "title": "Seventy",
+        "step1": {
+          "italian": "soixante-dix",
+          "english": "seventy",
+          "audio": "soixante-dix",
+          "note": "Literally 'sixty-ten' for 70.",
+          "mcq": {
+            "question": "What does 'soixante-dix' mean?",
+            "options": [
+              "seventy",
+              "eighty",
+              "ninety",
+              "sixty"
+            ],
+            "answer": "seventy"
+          }
+        },
+        "step2": {
+          "type_prompt": "s______e-d_x  = seventy",
+          "expected_answer": "soixante-dix",
+          "alt_answers": [
+            "soixante-dix",
+            "soixante-dix",
+            "Soixante-dix"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "soixante-dix",
+          "options": [
+            "seventy",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "seventy"
+        }
+      },
+      "lesson27": {
+        "title": "Eighty",
+        "step1": {
+          "italian": "quatre-vingts",
+          "english": "eighty",
+          "audio": "quatre-vingts",
+          "note": "Literally 'four twenties' for 80. The final 's' drops when followed by another number.",
+          "mcq": {
+            "question": "What does 'quatre-vingts' mean?",
+            "options": [
+              "eighty",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "eighty"
+          }
+        },
+        "step2": {
+          "type_prompt": "q____e-v____s  = eighty",
+          "expected_answer": "quatre-vingts",
+          "alt_answers": [
+            "quatre-vingts",
+            "quatre-vingt",
+            "Quatre-vingts"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quatre-vingts",
+          "options": [
+            "eighty",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "eighty"
+        }
+      },
+      "lesson28": {
+        "title": "Ninety",
+        "step1": {
+          "italian": "quatre-vingt-dix",
+          "english": "ninety",
+          "audio": "quatre-vingt-dix",
+          "note": "Literally 'four twenty ten' for 90.",
+          "mcq": {
+            "question": "What does 'quatre-vingt-dix' mean?",
+            "options": [
+              "ninety",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "ninety"
+          }
+        },
+        "step2": {
+          "type_prompt": "q____e-v___t  = ninety",
+          "expected_answer": "quatre-vingt-dix",
+          "alt_answers": [
+            "quatre-vingt-dix",
+            "quatre-vingt-dix",
+            "Quatre-vingt-dix"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "quatre-vingt-dix",
+          "options": [
+            "ninety",
+            "seventy",
+            "eighty",
+            "ninety"
+          ],
+          "answer": "ninety"
+        }
+      },
+      "lesson29": {
+        "title": "One Hundred",
+        "step1": {
+          "italian": "cent",
+          "english": "one hundred",
+          "audio": "cent",
+          "note": "One hundred. Plural 'cents' only when multiplied and not followed by another number.",
+          "mcq": {
+            "question": "What does 'cent' mean?",
+            "options": [
+              "one hundred",
+              "seventy",
+              "eighty",
+              "ninety"
+            ],
+            "answer": "one hundred"
+          }
+        },
+        "step2": {
+          "type_prompt": "c__t  = one hundred",
+          "expected_answer": "cent",
+          "alt_answers": [
+            "cent",
+            "cent",
+            "Cent"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "cent",
+          "options": [
+            "one hundred",
+            "ninety",
+            "one thousand",
+            "ten"
+          ],
+          "answer": "one hundred"
+        }
+      },
+      "lesson30": {
+        "title": "How old are you? (informal)",
+        "step1": {
+          "italian": "Tu as quel âge ?",
+          "english": "How old are you? (informal)",
+          "audio": "Tu as quel âge ?",
+          "note": "Use with friends and peers.",
+          "mcq": {
+            "question": "Choose the correct meaning of 'Tu as quel âge ?'",
+            "options": [
+              "How old are you? (informal)",
+              "What time is it?",
+              "Where are you from?",
+              "How are you?"
+            ],
+            "answer": "How old are you? (informal)"
+          }
+        },
+        "step2": {
+          "type_prompt": "T___________?  = How old are you? (informal)",
+          "expected_answer": "Tu as quel âge ?",
+          "alt_answers": [
+            "Tu as quel âge ?",
+            "Tu as quel âge ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Tu as quel âge ?",
+          "options": [
+            "How old are you? (informal)",
+            "What time is it?",
+            "Where do you live?",
+            "Do you speak English?"
+          ],
+          "answer": "How old are you? (informal)"
+        }
+      },
+      "lesson31": {
+        "title": "How old are you? (formal)",
+        "step1": {
+          "italian": "Quel âge avez-vous ?",
+          "english": "How old are you? (formal)",
+          "audio": "Quel âge avez-vous ?",
+          "note": "Polite form.",
+          "mcq": {
+            "question": "Choose the correct meaning of 'Quel âge avez-vous ?'",
+            "options": [
+              "How old are you? (formal)",
+              "What time is it?",
+              "Where are you from?",
+              "How are you?"
+            ],
+            "answer": "How old are you? (formal)"
+          }
+        },
+        "step2": {
+          "type_prompt": "Q_______________?  = How old are you? (formal)",
+          "expected_answer": "Quel âge avez-vous ?",
+          "alt_answers": [
+            "Quel âge avez-vous ?",
+            "Quel âge avez-vous ?"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Quel âge avez-vous ?",
+          "options": [
+            "How old are you? (formal)",
+            "What time is it?",
+            "Where do you live?",
+            "Do you speak English?"
+          ],
+          "answer": "How old are you? (formal)"
+        }
+      },
+      "lesson32": {
+        "title": "I am __ years old.",
+        "step1": {
+          "italian": "J’ai __ ans.",
+          "english": "I am __ years old.",
+          "audio": "J’ai __ ans.",
+          "note": "Use digits or words for the number. Example: J’ai vingt ans.",
+          "mcq": {
+            "question": "Choose the correct meaning of 'J’ai __ ans.'",
+            "options": [
+              "I am __ years old.",
+              "What time is it?",
+              "Where are you from?",
+              "How are you?"
+            ],
+            "answer": "I am __ years old."
+          }
+        },
+        "step2": {
+          "type_prompt": "J_______.  = I am __ years old.",
+          "expected_answer": "J’ai __ ans.",
+          "alt_answers": [
+            "J’ai __ ans.",
+            "J'ai __ ans."
+          ]
+        },
+        "step3": {
+          "audio_sentence": "J’ai __ ans.",
+          "options": [
+            "I am __ years old.",
+            "What time is it?",
+            "Where do you live?",
+            "Do you speak English?"
+          ],
+          "answer": "I am __ years old."
+        }
+      }
+    }
+  }
+}

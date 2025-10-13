@@ -1,0 +1,1155 @@
+{
+  "course7": {
+    "title": "Describing Things – Colors & Adjectives",
+    "description": "Learn common colors and adjectives to describe people, objects, or situations in Spanish. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Black (masculine)",
+        "step1": {
+          "spanish": "negro",
+          "english": "Black (masculine)",
+          "audio": "negro",
+          "note": "The Spanish word for 'black (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'black (masculine)'?",
+            "options": [
+              "negro",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "negro"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Black (masculine)",
+          "expected_answer": "negro",
+          "alt_answers": [
+            "Negro",
+            "negro"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "negro",
+          "options": [
+            "Black (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Black (masculine)"
+        }
+      },
+      "lesson2": {
+        "title": "Black (feminine)",
+        "step1": {
+          "spanish": "negra",
+          "english": "Black (feminine)",
+          "audio": "negra",
+          "note": "The Spanish word for 'black (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'black (feminine)'?",
+            "options": [
+              "negra",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "negra"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Black (feminine)",
+          "expected_answer": "negra",
+          "alt_answers": [
+            "Negra",
+            "negra"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "negra",
+          "options": [
+            "Black (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Black (feminine)"
+        }
+      },
+      "lesson3": {
+        "title": "White (masculine)",
+        "step1": {
+          "spanish": "blanco",
+          "english": "White (masculine)",
+          "audio": "blanco",
+          "note": "The Spanish word for 'white (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'white (masculine)'?",
+            "options": [
+              "blanco",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "blanco"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = White (masculine)",
+          "expected_answer": "blanco",
+          "alt_answers": [
+            "Blanco",
+            "blanco"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "blanco",
+          "options": [
+            "White (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "White (masculine)"
+        }
+      },
+      "lesson4": {
+        "title": "White (feminine)",
+        "step1": {
+          "spanish": "blanca",
+          "english": "White (feminine)",
+          "audio": "blanca",
+          "note": "The Spanish word for 'white (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'white (feminine)'?",
+            "options": [
+              "blanca",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "blanca"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = White (feminine)",
+          "expected_answer": "blanca",
+          "alt_answers": [
+            "Blanca",
+            "blanca"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "blanca",
+          "options": [
+            "White (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "White (feminine)"
+        }
+      },
+      "lesson5": {
+        "title": "Red (masculine)",
+        "step1": {
+          "spanish": "rojo",
+          "english": "Red (masculine)",
+          "audio": "rojo",
+          "note": "The Spanish word for 'red (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'red (masculine)'?",
+            "options": [
+              "rojo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "rojo"
+          }
+        },
+        "step2": {
+          "type_prompt": "r__  = Red (masculine)",
+          "expected_answer": "rojo",
+          "alt_answers": [
+            "Rojo",
+            "rojo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "rojo",
+          "options": [
+            "Red (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Red (masculine)"
+        }
+      },
+      "lesson6": {
+        "title": "Red (feminine)",
+        "step1": {
+          "spanish": "roja",
+          "english": "Red (feminine)",
+          "audio": "roja",
+          "note": "The Spanish word for 'red (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'red (feminine)'?",
+            "options": [
+              "roja",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "roja"
+          }
+        },
+        "step2": {
+          "type_prompt": "r__  = Red (feminine)",
+          "expected_answer": "roja",
+          "alt_answers": [
+            "Roja",
+            "roja"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "roja",
+          "options": [
+            "Red (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Red (feminine)"
+        }
+      },
+      "lesson7": {
+        "title": "Yellow (masculine)",
+        "step1": {
+          "spanish": "amarillo",
+          "english": "Yellow (masculine)",
+          "audio": "amarillo",
+          "note": "The Spanish word for 'yellow (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'yellow (masculine)'?",
+            "options": [
+              "amarillo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "amarillo"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Yellow (masculine)",
+          "expected_answer": "amarillo",
+          "alt_answers": [
+            "Amarillo",
+            "amarillo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "amarillo",
+          "options": [
+            "Yellow (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Yellow (masculine)"
+        }
+      },
+      "lesson8": {
+        "title": "Yellow (feminine)",
+        "step1": {
+          "spanish": "amarilla",
+          "english": "Yellow (feminine)",
+          "audio": "amarilla",
+          "note": "The Spanish word for 'yellow (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'yellow (feminine)'?",
+            "options": [
+              "amarilla",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "amarilla"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Yellow (feminine)",
+          "expected_answer": "amarilla",
+          "alt_answers": [
+            "Amarilla",
+            "amarilla"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "amarilla",
+          "options": [
+            "Yellow (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Yellow (feminine)"
+        }
+      },
+      "lesson9": {
+        "title": "Green (singular)",
+        "step1": {
+          "spanish": "verde",
+          "english": "Green (singular)",
+          "audio": "verde",
+          "note": "The Spanish word for 'green (singular)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'green (singular)'?",
+            "options": [
+              "verde",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "verde"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Green (singular)",
+          "expected_answer": "verde",
+          "alt_answers": [
+            "Verde",
+            "verde"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "verde",
+          "options": [
+            "Green (singular)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Green (singular)"
+        }
+      },
+      "lesson10": {
+        "title": "Green (plural)",
+        "step1": {
+          "spanish": "verdes",
+          "english": "Green (plural)",
+          "audio": "verdes",
+          "note": "The Spanish word for 'green (plural)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'green (plural)'?",
+            "options": [
+              "verdes",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "verdes"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Green (plural)",
+          "expected_answer": "verdes",
+          "alt_answers": [
+            "Verdes",
+            "verdes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "verdes",
+          "options": [
+            "Green (plural)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Green (plural)"
+        }
+      },
+      "lesson11": {
+        "title": "Blue (singular)",
+        "step1": {
+          "spanish": "azul",
+          "english": "Blue (singular)",
+          "audio": "azul",
+          "note": "The Spanish word for 'blue (singular)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'blue (singular)'?",
+            "options": [
+              "azul",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "azul"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Blue (singular)",
+          "expected_answer": "azul",
+          "alt_answers": [
+            "Azul",
+            "azul"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "azul",
+          "options": [
+            "Blue (singular)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Blue (singular)"
+        }
+      },
+      "lesson12": {
+        "title": "Blue (plural)",
+        "step1": {
+          "spanish": "azules",
+          "english": "Blue (plural)",
+          "audio": "azules",
+          "note": "The Spanish word for 'blue (plural)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'blue (plural)'?",
+            "options": [
+              "azules",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "azules"
+          }
+        },
+        "step2": {
+          "type_prompt": "a__  = Blue (plural)",
+          "expected_answer": "azules",
+          "alt_answers": [
+            "Azules",
+            "azules"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "azules",
+          "options": [
+            "Blue (plural)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Blue (plural)"
+        }
+      },
+      "lesson13": {
+        "title": "Orange",
+        "step1": {
+          "spanish": "naranja",
+          "english": "Orange",
+          "audio": "naranja",
+          "note": "The Spanish word for 'orange'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'orange'?",
+            "options": [
+              "naranja",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "naranja"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = Orange",
+          "expected_answer": "naranja",
+          "alt_answers": [
+            "Naranja",
+            "naranja"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "naranja",
+          "options": [
+            "Orange",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Orange"
+        }
+      },
+      "lesson14": {
+        "title": "Brown (singular)",
+        "step1": {
+          "spanish": "marrón",
+          "english": "Brown (singular)",
+          "audio": "marrón",
+          "note": "The Spanish word for 'brown (singular)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'brown (singular)'?",
+            "options": [
+              "marrón",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "marrón"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Brown (singular)",
+          "expected_answer": "marrón",
+          "alt_answers": [
+            "Marrón",
+            "marrón"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "marrón",
+          "options": [
+            "Brown (singular)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Brown (singular)"
+        }
+      },
+      "lesson15": {
+        "title": "Brown (plural)",
+        "step1": {
+          "spanish": "marrones",
+          "english": "Brown (plural)",
+          "audio": "marrones",
+          "note": "The Spanish word for 'brown (plural)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'brown (plural)'?",
+            "options": [
+              "marrones",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "marrones"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Brown (plural)",
+          "expected_answer": "marrones",
+          "alt_answers": [
+            "Marrones",
+            "marrones"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "marrones",
+          "options": [
+            "Brown (plural)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Brown (plural)"
+        }
+      },
+      "lesson16": {
+        "title": "Big (singular)",
+        "step1": {
+          "spanish": "grande",
+          "english": "Big (singular)",
+          "audio": "grande",
+          "note": "The Spanish word for 'big (singular)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'big (singular)'?",
+            "options": [
+              "grande",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "grande"
+          }
+        },
+        "step2": {
+          "type_prompt": "g__  = Big (singular)",
+          "expected_answer": "grande",
+          "alt_answers": [
+            "Grande",
+            "grande"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "grande",
+          "options": [
+            "Big (singular)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Big (singular)"
+        }
+      },
+      "lesson17": {
+        "title": "Big (plural)",
+        "step1": {
+          "spanish": "grandes",
+          "english": "Big (plural)",
+          "audio": "grandes",
+          "note": "The Spanish word for 'big (plural)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'big (plural)'?",
+            "options": [
+              "grandes",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "grandes"
+          }
+        },
+        "step2": {
+          "type_prompt": "g__  = Big (plural)",
+          "expected_answer": "grandes",
+          "alt_answers": [
+            "Grandes",
+            "grandes"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "grandes",
+          "options": [
+            "Big (plural)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Big (plural)"
+        }
+      },
+      "lesson18": {
+        "title": "Small (masculine)",
+        "step1": {
+          "spanish": "pequeño",
+          "english": "Small (masculine)",
+          "audio": "pequeño",
+          "note": "The Spanish word for 'small (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'small (masculine)'?",
+            "options": [
+              "pequeño",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "pequeño"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Small (masculine)",
+          "expected_answer": "pequeño",
+          "alt_answers": [
+            "Pequeño",
+            "pequeño"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pequeño",
+          "options": [
+            "Small (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Small (masculine)"
+        }
+      },
+      "lesson19": {
+        "title": "Small (feminine)",
+        "step1": {
+          "spanish": "pequeña",
+          "english": "Small (feminine)",
+          "audio": "pequeña",
+          "note": "The Spanish word for 'small (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'small (feminine)'?",
+            "options": [
+              "pequeña",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "pequeña"
+          }
+        },
+        "step2": {
+          "type_prompt": "p__  = Small (feminine)",
+          "expected_answer": "pequeña",
+          "alt_answers": [
+            "Pequeña",
+            "pequeña"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "pequeña",
+          "options": [
+            "Small (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Small (feminine)"
+        }
+      },
+      "lesson20": {
+        "title": "Good (masculine)",
+        "step1": {
+          "spanish": "bueno",
+          "english": "Good (masculine)",
+          "audio": "bueno",
+          "note": "The Spanish word for 'good (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'good (masculine)'?",
+            "options": [
+              "bueno",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "bueno"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = Good (masculine)",
+          "expected_answer": "bueno",
+          "alt_answers": [
+            "Bueno",
+            "bueno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "bueno",
+          "options": [
+            "Good (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Good (masculine)"
+        }
+      },
+      "lesson21": {
+        "title": "Good (feminine)",
+        "step1": {
+          "spanish": "buena",
+          "english": "Good (feminine)",
+          "audio": "buena",
+          "note": "The Spanish word for 'good (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'good (feminine)'?",
+            "options": [
+              "buena",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "buena"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = Good (feminine)",
+          "expected_answer": "buena",
+          "alt_answers": [
+            "Buena",
+            "buena"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "buena",
+          "options": [
+            "Good (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Good (feminine)"
+        }
+      },
+      "lesson22": {
+        "title": "Bad (masculine)",
+        "step1": {
+          "spanish": "malo",
+          "english": "Bad (masculine)",
+          "audio": "malo",
+          "note": "The Spanish word for 'bad (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'bad (masculine)'?",
+            "options": [
+              "malo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "malo"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Bad (masculine)",
+          "expected_answer": "malo",
+          "alt_answers": [
+            "Malo",
+            "malo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "malo",
+          "options": [
+            "Bad (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Bad (masculine)"
+        }
+      },
+      "lesson23": {
+        "title": "Bad (feminine)",
+        "step1": {
+          "spanish": "mala",
+          "english": "Bad (feminine)",
+          "audio": "mala",
+          "note": "The Spanish word for 'bad (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'bad (feminine)'?",
+            "options": [
+              "mala",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "mala"
+          }
+        },
+        "step2": {
+          "type_prompt": "m__  = Bad (feminine)",
+          "expected_answer": "mala",
+          "alt_answers": [
+            "Mala",
+            "mala"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "mala",
+          "options": [
+            "Bad (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Bad (feminine)"
+        }
+      },
+      "lesson24": {
+        "title": "New (masculine)",
+        "step1": {
+          "spanish": "nuevo",
+          "english": "New (masculine)",
+          "audio": "nuevo",
+          "note": "The Spanish word for 'new (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'new (masculine)'?",
+            "options": [
+              "nuevo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "nuevo"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = New (masculine)",
+          "expected_answer": "nuevo",
+          "alt_answers": [
+            "Nuevo",
+            "nuevo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "nuevo",
+          "options": [
+            "New (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "New (masculine)"
+        }
+      },
+      "lesson25": {
+        "title": "New (feminine)",
+        "step1": {
+          "spanish": "nueva",
+          "english": "New (feminine)",
+          "audio": "nueva",
+          "note": "The Spanish word for 'new (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'new (feminine)'?",
+            "options": [
+              "nueva",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "nueva"
+          }
+        },
+        "step2": {
+          "type_prompt": "n__  = New (feminine)",
+          "expected_answer": "nueva",
+          "alt_answers": [
+            "Nueva",
+            "nueva"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "nueva",
+          "options": [
+            "New (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "New (feminine)"
+        }
+      },
+      "lesson26": {
+        "title": "Old (masculine)",
+        "step1": {
+          "spanish": "viejo",
+          "english": "Old (masculine)",
+          "audio": "viejo",
+          "note": "The Spanish word for 'old (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'old (masculine)'?",
+            "options": [
+              "viejo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "viejo"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Old (masculine)",
+          "expected_answer": "viejo",
+          "alt_answers": [
+            "Viejo",
+            "viejo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "viejo",
+          "options": [
+            "Old (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Old (masculine)"
+        }
+      },
+      "lesson27": {
+        "title": "Old (feminine)",
+        "step1": {
+          "spanish": "vieja",
+          "english": "Old (feminine)",
+          "audio": "vieja",
+          "note": "The Spanish word for 'old (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'old (feminine)'?",
+            "options": [
+              "vieja",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "vieja"
+          }
+        },
+        "step2": {
+          "type_prompt": "v__  = Old (feminine)",
+          "expected_answer": "vieja",
+          "alt_answers": [
+            "Vieja",
+            "vieja"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vieja",
+          "options": [
+            "Old (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Old (feminine)"
+        }
+      },
+      "lesson28": {
+        "title": "Pretty/nice (masculine)",
+        "step1": {
+          "spanish": "bonito",
+          "english": "Pretty/nice (masculine)",
+          "audio": "bonito",
+          "note": "The Spanish word for 'pretty/nice (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'pretty/nice (masculine)'?",
+            "options": [
+              "bonito",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "bonito"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = Pretty/nice (masculine)",
+          "expected_answer": "bonito",
+          "alt_answers": [
+            "Bonito",
+            "bonito"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "bonito",
+          "options": [
+            "Pretty/nice (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Pretty/nice (masculine)"
+        }
+      },
+      "lesson29": {
+        "title": "Pretty/nice (feminine)",
+        "step1": {
+          "spanish": "bonita",
+          "english": "Pretty/nice (feminine)",
+          "audio": "bonita",
+          "note": "The Spanish word for 'pretty/nice (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'pretty/nice (feminine)'?",
+            "options": [
+              "bonita",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "bonita"
+          }
+        },
+        "step2": {
+          "type_prompt": "b__  = Pretty/nice (feminine)",
+          "expected_answer": "bonita",
+          "alt_answers": [
+            "Bonita",
+            "bonita"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "bonita",
+          "options": [
+            "Pretty/nice (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Pretty/nice (feminine)"
+        }
+      },
+      "lesson30": {
+        "title": "Ugly (masculine)",
+        "step1": {
+          "spanish": "feo",
+          "english": "Ugly (masculine)",
+          "audio": "feo",
+          "note": "The Spanish word for 'ugly (masculine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'ugly (masculine)'?",
+            "options": [
+              "feo",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "feo"
+          }
+        },
+        "step2": {
+          "type_prompt": "f__  = Ugly (masculine)",
+          "expected_answer": "feo",
+          "alt_answers": [
+            "Feo",
+            "feo"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "feo",
+          "options": [
+            "Ugly (masculine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Ugly (masculine)"
+        }
+      },
+      "lesson31": {
+        "title": "Ugly (feminine)",
+        "step1": {
+          "spanish": "fea",
+          "english": "Ugly (feminine)",
+          "audio": "fea",
+          "note": "The Spanish word for 'ugly (feminine)'. Remember to match gender and number when describing nouns.",
+          "mcq": {
+            "question": "Which Spanish word means 'ugly (feminine)'?",
+            "options": [
+              "fea",
+              "rojo",
+              "azul",
+              "verde"
+            ],
+            "answer": "fea"
+          }
+        },
+        "step2": {
+          "type_prompt": "f__  = Ugly (feminine)",
+          "expected_answer": "fea",
+          "alt_answers": [
+            "Fea",
+            "fea"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fea",
+          "options": [
+            "Ugly (feminine)",
+            "Red",
+            "Blue",
+            "Green"
+          ],
+          "answer": "Ugly (feminine)"
+        }
+      }
+    }
+  }
+}

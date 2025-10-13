@@ -1,0 +1,148 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Each lesson focuses on a single greeting or farewell with concise usage notes.",
+    "lessons": {
+      "lesson1": {
+        "title": "Ciao!",
+        "items": [
+          {
+            "italian": "Ciao!",
+            "english": "Hi / Bye",
+            "note": "INFORMAL. Use with friends/peers. Works for both hello and goodbye."
+          }
+        ]
+      },
+      "lesson2": {
+        "title": "Salve!",
+        "items": [
+          {
+            "italian": "Salve!",
+            "english": "Hello",
+            "note": "POLITE/NEUTRAL. Safe with strangers; between informal 'ciao' and formal 'buongiorno/buonasera'."
+          }
+        ]
+      },
+      "lesson3": {
+        "title": "Buongiorno",
+        "items": [
+          {
+            "italian": "Buongiorno",
+            "english": "Good morning / Good day",
+            "note": "FORMAL/NEUTRAL greeting used until late afternoon. Not used as a farewell."
+          }
+        ]
+      },
+      "lesson4": {
+        "title": "Buonasera",
+        "items": [
+          {
+            "italian": "Buonasera",
+            "english": "Good evening",
+            "note": "FORMAL/NEUTRAL greeting from late afternoon/evening. Not used as a farewell."
+          }
+        ]
+      },
+      "lesson5": {
+        "title": "Buon pomeriggio",
+        "items": [
+          {
+            "italian": "Buon pomeriggio",
+            "english": "Good afternoon",
+            "note": "FORMAL but LESS COMMON; often replaced by 'buongiorno' (earlier) or 'buonasera' (later)."
+          }
+        ]
+      },
+      "lesson6": {
+        "title": "Buonanotte",
+        "items": [
+          {
+            "italian": "Buonanotte",
+            "english": "Good night",
+            "note": "FAREWELL at night/before sleeping; not an initial greeting."
+          }
+        ]
+      },
+      "lesson7": {
+        "title": "Buona giornata",
+        "items": [
+          {
+            "italian": "Buona giornata",
+            "english": "Have a nice day",
+            "note": "DAYTIME FAREWELL when parting. Pairs with greeting 'buongiorno'."
+          }
+        ]
+      },
+      "lesson8": {
+        "title": "Buona serata",
+        "items": [
+          {
+            "italian": "Buona serata",
+            "english": "Have a good evening",
+            "note": "EVENING FAREWELL when parting. Pairs with greeting 'buonasera'."
+          }
+        ]
+      },
+      "lesson9": {
+        "title": "Arrivederci",
+        "items": [
+          {
+            "italian": "Arrivederci",
+            "english": "Goodbye",
+            "note": "STANDARD/POLITE farewell. Use with strangers, service staff, or formally."
+          }
+        ]
+      },
+      "lesson10": {
+        "title": "Ciao! (as a farewell)",
+        "items": [
+          {
+            "italian": "Ciao!",
+            "english": "Bye!",
+            "note": "INFORMAL farewell with friends/peers. Same word as informal hello."
+          }
+        ]
+      },
+      "lesson11": {
+        "title": "A presto",
+        "items": [
+          {
+            "italian": "A presto",
+            "english": "See you soon",
+            "note": "Implies you expect to meet again in the near future."
+          }
+        ]
+      },
+      "lesson12": {
+        "title": "Ci vediamo (dopo)",
+        "items": [
+          {
+            "italian": "Ci vediamo (dopo)",
+            "english": "See you (later)",
+            "note": "INFORMAL farewell. '(dopo)' = OPTIONAL; add to specify 'later' more clearly."
+          }
+        ]
+      },
+      "lesson13": {
+        "title": "Piacere / Piacere di conoscerti / Piacere di conoscerla",
+        "items": [
+          {
+            "italian": "Piacere!",
+            "english": "Pleased to meet you!",
+            "note": "Standalone is VERY COMMON in first meetings."
+          },
+          {
+            "italian": "Piacere di conoscerti",
+            "english": "Pleased to meet you (informal)",
+            "note": "Full form; 'di conoscerti' clarifies 'to meet you' (tu)."
+          },
+          {
+            "italian": "Piacere di conoscerla",
+            "english": "Pleased to meet you (formal)",
+            "note": "Formal 'you' (Lei). Use in polite contexts."
+          }
+        ]
+      }
+    }
+  }
+}

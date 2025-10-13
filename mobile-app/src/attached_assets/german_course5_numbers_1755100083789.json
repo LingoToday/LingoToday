@@ -1,0 +1,224 @@
+{
+  "course5": {
+    "title": "Numbers",
+    "description": "Learn to count in German, from 0 to 100, and understand the reversed structure used for numbers above 20.",
+    "lessons": {
+      "lesson1": {
+        "title": "0–10",
+        "step1": {
+          "german": "null, eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn",
+          "english": "zero, one, two, three, four, five, six, seven, eight, nine, ten",
+          "audio": "null, eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn",
+          "note": "Practice pronunciation. 'zwei' sounds like 'tsvai'.",
+          "mcq": {
+            "question": "What is 'five' in German?",
+            "options": [
+              "vier",
+              "fünf",
+              "sechs",
+              "acht"
+            ],
+            "answer": "fünf"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = five",
+          "expected_answer": "fünf",
+          "alt_answers": [
+            "fuenf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "fünf",
+          "options": [
+            "five",
+            "four",
+            "six",
+            "eight"
+          ],
+          "answer": "five"
+        }
+      },
+      "lesson2": {
+        "title": "11–20",
+        "step1": {
+          "german": "elf, zwölf, dreizehn, vierzehn, fünfzehn, sechzehn, siebzehn, achtzehn, neunzehn, zwanzig",
+          "english": "eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty",
+          "audio": "elf, zwölf, dreizehn, vierzehn, fünfzehn, sechzehn, siebzehn, achtzehn, neunzehn, zwanzig",
+          "note": "'zwölf' is irregular, and numbers 13–19 combine root + 'zehn'.",
+          "mcq": {
+            "question": "What is 'twelve' in German?",
+            "options": [
+              "zwölf",
+              "elf",
+              "zehn",
+              "zwanzig"
+            ],
+            "answer": "zwölf"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = twelve",
+          "expected_answer": "zwölf",
+          "alt_answers": [
+            "zwoelf"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "zwölf",
+          "options": [
+            "twelve",
+            "eleven",
+            "ten",
+            "twenty"
+          ],
+          "answer": "twelve"
+        }
+      },
+      "lesson3": {
+        "title": "Tens 20–100",
+        "step1": {
+          "german": "zwanzig, dreißig, vierzig, fünfzig, sechzig, siebzig, achtzig, neunzig, hundert",
+          "english": "twenty, thirty, forty, fifty, sixty, seventy, eighty, ninety, hundred",
+          "audio": "zwanzig, dreißig, vierzig, fünfzig, sechzig, siebzig, achtzig, neunzig, hundert",
+          "note": "Watch for irregular forms like 'dreißig' (from drei).",
+          "mcq": {
+            "question": "What is 'forty' in German?",
+            "options": [
+              "vierzig",
+              "fünfzig",
+              "dreißig",
+              "sechzig"
+            ],
+            "answer": "vierzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "___ = forty",
+          "expected_answer": "vierzig",
+          "alt_answers": [
+            "vierzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "vierzig",
+          "options": [
+            "forty",
+            "thirty",
+            "fifty",
+            "sixty"
+          ],
+          "answer": "forty"
+        }
+      },
+      "lesson4": {
+        "title": "Reverse numbers 21–99",
+        "step1": {
+          "german": "einundzwanzig, zweiundzwanzig, dreiundvierzig, fünfundsechzig",
+          "english": "twenty-one, twenty-two, forty-three, sixty-five",
+          "audio": "einundzwanzig, zweiundzwanzig, dreiundvierzig, fünfundsechzig",
+          "note": "In German, units come first, then 'und', then tens.",
+          "mcq": {
+            "question": "How do you say 'twenty-one' in German?",
+            "options": [
+              "zwanzigeins",
+              "einundzwanzig",
+              "einszwanzig",
+              "zwanzigund"
+            ],
+            "answer": "einundzwanzig"
+          }
+        },
+        "step2": {
+          "type_prompt": "____undzwanzig = twenty-one",
+          "expected_answer": "einundzwanzig",
+          "alt_answers": [
+            "Einundzwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "einundzwanzig",
+          "options": [
+            "twenty-one",
+            "twenty-two",
+            "forty-three",
+            "sixty-five"
+          ],
+          "answer": "twenty-one"
+        }
+      },
+      "lesson5": {
+        "title": "Asking age (informal/formal)",
+        "step1": {
+          "german": "Wie alt bist du? / Wie alt sind Sie?",
+          "english": "How old are you? (informal/formal)",
+          "audio": "Wie alt bist du? / Wie alt sind Sie?",
+          "note": "Use 'bist du' with friends, 'sind Sie' with strangers or in formal contexts.",
+          "mcq": {
+            "question": "Which is the informal version of 'How old are you?'",
+            "options": [
+              "Wie alt bist du?",
+              "Wie alt sind Sie?",
+              "Was bist du alt?",
+              "Wie bist du alt?"
+            ],
+            "answer": "Wie alt bist du?"
+          }
+        },
+        "step2": {
+          "type_prompt": "Wie alt ____ du? = How old are you? (informal)",
+          "expected_answer": "bist",
+          "alt_answers": [
+            "Bist"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Wie alt sind Sie?",
+          "options": [
+            "How old are you? (formal)",
+            "How old are you? (informal)",
+            "What time is it?",
+            "Where are you from?"
+          ],
+          "answer": "How old are you? (formal)"
+        }
+      },
+      "lesson6": {
+        "title": "Saying your age",
+        "step1": {
+          "german": "Ich bin ... Jahre alt",
+          "english": "I am ... years old",
+          "audio": "Ich bin ... Jahre alt",
+          "note": "Use a number in the gap: 'Ich bin dreißig Jahre alt'.",
+          "mcq": {
+            "question": "How do you say 'I am thirty years old' in German?",
+            "options": [
+              "Ich bin dreißig Jahre alt",
+              "Ich habe dreißig Jahre",
+              "Ich dreißig Jahre alt",
+              "Ich alt dreißig Jahre"
+            ],
+            "answer": "Ich bin dreißig Jahre alt"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ich bin ___ Jahre alt = I am 25 years old",
+          "expected_answer": "fünfundzwanzig",
+          "alt_answers": [
+            "Fünfundzwanzig"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ich bin fünfundzwanzig Jahre alt",
+          "options": [
+            "I am 25 years old",
+            "I am 35 years old",
+            "I am 20 years old",
+            "I am 15 years old"
+          ],
+          "answer": "I am 25 years old"
+        }
+      }
+    }
+  }
+}

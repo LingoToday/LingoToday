@@ -1,0 +1,92 @@
+{
+  "italian": {
+    "week_1": {
+      "day_1": {
+        "id": "italian_w1_d1",
+        "title": "Basic Greetings",
+        "quiz": {
+          "question": "How do you say 'Hello' in Italian?",
+          "correct_answer": "Ciao",
+          "options": ["Ciao", "Grazie", "Prego", "Arrivederci"]
+        },
+        "vocabulary": [
+          {"italian": "Ciao", "english": "Hello/Goodbye", "pronunciation": "chah-oh"},
+          {"italian": "Buongiorno", "english": "Good morning", "pronunciation": "bwohn-jor-noh"},
+          {"italian": "Buonasera", "english": "Good evening", "pronunciation": "bwoh-nah-seh-rah"},
+          {"italian": "Arrivederci", "english": "Goodbye", "pronunciation": "ah-ree-veh-der-chee"}
+        ]
+      },
+      "day_2": {
+        "id": "italian_w1_d2",
+        "title": "Numbers 1–10",
+        "quiz": {
+          "question": "How do you say 'five' in Italian?",
+          "correct_answer": "cinque",
+          "options": ["quattro", "cinque", "sei", "sette"]
+        },
+        "vocabulary": [
+          {"italian": "uno", "english": "one", "pronunciation": "oo-noh"},
+          {"italian": "due", "english": "two", "pronunciation": "doo-eh"},
+          {"italian": "tre", "english": "three", "pronunciation": "treh"},
+          {"italian": "quattro", "english": "four", "pronunciation": "kwaht-troh"},
+          {"italian": "cinque", "english": "five", "pronunciation": "cheen-kweh"}
+        ]
+      }
+    },
+    "week_2": {
+      "day_1": {
+        "id": "italian_w2_d1",
+        "title": "Family Members",
+        "quiz": {
+          "question": "How do you say 'mother' in Italian?",
+          "correct_answer": "madre",
+          "options": ["padre", "madre", "fratello", "sorella"]
+        },
+        "vocabulary": [
+          {"italian": "madre", "english": "mother", "pronunciation": "mah-dreh"},
+          {"italian": "padre", "english": "father", "pronunciation": "pah-dreh"},
+          {"italian": "fratello", "english": "brother", "pronunciation": "frah-tel-loh"},
+          {"italian": "sorella", "english": "sister", "pronunciation": "soh-rel-lah"}
+        ]
+      }
+    }
+  },
+  "french": {
+    "week_1": {
+      "day_1": {
+        "id": "french_w1_d1",
+        "title": "Basic Greetings",
+        "quiz": {
+          "question": "How do you say 'Hello' in French?",
+          "correct_answer": "Bonjour",
+          "options": ["Bonjour", "Merci", "Au revoir", "Bonsoir"]
+        },
+        "vocabulary": [
+          {"french": "Bonjour", "english": "Hello/Good morning", "pronunciation": "bon-zhoor"},
+          {"french": "Bonsoir", "english": "Good evening", "pronunciation": "bon-swahr"},
+          {"french": "Au revoir", "english": "Goodbye", "pronunciation": "oh ruh-vwahr"},
+          {"french": "Salut", "english": "Hi/Bye (informal)", "pronunciation": "sah-luu"}
+        ]
+      }
+    }
+  },
+  "spanish": {
+    "week_1": {
+      "day_1": {
+        "id": "spanish_w1_d1",
+        "title": "Basic Greetings",
+        "quiz": {
+          "question": "How do you say 'Hello' in Spanish?",
+          "correct_answer": "Hola",
+          "options": ["Hola", "Gracias", "Adiós", "Buenos días"]
+        },
+        "vocabulary": [
+          {"spanish": "Hola", "english": "Hello", "pronunciation": "OH-lah"},
+          {"spanish": "Buenos días", "english": "Good morning", "pronunciation": "BWAY-nohs DEE-ahs"},
+          {"spanish": "Buenas tardes", "english": "Good afternoon", "pronunciation": "BWAY-nahs TAR-dehs"},
+          {"spanish": "Adiós", "english": "Goodbye", "pronunciation": "ah-THYOHS"}
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,890 @@
+{
+  "course1": {
+    "title": "Greetings",
+    "description": "Learn the most common ways to say hello and goodbye in Italian. Each lesson follows a three-step micro-lesson approach. Step 2 uses typing for active recall.",
+    "lessons": {
+      "lesson1": {
+        "title": "Hi / Bye",
+        "step1": {
+          "italian": "Ciao!",
+          "english": "Hi / Bye",
+          "audio": "Ciao!",
+          "note": "Casual and friendly — use with friends and people you know well. Works for hello or goodbye.",
+          "mcq": {
+            "question": "Which phrase means 'Hi / Bye'?",
+            "options": [
+              "Arrivederci",
+              "Ciao",
+              "Buonasera",
+              "Salve"
+            ],
+            "answer": "Ciao"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ci__!  = Hi / Bye",
+          "expected_answer": "Ciao!",
+          "alt_answers": [
+            "Ciao",
+            "ciao!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ciao!",
+          "options": [
+            "Hi!",
+            "Goodbye!",
+            "Good evening!",
+            "Hello!"
+          ],
+          "answer": "Hi!"
+        }
+      },
+      "lesson2": {
+        "title": "Hello",
+        "step1": {
+          "italian": "Salve!",
+          "english": "Hello",
+          "audio": "Salve!",
+          "note": "Polite but relaxed — good for strangers or when you want to be safe and friendly.",
+          "mcq": {
+            "question": "Which phrase means 'Hello' (polite)?",
+            "options": [
+              "Ciao",
+              "Salve",
+              "Buongiorno",
+              "Buonanotte"
+            ],
+            "answer": "Salve"
+          }
+        },
+        "step2": {
+          "type_prompt": "Sa__e!  = Hello",
+          "expected_answer": "Salve!",
+          "alt_answers": [
+            "Salve",
+            "salve!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Salve!",
+          "options": [
+            "Hello!",
+            "Hi!",
+            "Good morning!",
+            "Goodbye!"
+          ],
+          "answer": "Hello!"
+        }
+      },
+      "lesson3": {
+        "title": "Good morning / Good day",
+        "step1": {
+          "italian": "Buongiorno",
+          "english": "Good morning / Good day",
+          "audio": "Buongiorno",
+          "note": "Used until early afternoon. Common in shops, cafes, or first meetings.",
+          "mcq": {
+            "question": "Which phrase means 'Good morning'?",
+            "options": [
+              "Buonanotte",
+              "Buongiorno",
+              "Buonasera",
+              "Arrivederci"
+            ],
+            "answer": "Buongiorno"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buon__orno  = Good morning",
+          "expected_answer": "Buongiorno",
+          "alt_answers": [
+            "buongiorno"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buongiorno!",
+          "options": [
+            "Good morning!",
+            "Good evening!",
+            "Good night!",
+            "Hello!"
+          ],
+          "answer": "Good morning!"
+        }
+      },
+      "lesson4": {
+        "title": "Good evening",
+        "step1": {
+          "italian": "Buonasera",
+          "english": "Good evening",
+          "audio": "Buonasera",
+          "note": "Switch to this late afternoon or evening — polite and friendly.",
+          "mcq": {
+            "question": "Which phrase means 'Good evening'?",
+            "options": [
+              "Buonanotte",
+              "Buonasera",
+              "Buongiorno",
+              "Ciao"
+            ],
+            "answer": "Buonasera"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buona__ra  = Good evening",
+          "expected_answer": "Buonasera",
+          "alt_answers": [
+            "buonasera"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buonasera!",
+          "options": [
+            "Good evening!",
+            "Good night!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Good evening!"
+        }
+      },
+      "review1": {
+        "title": "Review: Lessons 1–4",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Hi / Bye'?",
+            "options": [
+              "A presto",
+              "Piacere!",
+              "Ciao!",
+              "Buon pomeriggio"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Which phrase means 'Hello'?",
+            "options": [
+              "Buona giornata",
+              "A presto",
+              "Buon pomeriggio",
+              "Salve!"
+            ],
+            "answer": "Salve!"
+          },
+          {
+            "prompt": "Which phrase means 'Good morning / Good day'?",
+            "options": [
+              "Buongiorno",
+              "Piacere!",
+              "Buonasera",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buongiorno"
+          },
+          {
+            "prompt": "Which phrase means 'Good evening'?",
+            "options": [
+              "Piacere!",
+              "Buonanotte",
+              "Buona serata",
+              "Buonasera"
+            ],
+            "answer": "Buonasera"
+          },
+          {
+            "prompt": "Select the correct Italian for: Hi / Bye",
+            "options": [
+              "Ciao!",
+              "Buonanotte",
+              "Buona giornata",
+              "Ci vediamo (dopo)"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Select the correct Italian for: Hello",
+            "options": [
+              "Piacere!",
+              "Salve!",
+              "Buongiorno",
+              "Buonanotte"
+            ],
+            "answer": "Salve!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl1": {
+        "title": "IRL Video Challenge 1",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/street_or_cafe_greeting.mp4",
+            "prompt": "You meet someone on the street in the morning. They greet you with 'Buongiorno!'. How do you reply?",
+            "answer_prompt": "Reply with an appropriate morning greeting.",
+            "expected_answers": [
+              "Buongiorno!",
+              "Salve!",
+              "Ciao!",
+              "Ciao, buongiorno!"
+            ]
+          }
+        ]
+      },
+      "lesson5": {
+        "title": "Good afternoon",
+        "step1": {
+          "italian": "Buon pomeriggio",
+          "english": "Good afternoon",
+          "audio": "Buon pomeriggio",
+          "note": "Less common — Italians often say 'buongiorno' or 'buonasera' instead.",
+          "mcq": {
+            "question": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "Buon pomeriggio",
+              "Buongiorno",
+              "Buonasera",
+              "Buonanotte"
+            ],
+            "answer": "Buon pomeriggio"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buon pome__ggio  = Good afternoon",
+          "expected_answer": "Buon pomeriggio",
+          "alt_answers": [
+            "buon pomeriggio"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buon pomeriggio!",
+          "options": [
+            "Good afternoon!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Good afternoon!"
+        }
+      },
+      "lesson6": {
+        "title": "Good night",
+        "step1": {
+          "italian": "Buonanotte",
+          "english": "Good night",
+          "audio": "Buonanotte",
+          "note": "Say when you’re leaving at night or before going to bed — not as a greeting.",
+          "mcq": {
+            "question": "Which phrase means 'Good night'?",
+            "options": [
+              "Buongiorno",
+              "Buonasera",
+              "Buonanotte",
+              "Arrivederci"
+            ],
+            "answer": "Buonanotte"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buona__tte  = Good night",
+          "expected_answer": "Buonanotte",
+          "alt_answers": [
+            "buonanotte"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buonanotte!",
+          "options": [
+            "Good night!",
+            "Good evening!",
+            "Good morning!",
+            "Goodbye!"
+          ],
+          "answer": "Good night!"
+        }
+      },
+      "lesson7": {
+        "title": "Have a nice day",
+        "step1": {
+          "italian": "Buona giornata",
+          "english": "Have a nice day",
+          "audio": "Buona giornata",
+          "note": "A friendly farewell during the day — pairs well after 'buongiorno'.",
+          "mcq": {
+            "question": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Buona serata",
+              "Buona giornata",
+              "Arrivederci",
+              "Ciao"
+            ],
+            "answer": "Buona giornata"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buona gior__ta  = Have a nice day",
+          "expected_answer": "Buona giornata",
+          "alt_answers": [
+            "buona giornata"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buona giornata!",
+          "options": [
+            "Have a nice day!",
+            "Good evening!",
+            "Good night!",
+            "Good morning!"
+          ],
+          "answer": "Have a nice day!"
+        }
+      },
+      "lesson8": {
+        "title": "Have a good evening",
+        "step1": {
+          "italian": "Buona serata",
+          "english": "Have a good evening",
+          "audio": "Buona serata",
+          "note": "Evening version of 'have a nice day' — use when parting.",
+          "mcq": {
+            "question": "Which phrase means 'Have a good evening'?",
+            "options": [
+              "Buona serata",
+              "Buona giornata",
+              "Buonanotte",
+              "Arrivederci"
+            ],
+            "answer": "Buona serata"
+          }
+        },
+        "step2": {
+          "type_prompt": "Buona se__ta  = Have a good evening",
+          "expected_answer": "Buona serata",
+          "alt_answers": [
+            "buona serata"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Buona serata!",
+          "options": [
+            "Have a good evening!",
+            "Good morning!",
+            "Good night!",
+            "Hello!"
+          ],
+          "answer": "Have a good evening!"
+        }
+      },
+      "review2": {
+        "title": "Review: Lessons 5–8",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Good afternoon'?",
+            "options": [
+              "Buon pomeriggio",
+              "Buonasera",
+              "Buona giornata",
+              "Ciao!"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Which phrase means 'Good night'?",
+            "options": [
+              "Buongiorno",
+              "Buonanotte",
+              "Ci vediamo (dopo)",
+              "Piacere!"
+            ],
+            "answer": "Buonanotte"
+          },
+          {
+            "prompt": "Which phrase means 'Have a nice day'?",
+            "options": [
+              "Salve!",
+              "Buona giornata",
+              "Ci vediamo (dopo)",
+              "Buona serata"
+            ],
+            "answer": "Buona giornata"
+          },
+          {
+            "prompt": "Which phrase means 'Have a good evening'?",
+            "options": [
+              "A presto",
+              "Ci vediamo (dopo)",
+              "Buonanotte",
+              "Buona serata"
+            ],
+            "answer": "Buona serata"
+          },
+          {
+            "prompt": "Select the correct Italian for: Good afternoon",
+            "options": [
+              "Ciao!",
+              "Buonasera",
+              "Piacere!",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Select the correct Italian for: Good night",
+            "options": [
+              "Arrivederci",
+              "Ciao!",
+              "Salve!",
+              "Buonanotte"
+            ],
+            "answer": "Buonanotte"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl2": {
+        "title": "IRL Video Challenge 2",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/cafe_farewell.mp4",
+            "prompt": "A friend is leaving dinner in the evening. How do you respond to say goodbye and wish them a good evening?",
+            "answer_prompt": "Reply: 'Goodbye, have a good evening!'",
+            "expected_answers": [
+              "Buona serata!",
+              "Ciao, buona serata!"
+            ]
+          }
+        ]
+      },
+      "lesson9": {
+        "title": "Goodbye",
+        "step1": {
+          "italian": "Arrivederci",
+          "english": "Goodbye",
+          "audio": "Arrivederci",
+          "note": "Standard and polite — safe in almost any situation.",
+          "mcq": {
+            "question": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Ciao",
+              "Arrivederci",
+              "Salve",
+              "Buonasera"
+            ],
+            "answer": "Arrivederci"
+          }
+        },
+        "step2": {
+          "type_prompt": "Arriv__erci  = Goodbye",
+          "expected_answer": "Arrivederci",
+          "alt_answers": [
+            "arrivederci"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Arrivederci!",
+          "options": [
+            "Goodbye!",
+            "Hello!",
+            "Good evening!",
+            "Good night!"
+          ],
+          "answer": "Goodbye!"
+        }
+      },
+      "lesson10": {
+        "title": "Bye! (farewell)",
+        "step1": {
+          "italian": "Ciao!",
+          "english": "Bye!",
+          "audio": "Ciao!",
+          "note": "Same as 'hi', but used when leaving.",
+          "mcq": {
+            "question": "Which phrase means 'Bye!' (informal)?",
+            "options": [
+              "Ciao",
+              "Arrivederci",
+              "Buonanotte",
+              "Salve"
+            ],
+            "answer": "Ciao"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ci__!  = Bye!",
+          "expected_answer": "Ciao!",
+          "alt_answers": [
+            "Ciao",
+            "ciao!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ciao!",
+          "options": [
+            "Bye!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "Bye!"
+        }
+      },
+      "lesson11": {
+        "title": "See you soon",
+        "step1": {
+          "italian": "A presto",
+          "english": "See you soon",
+          "audio": "A presto",
+          "note": "Use if you think you’ll see them again soon.",
+          "mcq": {
+            "question": "Which phrase means 'See you soon'?",
+            "options": [
+              "A presto",
+              "Arrivederci",
+              "Buonanotte",
+              "Ciao"
+            ],
+            "answer": "A presto"
+          }
+        },
+        "step2": {
+          "type_prompt": "A pr__to  = See you soon",
+          "expected_answer": "A presto",
+          "alt_answers": [
+            "a presto"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "A presto!",
+          "options": [
+            "See you soon!",
+            "Good evening!",
+            "Good morning!",
+            "Hello!"
+          ],
+          "answer": "See you soon!"
+        }
+      },
+      "lesson12": {
+        "title": "See you (later)",
+        "step1": {
+          "italian": "Ci vediamo (dopo)",
+          "english": "See you (later)",
+          "audio": "Ci vediamo (dopo)",
+          "note": "Casual — 'later' is optional.",
+          "mcq": {
+            "question": "Which phrase means 'See you (later)'?",
+            "options": [
+              "Ci vediamo (dopo)",
+              "Arrivederci",
+              "Buona serata",
+              "Buona giornata"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          }
+        },
+        "step2": {
+          "type_prompt": "Ci ved__mo (dopo)  = See you (later)",
+          "expected_answer": "Ci vediamo (dopo)",
+          "alt_answers": [
+            "Ci vediamo",
+            "ci vediamo (dopo)"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Ci vediamo!",
+          "options": [
+            "See you!",
+            "Goodbye!",
+            "Good night!",
+            "Hello!"
+          ],
+          "answer": "See you!"
+        }
+      },
+      "review3": {
+        "title": "Review: Lessons 9–12",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Which phrase means 'Goodbye'?",
+            "options": [
+              "Arrivederci",
+              "A presto",
+              "Buona serata",
+              "Buon pomeriggio"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Which phrase means 'Bye!'?",
+            "options": [
+              "Buonasera",
+              "Buonanotte",
+              "Arrivederci",
+              "Ciao!"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Which phrase means 'See you soon'?",
+            "options": [
+              "Ci vediamo (dopo)",
+              "Buona serata",
+              "A presto",
+              "Buona giornata"
+            ],
+            "answer": "A presto"
+          },
+          {
+            "prompt": "Which phrase means 'See you (later)'?",
+            "options": [
+              "Buona giornata",
+              "Ci vediamo (dopo)",
+              "A presto",
+              "Arrivederci"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          },
+          {
+            "prompt": "Select the correct Italian for: Goodbye",
+            "options": [
+              "Buon pomeriggio",
+              "Arrivederci",
+              "Piacere!",
+              "Ciao!"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Select the correct Italian for: Bye!",
+            "options": [
+              "Buonasera",
+              "Buongiorno",
+              "Buon pomeriggio",
+              "Ciao!"
+            ],
+            "answer": "Ciao!"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 4,
+          "questions": 6
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson13": {
+        "title": "Pleased to meet you",
+        "step1": {
+          "italian": "Piacere!",
+          "english": "Pleased to meet you!",
+          "audio": "Piacere!",
+          "note": "'Piacere!' works on its own. Add 'di conoscerti' (informal) or 'di conoscerla' (formal) later for more detail.",
+          "mcq": {
+            "question": "Which phrase means 'Pleased to meet you'?",
+            "options": [
+              "Arrivederci",
+              "Piacere!",
+              "Buonasera",
+              "Ciao"
+            ],
+            "answer": "Piacere!"
+          }
+        },
+        "step2": {
+          "type_prompt": "Pia__re!  = Pleased to meet you!",
+          "expected_answer": "Piacere!",
+          "alt_answers": [
+            "piacere!"
+          ]
+        },
+        "step3": {
+          "audio_sentence": "Piacere!",
+          "options": [
+            "Pleased to meet you!",
+            "Good evening!",
+            "Hello!",
+            "Good morning!"
+          ],
+          "answer": "Pleased to meet you!"
+        }
+      },
+      "review_final": {
+        "title": "Final Review: Lessons 1–13",
+        "mode": "mcq",
+        "questions": [
+          {
+            "prompt": "Translate to Italian: Hi / Bye",
+            "options": [
+              "Buon pomeriggio",
+              "Ciao!",
+              "Arrivederci",
+              "Ci vediamo (dopo)"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Translate to Italian: Hello",
+            "options": [
+              "Salve!",
+              "Piacere!",
+              "Ci vediamo (dopo)",
+              "Buonanotte"
+            ],
+            "answer": "Salve!"
+          },
+          {
+            "prompt": "Translate to Italian: Good morning / Good day",
+            "options": [
+              "Buongiorno",
+              "Piacere!",
+              "Ciao!"
+            ],
+            "answer": "Buongiorno"
+          },
+          {
+            "prompt": "Translate to Italian: Good evening",
+            "options": [
+              "Buona serata",
+              "Arrivederci",
+              "Piacere!",
+              "Buonasera"
+            ],
+            "answer": "Buonasera"
+          },
+          {
+            "prompt": "Translate to Italian: Good afternoon",
+            "options": [
+              "Buon pomeriggio",
+              "Piacere!",
+              "Arrivederci",
+              "Buongiorno"
+            ],
+            "answer": "Buon pomeriggio"
+          },
+          {
+            "prompt": "Translate to Italian: Good night",
+            "options": [
+              "Ci vediamo (dopo)",
+              "A presto",
+              "Ciao!",
+              "Buonanotte"
+            ],
+            "answer": "Buonanotte"
+          },
+          {
+            "prompt": "Translate to Italian: Have a nice day",
+            "options": [
+              "Buona giornata",
+              "Buongiorno",
+              "Buonasera",
+              "Buon pomeriggio"
+            ],
+            "answer": "Buona giornata"
+          },
+          {
+            "prompt": "Translate to Italian: Have a good evening",
+            "options": [
+              "Arrivederci",
+              "Ciao!",
+              "Ci vediamo (dopo)",
+              "Buona serata"
+            ],
+            "answer": "Buona serata"
+          },
+          {
+            "prompt": "Translate to Italian: Goodbye",
+            "options": [
+              "Ciao!",
+              "Arrivederci",
+              "Buona giornata",
+              "Buongiorno"
+            ],
+            "answer": "Arrivederci"
+          },
+          {
+            "prompt": "Translate to Italian: Bye!",
+            "options": [
+              "Salve!",
+              "Ciao!",
+              "Buonanotte",
+              "A presto"
+            ],
+            "answer": "Ciao!"
+          },
+          {
+            "prompt": "Translate to Italian: See you soon",
+            "options": [
+              "A presto",
+              "Buonasera",
+              "Buona giornata",
+              "Ciao!"
+            ],
+            "answer": "A presto"
+          },
+          {
+            "prompt": "Translate to Italian: See you (later)",
+            "options": [
+              "Buon pomeriggio",
+              "Arrivederci",
+              "Ci vediamo (dopo)",
+              "Salve!"
+            ],
+            "answer": "Ci vediamo (dopo)"
+          }
+        ],
+        "pass_rule": {
+          "min_correct": 9,
+          "questions": 12
+        },
+        "on_fail": {
+          "action": "repeat_now"
+        },
+        "on_pass": {
+          "action": "continue"
+        }
+      },
+      "lesson_irl3": {
+        "title": "IRL Video Challenge 3",
+        "steps": [
+          {
+            "type": "video",
+            "video_url": "videos/doorway_goodbye.mp4",
+            "prompt": "You’ve just met someone new and it’s time to part ways. They say goodbye politely.",
+            "answer_prompt": "Reply politely: 'Nice to meet you! Goodbye!'",
+            "expected_answers": [
+              "Piacere! Arrivederci!",
+              "Piacere, arrivederci!"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
