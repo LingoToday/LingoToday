@@ -535,14 +535,6 @@ export default function Dashboard() {
                 </div>
                 <h1 className="text-xl font-bold text-gray-900">LingoToday</h1>
               </div>
-              
-              <nav className="flex space-x-8 ml-8">
-                <Link href="/dashboard">
-                  <Button variant="ghost" className="text-blue-600">
-                    Dashboard
-                  </Button>
-                </Link>
-              </nav>
             </div>
             
             <div className="flex items-center space-x-4">
