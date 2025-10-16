@@ -89,8 +89,6 @@ export type RootStackParamList = {
   Checkpoint: {
     checkpointId: number;
   };
-  Subscribe: undefined;
-  Subscription: undefined;
 };
 
 export type MainTabParamList = {
