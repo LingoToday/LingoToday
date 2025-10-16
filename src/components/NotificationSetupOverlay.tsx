@@ -15,11 +15,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { ResizeMode, Video } from 'expo-av';
 
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import { Button } from './ui/Button';
 import { Switch } from './ui/Switch';
-import { theme } from '../lib/theme';
-
-const { width, height } = Dimensions.get('window');
+import { useNavigation } from '@react-navigation/native';
 
 interface NotificationSetupOverlayProps {
   isVisible: boolean;
@@ -34,6 +31,7 @@ export default function NotificationSetupOverlay({
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
   const videoRef = useRef<Video>(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (isVisible) {
@@ -49,11 +47,11 @@ export default function NotificationSetupOverlay({
     setNotificationsEnabled(status === 'granted');
   };
 
-  // Steps matching web version exactly
+  // Steps matching web version exactly, but MOBILE wording
   const steps = [
     {
       title: "Enable Notifications",
-      content: "Turn on browser notifications to receive gentle reminders for your language lessons throughout the day.",
+      content: "Turn on mobile notifications to receive gentle reminders for your language lessons throughout the day.",
       icon: "notifications",
       iconColor: "#059669"
     },
@@ -101,11 +99,11 @@ export default function NotificationSetupOverlay({
   const getPermissionStatusText = () => {
     switch (notificationPermission) {
       case 'granted':
-        return '✓ Browser notifications are enabled';
+        return '✓ Mobile notifications are enabled';
       case 'denied':
-        return '⚠ Browser notifications are blocked. Check your browser settings.';
+        return '⚠ Mobile notifications are blocked. Check your device settings.';
       default:
-        return 'Toggle to request browser notification permission';
+        return 'Toggle to request mobile notification permission';
     }
   };
 
@@ -121,7 +119,7 @@ export default function NotificationSetupOverlay({
   };
 
   const handleFAQPress = () => {
-    Linking.openURL('https://linguotoday.com/faq');
+    navigation.navigate('FAQ' as never);
   };
 
   if (!isVisible) return null;

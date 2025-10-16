@@ -12,6 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../lib/theme';
+import { Footer } from '../components/ui/Footer';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
@@ -102,6 +103,8 @@ export default function ApproachScreen() {
             </View>
           </View>
         </View>
+
+        <Footer />
       </ScrollView>
     </SafeAreaView>
   );

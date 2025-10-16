@@ -61,9 +61,10 @@ interface DashboardData {
   user: User;
   settings: {
     notificationsEnabled: boolean;
-    notificationFrequency: number;
-    notificationStartTime: string;
-    notificationEndTime: string;
+    mobileNotificationsEnabled: boolean;
+    mobileNotificationFrequency?: number;
+    mobileNotificationStartTime?: string;
+    mobileNotificationEndTime?: string;
     selectedLanguage: string;
   };
   stats: {
@@ -137,7 +138,7 @@ export default function DashboardScreenNew() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
-
+  
   // REMOVED: const [isDailySessionActive, setIsDailySessionActive] = useState(false);
   // We'll calculate this dynamically instead
 
@@ -155,9 +156,10 @@ export default function DashboardScreenNew() {
     },
     settings: {
       notificationsEnabled: false,
-      notificationFrequency: 15,
-      notificationStartTime: '09:00',
-      notificationEndTime: '18:00',
+      mobileNotificationsEnabled: false,
+      mobileNotificationFrequency: 15,
+      mobileNotificationStartTime: '09:00',
+      mobileNotificationEndTime: '18:00',
       selectedLanguage: user?.selectedLanguage || 'italian',
     },
     stats: {
@@ -200,16 +202,16 @@ useEffect(() => {
   // Handle notification tapped (app in background/closed)
   const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
     console.log('👆 Notification tapped:', response);
-
+    
     const data = response.notification.request.content.data;
-
+    
     if (data?.action === 'openLesson' && data?.courseId && data?.lessonId && data?.language) {
       console.log('🎯 Navigating to lesson:', {
         language: data.language,
         courseId: data.courseId,
         lessonId: data.lessonId
       });
-
+      
       // Navigate to the lesson
       navigation.navigate('Lesson', {
         language: data.language,
@@ -337,52 +339,52 @@ useEffect(() => {
 
   // ADDED: Dynamic calculation of daily session status
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
-
+  
   // Calculate if daily session is active dynamically
   const isDailySessionActive = React.useMemo(() => {
-    const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
+    const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
     const hasSessionTime = sessionStartTime !== null;
     const isWithinSessionWindow = hasSessionTime && sessionStartTime && 
       (Date.now() - sessionStartTime) < (8 * 60 * 60 * 1000); // 8 hours window
-
+    
     return notificationsEnabled && hasSessionTime && isWithinSessionWindow;
   }, [
-    effectiveDashboardData?.settings?.notificationsEnabled, 
+    effectiveDashboardData?.settings?.mobileNotificationsEnabled, 
     sessionStartTime
   ]);
 
   // ADDED: Effect to clear session when notifications are disabled
   useEffect(() => {
-    const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
-
+    const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
+    
     if (!notificationsEnabled && sessionStartTime) {
       console.log('🔕 Notifications disabled - clearing daily session');
       setSessionStartTime(null);
       // Cancel any scheduled notifications
       Notifications.cancelAllScheduledNotificationsAsync();
     }
-  }, [effectiveDashboardData?.settings?.notificationsEnabled, sessionStartTime]);
+  }, [effectiveDashboardData?.settings?.mobileNotificationsEnabled, sessionStartTime]);
 
   // UPDATED: Handle starting daily notification session
   const handleStartDailySession = async () => {
     try {
       // Check current permission status
       const { status: currentStatus } = await Notifications.getPermissionsAsync();
-
+      
       console.log('🔍 Checking daily session start:', {
         currentPermission: currentStatus,
-        settingsEnabled: effectiveDashboardData?.settings?.notificationsEnabled,
+        settingsEnabled: effectiveDashboardData?.settings?.mobileNotificationsEnabled,
         userLanguage: user?.selectedLanguage,
         currentSessionTime: sessionStartTime
       });
 
       // Check if notifications are enabled in settings AND permission is granted
-      const notificationsEnabled = effectiveDashboardData?.settings?.notificationsEnabled;
-
+      const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
+      
       if (currentStatus !== "granted") {
         // Request permission if not granted
         const { status: newStatus } = await Notifications.requestPermissionsAsync();
-
+        
         if (newStatus !== "granted") {
           Alert.alert(
             "Permission required",
@@ -416,14 +418,14 @@ useEffect(() => {
       }
 
       if (user?.selectedLanguage) {
-        const frequency = effectiveDashboardData?.settings?.notificationFrequency || 15;
-
+        const frequency = effectiveDashboardData?.settings?.mobileNotificationFrequency || 15;
+        
         // FIXED: Set session start time
         setSessionStartTime(Date.now());
-
+        
         // Schedule actual notifications
         await scheduleNotificationSession(user.selectedLanguage, frequency);
-
+        
         Alert.alert(
           "Daily session started!",
           `You'll receive ${getLanguageDisplayName(user.selectedLanguage)} lesson reminders every ${frequency} minutes.`,
@@ -450,13 +452,13 @@ useEffect(() => {
   const handleStopDailySession = async () => {
     try {
       console.log('🛑 Stopping daily session');
-
+      
       // Cancel all scheduled notifications
       await Notifications.cancelAllScheduledNotificationsAsync();
-
+      
       // Clear session time
       setSessionStartTime(null);
-
+      
       Alert.alert(
         "Daily session stopped",
         "All scheduled lesson reminders have been cancelled.",
@@ -477,23 +479,23 @@ useEffect(() => {
     try {
       // Cancel any existing notifications first
       await Notifications.cancelAllScheduledNotificationsAsync();
-
+      
       // Get language-specific notification content
       const notificationContent = getLanguageSpecificNotification(language);
-
+      
       // Get next lesson info for navigation
       const nextLesson = upcomingLessons[0] || {
         courseId: 'course1',
         lessonId: 'lesson1'
       };
-
+      
       // Schedule notifications for the next 8 hours
       const notifications = [];
       const now = new Date();
       const endTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // 8 hours from now
-
+      
       let nextTime = new Date(now.getTime() + (frequency * 60 * 1000)); // First notification after frequency minutes
-
+      
       while (nextTime <= endTime) {
         notifications.push(
           Notifications.scheduleNotificationAsync({
@@ -515,11 +517,11 @@ useEffect(() => {
             trigger: { type: SchedulableTriggerInputTypes.DATE, date: nextTime },
           })
         );
-
+        
         // Schedule next notification
         nextTime = new Date(nextTime.getTime() + (frequency * 60 * 1000));
       }
-
+      
       await Promise.all(notifications);
       console.log(`📅 Scheduled ${notifications.length} notifications for ${language} session`);
     } catch (error) {
@@ -652,13 +654,13 @@ useEffect(() => {
   ];
 
   const totalPossibleLessons = courseData.reduce((sum, course) => sum + course.totalLessons, 0);
-
+  
   const learningPath = courseData.map((course, index) => {
     const courseProgress = allProgress.filter(p => p.courseId === `course${index + 1}`);
     const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
     const total = course.totalLessons;
     const completion = total > 0 ? (completed / total) * 100 : 0;
-
+    
     let status = 'locked';
     if (index === 0) {
       status = completion === 100 ? 'completed' : completion > 0 ? 'current' : 'available';
@@ -667,7 +669,7 @@ useEffect(() => {
     } else if (completion > 0) {
       status = 'current';
     }
-
+    
     return {
       name: course.name,
       progress: `${completed}/${total}`,
@@ -678,23 +680,23 @@ useEffect(() => {
 
   // FIXED: Update the condition for showing daily session button
   const shouldShowDailySessionButton = !isDailySessionActive && 
-    effectiveDashboardData?.settings?.notificationsEnabled;
-
+    effectiveDashboardData?.settings?.mobileNotificationsEnabled;
+  
   const shouldShowActiveSession = isDailySessionActive && 
-    effectiveDashboardData?.settings?.notificationsEnabled;
+    effectiveDashboardData?.settings?.mobileNotificationsEnabled;
 
   // ADDED: Get session remaining time for display
   const getSessionRemainingTime = (): string => {
     if (!sessionStartTime) return '';
-
+    
     const elapsed = Date.now() - sessionStartTime;
     const remaining = (8 * 60 * 60 * 1000) - elapsed; // 8 hours total
-
+    
     if (remaining <= 0) return 'Session expired';
-
+    
     const hours = Math.floor(remaining / (60 * 60 * 1000));
     const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-
+    
     if (hours > 0) {
       return `${hours}h ${minutes}m remaining`;
     } else {
@@ -715,12 +717,12 @@ useEffect(() => {
                 </View>
                 <Text style={styles.logoText}>LingoToday</Text>
               </View>
-
+              
               <TouchableOpacity style={styles.dashboardButton}>
                 <Text style={styles.dashboardButtonText}>Dashboard</Text>
               </TouchableOpacity>
             </View>
-
+            
             <View style={styles.headerRight}>
               <TouchableOpacity 
                 style={styles.accountButton}
@@ -768,7 +770,7 @@ useEffect(() => {
                         {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')}
                       </Text> learning journey
                     </Text>
-
+                    
                     {/* Level and Progress */}
                     <View style={styles.levelContainer}>
                       <Badge style={styles.levelBadge}>
@@ -793,12 +795,12 @@ useEffect(() => {
                         <Text style={[styles.statValue, { color: '#2563eb' }]}>{stats.streak}</Text>
                         <Text style={[styles.statLabel, { color: '#1e40af' }]}>Day Streak</Text>
                       </View>
-
+                      
                       <View style={[styles.statCard, styles.statCardGreen]}>
                         <Text style={[styles.statValue, { color: '#059669' }]}>{stats.lessonsCompleted}</Text>
                         <Text style={[styles.statLabel, { color: '#047857' }]}>Lessons Done</Text>
                       </View>
-
+                      
                       <View style={[styles.statCard, styles.statCardPurple]}>
                         <Text style={[styles.statValue, { color: '#7c3aed' }]}>{stats.wordsLearned}</Text>
                         <Text style={[styles.statLabel, { color: '#6b21a8' }]}>Words Learned</Text>
@@ -868,7 +870,7 @@ useEffect(() => {
                           Daily learning session is active
                         </Text>
                         <Text style={styles.activeSessionSubtitle}>
-                          Reminders every {settings?.notificationFrequency || 15} minutes • {getSessionRemainingTime()}
+                          Reminders every {settings?.mobileNotificationFrequency || 15} minutes • {getSessionRemainingTime()}
                         </Text>
                       </View>
                       <TouchableOpacity 
@@ -882,7 +884,7 @@ useEffect(() => {
                 )}
 
                 {/* ADDED: Show info when notifications are disabled */}
-                {!effectiveDashboardData?.settings?.notificationsEnabled && (
+                {!effectiveDashboardData?.settings?.mobileNotificationsEnabled && (
                   <Card style={styles.disabledNotificationCard}>
                     <CardContent style={styles.disabledNotificationContent}>
                       <View style={styles.disabledNotificationIcon}>
@@ -1013,7 +1015,7 @@ useEffect(() => {
                         </View>
                       </View>
                     ))}
-
+                    
                     <TouchableOpacity style={styles.viewAllButton}>
                       <Text style={styles.viewAllButtonText}>View all lessons</Text>
                     </TouchableOpacity>
@@ -1064,7 +1066,7 @@ useEffect(() => {
                         </Text>
                       </View>
                     ))}
-
+                    
                     <View style={styles.pathFooter}>
                       <Text style={styles.pathFooterTitle}>
                         Complete {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} Course
@@ -1126,7 +1128,7 @@ useEffect(() => {
             <Footer />
           </View>
         </ScrollView>
-
+        
         {/* Notification Setup Overlay */}
         <NotificationSetupOverlay 
           isVisible={showNotificationSetup} 
@@ -1798,7 +1800,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  
   disabledNotificationCard: {
     borderRadius: 8,
     borderWidth: 2,

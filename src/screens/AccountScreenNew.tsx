@@ -119,6 +119,10 @@ export default function AccountScreen() {
     );
   };
 
+  const handleNavigateToDashboard = () => {
+    navigation.navigate('Dashboard' as never);
+  };
+
   const handleNavigateToSubscription = () => {
     navigation.navigate('Subscription' as never);
   };
@@ -163,7 +167,7 @@ export default function AccountScreen() {
           <View style={styles.headerLeft}>
             <TouchableOpacity 
               style={styles.backButton}
-              onPress={() => navigation.navigate('Dashboard' as never)}
+              onPress={handleNavigateToDashboard}
               testID="back-to-dashboard"
             >
               <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
@@ -380,7 +384,7 @@ export default function AccountScreen() {
                   <Ionicons name="card" size={16} color={theme.colors.foreground} />
                   <Text style={styles.actionButtonText}>Subscription details</Text>
                 </TouchableOpacity>
-                
+                 
                 <TouchableOpacity 
                   style={[styles.actionButton, styles.signOutButton]}
                   onPress={handleLogout}

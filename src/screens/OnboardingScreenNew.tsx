@@ -12,11 +12,11 @@ import {
   KeyboardAvoidingView, // ADD THIS
   Platform, // ADD THIS
 } from 'react-native';
-import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../contexts/AuthContext';
+import styles from '../styles/OnboardingStyles';
 
 // Import UI components exactly like web version
 import { Button } from '../components/ui/Button';
@@ -31,9 +31,6 @@ import { StripeProvider, CardField, useStripe, useConfirmPayment } from '@stripe
 
 // Import API client
 import { apiClient } from '../lib/apiClient';
-
-// Import Legal Document Modal
-import { LegalDocumentModal } from '../components/LegalDocumentModal';
 
 const { width } = Dimensions.get('window');
 
@@ -106,10 +103,6 @@ export default function OnboardingScreen() {
   });
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
-  
-  // Legal document modal state
-  const [legalModalVisible, setLegalModalVisible] = useState(false);
-  const [legalDocumentType, setLegalDocumentType] = useState<'terms' | 'privacy' | null>(null);
 
   const totalScreens = 8;
 
@@ -178,7 +171,7 @@ export default function OnboardingScreen() {
       case 2: return selectedLearningStyle !== '';
       case 3: return false; // Registration screen should never allow continue - user must create account first
       case 4: return true; // Notifications screen always allows continue
-      case 5: return true; // Testimonials screen
+      case 5: return true; // Testimonials screen (has its own continue)
       case 6: return true; // Learning plan screen
       case 7: return true; // Payment screen
       default: return false;
@@ -222,8 +215,6 @@ export default function OnboardingScreen() {
     if (!registerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(registerData.email)) errors.email = 'Please enter a valid email';
     if (registerData.password.length < 6) errors.password = 'Password must be at least 6 characters';
-    if (!registerData.confirmPassword) errors.confirmPassword = 'Please confirm your password';
-    else if (registerData.password !== registerData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
     
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
@@ -264,7 +255,7 @@ export default function OnboardingScreen() {
           
           const settingsResponse = await apiClient.updateUserSettings({
             notificationsEnabled: notificationsEnabled,
-            notificationFrequency: 60,
+            notificationFrequency: 15,
             notificationStartTime: '09:00',
             notificationEndTime: '18:00',
             language: selectedLanguage,
@@ -330,17 +321,6 @@ export default function OnboardingScreen() {
     }
   };
 
-  // Legal modal handlers
-  const handleOpenLegalModal = (type: 'terms' | 'privacy') => {
-    setLegalDocumentType(type);
-    setLegalModalVisible(true);
-  };
-
-  const handleCloseLegalModal = () => {
-    setLegalModalVisible(false);
-    setLegalDocumentType(null);
-  };
-
   const selectedLanguageData = languages.find(l => l.code === selectedLanguage);
   const selectedLevelData = levels.find(l => l.value === selectedLevel);
   const selectedLearningStyleData = learningStyles.find(l => l.value === selectedLearningStyle);
@@ -372,7 +352,7 @@ export default function OnboardingScreen() {
           isRegistering={isRegistering}
           onInputChange={handleRegisterInputChange}
           onRegister={handleRegister}
-          onOpenLegalModal={handleOpenLegalModal}
+          navigation={navigation}
         />;
       case 4:
         return <NotificationScreen 
@@ -473,7 +453,7 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on registration, payment, learning plan, and testimonials screens - matching web logic */}
+          {/* Continue button - hide on registration, payment, and learning plan screens - matching web logic */}
           {currentScreen < 7 && currentScreen !== 3 && currentScreen !== 5 && currentScreen !== 6 && (
             <View style={styles.continueSection}>
               <Button
@@ -503,13 +483,6 @@ const handlePaymentSuccess = async () => {
           )}
         </View>
       </SafeAreaView>
-      
-      {/* Legal Document Modal */}
-      <LegalDocumentModal
-        visible={legalModalVisible}
-        documentType={legalDocumentType}
-        onClose={handleCloseLegalModal}
-      />
     </View>
   );
 }
@@ -640,145 +613,157 @@ const LearningStyleScreen = ({ selectedStyle, onStyleSelect, styles: learningSty
   </View>
 );
 
-const RegistrationScreen = ({ 
-  registerData, 
-  registerErrors, 
-  isRegistering, 
-  onInputChange, 
+const RegistrationScreen = ({
+  registerData,
+  registerErrors,
+  isRegistering,
+  onInputChange,
   onRegister,
-  onOpenLegalModal
+  navigation
 }: {
-  registerData: { firstName: string; email: string; password: string; confirmPassword: string; };
+  registerData: { firstName: string; email: string; password: string; confirmPassword?: string; };
   registerErrors: Record<string, string>;
   isRegistering: boolean;
   onInputChange: (field: keyof typeof registerData, value: string) => void;
   onRegister: () => void;
-  onOpenLegalModal: (type: 'terms' | 'privacy') => void;
+  navigation: any;
 }) => (
-    <View style={styles.screenContent}>
-      <Text style={styles.screenTitle}>
-        Create your free account
-      </Text>
-      <Text style={styles.screenSubtitle}>
-        Let's set up your account and get you learning!
-      </Text>
-      
-      {registerErrors.general && (
-        <Alert style={styles.errorAlert}>
-          <Ionicons name="alert-circle" size={16} color="#dc2626" />
-          <AlertDescription>
-            <Text style={styles.errorAlertText}>{registerErrors.general}</Text>
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <View style={styles.formSpace}>
-        <View style={styles.formField}>
-          <Label htmlFor="firstName" style={styles.formLabel}>Name</Label>
-          <Input
-            id="firstName"
-            placeholder="Enter your name"
-            value={registerData.firstName}
-            onChangeText={(text: string) => onInputChange('firstName', text)}
-            style={[
-              styles.formInput,
-              registerErrors.firstName && styles.formInputError
-            ]}
-            testID="input-firstName"
-          />
-          {registerErrors.firstName && <Text style={styles.fieldErrorText}>{registerErrors.firstName}</Text>}
-        </View>
+    <KeyboardAvoidingView>
+      <View style={styles.screenContent}>
+        <Text style={styles.screenTitle}>
+          Create your free account
+        </Text>
+        <Text style={styles.screenSubtitle}>
+          Let's set up your account and get you learning!
+        </Text>
+        
+        {registerErrors.general && (
+          <Alert style={styles.errorAlert}>
+            <Ionicons name="alert-circle" size={16} color="#dc2626" />
+            <AlertDescription>
+              <Text style={styles.errorAlertText}>{registerErrors.general}</Text>
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        <View style={styles.formSpace}>
+          <View style={styles.formField}>
+            <Label htmlFor="firstName" style={styles.formLabel}>Name</Label>
+            <Input
+              id="firstName"
+              placeholder="Enter your name"
+              value={registerData.firstName}
+              onChangeText={(text: string) => onInputChange('firstName', text)}
+              style={[
+                styles.formInput,
+                registerErrors.firstName && styles.formInputError
+              ]}
+              testID="input-firstName"
+            />
+            {registerErrors.firstName && <Text style={styles.fieldErrorText}>{registerErrors.firstName}</Text>}
+          </View>
 
-        <View style={styles.formField}>
-          <Label htmlFor="email" style={styles.formLabel}>Email</Label>
-          <Input
-            id="email"
-            placeholder="Enter your email address"
-            value={registerData.email}
-            onChangeText={(text: string) => onInputChange('email', text)}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={[
-              styles.formInput,
-              registerErrors.email && styles.formInputError
-            ]}
-            testID="input-email"
-          />
-          {registerErrors.email && <Text style={styles.fieldErrorText}>{registerErrors.email}</Text>}
-        </View>
+          <View style={styles.formField}>
+            <Label htmlFor="email" style={styles.formLabel}>Email</Label>
+            <Input
+              id="email"
+              placeholder="Enter your email address"
+              value={registerData.email}
+              onChangeText={(text: string) => onInputChange('email', text)}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={[
+                styles.formInput,
+                registerErrors.email && styles.formInputError
+              ]}
+              testID="input-email"
+            />
+            {registerErrors.email && <Text style={styles.fieldErrorText}>{registerErrors.email}</Text>}
+          </View>
 
-        <View style={styles.formField}>
-          <Label htmlFor="password" style={styles.formLabel}>Password</Label>
-          <Input
-            id="password"
-            placeholder="Choose a secure password"
-            value={registerData.password}
-            onChangeText={(text: string) => onInputChange('password', text)}
-            secureTextEntry={true}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={[
+            <View style={styles.formField}>
+            <Label htmlFor="password" style={styles.formLabel}>Password</Label>
+            <Input
+              id="password"
+              placeholder="Choose a secure password"
+              value={registerData.password}
+              onChangeText={(text: string) => onInputChange('password', text)}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={[
               styles.formInput,
               registerErrors.password && styles.formInputError
-            ]}
-            testID="input-password"
-          />
-          {registerErrors.password && <Text style={styles.fieldErrorText}>{registerErrors.password}</Text>}
-        </View>
+              ]}
+              testID="input-password"
+            />
+            {registerErrors.password && <Text style={styles.fieldErrorText}>{registerErrors.password}</Text>}
+            </View>
 
-        <View style={styles.formField}>
-          <Label htmlFor="confirmPassword" style={styles.formLabel}>Confirm Password</Label>
-          <Input
-            id="confirmPassword"
-            placeholder="Confirm your password"
-            value={registerData.confirmPassword}
-            onChangeText={(text: string) => onInputChange('confirmPassword', text)}
-            secureTextEntry={true}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={[
+            <View style={styles.formField}>
+            <Label htmlFor="confirmPassword" style={styles.formLabel}>Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              placeholder="Confirm your password"
+              value={registerData.confirmPassword}
+              onChangeText={(text: string) => onInputChange('confirmPassword', text)}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={[
               styles.formInput,
               registerErrors.confirmPassword && styles.formInputError
-            ]}
-            testID="input-confirmPassword"
-          />
-          {registerErrors.confirmPassword && <Text style={styles.fieldErrorText}>{registerErrors.confirmPassword}</Text>}
-        </View>
+              ]}
+              testID="input-confirmPassword"
+            />
+            {registerErrors.confirmPassword && <Text style={styles.fieldErrorText}>{registerErrors.confirmPassword}</Text>}
+            </View>
 
-        <Button 
-          onPress={onRegister}
-          disabled={isRegistering}
-          style={[styles.registerButton, isRegistering && styles.registerButtonDisabled]}
-        >
-          <Text style={[styles.registerButtonText, isRegistering && styles.registerButtonTextDisabled]}>
-            {isRegistering ? 'Creating Account...' : 'Create Account'}
-          </Text>
-        </Button>
-        
-        {/* Privacy Policy and Terms text - matching web */}
-        <View style={styles.termsSection}>
-          <Text style={styles.termsText}>
-            By creating an account, you indicate that you have read and agreed to the{' '}
-            <Text 
-              style={styles.termsLink} 
-              onPress={() => onOpenLegalModal('privacy')}
-              testID="link-privacy-policy"
-            >
-              Privacy Policy
+          <Button 
+            onPress={onRegister}
+            disabled={isRegistering}
+            style={[styles.registerButton, isRegistering && styles.registerButtonDisabled]}
+          >
+            <Text style={[styles.registerButtonText, isRegistering && styles.registerButtonTextDisabled]}>
+              {isRegistering ? 'Creating Account...' : 'Create Account'}
             </Text>
-            {' '}and{' '}
-            <Text 
-              style={styles.termsLink} 
-              onPress={() => onOpenLegalModal('terms')}
-              testID="link-terms"
-            >
-              Terms of Use
+          </Button>
+          
+          {/* Privacy Policy and Terms text - matching web */}
+          <View>
+            <View style={styles.termsSection}>
+            <Text style={styles.termsText}>
+              By creating an account, you indicate that you have read and agreed to the{' '}
+              <TouchableOpacity onPress={() => navigation.navigate('Privacy')}>
+                <Text style={styles.termsLink}>Privacy Policy</Text>
+              </TouchableOpacity>
+              {' '}and{' '}
+              <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
+                <Text style={styles.termsLink}>Terms of Use</Text>
+              </TouchableOpacity>
             </Text>
-          </Text>
+          </View>
+          </View>
+          
+          {/* Features - matching web exactly */}
+          {/* <View style={styles.featuresCard}>
+            <Text style={styles.featuresTitle}>Take advantage of:</Text>
+            <View style={styles.featuresSpace}>
+              {[
+                "• Micro-lessons that fit your lifestyle",
+                "• Smart reminders to stay consistent without pressure", 
+                "• Desktop + mobile sync so you can learn anywhere",
+                "• Real-world videos: Practice in video scenes like cafés, shops, and travel moments",
+                "• Backed by proven methods (spaced repetition & retrieval practice)"
+              ].map((feature, index) => (
+                <Text key={index} style={styles.featureItem}>{feature}</Text>
+              ))}
+            </View>
+          </View> */}
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 
 const NotificationScreen = ({ 
@@ -891,130 +876,6 @@ const NotificationScreen = ({
           </Text>
         </Button>
       </View>
-    </View>
-  );
-};
-
-const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const testimonials = [
-    {
-      id: 1,
-      text: "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations.",
-      name: "Anna Müller",
-      title: "Property Manager, Berlin",
-      initials: "AM",
-      bgColor: "#D1FAE5",
-      textColor: "#059669"
-    },
-    {
-      id: 2,
-      text: "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday...",
-      name: "Paul Martinez",
-      title: "Product Manager, London",
-      initials: "SM",
-      bgColor: "#DBEAFE",
-      textColor: "#2563EB"
-    },
-    {
-      id: 3,
-      text: "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!",
-      name: "Sophie Liu",
-      title: "Software Engineer, London",
-      initials: "AL",
-      bgColor: "#EDE9FE",
-      textColor: "#7C3AED"
-    }
-  ];
-
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-  };
-
-  const currentTestimonial = testimonials[currentIndex];
-
-  return (
-    <View style={styles.screenContent}>
-      <Text style={styles.screenTitle}>
-        They Started Where You Are - Now They're Speaking With Confidence
-      </Text>
-      
-      {/* Testimonial Card */}
-      <View style={styles.testimonialCard}>
-        {/* Stars */}
-        <View style={styles.testimonialStars}>
-          {[...Array(5)].map((_, i) => (
-            <Ionicons key={i} name="star" size={20} color="#FBBF24" />
-          ))}
-        </View>
-        
-        {/* Quote */}
-        <Text style={styles.testimonialText}>
-          "{currentTestimonial.text}"
-        </Text>
-        
-        {/* Author */}
-        <View style={styles.testimonialAuthor}>
-          <View style={[styles.testimonialInitials, { backgroundColor: currentTestimonial.bgColor }]}>
-            <Text style={[styles.testimonialInitialsText, { color: currentTestimonial.textColor }]}>
-              {currentTestimonial.initials}
-            </Text>
-          </View>
-          <View>
-            <Text style={styles.testimonialName}>{currentTestimonial.name}</Text>
-            <Text style={styles.testimonialTitle}>{currentTestimonial.title}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Navigation */}
-      <View style={styles.testimonialNavigation}>
-        <TouchableOpacity 
-          onPress={handlePrevious} 
-          style={styles.testimonialNavButton}
-          testID="button-testimonial-prev"
-        >
-          <Ionicons name="chevron-back" size={24} color="#6B7280" />
-        </TouchableOpacity>
-
-        <View style={styles.testimonialDots}>
-          {testimonials.map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => setCurrentIndex(index)}
-              style={[
-                styles.testimonialDot,
-                index === currentIndex && styles.testimonialDotActive
-              ]}
-              testID={`dot-testimonial-${index}`}
-            />
-          ))}
-        </View>
-
-        <TouchableOpacity 
-          onPress={handleNext} 
-          style={styles.testimonialNavButton}
-          testID="button-testimonial-next"
-        >
-          <Ionicons name="chevron-forward" size={24} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Continue Button */}
-      <Button
-        onPress={onContinue}
-        style={styles.testimonialContinueButton}
-      >
-        <View style={styles.continueButtonContent}>
-          <Text style={styles.testimonialContinueButtonText}>Continue</Text>
-          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" style={styles.continueButtonIcon} />
-        </View>
-      </Button>
     </View>
   );
 };
@@ -1213,7 +1074,7 @@ const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {/* FIXED: Better card field container with improved spacing */}
       <View style={styles.cardFieldContainer}>
         <Text style={styles.cardFieldLabel}>Card Details</Text>
-        <View style={styles.cardFieldWrapper}>
+        <View>
           <CardField
             postalCodeEnabled={false}
             placeholders={{
@@ -1380,716 +1241,120 @@ const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#EBF4FF', // bg-gradient-to-br from-blue-50 to-indigo-100
-  },
-  safeArea: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    maxWidth: 512, // max-w-2xl
-    alignSelf: 'center',
-    paddingHorizontal: 16, // px-4
-    paddingVertical: 24, // py-6
-    width: '100%',
-  },
+const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const scrollRef = useRef<ScrollView>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(width);
 
-  // Progress bar - matching web exactly
-  progressSection: {
-    marginBottom: 32, // mb-8
-  },
-  progressBackground: {
-    width: '100%',
-    backgroundColor: '#E5E7EB', // bg-gray-200
-    borderRadius: 9999, // rounded-full
-    height: 8, // h-2
-  },
-  progressBar: {
-    height: 8, // h-2
-    backgroundColor: '#6366f1', // bg-primary
-    borderRadius: 9999, // rounded-full
-  },
-  progressText: {
-    fontSize: 14, // text-sm
-    color: '#6B7280', // text-gray-600
-    marginTop: 8, // mt-2
-    textAlign: 'center',
-  },
+  const testimonials = [
+    {
+      id: 1,
+      text: "The real-life video lessons are brilliant, you feel like you're actually in a café or checking into a hotel. It's so much easier to remember phrases when you see them used in real situations.",
+      name: "Anna Müller",
+      title: "Property Manager, Berlin",
+      initials: "AM",
+      avatarBg: '#D1FAE5', // green-100
+      avatarText: '#059669', // green-600
+    },
+    {
+      id: 2,
+      text: "The notifications are genius! I never remember to study on my own, but these little reminders fit perfectly into my workday...",
+      name: "Paul Martinez",
+      title: "Product Manager, London",
+      initials: "SM",
+      avatarBg: '#DBEAFE', // blue-100
+      avatarText: '#2563EB', // blue-600
+    },
+    {
+      id: 3,
+      text: "I tried Duolingo, Babbel, everything. But LingoToday's spaced repetition actually works. My German colleagues are impressed!",
+      name: "Sophie Liu",
+      title: "Software Engineer, London",
+      initials: "AL",
+      avatarBg: '#EDE9FE', // purple-100
+      avatarText: '#7C3AED', // purple-600
+    }
+  ];
 
-  // Screen container with slide animation - matching web
-  screenContainer: {
-    flex: 1,
-    opacity: 1,
-    transform: [{ translateX: 0 }],
-  },
-  screenTransitioning: {
-    opacity: 0,
-    transform: [{ translateX: 16 }], // transform translate-x-4
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-  },
+  const onLayout = (e: any) => {
+    const w = e.nativeEvent.layout.width;
+    if (w && w !== containerWidth) setContainerWidth(w);
+  };
 
-  // Continue button - matching web exactly
-  continueSection: {
-    marginTop: 32,
-    alignItems: 'center',
-    minHeight: 80, // Ensure consistent height regardless of hint text
-  },
-  continueButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 14, // Slightly larger padding
-    borderRadius: 9999,
-    minWidth: 140, // Slightly wider
-    shadowColor: '#6366f1',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  continueButtonDisabled: {
-    backgroundColor: '#F3F4F6', // bg-gray-100 - lighter disabled state
-    borderWidth: 2, // Thicker border
-    borderColor: '#E5E7EB', // border-gray-200
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  continueButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  continueButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14, // Reduced by 2pts from 16
-    fontWeight: '600', // font-semibold - slightly bolder
-  },
-  continueButtonTextDisabled: {
-    color: '#6B7280', // text-gray-500 - better contrast than gray-400
-  },
-  continueButtonIcon: {
-    marginLeft: 8,
-  },
-  continueHint: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 12, // mt-3 - more space from button
-    textAlign: 'center',
-    backgroundColor: '#F9FAFB', // bg-gray-50
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20, // rounded-full
-    borderWidth: 1,
-    borderColor: '#E5E7EB', // border-gray-200
-    overflow: 'hidden',
-  },
+  const scrollToIndex = (index: number) => {
+    const clamped = Math.max(0, Math.min(testimonials.length - 1, index));
+    setSelectedIndex(clamped);
+    scrollRef.current?.scrollTo({ x: clamped * containerWidth, animated: true });
+  };
 
-  // Screen Content - matching web
-  screenContent: {
-    alignItems: 'center', // text-center
-    flex: 1,
-  },
-  screenTitle: {
-    fontSize: 28, // Reduced by 2pts from 30
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    textAlign: 'center',
-    marginBottom: 8, // mb-2
-  },
-  screenSubtitle: {
-    fontSize: 16, // Reduced by 2pts from 18
-    color: '#6B7280', // text-gray-600
-    textAlign: 'center',
-    marginBottom: 20, // Reduced from 32 to 20
-    lineHeight: 28,
-  },
+  const handleMomentumEnd = (e: any) => {
+    const x = e.nativeEvent.contentOffset.x;
+    const idx = Math.round(x / containerWidth);
+    setSelectedIndex(idx);
+  };
 
-  // Language Selection - matching web grid grid-cols-2 gap-4 max-w-md mx-auto
-  languageGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 16, // gap-4
-    maxWidth: 384, // max-w-md
-    width: '100%',
-  },
-  languageCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12, // rounded-xl
-    padding: 24, // p-6
-    alignItems: 'center', // text-center
-    width: '47%', // 2 columns
-    borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
-  },
-  languageCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
-  },
-  languageFlag: {
-    fontSize: 48, // text-4xl
-    marginBottom: 8, // mb-2
-  },
-  languageTitle: {
-    fontSize: 16, // font-semibold
-    fontWeight: '600',
-    color: '#111827', // text-gray-900
-  },
-  languageTitleSelected: {
-    color: '#111827',
-  },
+  const scrollPrev = () => scrollToIndex(selectedIndex - 1);
+  const scrollNext = () => scrollToIndex(selectedIndex + 1);
 
-  // Level Selection - matching web space-y-4 max-w-lg mx-auto
-  levelsList: {
-    gap: 16, // space-y-4
-    maxWidth: 512, // max-w-lg
-    width: '100%',
-  },
-  levelCard: {
-    width: '100%',
-    padding: 24, // p-6
-    borderRadius: 12, // rounded-xl
-    borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
-    backgroundColor: '#FFFFFF',
-  },
-  levelCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
-  },
-  levelTitle: {
-    fontSize: 20, // text-xl
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 8, // mb-2
-  },
-  levelTitleSelected: {
-    color: '#111827',
-  },
-  levelDescription: {
-    fontSize: 16, // text-base
-    color: '#6B7280', // text-gray-600
-  },
-  levelDescriptionSelected: {
-    color: '#6B7280',
-  },
+  return (
+    <View style={styles.screenContent} onLayout={onLayout}>
+      <Text style={styles.screenTitle}>
+        They Started Where You Are - Now They’re Speaking With Confidence
+      </Text>
 
-  // Style Selection - matching web design
-  styleCard: {
-    width: '100%',
-    padding: 24, // p-6
-    borderRadius: 12, // rounded-xl
-    borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center', // flex items-center space-x-4
-  },
-  styleCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
-  },
-  styleIcon: {
-    fontSize: 28, // text-3xl
-    marginRight: 16, // space-x-4
-  },
-  styleContent: {
-    flex: 1,
-  },
-  styleTitle: {
-    fontSize: 20, // text-xl
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 4, // mb-1
-  },
-  styleTitleSelected: {
-    color: '#111827',
-  },
-  styleDescription: {
-    fontSize: 16, // text-base
-    color: '#6B7280', // text-gray-600
-  },
-  styleDescriptionSelected: {
-    color: '#6B7280',
-  },
+      <View style={styles.testimonialCarousel}>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={handleMomentumEnd}
+        >
+          {testimonials.map((t) => (
+            <View key={t.id} style={[styles.testimonialSlide, { width: containerWidth }]}>
+              <View style={styles.testimonialCard}>
+                <View style={styles.testimonialStarsRow}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Ionicons key={i} name="star" size={20} color="#FBBF24" />
+                  ))}
+                </View>
+                <Text style={styles.testimonialText}>"{t.text}"</Text>
+                <View style={styles.testimonialUserRow}>
+                  <View style={[styles.testimonialAvatar, { backgroundColor: t.avatarBg }]}>
+                    <Text style={[styles.testimonialAvatarText, { color: t.avatarText }]}>
+                      {t.initials}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={styles.testimonialUserName}>{t.name}</Text>
+                    <Text style={styles.testimonialUserTitle}>{t.title}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
 
-  // Registration Screen - matching web exactly
-  errorAlert: {
-    borderColor: '#FECACA', // border-red-200
-    backgroundColor: '#FEF2F2', // bg-red-50
-    marginBottom: 24, // mb-6
-  },
-  errorAlertText: {
-    color: '#B91C1C', // text-red-700
-  },
-  formSpace: {
-    gap: 6, // Reduced from 12 to 6
-    maxWidth: 384, // max-w-md
-    width: '100%',
-  },
-  formField: {
-    marginBottom: 4, // Reduced from 8 to 4
-  },
-  formLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 2, // Reduced from 4 to 2
-  },
-  formInput: {
-    // Input component handles its own styling
-    marginBottom: 0, // Ensure no extra bottom margin
-  },
-  formInputError: {
-    borderColor: '#EF4444', // border-red-500
-  },
-  fieldErrorText: {
-    fontSize: 12,
-    color: '#EF4444', // text-red-500
-    marginTop: 2, // Reduced from 4 to 2
-  },
-  registerButton: {
-    backgroundColor: '#6366f1', // bg-primary hover:bg-primary/90
-    paddingHorizontal: 32, // px-8
-    paddingVertical: 12, // py-3
-    borderRadius: 9999, // rounded-full
-    marginTop: 16, // Reduced from 24 to 16
-    width: '100%',
-  },
-  registerButtonDisabled: {
-    opacity: 0.5, // disabled:opacity-50
-  },
-  registerButtonText: {
-    color: '#FFFFFF', // text-white
-    fontSize: 14, // Reduced by 2pts from 16
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  registerButtonTextDisabled: {
-    color: '#9CA3AF',
-  },
+        <View style={styles.testimonialNavContainer}>
+          <Button onPress={scrollPrev} style={styles.testimonialArrowButton}>
+            <Ionicons name="chevron-back" size={20} color="#111827" />
+          </Button>
+          <View style={styles.testimonialDotsRow}>
+            {testimonials.map((_, i) => (
+              <TouchableOpacity key={i} onPress={() => scrollToIndex(i)}>
+                <View style={[styles.testimonialDot, i === selectedIndex && styles.testimonialDotActive]} />
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Button onPress={scrollNext} style={styles.testimonialArrowButton}>
+            <Ionicons name="chevron-forward" size={20} color="#111827" />
+          </Button>
+        </View>
+      </View>
 
-  // Terms section - reduced spacing
-  termsSection: {
-    marginTop: 16, // Reduced from 24 to 16
-    paddingTop: 12, // Reduced from 16 to 12
-  },
-  termsText: {
-    fontSize: 12, // text-xs
-    color: '#6B7280', // text-gray-600
-    textAlign: 'center',
-    lineHeight: 16, // Reduced from 18 to 16
-  },
-  termsLink: {
-    color: '#374151', // text-gray-700
-    textDecorationLine: 'underline',
-  },
-
-  // Notification Screen
-  notificationIconContainer: {
-    width: 64, // w-16
-    height: 64, // h-16
-    borderRadius: 32, // rounded-full
-    marginBottom: 16, // mb-4
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
-  },
-  notificationEnabled: {
-    backgroundColor: 'rgba(16, 185, 129, 0.1)', // bg-green-100
-  },
-  notificationDisabled: {
-    backgroundColor: 'rgba(217, 119, 6, 0.1)', // bg-yellow-100
-  },
-  notificationButtonContainer: {
-    gap: 12,
-    marginBottom: 32,
-    width: '100%',
-    maxWidth: 384,
-  },
-  notificationButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
-    width: '100%',
-  },
-  notificationButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16, // Reduced by 2pts from 18
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  notificationButtonDisabled: {
-    opacity: 0.5,
-  },
-  notificationButtonTextDisabled: {
-    color: '#9CA3AF',
-  },
-  notificationSkipButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#6366f1',
-    borderRadius: 9999,
-    width: '100%',
-  },
-  notificationSkipButtonText: {
-    color: '#6366f1',
-    fontSize: 16, // Reduced by 2pts from 18
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-
-  // Learning Plan Screen
-  timelineCard: {
-    backgroundColor: '#FFFFFF', // bg-white
-    borderRadius: 12, // rounded-xl
-    padding: 24, // p-6
-    marginBottom: 24, // mb-6
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2, // shadow-sm
-    width: '100%',
-    maxWidth: 512,
-  },
-  timelineSpace: {
-    gap: 24, // space-y-6
-  },
-  timelineItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start', // flex items-start space-x-4
-    gap: 16,
-  },
-  timelineIcon: {
-    width: 48, // w-12
-    height: 48, // h-12
-    borderRadius: 12, // rounded-xl
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4, // shadow-lg
-  },
-  timelineEmoji: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  timelineContent: {
-    flex: 1,
-    paddingTop: 4, // pt-1
-  },
-  timelineText: {
-    fontSize: 16, // Reduced by 2pts from 18
-    color: '#111827', // text-gray-900
-    fontWeight: '600', // font-semibold
-    lineHeight: 28, // leading-relaxed
-  },
-
-  // Start Free Trial Section
-  trialSection: {
-    marginTop: 32, // mt-8
-    gap: 16, // space-y-4
-    width: '100%',
-    maxWidth: 384,
-  },
-  noPaymentContainer: {
-    alignItems: 'center',
-  },
-  noPaymentText: {
-    fontSize: 16,
-    color: '#374151', // text-gray-700
-    fontWeight: '500', // font-medium
-  },
-  startTrialButton: {
-    backgroundColor: '#6366f1', // bg-primary hover:bg-primary/90
-    paddingHorizontal: 32, // px-8
-    paddingVertical: 12, // py-3
-    borderRadius: 9999, // rounded-full
-    width: '100%',
-  },
-  startTrialButtonText: {
-    color: '#FFFFFF', // text-white
-    fontSize: 14, // Reduced by 2pts from 16
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  trialPriceContainer: {
-    alignItems: 'center',
-    marginTop: 12, // mt-3
-  },
-  trialPriceText: {
-    fontSize: 14, // text-sm
-    color: '#6B7280', // text-gray-500
-  },
-
-  // Payment Screen - Stripe Integration Styles
-  loadingContainer: {
-    alignItems: 'center',
-    marginTop: 32,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginTop: 12,
-  },
-  errorButtonsContainer: {
-    gap: 12,
-    marginTop: 24,
-    width: '100%',
-    maxWidth: 384,
-  },
-  errorButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
-    width: '100%',
-  },
-  errorButtonSecondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#6366f1',
-  },
-  errorButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14, // Reduced by 2pts from 16
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  errorButtonSecondaryText: {
-    color: '#6366f1',
-  },
-  paymentPlanCard: {
-    backgroundColor: '#EFF6FF', // bg-blue-50
-    borderRadius: 12, // rounded-xl
-    padding: 16, // p-4
-    marginBottom: 24, // mb-6
-    width: '100%',
-  },
-  paymentPlanHeader: {
-    marginBottom: 12,
-  },
-  paymentPlanTitle: {
-    fontSize: 20,
-    color: '#6366f1',
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  paymentPlanTrial: {
-    fontSize: 14,
-    color: '#374151',
-    marginBottom: 4,
-  },
-  paymentPlanPrice: {
-    fontSize: 24,
-    color: '#111827',
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  paymentPlanCancel: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginBottom: 12,
-  },
-  paymentPlanFeatures: {
-    gap: 4,
-  },
-  paymentPlanFeature: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 20,
-  },
-  stripeFormContainer: {
-    gap: 24,
-    width: '100%',
-  },
-  cardFieldContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  cardFieldLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  cardFieldWrapper: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  stripeButtonContainer: {
-    marginTop: 8,
-  },
-  cardField: {
-    width: '100%',
-    height: 50,
-  },
-  cardFieldStyle: {
-    backgroundColor: '#FFFFFF',
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-  },
-  stripeSubmitButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 9999,
-    width: '100%',
-  },
-  stripeSubmitButtonDisabled: {
-    opacity: 0.5,
-  },
-  stripeButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stripeSubmitButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16, // Reduced by 2pts from 18
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  stripeSubmitButtonTextDisabled: {
-    color: '#9CA3AF',
-  },
-  stripeTermsText: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  
-  // FIXED: New styles for payment screen keyboard avoiding view and scroll
-  paymentKeyboardContainer: {
-    flex: 1,
-    width: '100%',
-  },
-  paymentScrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-    paddingTop: 24,
-  },
-  paymentScreenContent: {
-    flex: 1,
-    maxWidth: 384,
-    alignSelf: 'center',
-    width: '100%',
-    paddingHorizontal: 16,
-  },
-
-  // Testimonials Screen Styles
-  testimonialCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    padding: 24,
-    marginBottom: 24,
-    width: '100%',
-    maxWidth: 512,
-  },
-  testimonialStars: {
-    flexDirection: 'row',
-    gap: 4,
-    marginBottom: 12,
-  },
-  testimonialText: {
-    fontSize: 16,
-    color: '#374151',
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  testimonialAuthor: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  testimonialInitials: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  testimonialInitialsText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  testimonialName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  testimonialTitle: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  testimonialNavigation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    marginBottom: 32,
-  },
-  testimonialNavButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  testimonialDots: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  testimonialDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#D1D5DB',
-  },
-  testimonialDotActive: {
-    width: 32,
-    backgroundColor: '#6366f1',
-  },
-  testimonialContinueButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
-    width: '100%',
-    maxWidth: 448,
-  },
-  testimonialContinueButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-});
+      <Button onPress={onContinue} style={styles.testimonialContinueButton}>
+        <Text style={styles.testimonialContinueButtonText}>Continue</Text>
+      </Button>
+    </View>
+  );
+};

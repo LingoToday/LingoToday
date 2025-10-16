@@ -33,17 +33,17 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-
+    
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-
+    
     if (finalStatus !== 'granted') {
       console.log('Failed to get push token for push notification!');
       return null;
     }
-
+    
     try {
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log('Push token:', token);
@@ -61,13 +61,13 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
 function isWithinNotificationWindow(startTime: string = "09:00", endTime: string = "18:00"): boolean {
   const now = new Date();
   const currentTime = now.getHours() * 60 + now.getMinutes();
-
+  
   const [startHour, startMin] = startTime.split(':').map(Number);
   const [endHour, endMin] = endTime.split(':').map(Number);
-
+  
   const startTimeMinutes = startHour * 60 + startMin;
   const endTimeMinutes = endHour * 60 + endMin;
-
+  
   if (endTimeMinutes <= startTimeMinutes) {
     return currentTime >= startTimeMinutes || currentTime <= endTimeMinutes;
   } else {
@@ -97,7 +97,7 @@ function isWithinNotificationWindow(startTime: string = "09:00", endTime: string
 
 //     const [startHour, startMin] = startTime.split(':').map(Number);
 //     const [endHour, endMin] = endTime.split(':').map(Number);
-
+    
 //     const startMinutes = startHour * 60 + startMin;
 //     const endMinutes = endHour * 60 + endMin;
 //     const windowDuration = endMinutes - startMinutes;
@@ -159,10 +159,10 @@ export async function scheduleLanguageLearningReminders(
   try {
     // Clear any existing notifications
     await Notifications.cancelAllScheduledNotificationsAsync();
-
+    
     // Get language-specific notification content
     const notificationContent = getLanguageSpecificNotification(language);
-
+    
     // Default lesson data if none provided
     const lessonData = nextLessonData || {
       courseId: 'course1',
@@ -172,7 +172,7 @@ export async function scheduleLanguageLearningReminders(
     // Parse start and end times
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
-
+    
     const startMinutes = startHour * 60 + startMinute;
     const endMinutes = endHour * 60 + endMinute;
     const windowDuration = endMinutes - startMinutes;
@@ -288,7 +288,7 @@ export async function saveUserNotificationSettings(settings: {
   try {
     // This would typically save to your backend API
     console.log('Saving notification settings:', settings);
-
+    
     if (settings.enabled) {
       return await scheduleLanguageLearningReminders(
         settings.startTime,

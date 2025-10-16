@@ -20,6 +20,7 @@ interface ButtonProps {
   size?: 'sm' | 'default' | 'lg';
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({

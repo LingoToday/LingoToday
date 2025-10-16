@@ -36,7 +36,7 @@ export default function ProgressOverview() {
           user: fallbackUser,
           settings: {
             notificationsEnabled: false,
-            notificationFrequency: 60,
+            notificationFrequency: 15,
             notificationStartTime: '09:00',
             notificationEndTime: '18:00',
             selectedLanguage: user?.selectedLanguage || 'italian',
