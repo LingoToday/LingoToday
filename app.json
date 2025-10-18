@@ -23,7 +23,7 @@
           "remote-notification"
         ],
         "NSUserTrackingUsageDescription": "We use your data to provide a better experience and to improve our services.",
-        "NSLocationWhenInUseUsageDescription": "We use your location to provide a better experience and to improve our services."
+        "NSLocationWhenInUseUsageDescription": "We use your location to provide a better experience and to improve our services.",
         "NSCameraUsageDescription": "We use your camera to take photos of your progress."
       }
     },
