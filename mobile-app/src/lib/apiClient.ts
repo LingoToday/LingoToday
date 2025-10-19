@@ -28,6 +28,13 @@ export interface ProgressData {
   courseTitle?: string;
 }
 
+interface UserSettings {
+  notificationsEnabled: boolean;
+  notificationFrequency: number;
+  notificationStartTime: string;
+  notificationEndTime: string;
+  selectedLanguage: string;
+}
 
 interface NextLessonData {
   courseId: string;
@@ -43,9 +50,10 @@ export interface DashboardData {
   };
   settings: {
     notificationsEnabled: boolean;
-    notificationFrequency: number;
-    notificationStartTime: string;
-    notificationEndTime: string;
+    mobileNotificationsEnabled: boolean;
+    mobileNotificationFrequency?: number;
+    mobileNotificationStartTime?: string;
+    mobileNotificationEndTime?: string;
     selectedLanguage: string;
   };
   stats: {
@@ -57,26 +65,25 @@ export interface DashboardData {
   progress: ProgressData[];
 }
 
-export interface UserSettings {
-  userId: string;
+type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
+
+interface UserSettings {
+  userId?: string;
   language: string;
-  theme: string;
-  soundEnabled: boolean;
-  notificationsEnabled: boolean;
-  notificationFrequency: number;
-  notificationStartTime: string;
-  notificationEndTime: string;
+
+  // Mobile notifications (same fields as web)
   mobileNotificationsEnabled: boolean;
+  mobileNotificationDays: Day[];
   mobileNotificationFrequency: number;
-  mobileNotificationStartTime: string;
-  mobileNotificationEndTime: string;
-  mobileNotificationDays: string[];
+  mobileNotificationStartTime: string; // "HH:00"
+  mobileNotificationEndTime: string;   // "HH:00"
+
+  // Desktop notifications (same fields as web)
   desktopNotificationsEnabled: boolean;
+  desktopNotificationDays: Day[];
   desktopNotificationFrequency: number;
-  desktopNotificationStartTime: string;
-  desktopNotificationEndTime: string;
-  desktopNotificationDays: string[];
-  difficultyLevel: string;
+  desktopNotificationStartTime: string; // "HH:00"
+  desktopNotificationEndTime: string;   // "HH:00"
 }
 
 export interface CourseStats {
