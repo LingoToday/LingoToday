@@ -126,7 +126,12 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 - Created platform-specific Stripe wrappers (web vs native)
 - Set up workflow to run on port 5000
 - Updated npm scripts for Replit compatibility
-- Verified web app functionality
+- Replaced static image with video on LandingScreen
+- Migrated from expo-av to expo-video for modern video playback
+- Implemented responsive video sizing (max 50% viewport height)
+- Added ScrollView for accessibility on all device sizes
+- Configured video to autoplay, loop, muted without controls (GIF-like behavior)
+- Verified web app functionality with responsive layouts
 
 ## Troubleshooting
 
