@@ -26,8 +26,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import Constants from 'expo-constants';
 import { Alert, AlertDescription } from '../components/ui/Alert';
 
-// Import Stripe for React Native
-import { StripeProvider, CardField, useStripe, useConfirmPayment } from '@stripe/stripe-react-native';
+// Import Stripe for React Native (platform-specific)
+import { StripeProvider, CardField, useStripe, useConfirmPayment } from '../lib/stripe';
 
 // Import API client
 import { apiClient } from '../lib/apiClient';

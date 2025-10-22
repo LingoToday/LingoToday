@@ -1,0 +1,143 @@
+# LingoToday Mobile App
+
+## Overview
+LingoToday is a React Native mobile application built with Expo SDK 54 that helps users learn languages through micro-lessons. The app runs on mobile (iOS/Android via Expo Go) and web browsers.
+
+**Status**: Successfully configured for Replit environment
+**Last Updated**: October 22, 2025
+
+## Project Architecture
+
+### Tech Stack
+- **Framework**: React Native 0.81.4 with Expo SDK 54
+- **UI Library**: React Native Web for web compatibility
+- **Navigation**: React Navigation (Native Stack, Bottom Tabs)
+- **State Management**: React Query (@tanstack/react-query)
+- **Authentication**: Context API with AsyncStorage
+- **Payments**: Stripe (native only, web has mocks)
+- **Language**: TypeScript + JavaScript
+
+### Key Features
+- Multi-language learning (Italian, Spanish, German, French)
+- Adaptive learning levels (Beginner, Intermediate, Expert)
+- User onboarding flow
+- Course management
+- Progress tracking
+- Push notifications (native only)
+- Subscription management
+- Cross-platform support (iOS, Android, Web)
+
+## Project Structure
+```
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   └── ui/          # shadcn-style UI components
+│   ├── screens/         # Screen components
+│   ├── navigation/      # Navigation configuration
+│   ├── contexts/        # React contexts (Auth, etc.)
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utilities and API client
+│   ├── services/       # Services (Notifications, etc.)
+│   ├── data/           # Static data (lessons, etc.)
+│   └── types/          # TypeScript type definitions
+├── assets/             # Images, fonts, icons
+├── App.js             # Main app component
+└── index.js           # Entry point
+```
+
+## Configuration
+
+### Environment Variables
+The app uses Expo Constants for configuration:
+- `apiBaseUrl`: Backend API endpoint (configured in app.json)
+- `stripePublishableKey`: Stripe public key for payments
+
+### Platform-Specific Code
+- **Stripe Integration**: Uses platform-specific imports (.web.js, .native.js)
+  - Web version uses mock implementations
+  - Native version uses actual Stripe SDK
+
+### Metro Bundler
+Custom configuration in `metro.config.js`:
+- Video file extensions support (mov, mp4, avi, mkv, webm)
+- Alias for attached_assets folder
+
+## Development
+
+### Running the App
+
+**Web Version (Replit)**:
+```bash
+npm run web
+```
+Runs on http://localhost:5000
+
+**Mobile Version**:
+```bash
+npm start
+```
+Then scan QR code with Expo Go app
+
+### Scripts
+- `npm run web` - Start web development server (port 5000)
+- `npm start` - Start Expo with tunnel
+- `npm run android` - Run on Android emulator/device
+- `npm run ios` - Run on iOS simulator/device
+- `npm run reset-cache` - Clear Metro bundler cache
+
+## Backend Integration
+
+The app connects to a backend API configured in `app.json`:
+- API Base URL: Configured via `extra.apiBaseUrl`
+- The API client handles authentication tokens
+- Uses AsyncStorage for local data persistence
+
+### API Client
+Located in `src/lib/apiClient.ts`:
+- Handles authentication
+- Manages HTTP requests
+- Platform-aware credentials handling
+- Token management with AsyncStorage
+
+## Known Limitations
+
+1. **Stripe Payments**: Only work on native platforms (iOS/Android). Web has mock implementations.
+2. **Push Notifications**: Only supported on native platforms.
+3. **Some Expo packages**: May show deprecation warnings (expo-av will be replaced with expo-audio/expo-video in SDK 54+).
+
+## Replit-Specific Setup
+
+### Port Configuration
+- Web app runs on port 5000 (required for Replit)
+- Configured via `npm run web` script
+
+### Host Binding
+- Development server binds to 0.0.0.0 (configured via EXPO_DEVTOOLS_LISTEN_ADDRESS)
+- Allows access through Replit's proxy
+
+### Dependencies
+All dependencies are installed via npm and tracked in package.json. No additional system packages required beyond Node.js 20.
+
+## Recent Changes
+
+### October 22, 2025
+- Imported project from GitHub
+- Configured for Replit environment
+- Created platform-specific Stripe wrappers (web vs native)
+- Set up workflow to run on port 5000
+- Updated npm scripts for Replit compatibility
+- Verified web app functionality
+
+## Troubleshooting
+
+### Build Issues
+If you see bundling errors:
+1. Clear Metro cache: `npm run reset-cache`
+2. Delete node_modules and reinstall: `rm -rf node_modules && npm install`
+
+### Platform-Specific Issues
+- Some native modules won't work on web (Stripe, Notifications)
+- Use platform-specific imports (.web.js, .native.js) for such cases
+
+### Package Warnings
+The app may show warnings about package versions being slightly out of sync. These are generally safe to ignore unless you encounter runtime errors.
