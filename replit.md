@@ -121,12 +121,14 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 ## Recent Changes
 
 ### October 23, 2025
-- **Added Legal Links to Subscription Screen**
+- **Added Legal Links to Subscription and Registration Screens**
   - Installed `expo-web-browser` package for webview functionality
-  - Added Terms of Service and Privacy Policy links below the "Delete account" link
-  - Links open in native webview using `WebBrowser.openBrowserAsync()`
+  - Added Terms of Service and Privacy Policy links to:
+    - Subscription screen (below "Delete account" link with small gray text and bullet separator)
+    - Create Account registration screen (inline within onboarding flow)
+  - Links open in native webview using async `WebBrowser.openBrowserAsync()` handlers
   - URLs point to https://www.lingotoday.co/terms and https://www.lingotoday.co/privacy
-  - Styled with small gray text and bullet separator for minimal visual hierarchy
+  - Both implementations follow consistent patterns with proper error handling
 
 - **Fixed Modal/Sheet Stacking Issues**
   - Created global `SheetManagerProvider` context to enforce single-sheet policy
