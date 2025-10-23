@@ -496,6 +496,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18, // text-lg sm:text-xl
     fontWeight: '600',
+    marginTop: 10,
     color: '#111827',
     textAlign: 'center',
   },

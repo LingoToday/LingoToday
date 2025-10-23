@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   backButton: { paddingVertical: 6, paddingHorizontal: 8, borderRadius: 6 },
   headerCenter: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: -1 },
-  headerTitle: { fontSize: 18, fontWeight: '600', color: '#111827' },
+  headerTitle: { fontSize: 18, fontWeight: '600', color: '#111827', marginTop: 10 },
 
   contentWrapper: { maxWidth: 896, alignSelf: 'center', width: '100%', paddingHorizontal: 16, paddingVertical: 24 },
   stack: { gap: 16 },
