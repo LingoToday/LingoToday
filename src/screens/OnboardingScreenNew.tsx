@@ -637,6 +637,14 @@ const RegistrationScreen = ({
     await WebBrowser.openBrowserAsync('https://www.lingotoday.co/privacy');
   };
 
+  const handleRestorePurchase = async () => {
+    RNAlert.alert(
+      'Restore Purchase',
+      'This feature will restore your previous purchases.',
+      [{ text: 'OK' }]
+    );
+  };
+
   return (
     <KeyboardAvoidingView>
       <View style={styles.screenContent}>
@@ -743,17 +751,19 @@ const RegistrationScreen = ({
           {/* Privacy Policy and Terms text - matching web */}
           <View>
             <View style={styles.termsSection}>
-            <Text style={styles.termsText}>
-              By creating an account, you indicate that you have read and agreed to the{' '}
-              <TouchableOpacity onPress={handleOpenPrivacy}>
-                <Text style={styles.termsLink}>Privacy Policy</Text>
-              </TouchableOpacity>
-              {' '}and{' '}
-              <TouchableOpacity onPress={handleOpenTerms}>
-                <Text style={styles.termsLink}>Terms of Use</Text>
-              </TouchableOpacity>
-            </Text>
-          </View>
+              <Text style={styles.termsText}>
+                By creating an account, you indicate that you have read and agreed to the{' '}
+                <Text style={styles.termsLink} onPress={handleOpenPrivacy}>Privacy Policy</Text>
+                {' '}and{' '}
+                <Text style={styles.termsLink} onPress={handleOpenTerms}>Terms of Use</Text>
+              </Text>
+              
+              <Text style={styles.restoreText}>
+                Alternatively,{' '}
+                <Text style={styles.termsLink} onPress={handleRestorePurchase}>Restore</Text>
+                {' '}your purchase
+              </Text>
+            </View>
           </View>
           
           {/* Features - matching web exactly */}

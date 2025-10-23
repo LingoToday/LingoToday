@@ -307,9 +307,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
+  restoreText: {
+    fontSize: 12, // text-xs
+    color: '#6B7280', // text-gray-600
+    textAlign: 'center',
+    lineHeight: 20,
+    marginTop: 8,
+  },
   termsLink: {
     color: '#374151', // text-gray-700
     textDecorationLine: 'underline',
+    fontSize: 12, // Ensure same size as termsText
   },
   featuresCard: {
     backgroundColor: '#FFFFFF', // bg-white
