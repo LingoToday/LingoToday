@@ -14,11 +14,13 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { theme } from '../../lib/theme';
+import { useSheetManager } from '../../contexts/SheetManagerContext';
 
 interface SheetProps {
   children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  id?: string;
 }
 
 interface SheetTriggerProps {
@@ -65,8 +67,9 @@ const SheetContext = React.createContext<{
 });
 
 // Main Sheet component
-export function Sheet({ children, open = false, onOpenChange }: SheetProps) {
+export function Sheet({ children, open = false, onOpenChange, id = 'default-sheet' }: SheetProps) {
   const [internalOpen, setInternalOpen] = useState(false);
+  const sheetManager = useSheetManager();
   
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : internalOpen;
@@ -75,8 +78,21 @@ export function Sheet({ children, open = false, onOpenChange }: SheetProps) {
     if (!isControlled) {
       setInternalOpen(newOpen);
     }
+    
+    if (!newOpen && id) {
+      sheetManager.dismissSheet(id);
+    }
+    
     onOpenChange?.(newOpen);
   };
+  
+  useEffect(() => {
+    if (isOpen && id) {
+      sheetManager.openSheet(id, {
+        dismiss: () => handleOpenChange(false),
+      });
+    }
+  }, [isOpen, id]);
 
   return (
     <SheetContext.Provider value={{ open: isOpen, onOpenChange: handleOpenChange }}>
