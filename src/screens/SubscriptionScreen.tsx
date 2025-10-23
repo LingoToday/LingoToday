@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { format } from 'date-fns';
+import * as WebBrowser from 'expo-web-browser';
 
 import { theme } from '../lib/theme';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
@@ -149,6 +150,14 @@ export default function SubscriptionScreen() {
         },
       ]
     );
+  };
+
+  const handleOpenTerms = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/terms');
+  };
+
+  const handleOpenPrivacy = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/privacy');
   };
 
   const handleChangePlan = () => {
@@ -344,6 +353,22 @@ export default function SubscriptionScreen() {
             >
               <Text style={styles.deleteAccountText}>Delete account</Text>
             </TouchableOpacity>
+
+            <View style={styles.legalLinksContainer}>
+              <TouchableOpacity 
+                onPress={handleOpenTerms}
+                testID="terms-link"
+              >
+                <Text style={styles.legalLinkText}>Terms of Service</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalLinkSeparator}> • </Text>
+              <TouchableOpacity 
+                onPress={handleOpenPrivacy}
+                testID="privacy-link"
+              >
+                <Text style={styles.legalLinkText}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -612,5 +637,20 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontSize: 14,
     textDecorationLine: 'underline',
+  },
+  legalLinksContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+  },
+  legalLinkText: {
+    color: '#6B7280',
+    fontSize: 12,
+    textDecorationLine: 'underline',
+  },
+  legalLinkSeparator: {
+    color: '#6B7280',
+    fontSize: 12,
   },
 });
