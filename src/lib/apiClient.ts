@@ -220,6 +220,9 @@ export class ApiClient {
       // Handle network errors
       if (error instanceof Error) {
         if (error.message.includes('Network request failed') || error.message.includes('fetch')) {
+          // handle logging here to check the full error message in the expo app because console.log doesn't work
+          console.log('Network connection failed. Please check your internet connection.');
+          
           throw new Error('Network connection failed. Please check your internet connection.');
         }
         throw error;
