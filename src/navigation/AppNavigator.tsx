@@ -28,6 +28,7 @@ import CourseManagerScreen from '../screens/CourseManagerScreen';
 import CourseTestScreen from '../screens/CourseTestScreen';
 import LessonExampleScreen from '../screens/LessonExampleScreen';
 import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
+import BottomTabNavigator from './BottomTabNavigator';
 
 import { theme } from '../lib/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -38,6 +39,7 @@ export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   Onboarding: undefined;
+  MainTabs: undefined;
   Dashboard: undefined;
   Account: undefined;
   Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
@@ -248,8 +250,9 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             <Stack.Screen name="Admin" component={AdminScreen} />
           </>
         ) : (
-          // Main app screens for authenticated users (Dashboard as home exactly like client)
+          // Main app screens for authenticated users (Bottom tabs with Dashboard/Account)
           <>
+            <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
             <Stack.Screen name="Dashboard" component={DashboardScreenNew} />
             <Stack.Screen name="Account" component={AccountScreenNew} />
             <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
