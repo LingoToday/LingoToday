@@ -32,6 +32,7 @@ import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 import { theme } from '../lib/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSheetManager } from '../contexts/SheetManagerContext';
+import { Platform } from 'react-native';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -84,6 +85,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
   // UPDATED: Handle notifications when app starts from notification tap
   useEffect(() => {
     const handleInitialNotification = async () => {
+      if (Platform.OS === 'web') {
+        return;
+      }
+      
       const response = await Notifications.getLastNotificationResponseAsync();
       if (response?.notification.request.content.data?.action === 'openLesson') {
         const data = response.notification.request.content.data;

@@ -28,6 +28,7 @@ import NotificationSettings from '../components/NotificationSettings';
 import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { Footer } from '../components/ui/Footer';
+import { useSheetManager } from '../contexts/SheetManagerContext';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
@@ -136,6 +137,7 @@ export default function DashboardScreenNew() {
   const { user, logout } = useAuth();
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
+  const sheetManager = useSheetManager();
   const [refreshing, setRefreshing] = useState(false);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   
@@ -200,7 +202,7 @@ useEffect(() => {
   });
 
   // Handle notification tapped (app in background/closed)
-  const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+  const responseSubscription = Notifications.addNotificationResponseReceivedListener(async response => {
     console.log('👆 Notification tapped:', response);
     
     const data = response.notification.request.content.data;
@@ -211,6 +213,9 @@ useEffect(() => {
         courseId: data.courseId,
         lessonId: data.lessonId
       });
+      
+      // Dismiss any open sheets before navigating
+      await sheetManager.dismissAllSheets();
       
       // Navigate to the lesson
       navigation.navigate('Lesson', {
