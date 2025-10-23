@@ -121,6 +121,16 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 ## Recent Changes
 
 ### October 23, 2025
+- **Implemented Mobile-Optimized Bottom Navigation**
+  - Created `BottomTabNavigator.tsx` with Home and Profile tabs
+  - Home tab (🏠 icon) shows the Dashboard screen
+  - Profile tab (👤 icon) shows the Account screen
+  - Active tab highlighted in blue (#3B82F6), inactive tabs in gray (#9CA3AF)
+  - Platform-optimized spacing for iOS (taller navigation bar) and Android (shorter)
+  - Uses Ionicons with filled icons for active state, outlined for inactive
+  - Integrated as main navigation for authenticated users in AppNavigator
+  - Navigation structure: Landing → Login → Onboarding → Bottom Tabs (Home/Profile)
+
 - **Added Legal Links to Subscription and Registration Screens**
   - Installed `expo-web-browser` package for webview functionality
   - Added Terms of Service and Privacy Policy links to:
