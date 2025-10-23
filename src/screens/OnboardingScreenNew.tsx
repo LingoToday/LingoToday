@@ -15,6 +15,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
 import { AuthContext } from '../contexts/AuthContext';
 import styles from '../styles/OnboardingStyles';
 
@@ -627,7 +628,16 @@ const RegistrationScreen = ({
   onInputChange: (field: keyof typeof registerData, value: string) => void;
   onRegister: () => void;
   navigation: any;
-}) => (
+}) => {
+  const handleOpenTerms = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/terms');
+  };
+
+  const handleOpenPrivacy = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/privacy');
+  };
+
+  return (
     <KeyboardAvoidingView>
       <View style={styles.screenContent}>
         <Text style={styles.screenTitle}>
@@ -735,11 +745,11 @@ const RegistrationScreen = ({
             <View style={styles.termsSection}>
             <Text style={styles.termsText}>
               By creating an account, you indicate that you have read and agreed to the{' '}
-              <TouchableOpacity onPress={() => navigation.navigate('Privacy')}>
+              <TouchableOpacity onPress={handleOpenPrivacy}>
                 <Text style={styles.termsLink}>Privacy Policy</Text>
               </TouchableOpacity>
               {' '}and{' '}
-              <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
+              <TouchableOpacity onPress={handleOpenTerms}>
                 <Text style={styles.termsLink}>Terms of Use</Text>
               </TouchableOpacity>
             </Text>
@@ -765,6 +775,7 @@ const RegistrationScreen = ({
       </View>
     </KeyboardAvoidingView>
   );
+};
 
 const NotificationScreen = ({ 
   notificationsEnabled, 
