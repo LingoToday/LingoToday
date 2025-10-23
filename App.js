@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/contexts/AuthContext'; // Import from AuthContext
 import { useAuth } from './src/hooks/useAuth'; // Import from useAuth hook
+import { SheetManagerProvider } from './src/contexts/SheetManagerContext';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -29,8 +30,10 @@ export default function App() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <AppContent />
-            <StatusBar style="auto" />
+            <SheetManagerProvider>
+              <AppContent />
+              <StatusBar style="auto" />
+            </SheetManagerProvider>
           </AuthProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
