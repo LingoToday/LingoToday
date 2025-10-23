@@ -31,6 +31,7 @@ import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 
 import { theme } from '../lib/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSheetManager } from '../contexts/SheetManagerContext';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -78,6 +79,7 @@ interface AppNavigatorProps {
 
 export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNavigatorProps) {
   const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
+  const sheetManager = useSheetManager();
 
   // UPDATED: Handle notifications when app starts from notification tap
   useEffect(() => {
@@ -105,13 +107,15 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
     handleInitialNotification();
 
     // Handle notifications when app is already running
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(async response => {
       const data = response.notification.request.content.data;
       if (data?.action === 'openLesson') {
         console.log('📱 Notification tapped while app running:', data);
         
         // Navigate immediately if user is authenticated
         if (isAuthenticated && navigationRef.current?.isReady()) {
+          await sheetManager.dismissAllSheets();
+          
           navigationRef.current.navigate('Lesson', {
             language: data.language as string,
             courseId: data.courseId as string,
@@ -144,14 +148,16 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
               // Clear the stored data first
               await AsyncStorage.removeItem('pendingNotificationNavigation');
               
-              // Navigate after a small delay to ensure app is ready
+              // Dismiss any sheets and navigate after a small delay to ensure app is ready
+              await sheetManager.dismissAllSheets();
+              
               setTimeout(() => {
                 navigationRef.current?.navigate('Lesson', {
                   language: navigationData.language,
                   courseId: navigationData.courseId,
                   lessonId: navigationData.lessonId
                 });
-              }, 1500);
+              }, 100);
             } else {
               // Clear expired data
               await AsyncStorage.removeItem('pendingNotificationNavigation');
