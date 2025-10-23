@@ -1169,11 +1169,21 @@ export default function LessonScreen() {
 
                   <View style={styles.inputContainer}>
                     <TextInput
-                      style={styles.textInput}
+                      style={[
+                        styles.textInput,
+                        showResult && isCorrect && styles.correctInput,
+                        showResult && !isCorrect && styles.incorrectInput,
+                      ]}
                       value={selectedAnswer}
                       onChangeText={setSelectedAnswer}
                       placeholder="Type your answer..."
+                      editable={!showResult}
                     />
+                    {showResult && !isCorrect && (
+                      <Text style={styles.correctAnswerHint}>
+                        Correct answer: {stepData.expected}
+                      </Text>
+                    )}
                   </View>
                 </>
               )}
@@ -1246,34 +1256,6 @@ export default function LessonScreen() {
               {/* Quiz Section */}
               {stepData && (
                 <View style={styles.quizSection}>
-                  {showResult && (
-                    <View style={styles.resultContainer}>
-                      <View style={[
-                        styles.resultBadge,
-                        isCorrect ? styles.correctBadge : styles.incorrectBadge
-                      ]}>
-                        <Ionicons 
-                          name={isCorrect ? "checkmark" : "close"} 
-                          size={20} 
-                          color="white" 
-                        />
-                        <Text style={styles.resultText}>
-                          {isCorrect ? 'Correct!' : 'Try again!'}
-                        </Text>
-                      </View>
-                      
-                      {!isCorrect && stepData.type !== 'word_review' && (
-                        <Text style={styles.correctAnswerText}>
-                          {stepData.type === 'quick_check' || stepData.type === 'review_mcq' || stepData.type === 'audio' 
-                            ? `Correct answer: ${stepData.answer}`
-                            : stepData.type === 'type' 
-                            ? `Correct answer: ${stepData.expected}`
-                            : ''}
-                        </Text>
-                      )}
-                    </View>
-                  )}
-                  
                   {!showResult ? (
                     <Button
                       title={stepData.type === 'word_review' ? "Continue" : "Check Answer"}
@@ -1588,6 +1570,20 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     textAlign: 'center',
   },
+  correctInput: {
+    borderColor: '#10b981',
+    backgroundColor: '#f0fdf4',
+  },
+  incorrectInput: {
+    borderColor: '#ef4444',
+    backgroundColor: '#fef2f2',
+  },
+  correctAnswerHint: {
+    fontSize: theme.fontSize.sm,
+    color: '#ef4444',
+    textAlign: 'center',
+    marginTop: theme.spacing.xs,
+  },
 
   // FIXED: Improved Listen Button
   listenButton: {
@@ -1644,36 +1640,6 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.border,
     paddingTop: theme.spacing.lg,
     gap: theme.spacing.md,
-  },
-
-  // Result
-  resultContainer: {
-    alignItems: 'center',
-    gap: theme.spacing.md,
-  },
-  resultBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-    borderRadius: theme.borderRadius.full,
-  },
-  correctBadge: {
-    backgroundColor: '#10b981',
-  },
-  incorrectBadge: {
-    backgroundColor: '#ef4444',
-  },
-  resultText: {
-    color: 'white',
-    fontSize: theme.fontSize.base,
-    fontWeight: '600' as any,
-  },
-  correctAnswerText: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.mutedForeground,
-    textAlign: 'center',
   },
 
   // Buttons
