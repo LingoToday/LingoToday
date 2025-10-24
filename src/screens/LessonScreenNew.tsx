@@ -407,16 +407,22 @@ export default function LessonScreen() {
 
       // Handle API lessons with steps object (object with named keys)
       if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
-        const stepMapping = {
-          1: 'word_review',
-          2: 'typing', 
-          3: 'comprehension',
-          4: 'pro_video'
-        };
-        const stepName = stepMapping[currentStep as keyof typeof stepMapping];
+        console.log('📋 Steps object detected:', {
+          stepKeys: Object.keys(currentLesson.lesson.steps),
+          currentStep,
+          totalSteps: getTotalSteps()
+        });
         
-        if (stepName && currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps]) {
-          const stepData = currentLesson.lesson.steps[stepName as keyof typeof currentLesson.lesson.steps];
+        // Get all step keys and match them to step numbers dynamically
+        const stepKeys = Object.keys(currentLesson.lesson.steps);
+        const stepKey = stepKeys[currentStep - 1]; // Array is 0-indexed, steps are 1-indexed
+        
+        console.log(`🔍 Looking for step ${currentStep}, found key: ${stepKey}`);
+        
+        if (stepKey && currentLesson.lesson.steps[stepKey as keyof typeof currentLesson.lesson.steps]) {
+          const stepData = currentLesson.lesson.steps[stepKey as keyof typeof currentLesson.lesson.steps];
+          
+          console.log('📦 Step data:', { stepKey, stepData });
           
           if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
             const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
@@ -435,6 +441,44 @@ export default function LessonScreen() {
               expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
               hasAccess,
               requiredTier
+            };
+          }
+          
+          // Handle other step types that might come from the steps object
+          if (stepData.stepType === 'word_review') {
+            return {
+              type: 'word_review',
+              word: stepData.content?.italian || stepData.italian || '',
+              translation: stepData.content?.english || stepData.english || '',
+              audio: stepData.content?.audio || stepData.audio || '',
+              note: stepData.content?.note || stepData.note || ''
+            };
+          }
+          
+          if (stepData.stepType === 'quick_check') {
+            return {
+              type: 'quick_check',
+              question: stepData.content?.mcq?.question || stepData.question || '',
+              options: stepData.content?.mcq?.options || stepData.options || [],
+              answer: stepData.content?.mcq?.answer || stepData.answer || ''
+            };
+          }
+          
+          if (stepData.stepType === 'typing') {
+            return {
+              type: 'type',
+              prompt: stepData.content?.type_prompt || stepData.type_prompt || '',
+              expected: stepData.content?.expected_answer || stepData.expectedAnswer || '',
+              alternatives: stepData.content?.alt_answers || stepData.alt_answers || []
+            };
+          }
+          
+          if (stepData.stepType === 'comprehension') {
+            return {
+              type: 'audio',
+              audioSentence: stepData.content?.audio_sentence || stepData.audio_sentence || '',
+              options: stepData.content?.options || stepData.options || [],
+              answer: stepData.content?.answer || stepData.answer || ''
             };
           }
         }
