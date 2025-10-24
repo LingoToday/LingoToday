@@ -288,6 +288,45 @@ export default function LessonScreen() {
     return 'neutral';
   };
 
+  // Dynamically calculate total steps from lesson data
+  const getTotalSteps = (): number => {
+    if (!currentLesson?.lesson) return 4; // Default fallback
+    
+    // IRL video lessons are single-step
+    const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
+    if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson || currentLesson.isIRLLesson) {
+      return 1;
+    }
+    
+    // Handle steps array format (new database structure)
+    if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
+      return currentLesson.lesson.steps.length;
+    }
+    
+    // Handle steps object format (named keys like word_review, typing, etc.)
+    if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+      const stepKeys = Object.keys(currentLesson.lesson.steps);
+      return stepKeys.length;
+    }
+    
+    // Handle legacy format (step1, step2, step3, step4, step5, etc.)
+    if (currentLesson.lesson) {
+      let count = 0;
+      for (let i = 1; i <= 10; i++) { // Check up to 10 steps
+        const stepKey = `step${i}` as keyof typeof currentLesson.lesson;
+        if (currentLesson.lesson[stepKey]) {
+          count++;
+        } else {
+          break; // Stop counting when we hit a missing step
+        }
+      }
+      if (count > 0) return count;
+    }
+    
+    // Default to 4 for backward compatibility
+    return 4;
+  };
+
   // Get current step data - matching web logic exactly
   const getCurrentStepData = () => {
     try {
@@ -316,12 +355,13 @@ export default function LessonScreen() {
         };
       }
 
-      // Normalize legacy lesson format (step1, step2, step3, step4) to steps[] array
+      // Normalize legacy lesson format (step1, step2, step3, step4, step5, etc.) to steps[] array
       if (!currentLesson.lesson?.steps && currentLesson.lesson?.step1) {
-        console.log('🔄 Normalizing legacy 4-step format to steps[]');
+        console.log('🔄 Normalizing legacy step format to steps[]');
         const normalizedSteps = [];
         
-        for (let i = 1; i <= 4; i++) {
+        // Check up to 10 steps dynamically
+        for (let i = 1; i <= 10; i++) {
           const stepKey = `step${i}` as keyof typeof currentLesson.lesson;
           const stepData = currentLesson.lesson[stepKey];
           if (stepData) {
@@ -356,9 +396,12 @@ export default function LessonScreen() {
               stepType: stepType,
               content: content
             });
+          } else {
+            break; // Stop when we hit a missing step
           }
         }
         
+        console.log(`🔄 Normalized ${normalizedSteps.length} steps`);
         currentLesson.lesson.steps = normalizedSteps;
       }
 
@@ -641,7 +684,7 @@ export default function LessonScreen() {
         language,
         courseId: courseId || "course1",
         lessonId: lessonId || currentLesson!.id,
-        stepNumber: 4,
+        stepNumber: getTotalSteps(),
         completed: true,
         score,
         completedAt: new Date(),
@@ -798,15 +841,19 @@ export default function LessonScreen() {
         completeLessonMutation.mutate(score);
       }
     } else {
-      if (currentStep < 4) {
+      const totalSteps = getTotalSteps();
+      
+      if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
         setSelectedAnswer("");
         setShowResult(false);
         setIsCorrect(false);
       } else {
         const correctSteps = Object.values(stepResults).filter(Boolean).length;
-        const totalSteps = 3;
-        const score = Math.round((correctSteps / totalSteps) * 100);
+        // Only count steps that actually have questions (exclude word_review which is step 1)
+        // Guard against division by zero for single-step or edge case lessons
+        const stepsWithQuestions = Math.max(1, totalSteps - 1);
+        const score = Math.round((correctSteps / stepsWithQuestions) * 100);
         completeLessonMutation.mutate(score);
       }
     }
@@ -929,7 +976,7 @@ export default function LessonScreen() {
             {stepData?.isReview ? (
               <Text style={styles.headerProgress}>Question {currentStep} of {stepData.totalQuestions}</Text>
             ) : stepData?.type === 'irl_video' ? null : (
-              <Text style={styles.headerProgress}>Step {currentStep} of 4</Text>
+              <Text style={styles.headerProgress}>Step {currentStep} of {getTotalSteps()}</Text>
             )}
           </View>
         </View>
@@ -1265,7 +1312,7 @@ export default function LessonScreen() {
                     />
                   ) : (
                     <Button
-                      title={currentStep < 4 || stepData.isReview ? "Next" : "Complete Lesson"}
+                      title={currentStep < getTotalSteps() || stepData.isReview ? "Next" : "Complete Lesson"}
                       onPress={handleNextStep}
                       style={styles.nextButton}
                     />
