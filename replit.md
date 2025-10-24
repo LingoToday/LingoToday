@@ -121,6 +121,14 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 ## Recent Changes
 
 ### October 24, 2025
+- **Fixed Blank Screen on Step 5+ for Lessons with Steps Object Format**
+  - Fixed bug where lessons with `steps` object format (named keys like word_review, typing, etc.) only displayed steps 1-4
+  - Replaced hardcoded step mapping with dynamic key-based indexing using `Object.keys()` and `currentStep - 1`
+  - Added handlers for all step types (word_review, quick_check, typing, comprehension) in steps object section
+  - Added comprehensive debug logging to track step keys, current step number, and step data structure
+  - Step 5 and beyond now display correctly for all lesson formats (steps object, steps array, legacy step1-step10)
+  - Fixed issue reported for Italian Course 1 Lesson 3 where step 5 showed blank screen
+
 - **Implemented Dynamic Lesson Step Counting**
   - Added `getTotalSteps()` helper function to dynamically calculate the number of steps in any lesson
   - Supports multiple lesson formats: new `steps[]` array, `steps` object, legacy `step1-step10` fields, and IRL video lessons
