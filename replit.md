@@ -120,6 +120,18 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 
 ## Recent Changes
 
+### October 24, 2025
+- **Implemented Dynamic Lesson Step Counting**
+  - Added `getTotalSteps()` helper function to dynamically calculate the number of steps in any lesson
+  - Supports multiple lesson formats: new `steps[]` array, `steps` object, legacy `step1-step10` fields, and IRL video lessons
+  - Replaced all hardcoded 4-step limitations throughout `LessonScreenNew.tsx`
+  - Fixed lesson completion reporting to send correct `stepNumber` to backend API (was hardcoded to 4, now dynamic)
+  - Updated header progress display to show accurate "Step X of Y" for lessons with any number of steps (1-10+)
+  - Fixed button text to correctly show "Next" vs "Complete Lesson" based on actual total step count
+  - Added division-by-zero guard in score calculation using `Math.max(1, totalSteps - 1)` to handle edge cases
+  - Lessons with 5+ steps now display and complete properly; app dynamically adapts to backend lesson data
+  - This allows admins to manage lesson step counts via /admin page without requiring app code changes
+
 ### October 23, 2025
 - **Implemented Mobile-Optimized Bottom Navigation**
   - Created `BottomTabNavigator.tsx` with Home and Profile tabs
