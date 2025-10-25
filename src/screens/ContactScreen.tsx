@@ -17,7 +17,6 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { Textarea } from '../components/ui/Textarea';
-import { Footer } from '../components/ui/Footer';
 
 interface ContactForm {
   name: string;
@@ -284,8 +283,6 @@ export default function ContactScreen() {
             </Card>
           </View>
         </View>
-
-        <Footer />
       </ScrollView>
     </SafeAreaView>
   );

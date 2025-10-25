@@ -17,7 +17,6 @@ import { theme } from '../lib/theme';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { Footer } from '../components/ui/Footer';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -403,8 +402,6 @@ export default function CoursesScreen() {
             </View>
           </View>
         </View>
-
-        <Footer />
       </ScrollView>
     </SafeAreaView>
   );

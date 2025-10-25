@@ -27,7 +27,6 @@ import { Badge } from '../components/ui/Badge';
 import NotificationSettings from '../components/NotificationSettings';
 import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
-import { Footer } from '../components/ui/Footer';
 import { useSheetManager } from '../contexts/SheetManagerContext';
 
 const { width } = Dimensions.get('window');
@@ -1130,7 +1129,6 @@ useEffect(() => {
                 </Card>
               </View>
             </View>
-            <Footer />
           </View>
         </ScrollView>
         
