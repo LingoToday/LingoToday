@@ -391,6 +391,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.lg,
+    paddingTop: 10,
     backgroundColor: '#ffffff',
   },
   backButton: {
