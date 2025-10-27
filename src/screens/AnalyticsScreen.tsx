@@ -228,12 +228,12 @@ export default function AnalyticsScreen() {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        {/* Simple back button */}
+        <View style={styles.simpleHeader}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Analytics</Text>
-          <View style={styles.headerRight} />
+          <Text style={styles.screenTitle}>Analytics</Text>
         </View>
         
         <View style={styles.loadingContainer}>
@@ -247,12 +247,12 @@ export default function AnalyticsScreen() {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        {/* Simple back button */}
+        <View style={styles.simpleHeader}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Analytics</Text>
-          <View style={styles.headerRight} />
+          <Text style={styles.screenTitle}>Analytics</Text>
         </View>
         
         <View style={styles.errorContainer}>
@@ -273,28 +273,14 @@ export default function AnalyticsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header - matching web exactly */}
-      <View style={styles.header}>
+      {/* Simple back button */}
+      <View style={styles.simpleHeader}>
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
         </TouchableOpacity>
-        
-        <View style={styles.headerContent}>
-          <View style={styles.logoContainer}>
-            <View style={styles.logoIcon}>
-              <Ionicons name="book" size={16} color="#ffffff" />
-            </View>
-            <Text style={styles.logoText}>LingoToday</Text>
-          </View>
-        </View>
-        
-        <TouchableOpacity onPress={() => setShowAccountModal(true)} style={styles.accountButton}>
-          <Ionicons name="person" size={16} color={theme.colors.foreground} />
-          <Text style={styles.accountButtonText}>{user?.firstName || 'Account'}</Text>
-          <Ionicons name="chevron-down" size={12} color={theme.colors.mutedForeground} />
-        </TouchableOpacity>
+        <Text style={styles.screenTitle}>Analytics</Text>
       </View>
-
+      
       <ScrollView
         style={styles.content}
         refreshControl={
@@ -611,6 +597,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',
+  },
+
+  // Simple header with just back button
+  simpleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    gap: theme.spacing.md,
+  },
+  screenTitle: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '600',
+    color: theme.colors.foreground,
   },
 
   // Header

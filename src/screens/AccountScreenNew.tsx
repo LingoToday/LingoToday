@@ -161,35 +161,6 @@ export default function AccountScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header - matching web exactly */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity 
-              style={styles.backButton}
-              onPress={handleNavigateToDashboard}
-              testID="back-to-dashboard"
-            >
-              <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>Account Settings</Text>
-          </View>
-          
-          <View style={styles.headerRight}>
-            <Text style={styles.userName}>{user.firstName || 'User'}</Text>
-            <TouchableOpacity 
-              style={styles.logoutHeaderButton}
-              onPress={handleLogout}
-            >
-              <Text style={styles.logoutHeaderButtonText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-
       <ScrollView 
         style={styles.content} 
         contentContainerStyle={styles.contentContainer}

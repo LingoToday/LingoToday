@@ -711,37 +711,6 @@ useEffect(() => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <View style={styles.headerLeft}>
-              <View style={styles.logoContainer}>
-                <View style={styles.logoIcon}>
-                  <Ionicons name="book" size={16} color="#ffffff" />
-                </View>
-                <Text style={styles.logoText}>LingoToday</Text>
-              </View>
-              
-              <TouchableOpacity style={styles.dashboardButton}>
-                <Text style={styles.dashboardButtonText}>Dashboard</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <View style={styles.headerRight}>
-              <TouchableOpacity 
-                style={styles.accountButton}
-                onPress={handleMenuPress}
-              >
-                <Ionicons name="person" size={16} color={theme.colors.foreground} />
-                <Text style={styles.accountButtonText}>
-                  {effectiveDashboardData.user.firstName || 'Account'}
-                </Text>
-                <Ionicons name="chevron-down" size={12} color={theme.colors.foreground} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
         <ScrollView 
           style={styles.content} 
           showsVerticalScrollIndicator={false}
