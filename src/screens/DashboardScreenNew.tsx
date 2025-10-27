@@ -782,29 +782,6 @@ useEffect(() => {
                   </CardContent>
                 </Card>
 
-                {/* Learning Status */}
-                <Card style={StyleSheet.flatten([
-                  styles.statusCard,
-                  stats.lessonsCompleted === 0 ? styles.statusCardBlueBackground : styles.statusCardGreenBackground
-                ])}>
-                  <CardContent style={styles.statusContent}>
-                    <Ionicons 
-                      name={stats.lessonsCompleted === 0 ? "ellipse-outline" : "checkmark-circle"} 
-                      size={20} 
-                      color={stats.lessonsCompleted === 0 ? "#2563eb" : "#059669"} 
-                    />
-                    <Text style={[
-                      styles.statusText,
-                      { color: stats.lessonsCompleted === 0 ? "#1e40af" : "#047857" }
-                    ]}>
-                      {stats.lessonsCompleted === 0 
-                        ? `Ready to start your ${getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} learning journey`
-                        : `Learning in progress • ${stats.lessonsCompleted} lessons completed`
-                      }
-                    </Text>
-                  </CardContent>
-                </Card>
-
                 {/* FIXED: Daily Session Button with proper condition */}
                 {shouldShowDailySessionButton && (
                   <Card style={styles.sessionCard}>
@@ -1296,31 +1273,6 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '500',
-  },
-
-  // Status Card (matching web exactly)
-  statusCard: {
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  statusCardBlueBackground: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#dbeafe',
-  },
-  statusCardGreenBackground: {
-    backgroundColor: '#f0fdf4',
-    borderColor: '#dcfce7',
-  },
-  statusContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 8,
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: '500',
-    flex: 1,
   },
 
   // Session Card (matching web exactly)
