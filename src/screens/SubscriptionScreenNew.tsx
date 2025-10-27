@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
+import * as WebBrowser from 'expo-web-browser';
 
 import { theme } from '../lib/theme';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
@@ -99,6 +100,14 @@ export default function SubscriptionScreenNew() {
 
   const handleRestorePurchases = () => {
     Alert.alert('Restore Purchases', 'Checking for existing subscriptions...');
+  };
+
+  const handleOpenTerms = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/terms');
+  };
+
+  const handleOpenPrivacy = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/privacy');
   };
 
   if (userLoading || subLoading) {
@@ -252,6 +261,17 @@ export default function SubscriptionScreenNew() {
                 <Text style={[styles.buttonText, { color: theme.colors.foreground }]}>Restore Purchases</Text>
               </View>
             </Button>
+
+            {/* Terms and Privacy Policy Links */}
+            <View style={styles.legalLinksContainer}>
+              <TouchableOpacity onPress={handleOpenTerms} testID="terms-link">
+                <Text style={styles.legalLink}>Terms of Service</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={handleOpenPrivacy} testID="privacy-link">
+                <Text style={styles.legalLink}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -312,4 +332,21 @@ const styles = StyleSheet.create({
 
   buttonContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '500' },
+
+  legalLinksContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    gap: 8,
+    marginTop: 4,
+  },
+  legalLink: { 
+    fontSize: 12, 
+    color: '#6B7280',
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: { 
+    fontSize: 12, 
+    color: '#6B7280',
+  },
 });
