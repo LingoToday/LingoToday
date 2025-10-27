@@ -121,6 +121,15 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 ## Recent Changes
 
 ### October 27, 2025
+- **Removed Header Navigation from Authenticated Screens**
+  - Removed full header navigation (LingoToday logo, account dropdown, profile button) from all authenticated screens
+  - Main tab screens (Dashboard, Account) now have no header - content goes edge-to-edge for maximum screen space
+  - Secondary screens (Progress, Analytics) have minimal headers with just a back arrow and screen title
+  - Back button properly uses `navigation.goBack()` with fallback to MainTabs for proper stack navigation
+  - Minimal headers display in all screen states (loading, error, success) to ensure users can always navigate back
+  - Bottom tabs provide primary navigation; screen headers are no longer needed for navigation
+  - Screens affected: DashboardScreenNew, AccountScreenNew, ProgressScreenNew, AnalyticsScreen
+
 - **Fixed Bottom Navigation Visibility for Authenticated Users**
   - Removed duplicate Dashboard and Account screens from authenticated stack in `AppNavigator.tsx`
   - Updated all `navigation.navigate('Dashboard')` calls throughout the app to navigate to `'MainTabs'` instead
