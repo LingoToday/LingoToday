@@ -17,7 +17,7 @@ export default function NotFoundScreen() {
 
   const handleGoHome = () => {
     // Reset to Dashboard if authenticated, otherwise go to Landing
-    navigation.navigate('Dashboard' as never);
+    navigation.navigate('MainTabs' as never);
   };
 
   const handleGoBack = () => {

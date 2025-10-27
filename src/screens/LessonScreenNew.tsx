@@ -742,7 +742,7 @@ export default function LessonScreen() {
       Alert.alert(
         "Lesson completed!",
         "Great job! Returning to dashboard...",
-        [{ text: "OK", onPress: () => navigation.navigate('Dashboard' as never) }]
+        [{ text: "OK", onPress: () => navigation.navigate('MainTabs' as never) }]
       );
     },
     onError: (error) => {
@@ -953,7 +953,7 @@ export default function LessonScreen() {
             <Text style={styles.errorText}>
               The requested lesson could not be found.
             </Text>
-            <Button title="Back to Dashboard" onPress={() => navigation.navigate('Dashboard' as never)} />
+            <Button title="Back to Dashboard" onPress={() => navigation.navigate('MainTabs' as never)} />
           </CardContent>
         </Card>
       </SafeAreaView>

@@ -582,7 +582,7 @@ export default function AnalyticsScreen() {
                 style={styles.modalOption}
                 onPress={() => {
                   setShowAccountModal(false);
-                  navigation.navigate('Account' as never);
+                  navigation.navigate('MainTabs', { screen: 'Profile' } as never);
                 }}
               >
                 <Ionicons name="person" size={16} color={theme.colors.foreground} />

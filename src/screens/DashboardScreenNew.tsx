@@ -572,7 +572,7 @@ useEffect(() => {
 
   // Handle menu navigation
   const handleMenuPress = () => {
-    navigation.navigate('Account');
+    navigation.navigate('MainTabs', { screen: 'Profile' } as never);
   };
 
   // Handle navigation to Courses

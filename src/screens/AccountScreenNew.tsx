@@ -120,7 +120,7 @@ export default function AccountScreen() {
   };
 
   const handleNavigateToDashboard = () => {
-    navigation.navigate('Dashboard' as never);
+    navigation.navigate('MainTabs' as never);
   };
 
   const handleNavigateToSubscription = () => {

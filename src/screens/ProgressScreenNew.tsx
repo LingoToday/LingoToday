@@ -37,7 +37,7 @@ export default function ProgressScreenNew() {
   const [refreshing, setRefreshing] = useState(false);
 
   const handleGoBack = () => {
-    navigation.navigate('Dashboard' as never);
+    navigation.navigate('MainTabs' as never);
   };
 
   // Fetch dashboard data - matching web exactly
@@ -162,7 +162,7 @@ export default function ProgressScreenNew() {
         </View>
         
         <TouchableOpacity
-          onPress={() => navigation.navigate('Account' as never)}
+          onPress={() => navigation.navigate('MainTabs', { screen: 'Profile' } as never)}
           style={styles.accountButton}
         >
           <Ionicons name="person" size={16} color={theme.colors.foreground} />

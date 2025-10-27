@@ -410,7 +410,7 @@ const handlePaymentSuccess = async () => {
     setTimeout(() => {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Dashboard' as never }],
+        routes: [{ name: 'MainTabs' as never }],
       });
     }, 1000);
   }

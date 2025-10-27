@@ -81,7 +81,7 @@ export default function LessonExampleScreen() {
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
 
   const handleGoBack = () => {
-    navigation.navigate('Dashboard' as never);
+    navigation.navigate('MainTabs' as never);
   };
 
   return (

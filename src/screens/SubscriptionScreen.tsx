@@ -200,7 +200,7 @@ export default function SubscriptionScreen() {
           <View style={styles.headerLeft}>
             <TouchableOpacity 
               style={styles.backButton}
-              onPress={() => navigation.navigate('Account' as never)}
+              onPress={() => navigation.navigate('MainTabs', { screen: 'Profile' } as never)}
               testID="back-to-account"
             >
               <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />

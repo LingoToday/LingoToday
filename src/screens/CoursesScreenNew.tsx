@@ -166,7 +166,7 @@ export default function CoursesScreen() {
       return;
     }
     // Navigate to specific language courses - would be implemented
-    navigation.navigate('Dashboard' as never);
+    navigation.navigate('MainTabs' as never);
   };
 
   const handleGoBack = () => {

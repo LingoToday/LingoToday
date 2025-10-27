@@ -39,9 +39,7 @@ export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   Onboarding: undefined;
-  MainTabs: undefined;
-  Dashboard: undefined;
-  Account: undefined;
+  MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
   Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
   Progress: undefined;
   Lesson: { lessonId: string; language?: string; courseId?: string };
@@ -253,8 +251,6 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
           // Main app screens for authenticated users (Bottom tabs with Dashboard/Account)
           <>
             <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
-            <Stack.Screen name="Dashboard" component={DashboardScreenNew} />
-            <Stack.Screen name="Account" component={AccountScreenNew} />
             <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
             <Stack.Screen name="Progress" component={ProgressScreenNew} />
             

@@ -50,8 +50,7 @@ export default function SubscribeScreen() {
   // Create subscription mutation - matching web exactly
   const createSubscriptionMutation = useMutation({
     mutationFn: async () => {
-      const priceId = currency === 'GBP' ? 'price_1QKNVhP7t8YNNmwE0kglMKTq' : 'price_usd_monthly';
-      const response = await apiClient.createSubscription(priceId);
+      const response = await apiClient.createSubscription();
       return (response as any).data || response;
     },
     onError: (error) => {
@@ -140,7 +139,7 @@ export default function SubscribeScreen() {
                   'Your subscription is now active. You have access to all premium features.',
                   [{ 
                     text: 'OK', 
-                    onPress: () => navigation.navigate('Dashboard' as never) 
+                    onPress: () => navigation.navigate('MainTabs' as never) 
                   }]
                 );
               } else {
@@ -149,7 +148,7 @@ export default function SubscribeScreen() {
                   'Your payment was successful. If you don\'t see Pro features immediately, please refresh the app in a few minutes.',
                   [{ 
                     text: 'OK', 
-                    onPress: () => navigation.navigate('Dashboard' as never) 
+                    onPress: () => navigation.navigate('MainTabs' as never) 
                   }]
                 );
               }
@@ -175,7 +174,7 @@ export default function SubscribeScreen() {
         'You\'re already a Pro Learner! Redirecting to dashboard...',
         [{ 
           text: 'OK', 
-          onPress: () => navigation.navigate('Dashboard' as never) 
+          onPress: () => navigation.navigate('MainTabs' as never) 
         }]
       );
     }
@@ -299,7 +298,7 @@ export default function SubscribeScreen() {
             {/* Back Button - matching web */}
             <Button
               style={styles.backToAppButton}
-              onPress={() => navigation.navigate('Dashboard' as never)}
+              onPress={() => navigation.navigate('MainTabs' as never)}
               disabled={isProcessing}
             >
               <Text style={styles.backToAppButtonText}>Back to Dashboard</Text>
