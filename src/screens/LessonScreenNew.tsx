@@ -446,39 +446,51 @@ export default function LessonScreen() {
           
           // Handle other step types that might come from the steps object
           if (stepData.stepType === 'word_review') {
+            console.log('🔍 Word Review Step Data:', stepData);
             return {
               type: 'word_review',
-              word: stepData.content?.italian || stepData.content?.word || stepData.italian || '',
-              translation: stepData.content?.english || stepData.content?.translation || stepData.english || '',
-              audio: stepData.content?.audio || stepData.audio || '',
-              note: stepData.content?.note || stepData.note || ''
+              word: stepData.word || stepData.italian || stepData.content?.word || stepData.content?.italian || '',
+              translation: stepData.translation || stepData.english || stepData.content?.translation || stepData.content?.english || '',
+              audio: stepData.audio || stepData.content?.audio || '',
+              note: stepData.note || stepData.content?.note || ''
             };
           }
           
           if (stepData.stepType === 'quick_check') {
             return {
               type: 'quick_check',
-              question: stepData.content?.mcq?.question || stepData.content?.question || stepData.question || '',
-              options: stepData.content?.mcq?.options || stepData.content?.options || stepData.options || [],
-              answer: stepData.content?.mcq?.answer || stepData.content?.answer || stepData.answer || ''
+              question: stepData.question || stepData.content?.question || stepData.content?.mcq?.question || '',
+              options: stepData.options || stepData.content?.options || stepData.content?.mcq?.options || [],
+              answer: stepData.answer || stepData.content?.answer || stepData.content?.mcq?.answer || ''
             };
           }
           
           if (stepData.stepType === 'typing') {
+            console.log('✏️ Typing Step Data:', stepData);
             return {
               type: 'type',
-              prompt: stepData.content?.type_prompt || stepData.content?.prompt || stepData.type_prompt || '',
-              expected: stepData.content?.expected_answer || stepData.content?.expected || stepData.expectedAnswer || '',
-              alternatives: stepData.content?.alt_answers || stepData.content?.alternatives || stepData.alt_answers || []
+              prompt: stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '',
+              expected: stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '',
+              alternatives: stepData.alternatives || stepData.alt_answers || stepData.content?.alternatives || stepData.content?.alt_answers || []
             };
           }
           
           if (stepData.stepType === 'comprehension') {
             return {
               type: 'audio',
-              audioSentence: stepData.content?.audio_sentence || stepData.content?.audioSentence || stepData.audio_sentence || '',
-              options: stepData.content?.options || stepData.options || [],
-              answer: stepData.content?.answer || stepData.answer || ''
+              audioSentence: stepData.audioSentence || stepData.audio_sentence || stepData.content?.audioSentence || stepData.content?.audio_sentence || '',
+              options: stepData.options || stepData.content?.options || [],
+              answer: stepData.answer || stepData.content?.answer || ''
+            };
+          }
+          
+          if (stepData.stepType === 'text_tip') {
+            console.log('💡 Text Tip Step Data:', stepData);
+            return {
+              type: 'text_tip',
+              title: stepData.title || stepData.content?.title || '',
+              text: stepData.text || stepData.content?.text || '',
+              icon: stepData.icon || stepData.content?.icon || '💡'
             };
           }
         }
