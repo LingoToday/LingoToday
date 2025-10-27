@@ -1059,43 +1059,6 @@ useEffect(() => {
 
                 {/* Notifications - Use updated NotificationSettings component */}
                 <NotificationSettings />
-
-                {/* Learning Progress Card - matching web exactly */}
-                <Card style={styles.progressCard}>
-                  <CardHeader>
-                    <Text style={styles.progressTitle}>Learning Progress</Text>
-                  </CardHeader>
-                  <CardContent style={styles.progressCardContent}>
-                    <View style={styles.progressStats}>
-                      <View style={styles.progressStat}>
-                        <Text style={styles.progressStatLabel}>Lessons Completed</Text>
-                        <Text style={styles.progressStatValue}>{stats.lessonsCompleted}</Text>
-                      </View>
-                      <View style={styles.progressStat}>
-                        <Text style={styles.progressStatLabel}>Current Streak</Text>
-                        <Text style={styles.progressStatValue}>{stats.streak} days</Text>
-                      </View>
-                      <View style={styles.progressStat}>
-                        <Text style={styles.progressStatLabel}>Words Learned</Text>
-                        <Text style={styles.progressStatValue}>{stats.wordsLearned}</Text>
-                      </View>
-                      <View style={styles.progressStat}>
-                        <Text style={styles.progressStatLabel}>Learning Language</Text>
-                        <Text style={styles.progressStatValue}>
-                          {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')}
-                        </Text>
-                      </View>
-                      <View style={styles.progressStat}>
-                        <Text style={styles.progressStatLabel}>Level</Text>
-                        <Text style={styles.progressStatValue}>
-                          {effectiveDashboardData.user.selectedLevel ? 
-                            effectiveDashboardData.user.selectedLevel.charAt(0).toUpperCase() + 
-                            effectiveDashboardData.user.selectedLevel.slice(1).toLowerCase() : 'Beginner'}
-                        </Text>
-                      </View>
-                    </View>
-                  </CardContent>
-                </Card>
               </View>
             </View>
           </View>
@@ -1726,41 +1689,6 @@ const styles = StyleSheet.create({
   pathFooterButtonText: {
     fontSize: 14,
     color: '#2563eb',
-  },
-
-  // Learning Progress Card - matching web exactly
-  progressCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  progressTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    padding: 16,
-    paddingBottom: 0,
-  },
-  progressCardContent: {
-    padding: 16,
-  },
-  progressStats: {
-    gap: 16,
-  },
-  progressStat: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  progressStatLabel: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  progressStatValue: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
   },
 
   // Add these new styles:
