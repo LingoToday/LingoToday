@@ -454,6 +454,7 @@ const styles = StyleSheet.create({
       },
     }),
     marginTop: 20,
+    paddingTop: 10,
   },
   headerContent: {
     maxWidth: 896, // max-w-7xl
