@@ -4,7 +4,7 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that helps users learn languages through micro-lessons. The app runs on mobile (iOS/Android via Expo Go) and web browsers.
 
 **Status**: Successfully configured for Replit environment
-**Last Updated**: October 23, 2025
+**Last Updated**: October 27, 2025
 
 ## Project Architecture
 
@@ -119,6 +119,15 @@ Located in `src/lib/apiClient.ts`:
 All dependencies are installed via npm and tracked in package.json. No additional system packages required beyond Node.js 20.
 
 ## Recent Changes
+
+### October 27, 2025
+- **Added Legal Links to Subscription Screen**
+  - Added Terms of Service and Privacy Policy links below the Restore Purchases button in `SubscriptionScreenNew.tsx`
+  - Links open in native webview using `expo-web-browser` with `WebBrowser.openBrowserAsync()`
+  - URLs: https://www.lingotoday.co/terms and https://www.lingotoday.co/privacy
+  - Styled with small, muted gray text (#6B7280) and underlines
+  - Links separated by bullet point separator
+  - Follows consistent pattern with existing legal links implementation
 
 ### October 24, 2025
 - **Fixed Blank Screen on Step 5+ for Lessons with Steps Object Format**
