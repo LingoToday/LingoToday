@@ -121,6 +121,16 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 ## Recent Changes
 
 ### October 27, 2025
+- **Fixed Bottom Navigation Visibility for Authenticated Users**
+  - Removed duplicate Dashboard and Account screens from authenticated stack in `AppNavigator.tsx`
+  - Updated all `navigation.navigate('Dashboard')` calls throughout the app to navigate to `'MainTabs'` instead
+  - Updated all `navigation.navigate('Account')` calls to navigate to `'MainTabs'` with `{ screen: 'Profile' }` parameter
+  - Fixed OnboardingScreenNew navigation reset to go to MainTabs
+  - Updated RootStackParamList to support MainTabs with optional screen parameter
+  - Bottom tab navigation now properly displays for all authenticated users
+  - Navigation structure ensures tabs remain visible: Landing → Login → Onboarding → MainTabs (Home/Profile)
+  - Affected screens: SubscribeScreen, OnboardingScreenNew, AccountScreenNew, CoursesScreenNew, LessonScreenNew, ProgressScreenNew, NotFoundScreen, LessonExampleScreen, DashboardScreenNew, AnalyticsScreen, SubscriptionScreen
+
 - **Added Legal Links to Subscription Screen**
   - Added Terms of Service and Privacy Policy links below the Restore Purchases button in `SubscriptionScreenNew.tsx`
   - Links open in native webview using `expo-web-browser` with `WebBrowser.openBrowserAsync()`
