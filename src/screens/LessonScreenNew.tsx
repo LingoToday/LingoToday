@@ -448,8 +448,8 @@ export default function LessonScreen() {
           if (stepData.stepType === 'word_review') {
             return {
               type: 'word_review',
-              word: stepData.content?.italian || stepData.italian || '',
-              translation: stepData.content?.english || stepData.english || '',
+              word: stepData.content?.italian || stepData.content?.word || stepData.italian || '',
+              translation: stepData.content?.english || stepData.content?.translation || stepData.english || '',
               audio: stepData.content?.audio || stepData.audio || '',
               note: stepData.content?.note || stepData.note || ''
             };
@@ -458,25 +458,25 @@ export default function LessonScreen() {
           if (stepData.stepType === 'quick_check') {
             return {
               type: 'quick_check',
-              question: stepData.content?.mcq?.question || stepData.question || '',
-              options: stepData.content?.mcq?.options || stepData.options || [],
-              answer: stepData.content?.mcq?.answer || stepData.answer || ''
+              question: stepData.content?.mcq?.question || stepData.content?.question || stepData.question || '',
+              options: stepData.content?.mcq?.options || stepData.content?.options || stepData.options || [],
+              answer: stepData.content?.mcq?.answer || stepData.content?.answer || stepData.answer || ''
             };
           }
           
           if (stepData.stepType === 'typing') {
             return {
               type: 'type',
-              prompt: stepData.content?.type_prompt || stepData.type_prompt || '',
-              expected: stepData.content?.expected_answer || stepData.expectedAnswer || '',
-              alternatives: stepData.content?.alt_answers || stepData.alt_answers || []
+              prompt: stepData.content?.type_prompt || stepData.content?.prompt || stepData.type_prompt || '',
+              expected: stepData.content?.expected_answer || stepData.content?.expected || stepData.expectedAnswer || '',
+              alternatives: stepData.content?.alt_answers || stepData.content?.alternatives || stepData.alt_answers || []
             };
           }
           
           if (stepData.stepType === 'comprehension') {
             return {
               type: 'audio',
-              audioSentence: stepData.content?.audio_sentence || stepData.audio_sentence || '',
+              audioSentence: stepData.content?.audio_sentence || stepData.content?.audioSentence || stepData.audio_sentence || '',
               options: stepData.content?.options || stepData.options || [],
               answer: stepData.content?.answer || stepData.answer || ''
             };
@@ -540,10 +540,11 @@ export default function LessonScreen() {
           
           // Handle other API step types
           if (currentStepData.stepType === 'word_review') {
+            console.log('🔍 Word Review Step Data:', currentStepData.content);
             return {
               type: 'word_review',
-              word: currentStepData.content.italian || '',
-              translation: currentStepData.content.english || '',
+              word: currentStepData.content.italian || currentStepData.content.word || '',
+              translation: currentStepData.content.english || currentStepData.content.translation || '',
               audio: currentStepData.content.audio || '',
               note: currentStepData.content.note || ''
             };
@@ -552,27 +553,37 @@ export default function LessonScreen() {
           if (currentStepData.stepType === 'quick_check') {
             return {
               type: 'quick_check',
-              question: currentStepData.content.mcq?.question || '',
-              options: currentStepData.content.mcq?.options || [],
-              answer: currentStepData.content.mcq?.answer || ''
+              question: currentStepData.content.mcq?.question || currentStepData.content.question || '',
+              options: currentStepData.content.mcq?.options || currentStepData.content.options || [],
+              answer: currentStepData.content.mcq?.answer || currentStepData.content.answer || ''
             };
           }
           
           if (currentStepData.stepType === 'typing') {
             return {
               type: 'type',
-              prompt: currentStepData.content.type_prompt || '',
-              expected: currentStepData.content.expected_answer || '',
-              alternatives: currentStepData.content.alt_answers || []
+              prompt: currentStepData.content.type_prompt || currentStepData.content.prompt || '',
+              expected: currentStepData.content.expected_answer || currentStepData.content.expected || '',
+              alternatives: currentStepData.content.alt_answers || currentStepData.content.alternatives || []
             };
           }
           
           if (currentStepData.stepType === 'comprehension') {
             return {
               type: 'audio',
-              audioSentence: currentStepData.content.audio_sentence || '',
+              audioSentence: currentStepData.content.audio_sentence || currentStepData.content.audioSentence || '',
               options: currentStepData.content.options || [],
               answer: currentStepData.content.answer || ''
+            };
+          }
+          
+          if (currentStepData.stepType === 'text_tip') {
+            console.log('💡 Text Tip Step Data:', currentStepData.content);
+            return {
+              type: 'text_tip',
+              title: currentStepData.content.title || '',
+              text: currentStepData.content.text || '',
+              icon: currentStepData.content.icon || '💡'
             };
           }
         }
@@ -827,7 +838,7 @@ export default function LessonScreen() {
       }
     } else if (stepData.type === 'review_mcq') {
       correct = selectedAnswer === stepData.answer;
-    } else if (stepData.type === 'word_review') {
+    } else if (stepData.type === 'word_review' || stepData.type === 'text_tip') {
       handleNextStep();
       return;
     } else if (stepData.type === 'quick_check') {
@@ -1323,6 +1334,17 @@ export default function LessonScreen() {
                 </>
               )}
               
+              {/* Text Tip Step */}
+              {stepData && stepData.type === 'text_tip' && (
+                <>
+                  <View style={styles.tipContainer}>
+                    <Text style={styles.tipIcon}>{stepData.icon}</Text>
+                    <Text style={styles.tipTitle}>{stepData.title}</Text>
+                    <Text style={styles.tipText}>{stepData.text}</Text>
+                  </View>
+                </>
+              )}
+              
               {/* Error Step - Fallback */}
               {stepData && stepData.type === 'error' && (
                 <>
@@ -1349,9 +1371,9 @@ export default function LessonScreen() {
                 <View style={styles.quizSection}>
                   {!showResult ? (
                     <Button
-                      title={stepData.type === 'word_review' ? "Continue" : "Check Answer"}
-                      onPress={stepData.type === 'word_review' ? handleNextStep : handleStepSubmit}
-                      disabled={stepData.type !== 'word_review' && !selectedAnswer.trim()}
+                      title={(stepData.type === 'word_review' || stepData.type === 'text_tip') ? "Continue" : "Check Answer"}
+                      onPress={(stepData.type === 'word_review' || stepData.type === 'text_tip') ? handleNextStep : handleStepSubmit}
+                      disabled={stepData.type !== 'word_review' && stepData.type !== 'text_tip' && !selectedAnswer.trim()}
                       style={styles.submitButton}
                     />
                   ) : (
@@ -1776,5 +1798,32 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: '#FECACA',
+  },
+
+  // Text Tip Styles
+  tipContainer: {
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    padding: theme.spacing.xl,
+    backgroundColor: '#EFF6FF',
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  tipIcon: {
+    fontSize: 48,
+    marginBottom: theme.spacing.sm,
+  },
+  tipTitle: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700' as any,
+    color: '#1E40AF',
+    textAlign: 'center',
+  },
+  tipText: {
+    fontSize: theme.fontSize.base,
+    color: '#1E40AF',
+    textAlign: 'center',
+    lineHeight: theme.fontSize.base * 1.5,
   },
 });
