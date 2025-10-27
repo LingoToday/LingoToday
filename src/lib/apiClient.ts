@@ -99,7 +99,9 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
-const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl;
+const API_BASE_URL = Constants?.expoConfig?.extra?.apiBaseUrl;
+
+
 
 export class ApiClient {
   // Platform-aware secure storage
@@ -250,6 +252,7 @@ export class ApiClient {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    
     
     // Store token if provided
     if ((response as any).token) {
