@@ -161,12 +161,13 @@ export default function AccountScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
-        style={styles.content} 
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.gridContainer}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView 
+          style={styles.content} 
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.gridContainer}>
           {/* Personal Information - matching web exactly */}
           <Card style={styles.card} testID="personal-info-card">
             <CardHeader>
@@ -367,8 +368,9 @@ export default function AccountScreen() {
               </View>
             </CardContent>
           </Card>
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
@@ -377,6 +379,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(249, 250, 251, 1)', // min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100
+  },
+  safeArea: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -424,8 +429,6 @@ const styles = StyleSheet.create({
         elevation: 2,
       },
     }),
-    marginTop: 20,
-    paddingTop: 10,
   },
   headerContent: {
     maxWidth: 896, // max-w-7xl

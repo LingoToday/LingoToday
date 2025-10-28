@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
@@ -136,21 +137,22 @@ export default function SubscriptionScreenNew() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack} testID="back-to-account">
-            <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
-          </TouchableOpacity>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity style={styles.backButton} onPress={handleBack} testID="back-to-account">
+              <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
+            </TouchableOpacity>
 
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>Subscription</Text>
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>Subscription</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.contentWrapper}>
-        <View style={styles.stack}>
+        <View style={styles.contentWrapper}>
+          <View style={styles.stack}>
           {/* Current Plan Card */}
           <Card testID="current-plan-card" style={styles.card}>
             <CardHeader>
@@ -273,14 +275,16 @@ export default function SubscriptionScreenNew() {
               </TouchableOpacity>
             </View>
           </View>
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'rgba(249, 250, 251, 1)' },
+  safeArea: { flex: 1 },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(249, 250, 251, 1)' },
   loadingText: { marginTop: 12, color: '#6B7280', fontSize: 16 },
 
@@ -292,7 +296,6 @@ const styles = StyleSheet.create({
       ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
       android: { elevation: 2 },
     }),
-    marginTop: 20,
   },
   headerContent: {
     maxWidth: 896, alignSelf: 'center', width: '100%',
