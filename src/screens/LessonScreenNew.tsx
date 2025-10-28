@@ -19,7 +19,6 @@ import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech'; // FIXED: Added proper speech import
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
-import * as Updates from 'expo-updates';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
@@ -253,23 +252,17 @@ export default function LessonScreen() {
     if (!url) return '';
     
     // Get API base URL from config in order of priority (Expo SDK 54):
-    // 1. Build-time environment variable (works in all builds): process.env.EXPO_PUBLIC_API_BASE_URL
-    // 2. Expo Go / development: Constants.expoConfig.extra.apiBaseUrl
-    // 3. Production EAS builds with OTA updates: Updates.manifest.extra.apiBaseUrl  
-    // 4. Fallback: Constants.manifest2.extra.expoClient.extra.apiBaseUrl
-    const apiBaseUrl = (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
-                       Constants.expoConfig?.extra?.apiBaseUrl || 
-                       (Updates.manifest as any)?.extra?.apiBaseUrl ||
-                       Constants.manifest2?.extra?.expoClient?.extra?.apiBaseUrl ||
+    // 1. Expo Go / development: Constants.expoConfig.extra.apiBaseUrl
+    // 2. Build-time environment variable (fallback): process.env.EXPO_PUBLIC_API_BASE_URL
+    const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 
+                       (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
                        '';
     
     // Fail fast with clear error if API base URL is missing
     if (!apiBaseUrl) {
       console.error('⚠️ CRITICAL: API base URL is missing! Videos and assets will not load.');
-      console.error('Please define EXPO_PUBLIC_API_BASE_URL env variable or apiBaseUrl in app.json');
-      console.error('Current process.env.EXPO_PUBLIC_API_BASE_URL:', process.env.EXPO_PUBLIC_API_BASE_URL);
+      console.error('Please define apiBaseUrl in app.json under expo.extra');
       console.error('Current Constants.expoConfig:', Constants.expoConfig);
-      console.error('Current Updates.manifest:', Updates.manifest);
       // Return the URL as-is and let it fail visibly
       return url;
     }
