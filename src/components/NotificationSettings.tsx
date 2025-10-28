@@ -20,6 +20,7 @@ import { Switch } from './ui/Switch';
 import { Select } from './ui/Select';
 import { apiClient } from '../lib/apiClient';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
+import { scheduleLanguageLearningReminders, stopLanguageLearningReminders } from '../lib/notifications';
 
 // Replace local UserSettings shape to match the web version
 type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
@@ -120,9 +121,31 @@ export default function NotificationSettings() {
       delete (cleaned as any).userId;
       return apiClient.updateUserSettings(cleaned);
     },
-    onSuccess: () => {
+    onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+      
+      const updatedSettings = { ...settings, ...variables };
+      
+      if (updatedSettings.mobileNotificationsEnabled) {
+        try {
+          await scheduleLanguageLearningReminders(
+            updatedSettings.mobileNotificationStartTime,
+            updatedSettings.mobileNotificationEndTime,
+            updatedSettings.mobileNotificationFrequency,
+            updatedSettings.language,
+            undefined,
+            updatedSettings.mobileNotificationDays
+          );
+          console.log('✅ Notifications automatically rescheduled with new settings');
+        } catch (error) {
+          console.error('Failed to reschedule notifications:', error);
+        }
+      } else {
+        await stopLanguageLearningReminders();
+        console.log('🔕 Notifications stopped (disabled)');
+      }
+      
       Alert.alert('Settings updated', 'Your notification preferences have been saved.', [{ text: 'OK' }]);
     },
     onError: () => {

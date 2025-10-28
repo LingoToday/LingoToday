@@ -148,13 +148,31 @@ function isWithinNotificationWindow(startTime: string = "09:00", endTime: string
 //   }
 // }
 
-// UPDATED: Schedule language learning reminders with custom content and navigation data
+type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
+
+// Convert Day to weekday number (1=Monday, 7=Sunday) for expo-notifications
+function dayToWeekday(day: Day): number {
+  const dayMap: Record<Day, number> = {
+    'Mon': 2,
+    'Tue': 3,
+    'Wed': 4,
+    'Thu': 5,
+    'Fri': 6,
+    'Sat': 7,
+    'Sun': 1,
+  };
+  return dayMap[day];
+}
+
+// Schedule language learning reminders with custom content, navigation data, and specific days
+// frequencyMinutes: minutes between each notification (e.g., 15, 30, 60)
 export async function scheduleLanguageLearningReminders(
   startTime: string = "09:00",
   endTime: string = "18:00", 
-  frequency: number = 3,
+  frequencyMinutes: number = 60,
   language: string = "italian",
-  nextLessonData?: { courseId: string; lessonId: string }
+  nextLessonData?: { courseId: string; lessonId: string },
+  selectedDays?: Day[]
 ): Promise<boolean> {
   try {
     // Clear any existing notifications
@@ -169,43 +187,56 @@ export async function scheduleLanguageLearningReminders(
       lessonId: 'lesson1'
     };
 
+    // Default to all days if not specified
+    const daysToSchedule: Day[] = selectedDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
     // Parse start and end times
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
     
     const startMinutes = startHour * 60 + startMinute;
     const endMinutes = endHour * 60 + endMinute;
-    const windowDuration = endMinutes - startMinutes;
-    const interval = Math.floor(windowDuration / frequency);
+    const windowDurationMinutes = endMinutes - startMinutes;
+    
+    // Calculate how many notifications fit in the window based on frequency
+    const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
 
-    // Schedule multiple notifications throughout the day
-    for (let i = 0; i < frequency; i++) {
-      const notificationTime = startMinutes + (interval * i) + Math.random() * 30; // Add some randomness
-      const hour = Math.floor(notificationTime / 60);
-      const minute = Math.floor(notificationTime % 60);
+    // Schedule notifications for each selected day
+    for (const day of daysToSchedule) {
+      const weekday = dayToWeekday(day);
+      
+      // Schedule multiple notifications throughout the day for this weekday
+      for (let i = 0; i < notificationsPerDay; i++) {
+        const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 10);
+        const notificationTime = startMinutes + offsetMinutes;
+        const hour = Math.floor(notificationTime / 60) % 24;
+        const minute = Math.floor(notificationTime % 60);
 
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: notificationContent.title,
-          body: notificationContent.body,
-          sound: 'default',
-          data: {
-            type: 'language_reminder',
-            language: language,
-            action: 'openLesson',
-            courseId: lessonData.courseId,
-            lessonId: lessonData.lessonId,
-            timestamp: Date.now()
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: notificationContent.title,
+            body: notificationContent.body,
+            sound: 'default',
+            data: {
+              type: 'language_reminder',
+              language: language,
+              action: 'openLesson',
+              courseId: lessonData.courseId,
+              lessonId: lessonData.lessonId,
+              timestamp: Date.now()
+            },
           },
-        },
-        trigger: {
-          hour,
-          minute,
-          repeats: true,
-        } as Notifications.CalendarTriggerInput,
-      });
+          trigger: {
+            weekday,
+            hour,
+            minute,
+            repeats: true,
+          } as Notifications.CalendarTriggerInput,
+        });
+      }
     }
-    console.log(`Scheduled ${frequency} language learning reminders for ${language} between ${startTime} and ${endTime}`);
+    
+    console.log(`✅ Scheduled ${notificationsPerDay} notifications per day (every ${frequencyMinutes} min) for ${language} on ${daysToSchedule.join(', ')} between ${startTime} and ${endTime}`);
     return true;
   } catch (error) {
     console.error('Error scheduling notifications:', error);

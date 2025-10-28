@@ -28,6 +28,7 @@ import NotificationSettings from '../components/NotificationSettings';
 import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
+import { scheduleLanguageLearningReminders, stopLanguageLearningReminders } from '../lib/notifications';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
@@ -341,198 +342,57 @@ useEffect(() => {
     markNotificationSetupSeenMutation.mutate();
   };
 
-  // ADDED: Dynamic calculation of daily session status
-  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
-  
-  // Calculate if daily session is active dynamically
-  const isDailySessionActive = React.useMemo(() => {
-    const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
-    const hasSessionTime = sessionStartTime !== null;
-    const isWithinSessionWindow = hasSessionTime && sessionStartTime && 
-      (Date.now() - sessionStartTime) < (8 * 60 * 60 * 1000); // 8 hours window
-    
-    return notificationsEnabled && hasSessionTime && isWithinSessionWindow;
-  }, [
-    effectiveDashboardData?.settings?.mobileNotificationsEnabled, 
-    sessionStartTime
-  ]);
 
-  // ADDED: Effect to clear session when notifications are disabled
+  // NEW: Automatically schedule notifications on app start if enabled
   useEffect(() => {
-    const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
-    
-    if (!notificationsEnabled && sessionStartTime) {
-      console.log('🔕 Notifications disabled - clearing daily session');
-      setSessionStartTime(null);
-      // Cancel any scheduled notifications
-      Notifications.cancelAllScheduledNotificationsAsync();
-    }
-  }, [effectiveDashboardData?.settings?.mobileNotificationsEnabled, sessionStartTime]);
-
-  // UPDATED: Handle starting daily notification session
-  const handleStartDailySession = async () => {
-    try {
-      // Check current permission status
-      const { status: currentStatus } = await Notifications.getPermissionsAsync();
+    const autoScheduleNotifications = async () => {
+      const settings = effectiveDashboardData?.settings;
       
-      console.log('🔍 Checking daily session start:', {
-        currentPermission: currentStatus,
-        settingsEnabled: effectiveDashboardData?.settings?.mobileNotificationsEnabled,
-        userLanguage: user?.selectedLanguage,
-        currentSessionTime: sessionStartTime
-      });
-
-      // Check if notifications are enabled in settings AND permission is granted
-      const notificationsEnabled = effectiveDashboardData?.settings?.mobileNotificationsEnabled;
-      
-      if (currentStatus !== "granted") {
-        // Request permission if not granted
-        const { status: newStatus } = await Notifications.requestPermissionsAsync();
-        
-        if (newStatus !== "granted") {
-          Alert.alert(
-            "Permission required",
-            "Please allow notifications to start your daily learning session.",
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { 
-                text: 'Open Settings', 
-                onPress: () => {
-                  if (Platform.OS === 'ios') {
-                    Linking.openURL('app-settings:');
-                  } else {
-                    Linking.openSettings();
-                  }
-                }
-              }
-            ]
-          );
-          return;
-        }
-      }
-
-      // Check if notifications are enabled in user settings
-      if (!notificationsEnabled) {
-        Alert.alert(
-          "Enable notifications first",
-          "Please enable notifications in the settings below, then try starting your daily session again.",
-          [{ text: 'OK' }]
-        );
+      if (!settings?.mobileNotificationsEnabled) {
+        console.log('🔕 Auto-schedule: Notifications not enabled');
         return;
       }
 
-      if (user?.selectedLanguage) {
-        const frequency = effectiveDashboardData?.settings?.mobileNotificationFrequency || 15;
-        
-        // FIXED: Set session start time
-        setSessionStartTime(Date.now());
-        
-        // Schedule actual notifications
-        await scheduleNotificationSession(user.selectedLanguage, frequency);
-        
-        Alert.alert(
-          "Daily session started!",
-          `You'll receive ${getLanguageDisplayName(user.selectedLanguage)} lesson reminders every ${frequency} minutes.`,
-          [{ text: 'OK' }]
-        );
-      } else {
-        Alert.alert(
-          "Language not selected",
-          "Please select a learning language first.",
-          [{ text: 'OK' }]
-        );
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('⚠️ Auto-schedule: Notification permission not granted');
+        return;
       }
-    } catch (error) {
-      console.error('Error starting daily session:', error);
-      Alert.alert(
-        "Error",
-        "Failed to start daily session. Please try again.",
-        [{ text: 'OK' }]
-      );
-    }
-  };
 
-  // ADDED: Handle stopping daily session
-  const handleStopDailySession = async () => {
-    try {
-      console.log('🛑 Stopping daily session');
-      
-      // Cancel all scheduled notifications
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      
-      // Clear session time
-      setSessionStartTime(null);
-      
-      Alert.alert(
-        "Daily session stopped",
-        "All scheduled lesson reminders have been cancelled.",
-        [{ text: 'OK' }]
-      );
-    } catch (error) {
-      console.error('Error stopping daily session:', error);
-      Alert.alert(
-        "Error",
-        "Failed to stop daily session properly.",
-        [{ text: 'OK' }]
-      );
-    }
-  };
+      if (!user?.selectedLanguage) {
+        console.log('⚠️ Auto-schedule: No language selected');
+        return;
+      }
 
-  // UPDATED: Helper function to schedule notification session
-  const scheduleNotificationSession = async (language: string, frequency: number) => {
-    try {
-      // Cancel any existing notifications first
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      
-      // Get language-specific notification content
-      const notificationContent = getLanguageSpecificNotification(language);
-      
-      // Get next lesson info for navigation
-      const nextLesson = upcomingLessons[0] || {
-        courseId: 'course1',
-        lessonId: 'lesson1'
-      };
-      
-      // Schedule notifications for the next 8 hours
-      const notifications = [];
-      const now = new Date();
-      const endTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // 8 hours from now
-      
-      let nextTime = new Date(now.getTime() + (frequency * 60 * 1000)); // First notification after frequency minutes
-      
-      while (nextTime <= endTime) {
-        notifications.push(
-          Notifications.scheduleNotificationAsync({
-            content: {
-              title: notificationContent.title,
-              body: notificationContent.body,
-              sound: true,
-              data: { 
-                language, 
-                sessionId: sessionStartTime || Date.now(),
-                frequency,
-                // Add navigation data
-                action: 'openLesson',
-                courseId: nextLesson.courseId,
-                lessonId: nextLesson.lessonId,
-                timestamp: Date.now()
-              },
-            },
-            trigger: { type: SchedulableTriggerInputTypes.DATE, date: nextTime },
-          })
+      try {
+        const scheduledCount = await Notifications.getAllScheduledNotificationsAsync();
+        
+        if (scheduledCount.length > 0) {
+          console.log(`✅ Auto-schedule: ${scheduledCount.length} notifications already scheduled`);
+          return;
+        }
+
+        console.log('📅 Auto-schedule: Setting up notifications based on user settings');
+        
+        await scheduleLanguageLearningReminders(
+          settings.mobileNotificationStartTime || '09:00',
+          settings.mobileNotificationEndTime || '18:00',
+          settings.mobileNotificationFrequency || 60,
+          user.selectedLanguage,
+          undefined,
+          (settings as any).mobileNotificationDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
         );
         
-        // Schedule next notification
-        nextTime = new Date(nextTime.getTime() + (frequency * 60 * 1000));
+        console.log('✅ Auto-schedule: Notifications successfully scheduled');
+      } catch (error) {
+        console.error('❌ Auto-schedule error:', error);
       }
-      
-      await Promise.all(notifications);
-      console.log(`📅 Scheduled ${notifications.length} notifications for ${language} session`);
-    } catch (error) {
-      console.error('Error scheduling notifications:', error);
-      throw error;
+    };
+
+    if (effectiveDashboardData && user) {
+      autoScheduleNotifications();
     }
-  };
+  }, [effectiveDashboardData?.settings?.mobileNotificationsEnabled, user?.selectedLanguage]);
 
   // Handle refresh
   const onRefresh = async () => {
@@ -682,31 +542,6 @@ useEffect(() => {
     };
   });
 
-  // FIXED: Update the condition for showing daily session button
-  const shouldShowDailySessionButton = !isDailySessionActive && 
-    effectiveDashboardData?.settings?.mobileNotificationsEnabled;
-  
-  const shouldShowActiveSession = isDailySessionActive && 
-    effectiveDashboardData?.settings?.mobileNotificationsEnabled;
-
-  // ADDED: Get session remaining time for display
-  const getSessionRemainingTime = (): string => {
-    if (!sessionStartTime) return '';
-    
-    const elapsed = Date.now() - sessionStartTime;
-    const remaining = (8 * 60 * 60 * 1000) - elapsed; // 8 hours total
-    
-    if (remaining <= 0) return 'Session expired';
-    
-    const hours = Math.floor(remaining / (60 * 60 * 1000));
-    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m remaining`;
-    } else {
-      return `${minutes}m remaining`;
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -782,56 +617,6 @@ useEffect(() => {
                   </CardContent>
                 </Card>
 
-                {/* FIXED: Daily Session Button with proper condition */}
-                {shouldShowDailySessionButton && (
-                  <Card style={styles.sessionCard}>
-                    <CardContent style={styles.sessionContent}>
-                      <View style={styles.sessionInfo}>
-                        <Text style={styles.sessionTitle}>
-                          Start Today's Learning Session
-                        </Text>
-                        <Text style={styles.sessionSubtitle}>
-                          Get personalized {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} lesson reminders throughout the day
-                        </Text>
-                        <Text style={styles.sessionNote}>
-                          ✅ Notifications enabled - ready to start!
-                        </Text>
-                      </View>
-                      <TouchableOpacity 
-                        style={styles.sessionButton}
-                        onPress={handleStartDailySession}
-                      >
-                        <Ionicons name="play" size={16} color="#ffffff" style={styles.buttonIcon} />
-                        <Text style={styles.sessionButtonText}>Start Today's Lessons</Text>
-                      </TouchableOpacity>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* UPDATED: Daily Session Status - only show when truly active */}
-                {shouldShowActiveSession && (
-                  <Card style={styles.activeSessionCard}>
-                    <CardContent style={styles.activeSessionContent}>
-                      <View style={styles.activeSessionIcon}>
-                        <Ionicons name="checkmark-circle" size={20} color="#059669" />
-                      </View>
-                      <View style={styles.activeSessionInfo}>
-                        <Text style={styles.activeSessionTitle}>
-                          Daily learning session is active
-                        </Text>
-                        <Text style={styles.activeSessionSubtitle}>
-                          Reminders every {settings?.mobileNotificationFrequency || 15} minutes • {getSessionRemainingTime()}
-                        </Text>
-                      </View>
-                      <TouchableOpacity 
-                        style={styles.stopSessionButton}
-                        onPress={handleStopDailySession}
-                      >
-                        <Ionicons name="stop" size={16} color="#dc2626" />
-                      </TouchableOpacity>
-                    </CardContent>
-                  </Card>
-                )}
 
                 {/* ADDED: Show info when notifications are disabled */}
                 {!effectiveDashboardData?.settings?.mobileNotificationsEnabled && (
