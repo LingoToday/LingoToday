@@ -270,7 +270,7 @@ export default function SubscribeScreen() {
             {/* Pricing Display */}
             <View style={styles.pricingDisplay}>
               <Text style={styles.priceAmount}>
-                {currency === 'GBP' ? '£2.49' : '$2.99'}
+                {currency === 'GBP' ? '£2.99' : '$2.99'}
               </Text>
               <Text style={styles.pricePeriod}>per month</Text>
             </View>
@@ -290,7 +290,7 @@ export default function SubscribeScreen() {
                 </View>
               ) : (
                 <Text style={styles.subscribeButtonText}>
-                  Subscribe for {currency === 'GBP' ? '£2.49' : '$2.99'}/month
+                  Subscribe for {currency === 'GBP' ? '£2.99' : '$2.99'}/month
                 </Text>
               )}
             </Button>
