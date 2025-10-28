@@ -45,8 +45,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-notifications",
-      "react-native-purchases"
+      "expo-notifications"
     ],
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",

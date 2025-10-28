@@ -98,6 +98,15 @@ The app uses RevenueCat for managing IAP. Make sure:
 2. ✅ Products in RevenueCat match your App Store Connect/Google Play products
 3. ✅ RevenueCat API keys are configured (see below)
 
+**Note**: The `react-native-purchases` plugin has been removed from `app.json` to allow web builds to work. For native builds via EAS, the plugin will be automatically included through the `react-native-purchases` package dependency. If you encounter issues, you can manually add it back to the `plugins` array in `app.json`:
+
+```json
+"plugins": [
+  "expo-notifications",
+  "react-native-purchases"
+]
+```
+
 ### Adding RevenueCat API Keys
 
 **For Local Development Builds:**
