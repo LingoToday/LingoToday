@@ -1650,11 +1650,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: theme.spacing.lg,
   },
-  video: {
-    width: Math.min(screenWidth - (theme.spacing.md * 4), 320),
-    height: Math.min(((screenWidth - (theme.spacing.md * 4)) * 9) / 16, 240), // 16:9 aspect ratio with max height
-    borderRadius: theme.borderRadius.lg,
-  },
+  video: (() => {
+    const videoWidth = Math.min(screenWidth - (theme.spacing.md * 4), 280);
+    const videoHeight = Math.min((videoWidth * 16) / 9, 500);
+    return {
+      width: videoWidth,
+      height: videoHeight,
+      borderRadius: theme.borderRadius.lg,
+    };
+  })(),
 
   // FIXED: Word Review with better styling
   wordReviewContainer: {
