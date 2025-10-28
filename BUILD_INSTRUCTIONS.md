@@ -1,9 +1,26 @@
 # Development Build Instructions for IAP Testing
 
+## 🚀 Quick Start: TestFlight Setup
+
+**For your existing TestFlight pipeline**, run this command once to configure RevenueCat:
+
+```bash
+eas secret:create --scope project --name REVENUECAT_IOS_KEY --value appl_pkupxYbUqeGZamQiCcCcThfxSRa
+```
+
+Then rebuild for TestFlight using your normal workflow:
+```bash
+eas build --platform ios --profile production
+```
+
+Upload to TestFlight, and RevenueCat will work! The `app.config.js` automatically injects this secret at build time.
+
+---
+
 ## Important Notes
 
 ⚠️ **In-App Purchases DO NOT work in Expo Go or simulators**  
-✅ You must build and test on **physical iOS/Android devices**
+✅ You must build and test on **physical iOS/Android devices** or **TestFlight**
 
 ## Prerequisites
 
