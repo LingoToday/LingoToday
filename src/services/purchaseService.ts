@@ -2,8 +2,36 @@ import Purchases, { PurchasesPackage, CustomerInfo, LOG_LEVEL } from 'react-nati
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-const REVENUECAT_IOS_KEY = process.env.REVENUECAT_IOS_KEY || '';
-const REVENUECAT_ANDROID_KEY = process.env.REVENUECAT_ANDROID_KEY || '';
+// Get RevenueCat keys from app config with fallbacks for different build types
+// - Expo Go / Dev Client: Constants.expoConfig.extra
+// - Standalone/EAS builds: Constants.manifest.extra or Constants.manifest2.extra
+const getRevenueCatKey = (platform: 'ios' | 'android'): string => {
+  const keyName = platform === 'ios' ? 'revenuecatIosKey' : 'revenuecatAndroidKey';
+  
+  // Try expoConfig first (Expo Go, dev client)
+  const expoConfigKey = Constants.expoConfig?.extra?.[keyName];
+  if (expoConfigKey) {
+    console.log(`✅ Found ${keyName} in expoConfig.extra`);
+    return expoConfigKey;
+  }
+  
+  // Fall back to manifest for standalone builds
+  const manifestKey = Constants.manifest?.extra?.[keyName];
+  if (manifestKey) {
+    console.log(`✅ Found ${keyName} in manifest.extra`);
+    return manifestKey;
+  }
+  
+  // Fall back to manifest2 for newer Expo builds
+  const manifest2Key = (Constants.manifest2 as any)?.extra?.expoClient?.extra?.[keyName];
+  if (manifest2Key) {
+    console.log(`✅ Found ${keyName} in manifest2.extra`);
+    return manifest2Key;
+  }
+  
+  console.error(`❌ RevenueCat key "${keyName}" not found in any config location`);
+  return '';
+};
 
 class PurchaseService {
   private initialized = false;
@@ -18,11 +46,13 @@ class PurchaseService {
         Purchases.setLogLevel(LOG_LEVEL.DEBUG);
       }
 
-      const apiKey = Platform.OS === 'ios' ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
+      const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+      const apiKey = getRevenueCatKey(platform);
       
       if (!apiKey) {
         console.error('RevenueCat API key not found for platform:', Platform.OS);
-        throw new Error(`RevenueCat API key not configured for ${Platform.OS}`);
+        const keyName = Platform.OS === 'ios' ? 'revenuecatIosKey' : 'revenuecatAndroidKey';
+        throw new Error(`RevenueCat API key not configured for ${Platform.OS}. Please add "${keyName}" to app.json extra section.`);
       }
 
       await Purchases.configure({ apiKey });

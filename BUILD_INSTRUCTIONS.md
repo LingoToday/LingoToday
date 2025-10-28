@@ -96,14 +96,58 @@ The app uses RevenueCat for managing IAP. Make sure:
 
 1. ✅ Your iOS/Android products are configured in RevenueCat dashboard
 2. ✅ Products in RevenueCat match your App Store Connect/Google Play products
-3. ✅ The `REVENUECAT_IOS_KEY` secret is set in Replit
-4. ✅ The `REVENUECAT_ANDROID_KEY` secret will be added when Android is ready
+3. ✅ RevenueCat API keys are configured (see below)
+
+### Adding RevenueCat API Keys
+
+**For Local Development Builds:**
+
+Add your RevenueCat API keys to `app.json` in the `extra` section:
+
+```json
+{
+  "expo": {
+    "extra": {
+      "apiBaseUrl": "your-api-url",
+      "revenuecatIosKey": "appl_xxxxxxxxxx",
+      "revenuecatAndroidKey": "goog_xxxxxxxxxx",
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
+```
+
+⚠️ **Important**: Do NOT commit these keys to git! Add app.json to .gitignore or use a separate app.local.json file.
+
+**For EAS Production Builds:**
+
+Use EAS Secrets to securely inject keys at build time:
+
+```bash
+# Set iOS key
+eas secret:create --scope project --name REVENUECAT_IOS_KEY --value appl_xxxxxxxxxx
+
+# Set Android key  
+eas secret:create --scope project --name REVENUECAT_ANDROID_KEY --value goog_xxxxxxxxxx
+```
+
+The app uses `app.config.js` to automatically read these environment variables and inject them into the app config. EAS will make these available as `process.env.REVENUECAT_IOS_KEY` and `process.env.REVENUECAT_ANDROID_KEY` at build time, and `app.config.js` will merge them into `Constants.expoConfig.extra`.
+
+**How it works:**
+1. EAS reads secrets you created
+2. Makes them available as environment variables during build
+3. `app.config.js` reads from `process.env` and injects into config
+4. App reads from `Constants.expoConfig.extra` (or manifest fallbacks) at runtime
 
 ## Common Issues
 
 ### "API key not configured"
-- Make sure `REVENUECAT_IOS_KEY` (or `REVENUECAT_ANDROID_KEY`) is set in Replit Secrets
-- Restart the build after adding secrets
+- **Local builds**: Make sure you added the keys to app.json's extra section
+- **EAS builds**: Make sure you created EAS secrets with correct names
+- Check the console logs - `getRevenueCatKey` will log where it found (or didn't find) the keys
+- Restart the build after adding keys
 
 ### "No offerings available"
 - Verify products are created in App Store Connect / Google Play Console

@@ -107,6 +107,16 @@ export default function SubscriptionScreenNew() {
       const result = await purchaseService.restorePurchases();
       
       if (result.success) {
+        // Notify backend about restored purchase to sync entitlements
+        try {
+          // Refresh user data to get updated subscription status
+          const updatedUser = await apiClient.getCurrentUser();
+          console.log('✅ User data refreshed after restore:', updatedUser);
+        } catch (backendError) {
+          console.warn('⚠️ Failed to refresh user after restore:', backendError);
+          // Continue anyway - RevenueCat webhook will eventually sync
+        }
+
         Alert.alert(
           '✅ Purchase Restored',
           'Your subscription has been restored successfully!',

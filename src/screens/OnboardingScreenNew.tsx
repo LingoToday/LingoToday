@@ -1028,6 +1028,16 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
       const result = await purchaseService.purchasePackage(selectedPackage);
 
       if (result.success) {
+        // Notify backend about the purchase to sync entitlements
+        try {
+          // Refresh user data to get updated subscription status
+          const updatedUser = await apiClient.getCurrentUser();
+          console.log('✅ User data refreshed after purchase:', updatedUser);
+        } catch (backendError) {
+          console.warn('⚠️ Failed to refresh user after purchase:', backendError);
+          // Continue anyway - RevenueCat webhook will eventually sync
+        }
+
         RNAlert.alert(
           '🎉 Welcome to LingoToday Pro!',
           'Your subscription is now active. You have access to all premium features.',
