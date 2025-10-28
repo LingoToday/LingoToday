@@ -36,7 +36,8 @@
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "com.android.vending.BILLING"
       ],
       "useNextNotificationsApi": true
     },
@@ -44,7 +45,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-notifications"
+      "expo-notifications",
+      "react-native-purchases"
     ],
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
