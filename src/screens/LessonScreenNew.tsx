@@ -18,6 +18,8 @@ import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech'; // FIXED: Added proper speech import
 import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
@@ -250,20 +252,63 @@ export default function LessonScreen() {
   const normalizeAssetUrl = (url: string): string => {
     if (!url) return '';
     
-    // Already correct format
-    if (url.startsWith('/attached_assets/')) return url;
+    // Get API base URL from config in order of priority (Expo SDK 54):
+    // 1. Build-time environment variable (works in all builds): process.env.EXPO_PUBLIC_API_BASE_URL
+    // 2. Expo Go / development: Constants.expoConfig.extra.apiBaseUrl
+    // 3. Production EAS builds with OTA updates: Updates.manifest.extra.apiBaseUrl  
+    // 4. Fallback: Constants.manifest2.extra.expoClient.extra.apiBaseUrl
+    const apiBaseUrl = (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
+                       Constants.expoConfig?.extra?.apiBaseUrl || 
+                       (Updates.manifest as any)?.extra?.apiBaseUrl ||
+                       Constants.manifest2?.extra?.expoClient?.extra?.apiBaseUrl ||
+                       '';
     
-    // Missing leading slash
-    if (url.startsWith('attached_assets/')) return '/' + url;
+    // Fail fast with clear error if API base URL is missing
+    if (!apiBaseUrl) {
+      console.error('⚠️ CRITICAL: API base URL is missing! Videos and assets will not load.');
+      console.error('Please define EXPO_PUBLIC_API_BASE_URL env variable or apiBaseUrl in app.json');
+      console.error('Current process.env.EXPO_PUBLIC_API_BASE_URL:', process.env.EXPO_PUBLIC_API_BASE_URL);
+      console.error('Current Constants.expoConfig:', Constants.expoConfig);
+      console.error('Current Updates.manifest:', Updates.manifest);
+      // Return the URL as-is and let it fail visibly
+      return url;
+    }
+    
+    console.log('✅ Using API base URL:', apiBaseUrl);
+    
+    // Already a full HTTP/HTTPS URL - return as-is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // Path starting with /attached_assets - prepend API base URL for backend-hosted files
+    if (url.startsWith('/attached_assets/')) {
+      const fullUrl = apiBaseUrl + url;
+      console.log('🔗 Constructing full video URL:', fullUrl);
+      return fullUrl;
+    }
+    
+    // Missing leading slash - add it and prepend API base URL
+    if (url.startsWith('attached_assets/')) {
+      const fullUrl = apiBaseUrl + '/' + url;
+      console.log('🔗 Constructing full video URL:', fullUrl);
+      return fullUrl;
+    }
     
     // Fix /videos/ paths to use attached_assets
-    if (url.startsWith('/videos/')) return '/attached_assets' + url;
+    if (url.startsWith('/videos/')) {
+      const fullUrl = apiBaseUrl + '/attached_assets' + url;
+      console.log('🔗 Constructing full video URL:', fullUrl);
+      return fullUrl;
+    }
     
-    // Other absolute paths (leave as-is)
-    if (url.startsWith('/')) return url;
+    // Other absolute paths - prepend API base URL
+    if (url.startsWith('/')) {
+      return apiBaseUrl + url;
+    }
     
-    // Relative asset filename
-    return '/attached_assets/' + url;
+    // Relative asset filename - prepend API base URL and path
+    return apiBaseUrl + '/attached_assets/' + url;
   };
 
   // Gender detection function - matching web exactly
@@ -485,11 +530,30 @@ export default function LessonScreen() {
           }
           
           if (stepData.stepType === 'text_tip') {
-            console.log('💡 Text Tip Step Data:', stepData);
+            console.log('💡 [OBJECT] Text Tip Step Data:', stepData);
+            
+            // Database uses 'prompt' field - parse it to get title and text
+            const promptText = stepData.prompt || stepData.content?.prompt || stepData.text || stepData.content?.text || '';
+            const titleText = stepData.title || stepData.content?.title || '';
+            
+            // If prompt contains ":", split it into title and text
+            let finalTitle = titleText;
+            let finalText = promptText;
+            
+            if (promptText && !titleText && promptText.includes(':')) {
+              const colonIndex = promptText.indexOf(':');
+              finalTitle = promptText.substring(0, colonIndex).trim();
+              finalText = promptText.substring(colonIndex + 1).trim();
+            } else if (promptText && !titleText) {
+              // No colon, use a default title
+              finalTitle = 'Tip';
+              finalText = promptText;
+            }
+            
             return {
               type: 'text_tip',
-              title: stepData.title || stepData.content?.title || '',
-              text: stepData.text || stepData.content?.text || '',
+              title: finalTitle,
+              text: finalText,
               icon: stepData.icon || stepData.content?.icon || '💡'
             };
           }
@@ -534,17 +598,34 @@ export default function LessonScreen() {
           
           // Handle pro_video step type
           if (currentStepData.stepType === 'pro_video') {
-            const requiredTier = currentStepData.content.requiredTier || [];
+            console.log('🎬 [ARRAY] PRO VIDEO Step Data - Full Object:', JSON.stringify(currentStepData, null, 2));
+            const requiredTier = currentStepData.content?.requiredTier || currentStepData.requiredTier || [];
             const userTier = userData?.priceTier || 'free';
             
             const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
             
+            const videoUrl = currentStepData.content?.video_url || currentStepData.video_url || '';
+            const prompt = currentStepData.content?.prompt || currentStepData.prompt || '';
+            const answerPrompt = currentStepData.content?.answer_prompt || currentStepData.answer_prompt || '';
+            const expectedAnswers = currentStepData.content?.expected_answers || currentStepData.expected_answers || [];
+            
+            console.log('🎬 PRO VIDEO HANDLER:', { 
+              stepType: currentStepData.stepType,
+              hasAccess, 
+              userTier, 
+              requiredTier,
+              videoUrl,
+              prompt,
+              answerPrompt,
+              expectedAnswers
+            });
+            
             return {
               type: 'pro_video',
-              videoUrl: normalizeAssetUrl(currentStepData.content.video_url || ''),
-              prompt: currentStepData.content.prompt || '',
-              answerPrompt: currentStepData.content.answer_prompt || '',
-              expectedAnswers: currentStepData.content.expected_answers || [],
+              videoUrl: normalizeAssetUrl(videoUrl),
+              prompt,
+              answerPrompt,
+              expectedAnswers,
               hasAccess,
               requiredTier
             };
@@ -594,10 +675,29 @@ export default function LessonScreen() {
           
           if (currentStepData.stepType === 'text_tip') {
             console.log('💡 [ARRAY] Text Tip Step Data - Full Object:', JSON.stringify(currentStepData, null, 2));
+            
+            // Database uses 'prompt' field - parse it to get title and text
+            const promptText = currentStepData.prompt || currentStepData.content?.prompt || currentStepData.text || currentStepData.content?.text || '';
+            const titleText = currentStepData.title || currentStepData.content?.title || '';
+            
+            // If prompt contains ":", split it into title and text
+            let finalTitle = titleText;
+            let finalText = promptText;
+            
+            if (promptText && !titleText && promptText.includes(':')) {
+              const colonIndex = promptText.indexOf(':');
+              finalTitle = promptText.substring(0, colonIndex).trim();
+              finalText = promptText.substring(colonIndex + 1).trim();
+            } else if (promptText && !titleText) {
+              // No colon, use a default title
+              finalTitle = 'Tip';
+              finalText = promptText;
+            }
+            
             return {
               type: 'text_tip',
-              title: currentStepData.title || currentStepData.content?.title || '',
-              text: currentStepData.text || currentStepData.content?.text || '',
+              title: finalTitle,
+              text: finalText,
               icon: currentStepData.icon || currentStepData.content?.icon || '💡'
             };
           }
