@@ -120,6 +120,18 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 
 ## Recent Changes
 
+### October 28, 2025
+- **Implemented Automatic Push Notification Scheduling**
+  - Updated `scheduleLanguageLearningReminders` in `src/lib/notifications.ts` to accept and respect user-selected days (Mon-Sun)
+  - Notifications now automatically schedule based on user settings (days, frequency, start/end times) from dashboard
+  - Added weekday-based calendar triggers using expo-notifications to schedule on specific days of the week
+  - Fixed frequency parameter interpretation - now correctly treats value as "minutes between notifications" (15/30/60) instead of "count per day"
+  - Implemented auto-scheduling on app startup when notifications are enabled (checks for duplicates before scheduling)
+  - Updated NotificationSettings component to automatically reschedule notifications when any setting changes
+  - Removed manual "Start Today's Learning Session" card from DashboardScreenNew - notifications are now fully automatic
+  - Users can configure notification preferences in Account settings, and the app will automatically handle scheduling
+  - Notification scheduling respects all user preferences: enabled days, frequency interval, time window, and selected language
+
 ### October 27, 2025
 - **Removed Header Navigation from Authenticated Screens**
   - Removed full header navigation (LingoToday logo, account dropdown, profile button) from all authenticated screens
