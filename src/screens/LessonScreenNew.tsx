@@ -498,7 +498,7 @@ export default function LessonScreen() {
 
       // Handle API lessons with steps array (new structure from database)
       if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
-        const currentStepData = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
+        const currentStepData: any = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
         
         if (currentStepData) {
           // Handle video_choice step type (gender-based videos)
@@ -552,50 +552,53 @@ export default function LessonScreen() {
           
           // Handle other API step types
           if (currentStepData.stepType === 'word_review') {
-            console.log('🔍 Word Review Step Data:', currentStepData.content);
+            console.log('🔍 [ARRAY] Word Review Step Data - Full Object:', JSON.stringify(currentStepData, null, 2));
             return {
               type: 'word_review',
-              word: currentStepData.content.italian || currentStepData.content.word || '',
-              translation: currentStepData.content.english || currentStepData.content.translation || '',
-              audio: currentStepData.content.audio || '',
-              note: currentStepData.content.note || ''
+              word: currentStepData.word || currentStepData.italian || currentStepData.content?.word || currentStepData.content?.italian || '',
+              translation: currentStepData.translation || currentStepData.english || currentStepData.content?.translation || currentStepData.content?.english || '',
+              audio: currentStepData.audio || currentStepData.content?.audio || '',
+              note: currentStepData.note || currentStepData.content?.note || ''
             };
           }
           
           if (currentStepData.stepType === 'quick_check') {
+            console.log('🎯 [ARRAY] Quick Check Step Data:', JSON.stringify(currentStepData, null, 2));
             return {
               type: 'quick_check',
-              question: currentStepData.content.mcq?.question || currentStepData.content.question || '',
-              options: currentStepData.content.mcq?.options || currentStepData.content.options || [],
-              answer: currentStepData.content.mcq?.answer || currentStepData.content.answer || ''
+              question: currentStepData.question || currentStepData.content?.question || currentStepData.content?.mcq?.question || '',
+              options: currentStepData.options || currentStepData.content?.options || currentStepData.content?.mcq?.options || [],
+              answer: currentStepData.answer || currentStepData.content?.answer || currentStepData.content?.mcq?.answer || ''
             };
           }
           
           if (currentStepData.stepType === 'typing') {
+            console.log('✏️ [ARRAY] Typing Step Data:', JSON.stringify(currentStepData, null, 2));
             return {
               type: 'type',
-              prompt: currentStepData.content.type_prompt || currentStepData.content.prompt || '',
-              expected: currentStepData.content.expected_answer || currentStepData.content.expected || '',
-              alternatives: currentStepData.content.alt_answers || currentStepData.content.alternatives || []
+              prompt: currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '',
+              expected: currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '',
+              alternatives: currentStepData.alternatives || currentStepData.alt_answers || currentStepData.content?.alternatives || currentStepData.content?.alt_answers || []
             };
           }
           
           if (currentStepData.stepType === 'comprehension') {
+            console.log('🎧 [ARRAY] Comprehension/Audio Step Data - Full Object:', JSON.stringify(currentStepData, null, 2));
             return {
               type: 'audio',
-              audioSentence: currentStepData.content.audio_sentence || currentStepData.content.audioSentence || '',
-              options: currentStepData.content.options || [],
-              answer: currentStepData.content.answer || ''
+              audioSentence: currentStepData.audioSentence || currentStepData.audio_sentence || currentStepData.content?.audioSentence || currentStepData.content?.audio_sentence || '',
+              options: currentStepData.options || currentStepData.content?.options || [],
+              answer: currentStepData.answer || currentStepData.content?.answer || ''
             };
           }
           
           if (currentStepData.stepType === 'text_tip') {
-            console.log('💡 Text Tip Step Data:', currentStepData.content);
+            console.log('💡 [ARRAY] Text Tip Step Data - Full Object:', JSON.stringify(currentStepData, null, 2));
             return {
               type: 'text_tip',
-              title: currentStepData.content.title || '',
-              text: currentStepData.content.text || '',
-              icon: currentStepData.content.icon || '💡'
+              title: currentStepData.title || currentStepData.content?.title || '',
+              text: currentStepData.text || currentStepData.content?.text || '',
+              icon: currentStepData.icon || currentStepData.content?.icon || '💡'
             };
           }
         }
