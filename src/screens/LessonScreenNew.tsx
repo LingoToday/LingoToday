@@ -1626,8 +1626,8 @@ const styles = StyleSheet.create({
   // Step Header
   stepHeader: {
     alignItems: 'center',
-    gap: theme.spacing.md,
-    padding: theme.spacing.lg,
+    gap: theme.spacing.sm,
+    padding: theme.spacing.md,
     backgroundColor: theme.colors.muted + '50',
     borderRadius: theme.borderRadius.lg,
   },
@@ -1648,7 +1648,7 @@ const styles = StyleSheet.create({
   // Video Container
   videoContainer: {
     alignItems: 'center',
-    marginVertical: theme.spacing.lg,
+    marginVertical: theme.spacing.sm,
   },
   video: (() => {
     const videoWidth = Math.min(screenWidth - (theme.spacing.md * 4), 280);
