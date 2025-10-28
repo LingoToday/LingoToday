@@ -14,7 +14,7 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that help
 - **Navigation**: React Navigation (Native Stack, Bottom Tabs)
 - **State Management**: React Query (@tanstack/react-query)
 - **Authentication**: Context API with AsyncStorage
-- **Payments**: Stripe (native only, web has mocks)
+- **Payments**: RevenueCat with Apple IAP & Google Play Billing (native only)
 - **Language**: TypeScript + JavaScript
 
 ### Key Features
@@ -50,12 +50,17 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that help
 ### Environment Variables
 The app uses Expo Constants for configuration:
 - `apiBaseUrl`: Backend API endpoint (configured in app.json)
-- `stripePublishableKey`: Stripe public key for payments
+
+### Secrets (Replit)
+The following secrets must be configured in Replit:
+- `REVENUECAT_IOS_KEY`: RevenueCat iOS API key for Apple IAP
+- `REVENUECAT_ANDROID_KEY`: RevenueCat Android API key for Google Play Billing
 
 ### Platform-Specific Code
-- **Stripe Integration**: Uses platform-specific imports (.web.js, .native.js)
-  - Web version uses mock implementations
-  - Native version uses actual Stripe SDK
+- **In-App Purchases**: Uses react-native-purchases with RevenueCat
+  - iOS: Apple In-App Purchase (StoreKit)
+  - Android: Google Play Billing
+  - Handles subscriptions, receipt validation, and restore purchases
 
 ### Metro Bundler
 Custom configuration in `metro.config.js`:
@@ -101,9 +106,19 @@ Located in `src/lib/apiClient.ts`:
 
 ## Known Limitations
 
-1. **Stripe Payments**: Only work on native platforms (iOS/Android). Web has mock implementations.
+1. **In-App Purchases**: Only work on native platforms (iOS/Android) with development builds. Cannot be tested in Expo Go or simulators.
 2. **Push Notifications**: Only supported on native platforms.
 3. **Some Expo packages**: May show deprecation warnings (expo-av will be replaced with expo-audio/expo-video in SDK 54+).
+
+## Building for Production
+
+**Important**: In-App Purchases require native development builds and cannot be tested in Expo Go.
+
+See `BUILD_INSTRUCTIONS.md` for detailed instructions on:
+- Creating iOS development builds for Apple IAP testing
+- Creating Android development builds for Google Play Billing testing
+- Testing with sandbox accounts
+- RevenueCat configuration
 
 ## Replit-Specific Setup
 
@@ -120,7 +135,23 @@ All dependencies are installed via npm and tracked in package.json. No additiona
 
 ## Recent Changes
 
-### October 28, 2025
+### October 28, 2025 (Evening)
+- **Migrated from Stripe to RevenueCat for In-App Purchases**
+  - Removed Stripe dependencies (@stripe/stripe-react-native) and related code
+  - Installed react-native-purchases for native IAP support
+  - Created purchaseService module to handle RevenueCat SDK initialization and purchases
+  - Replaced Stripe PaymentScreen with IAP PurchaseScreen in onboarding flow
+  - Updated SubscriptionScreen to use RevenueCat's restore purchases functionality
+  - Added Android billing permission (com.android.vending.BILLING) to app.json
+  - Configured react-native-purchases plugin in app.json for both iOS and Android
+  - Removed stripePublishableKey from app config
+  - Removed platform-specific Stripe wrapper files (stripe.native.js, stripe.web.js)
+  - Added BUILD_INSTRUCTIONS.md with comprehensive guide for creating development builds
+  - IAP now supports both Apple App Store (iOS) and Google Play (Android) via RevenueCat
+  - Backend will need to add RevenueCat webhook endpoint to process subscription events
+  - Development builds required for testing (Expo Go and simulators don't support IAP)
+
+### October 28, 2025 (Morning)
 - **Implemented Automatic Push Notification Scheduling**
   - Updated `scheduleLanguageLearningReminders` in `src/lib/notifications.ts` to accept and respect user-selected days (Mon-Sun)
   - Notifications now automatically schedule based on user settings (days, frequency, start/end times) from dashboard

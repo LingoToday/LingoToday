@@ -27,11 +27,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import Constants from 'expo-constants';
 import { Alert, AlertDescription } from '../components/ui/Alert';
 
-// Import Stripe for React Native (platform-specific)
-import { StripeProvider, CardField, useStripe, useConfirmPayment } from '../lib/stripe';
-
 // Import API client
 import { apiClient } from '../lib/apiClient';
+
+// Import IAP service
+import { purchaseService } from '../services/purchaseService';
+import { PurchasesPackage } from 'react-native-purchases';
 
 const { width } = Dimensions.get('window');
 
@@ -81,8 +82,6 @@ const learningStyles = [
   }
 ];
 
-// Stripe publishable key - should be in environment variables
-const STRIPE_PUBLISHABLE_KEY = Constants.expoConfig?.extra?.stripePublishableKey;
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
@@ -370,11 +369,7 @@ export default function OnboardingScreen() {
           onStartTrial={nextScreen}
         />;
       case 7:
-        return (
-          <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
-            <PaymentScreen onSuccess={handlePaymentSuccess} />
-          </StripeProvider>
-        );
+        return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
     }
@@ -983,156 +978,164 @@ const LearningPlanScreen = ({
   </View>
 );
 
-// Stripe Payment Form Component - matching web exactly with apiClient
-const StripePaymentForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const { confirmPayment } = useConfirmPayment();
+// IAP Purchase Component
+const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
-  const [cardComplete, setCardComplete] = useState(false);
+  const [packages, setPackages] = useState<PurchasesPackage[]>([]);
+  const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
+  const [loadingOfferings, setLoadingOfferings] = useState(true);
 
-  // Poll subscription status until webhook upgrades account - matching web exactly
-  const pollSubscriptionStatus = async (): Promise<boolean> => {
-    let attempts = 0;
-    const maxAttempts = 60; // 5 minutes max (5 seconds * 60)
-    
-    while (attempts < maxAttempts) {
-      try {
-        const data = await apiClient.getSubscriptionStatus();
-        if ((data as any).isProUser) {
-          return true; // Webhook processed successfully
-        }
-        
-        // Wait 5 seconds before next check
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        attempts++;
-      } catch (error) {
-        console.error('Error checking subscription status:', error);
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        attempts++;
+  useEffect(() => {
+    initializeAndFetchOfferings();
+  }, []);
+
+  const initializeAndFetchOfferings = async () => {
+    try {
+      setLoadingOfferings(true);
+      
+      // Get current user to initialize RevenueCat with user ID
+      const user = await apiClient.getCurrentUser();
+      const userId = (user as any)?.id || (user as any)?.email;
+      
+      // Initialize RevenueCat
+      await purchaseService.initialize(userId);
+      
+      // Fetch available offerings
+      const availablePackages = await purchaseService.getOfferings();
+      setPackages(availablePackages);
+      
+      // Auto-select the first package
+      if (availablePackages.length > 0) {
+        setSelectedPackage(availablePackages[0]);
       }
+    } catch (error) {
+      console.error('Error fetching offerings:', error);
+      RNAlert.alert('Error', 'Unable to load subscription options. Please try again.');
+    } finally {
+      setLoadingOfferings(false);
     }
-    
-    return false; // Timeout - webhook didn't arrive in time
   };
 
-  const handleSubmit = async () => {
-    if (!cardComplete) {
-      RNAlert.alert("Error", "Please enter your card details");
+  const handlePurchase = async () => {
+    if (!selectedPackage) {
+      RNAlert.alert('Error', 'Please select a subscription plan');
       return;
     }
 
     setIsProcessing(true);
-    setProcessingStage('payment');
 
     try {
-      // First check if user is authenticated using apiClient
-      await apiClient.getCurrentUser();
+      const result = await purchaseService.purchasePackage(selectedPackage);
 
-      // Create subscription with payment intent using apiClient
-      const { clientSecret } = await apiClient.createSubscription() as { clientSecret: string };
-
-      // Confirm payment using Stripe React Native
-      const { error } = await confirmPayment(clientSecret, {
-        paymentMethodType: 'Card',
-      });
-
-      if (error) {
-        // Only show immediate failure for definitive client-side errors
-        const isDefinitiveFailure = error.code === 'Failed' ||
-                                   error.code === 'Canceled';
-
-        if (isDefinitiveFailure) {
-          RNAlert.alert("Payment Failed", error.message);
-          setProcessingStage('idle');
-        } else {
-          // For ambiguous errors, wait for webhook confirmation
-          setProcessingStage('activating');
-          RNAlert.alert("Finalizing Payment", "Please wait while we confirm your payment...");
-
-          const webhookSuccess = await pollSubscriptionStatus();
-
-          if (webhookSuccess) {
-            RNAlert.alert("Welcome to Pro Learner!", "Your subscription is now active. You have access to all premium content.");
-            onSuccess();
-          } else {
-            RNAlert.alert("Payment Status Unclear", "We're unable to confirm your payment status right now. Please check your account or contact support if needed.");
-            setProcessingStage('idle');
-          }
-        }
+      if (result.success) {
+        RNAlert.alert(
+          '🎉 Welcome to LingoToday Pro!',
+          'Your subscription is now active. You have access to all premium features.',
+          [{ text: 'Continue', onPress: onSuccess }]
+        );
+      } else if (result.error === 'Purchase cancelled') {
+        // User cancelled, do nothing
       } else {
-        // Payment succeeded immediately
-        setProcessingStage('activating');
-        RNAlert.alert("Payment Successful!", "Activating your Pro Learner subscription...");
-
-        const webhookSuccess = await pollSubscriptionStatus();
-
-        if (webhookSuccess) {
-          RNAlert.alert("Welcome to Pro Learner!", "Your subscription is now active. You have access to all premium content.");
-          onSuccess();
-        } else {
-          RNAlert.alert("Payment Successful, Activation Pending", "Your payment was processed successfully. Account activation may take a few minutes.");
-          setProcessingStage('idle');
-        }
+        RNAlert.alert('Purchase Failed', result.error || 'Unable to complete purchase. Please try again.');
       }
     } catch (error: any) {
-      console.error('Payment error:', error);
-      const errorMessage = error?.message || "An unexpected error occurred. Please try again.";
-      RNAlert.alert("Payment Error", errorMessage);
-      setProcessingStage('idle');
+      console.error('Purchase error:', error);
+      RNAlert.alert('Purchase Error', error.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const getButtonText = () => {
-    if (processingStage === 'payment') return 'Processing Payment...';
-    if (processingStage === 'activating') return 'Activating Account...';
-    return 'Complete Payment';
+  const handleRestore = async () => {
+    setIsProcessing(true);
+
+    try {
+      const result = await purchaseService.restorePurchases();
+
+      if (result.success) {
+        RNAlert.alert(
+          '✅ Purchase Restored',
+          'Your subscription has been restored successfully!',
+          [{ text: 'Continue', onPress: onSuccess }]
+        );
+      } else {
+        RNAlert.alert('No Purchases Found', 'We couldn\'t find any previous purchases for this account.');
+      }
+    } catch (error: any) {
+      console.error('Restore error:', error);
+      RNAlert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (loadingOfferings) {
+    return (
+      <View style={styles.stripeFormContainer}>
+        <View style={styles.loadingContainer}>
+          <Ionicons name="hourglass" size={32} color="#6366f1" />
+          <Text style={styles.loadingText}>Loading subscription options...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (packages.length === 0) {
+    return (
+      <View style={styles.stripeFormContainer}>
+        <Text style={styles.errorText}>No subscription options available at this time.</Text>
+        <Button onPress={initializeAndFetchOfferings} style={styles.retryButton}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </Button>
+      </View>
+    );
+  }
+
+  const formatPrice = (pkg: PurchasesPackage) => {
+    return pkg.product.priceString;
   };
 
   return (
     <View style={styles.stripeFormContainer}>
-      {/* FIXED: Better card field container with improved spacing */}
-      <View style={styles.cardFieldContainer}>
-        <Text style={styles.cardFieldLabel}>Card Details</Text>
-        <View>
-          <CardField
-            postalCodeEnabled={false}
-            placeholders={{
-              number: '4242 4242 4242 4242',
-            }}
-            cardStyle={styles.cardFieldStyle}
-            style={styles.cardField}
-            onCardChange={(cardDetails) => {
-              setCardComplete(cardDetails.complete);
-              console.log('Card details:', cardDetails);
-            }}
-          />
+      {/* Display selected package */}
+      {selectedPackage && (
+        <View style={styles.iapPackageCard}>
+          <Text style={styles.iapPackagePrice}>{formatPrice(selectedPackage)}</Text>
+          <Text style={styles.iapPackageDescription}>
+            {selectedPackage.product.introPrice
+              ? `${selectedPackage.product.introPrice.periodNumberOfUnits} ${selectedPackage.product.introPrice.periodUnit} free trial`
+              : 'Start your journey today'}
+          </Text>
         </View>
-      </View>
-      
-      {/* FIXED: Button with more spacing */}
+      )}
+
+      {/* Purchase Button */}
       <View style={styles.stripeButtonContainer}>
         <Button
-          onPress={handleSubmit}
-          disabled={!cardComplete || isProcessing}
+          onPress={handlePurchase}
+          disabled={isProcessing}
           style={[
             styles.stripeSubmitButton,
-            (!cardComplete || isProcessing) && styles.stripeSubmitButtonDisabled
+            isProcessing && styles.stripeSubmitButtonDisabled
           ]}
         >
           <View style={styles.stripeButtonContent}>
             {isProcessing && <Ionicons name="hourglass" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />}
             <Text style={[
               styles.stripeSubmitButtonText,
-              (!cardComplete || isProcessing) && styles.stripeSubmitButtonTextDisabled
+              isProcessing && styles.stripeSubmitButtonTextDisabled
             ]}>
-              {getButtonText()}
+              {isProcessing ? 'Processing...' : 'Start Free Trial'}
             </Text>
           </View>
         </Button>
       </View>
-      
+
+      {/* Restore Purchases Button */}
+      <TouchableOpacity onPress={handleRestore} disabled={isProcessing} style={styles.restorePurchasesButton}>
+        <Text style={styles.restorePurchasesText}>Restore Purchases</Text>
+      </TouchableOpacity>
+
       <Text style={styles.stripeTermsText}>
         By continuing, you agree to our Terms of Service and Privacy Policy.
       </Text>
@@ -1255,7 +1258,7 @@ const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
             </View>
           </View>
           
-          <StripePaymentForm onSuccess={handleSuccess} />
+          <IAPPurchaseForm onSuccess={handleSuccess} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

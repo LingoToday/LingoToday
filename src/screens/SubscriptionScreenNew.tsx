@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { apiClient } from '../lib/apiClient';
+import { purchaseService } from '../services/purchaseService';
 
 interface User {
   id: string;
@@ -99,8 +100,28 @@ export default function SubscriptionScreenNew() {
     navigation.navigate('Subscribe' as never);
   };
 
-  const handleRestorePurchases = () => {
-    Alert.alert('Restore Purchases', 'Checking for existing subscriptions...');
+  const handleRestorePurchases = async () => {
+    try {
+      Alert.alert('Restore Purchases', 'Checking for existing subscriptions...');
+      
+      const result = await purchaseService.restorePurchases();
+      
+      if (result.success) {
+        Alert.alert(
+          '✅ Purchase Restored',
+          'Your subscription has been restored successfully!',
+          [{ text: 'OK', onPress: () => navigation.goBack() }]
+        );
+      } else {
+        Alert.alert(
+          'No Purchases Found',
+          'We couldn\'t find any previous purchases for this account.'
+        );
+      }
+    } catch (error: any) {
+      console.error('Restore error:', error);
+      Alert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+    }
   };
 
   const handleOpenTerms = async () => {

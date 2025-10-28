@@ -754,6 +754,57 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  
+  // IAP Specific Styles
+  errorText: {
+    color: '#EF4444',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: '#6366f1',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  iapPackageCard: {
+    backgroundColor: '#F9FAFB',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#6366f1',
+  },
+  iapPackagePrice: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#111827',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  iapPackageDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  restorePurchasesButton: {
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  restorePurchasesText: {
+    color: '#6366f1',
+    fontSize: 14,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
 });
 
 export default styles;
