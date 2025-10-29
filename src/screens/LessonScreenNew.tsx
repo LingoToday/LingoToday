@@ -408,7 +408,20 @@ export default function LessonScreen() {
             
             if (stepData.type) {
               if (stepData.type === 'video_choice') {
-                stepType = 'video_choice';
+                // Convert video_choice to pro_video using the female option
+                stepType = 'pro_video';
+                const options = stepData.options || [];
+                let selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
+                if (!selectedOption) {
+                  selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
+                }
+                content = {
+                  video_url: selectedOption?.video_url || '',
+                  prompt: stepData.prompt || '',
+                  answer_prompt: selectedOption?.answer_prompt || '',
+                  expected_answers: selectedOption?.expected_answers || [],
+                  requiredTier: []  // Lesson 1 is free
+                };
               } else if (stepData.type === 'video') {
                 stepType = 'pro_video';
                 content = {
@@ -466,7 +479,8 @@ export default function LessonScreen() {
             const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
             const userTier = userData?.priceTier || 'free';
             
-            const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+            // If requiredTier is empty array, content is free - grant access to everyone
+            const hasAccess = requiredTier.length === 0 || userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
             
             const videoUrl = stepData.content?.video_url || stepData.video_url || '';
             const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
@@ -558,34 +572,29 @@ export default function LessonScreen() {
         const currentStepData: any = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
         
         if (currentStepData) {
-          // Handle video_choice step type (gender-based videos)
+          // Handle video_choice step type (use female video option)
           if (currentStepData.stepType === 'video_choice') {
-            const userFirstName = userData?.firstName || '';
-            const detectedGender = detectGender(userFirstName);
-            
             const options = currentStepData.content.options || [];
-            let selectedOption: any = null;
             
-            if (detectedGender === 'male') {
-              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'male');
-            } else if (detectedGender === 'female') {
-              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
-            }
+            // Always use the female video option
+            let selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
             
+            // Fallback to neutral or first option if female not found
             if (!selectedOption) {
               selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
             }
             
             const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
             
+            // Return as pro_video type to use existing video rendering logic
             return {
-              type: 'video_choice',
+              type: 'pro_video',
               videoUrl: videoUrl,
               prompt: currentStepData.content.prompt || '',
               answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
               expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
-              tier: 'free',
-              selectedGender: detectedGender
+              hasAccess: true,  // Lesson 1 is free content
+              requiredTier: []
             };
           }
           
@@ -595,7 +604,8 @@ export default function LessonScreen() {
             const requiredTier = currentStepData.content?.requiredTier || currentStepData.requiredTier || [];
             const userTier = userData?.priceTier || 'free';
             
-            const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+            // If requiredTier is empty array, content is free - grant access to everyone
+            const hasAccess = requiredTier.length === 0 || userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
             
             const videoUrl = currentStepData.content?.video_url || currentStepData.video_url || '';
             const prompt = currentStepData.content?.prompt || currentStepData.prompt || '';
