@@ -370,6 +370,20 @@ export default function LessonScreen() {
     try {
       if (!currentLesson?.lesson) return null;
       
+      // OVERRIDE: Force Italian course 1, lesson 1, step 4 to display video
+      if (language === 'it' && courseId === '1' && lessonId === '1' && currentStep === 4) {
+        console.log('🎬 OVERRIDE: Forcing video step for Italian course 1, lesson 1, step 4');
+        return {
+          type: 'pro_video',
+          videoUrl: normalizeAssetUrl('/attached_assets/videos/lesson1_hi_female.mp4'),
+          prompt: "Watch and listen to the video, then reply!",
+          answerPrompt: "Reply: 'Hi!'",
+          expectedAnswers: ["Ciao!", "Ciao"],
+          hasAccess: true,
+          requiredTier: []
+        };
+      }
+      
       // Handle IRL video lessons
       const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
       if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
