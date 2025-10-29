@@ -371,7 +371,7 @@ export default function LessonScreen() {
       if (!currentLesson?.lesson) return null;
       
       // OVERRIDE: Force Italian course 1, lesson 1, step 4 to display video
-      if (language === 'it' && courseId === '1' && lessonId === '1' && currentStep === 4) {
+      if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1' && currentStep === 4) {
         console.log('🎬 OVERRIDE: Forcing video step for Italian course 1, lesson 1, step 4');
         return {
           type: 'pro_video',
