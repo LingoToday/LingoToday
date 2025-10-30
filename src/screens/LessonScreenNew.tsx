@@ -384,6 +384,23 @@ export default function LessonScreen() {
         };
       }
       
+      // OVERRIDE: Force Italian course 1, lesson 2, step 4 to display video with paywall
+      if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson2' && currentStep === 4) {
+        console.log('🎬 OVERRIDE: Forcing pro video step for Italian course 1, lesson 2, step 4');
+        const userTier = userData?.priceTier || 'free';
+        const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+        
+        return {
+          type: 'pro_video',
+          videoUrl: normalizeAssetUrl('/attached_assets/videos/lesson1_hi_female.mp4'),
+          prompt: "You meet a new friend on the street.",
+          answerPrompt: "Reply: 'Hello!'",
+          expectedAnswers: ["Salve!", "Salve", "Ciao!", "Ciao"],
+          hasAccess,
+          requiredTier: ['pro']
+        };
+      }
+      
       // Handle IRL video lessons
       const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
       if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
@@ -1253,42 +1270,56 @@ export default function LessonScreen() {
                     <Text style={styles.stepPrompt}>{stepData.prompt}</Text>
                   </View>
 
-                  {stepData.hasAccess ? (
-                    <>
-                      <View style={styles.videoContainer}>
-                        <Video
-                          style={styles.video}
-                          source={{ uri: stepData.videoUrl }}
-                          useNativeControls
-                          resizeMode={ResizeMode.CONTAIN}
-                          shouldPlay={false}
-                        />
+                  <View style={styles.videoContainer}>
+                    <Video
+                      style={styles.video}
+                      source={{ uri: stepData.videoUrl }}
+                      useNativeControls={stepData.hasAccess}
+                      resizeMode={ResizeMode.CONTAIN}
+                      shouldPlay={!stepData.hasAccess}
+                      isLooping={!stepData.hasAccess}
+                      isMuted={!stepData.hasAccess}
+                    />
+                    
+                    {!stepData.hasAccess && (
+                      <View style={styles.videoOverlay}>
+                        <View style={styles.upgradeOverlayCard}>
+                          <Ionicons name="diamond" size={48} color="#F59E0B" />
+                          <Text style={styles.upgradeOverlayTitle}>Unlock Pro Learner video lessons</Text>
+                          <Text style={styles.upgradeOverlaySubtitle}>to accelerate your learning!</Text>
+                          <Text style={styles.upgradePrice}>
+                            <Text style={styles.oldPrice}>£4.99</Text> £2.49/month
+                          </Text>
+                          <Button
+                            title="Upgrade & Unlock All Videos"
+                            onPress={() => {
+                              // TODO: Navigate to subscription screen
+                              console.log('Navigate to subscription');
+                            }}
+                            style={styles.upgradeButton}
+                          />
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedAnswer('skip');
+                              handleStepSubmit();
+                            }}
+                            style={styles.skipLinkButton}
+                          >
+                            <Text style={styles.skipLinkText}>Skip this step and continue with free lessons</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
+                    )}
+                  </View>
 
-                      <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
-                        <TextInput
-                          style={styles.textInput}
-                          value={selectedAnswer}
-                          onChangeText={setSelectedAnswer}
-                          placeholder="Type your response..."
-                        />
-                      </View>
-                    </>
-                  ) : (
-                    <View style={styles.upgradeContainer}>
-                      <Ionicons name="diamond" size={48} color="#F59E0B" />
-                      <Text style={styles.upgradeTitle}>Upgrade to Pro</Text>
-                      <Text style={styles.upgradeText}>
-                        Access video lessons and advanced features with our Pro subscription.
-                      </Text>
-                      <Button
-                        title="Skip for now"
-                        onPress={() => {
-                          setSelectedAnswer('skip');
-                          handleStepSubmit();
-                        }}
-                        style={styles.skipButton}
+                  {stepData.hasAccess && (
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        value={selectedAnswer}
+                        onChangeText={setSelectedAnswer}
+                        placeholder="Type your response..."
                       />
                     </View>
                   )}
@@ -1881,6 +1912,68 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     backgroundColor: theme.colors.mutedForeground,
+  },
+
+  // Video Overlay (for pro video paywall)
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+  },
+  upgradeOverlayCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.xl,
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    maxWidth: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  upgradeOverlayTitle: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700' as any,
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  upgradeOverlaySubtitle: {
+    fontSize: theme.fontSize.base,
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  upgradePrice: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '700' as any,
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  oldPrice: {
+    textDecorationLine: 'line-through',
+    color: '#9CA3AF',
+    marginRight: theme.spacing.xs,
+  },
+  upgradeButton: {
+    backgroundColor: '#8B5CF6',
+    width: '100%',
+  },
+  skipLinkButton: {
+    padding: theme.spacing.sm,
+  },
+  skipLinkText: {
+    fontSize: theme.fontSize.sm,
+    color: '#6B7280',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 
   // Quiz Section
