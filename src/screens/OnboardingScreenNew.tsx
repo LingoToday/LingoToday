@@ -1025,9 +1025,12 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     initializeAndFetchOfferings();
   }, []);
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const initializeAndFetchOfferings = async () => {
     try {
       setLoadingOfferings(true);
+      setErrorMessage(null);
       
       // Get current user to initialize RevenueCat with user ID
       const user = await apiClient.getCurrentUser();
@@ -1038,15 +1041,22 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
       
       // Fetch available offerings
       const availablePackages = await purchaseService.getOfferings();
+      
+      if (availablePackages.length === 0) {
+        setErrorMessage('No subscription plans are currently available. Please check your internet connection and try again.');
+        return;
+      }
+      
       setPackages(availablePackages);
       
       // Auto-select the first package
       if (availablePackages.length > 0) {
         setSelectedPackage(availablePackages[0]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching offerings:', error);
-      RNAlert.alert('Error', 'Unable to load subscription options. Please try again.');
+      const message = error?.message || 'Unable to load subscription options. Please check your connection and try again.';
+      setErrorMessage(message);
     } finally {
       setLoadingOfferings(false);
     }
@@ -1136,13 +1146,22 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     );
   }
 
-  if (packages.length === 0) {
+  if (errorMessage || packages.length === 0) {
     return (
       <View style={styles.stripeFormContainer}>
-        <Text style={styles.errorText}>No subscription options available at this time.</Text>
-        <Button onPress={initializeAndFetchOfferings} style={styles.retryButton}>
-          <Text style={styles.retryButtonText}>Retry</Text>
-        </Button>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle" size={48} color="#EF4444" style={{ marginBottom: 16 }} />
+          <Text style={styles.errorTitle}>Unable to Load Subscription Options</Text>
+          <Text style={styles.errorText}>
+            {errorMessage || 'No subscription options available at this time.'}
+          </Text>
+          <Button onPress={initializeAndFetchOfferings} style={styles.retryButton}>
+            <View style={styles.stripeButtonContent}>
+              <Ionicons name="refresh" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
+              <Text style={styles.retryButtonText}>Retry</Text>
+            </View>
+          </Button>
+        </View>
       </View>
     );
   }
@@ -1151,37 +1170,83 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     return pkg.product.priceString;
   };
 
+  const getTrialText = (pkg: PurchasesPackage) => {
+    if (pkg.product.introPrice) {
+      const period = pkg.product.introPrice.periodNumberOfUnits;
+      const unit = pkg.product.introPrice.periodUnit.toLowerCase();
+      return `${period}-${unit} free trial`;
+    }
+    return null;
+  };
+
+  const getPackageIdentifier = (pkg: PurchasesPackage) => {
+    return pkg.identifier;
+  };
+
   return (
     <View style={styles.stripeFormContainer}>
-      {/* Display selected package */}
-      {selectedPackage && (
-        <View style={styles.iapPackageCard}>
-          <Text style={styles.iapPackagePrice}>{formatPrice(selectedPackage)}</Text>
-          <Text style={styles.iapPackageDescription}>
-            {selectedPackage.product.introPrice
-              ? `${selectedPackage.product.introPrice.periodNumberOfUnits} ${selectedPackage.product.introPrice.periodUnit} free trial`
-              : 'Start your journey today'}
-          </Text>
-        </View>
-      )}
+      {/* Display all available packages */}
+      {packages.map((pkg) => {
+        const isSelected = selectedPackage?.identifier === pkg.identifier;
+        const trialText = getTrialText(pkg);
+        
+        return (
+          <TouchableOpacity
+            key={getPackageIdentifier(pkg)}
+            style={[
+              styles.packageOption,
+              isSelected && styles.packageOptionSelected
+            ]}
+            onPress={() => setSelectedPackage(pkg)}
+            disabled={isProcessing}
+          >
+            <View style={styles.packageOptionContent}>
+              <View style={styles.packageRadio}>
+                {isSelected && <View style={styles.packageRadioSelected} />}
+              </View>
+              
+              <View style={styles.packageDetails}>
+                <View style={styles.packageHeader}>
+                  <Text style={styles.packageTitle}>
+                    {pkg.product.title}
+                  </Text>
+                  {trialText && (
+                    <View style={styles.trialBadge}>
+                      <Text style={styles.trialBadgeText}>{trialText}</Text>
+                    </View>
+                  )}
+                </View>
+                
+                <Text style={styles.packagePrice}>{formatPrice(pkg)}</Text>
+                
+                {pkg.product.description && (
+                  <Text style={styles.packageDescription} numberOfLines={2}>
+                    {pkg.product.description}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
 
       {/* Purchase Button */}
       <View style={styles.stripeButtonContainer}>
         <Button
           onPress={handlePurchase}
-          disabled={isProcessing}
+          disabled={isProcessing || !selectedPackage}
           style={[
             styles.stripeSubmitButton,
-            isProcessing && styles.stripeSubmitButtonDisabled
+            (isProcessing || !selectedPackage) && styles.stripeSubmitButtonDisabled
           ]}
         >
           <View style={styles.stripeButtonContent}>
             {isProcessing && <Ionicons name="hourglass" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />}
             <Text style={[
               styles.stripeSubmitButtonText,
-              isProcessing && styles.stripeSubmitButtonTextDisabled
+              (isProcessing || !selectedPackage) && styles.stripeSubmitButtonTextDisabled
             ]}>
-              {isProcessing ? 'Processing...' : 'Start Free Trial'}
+              {isProcessing ? 'Processing...' : selectedPackage && getTrialText(selectedPackage) ? 'Start Free Trial' : 'Subscribe Now'}
             </Text>
           </View>
         </Button>
@@ -1295,29 +1360,8 @@ const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
             Complete Your Subscription
           </Text>
           <Text style={styles.screenSubtitle}>
-            Start your 5-day free trial now
+            Choose your plan and start learning today
           </Text>
-          
-          <View style={styles.paymentPlanCard}>
-            <View style={styles.paymentPlanHeader}>
-              <Text style={styles.paymentPlanTitle}>💎 Pro Learner</Text>
-              <Text style={styles.paymentPlanTrial}>5-Day Free Trial</Text>
-              <Text style={styles.paymentPlanPrice}>£2.49/month</Text>
-              <Text style={styles.paymentPlanCancel}>Cancel anytime</Text>
-            </View>
-            
-            <View style={styles.paymentPlanFeatures}>
-              {[
-                '• Full access to all languages',
-                '• Unlimited lessons and practice',
-                '• Progress tracking and analytics',
-                '• Premium video content',
-                '• Mobile and desktop sync'
-              ].map((feature, index) => (
-                <Text key={index} style={styles.paymentPlanFeature}>{feature}</Text>
-              ))}
-            </View>
-          </View>
           
           <IAPPurchaseForm onSuccess={handleSuccess} />
         </View>

@@ -756,11 +756,24 @@ const styles = StyleSheet.create({
   },
   
   // IAP Specific Styles
-  errorText: {
-    color: '#EF4444',
-    fontSize: 16,
+  errorContainer: {
+    alignItems: 'center',
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  errorText: {
+    color: '#6B7280',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
   },
   retryButton: {
     backgroundColor: '#6366f1',
@@ -772,7 +785,7 @@ const styles = StyleSheet.create({
   retryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   iapPackageCard: {
     backgroundColor: '#F9FAFB',
@@ -804,6 +817,77 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     textDecorationLine: 'underline',
+  },
+  packageOption: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    padding: 16,
+    marginBottom: 12,
+  },
+  packageOptionSelected: {
+    borderColor: '#6366f1',
+    backgroundColor: '#EEF2FF',
+  },
+  packageOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  packageRadio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    marginRight: 12,
+    marginTop: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  packageRadioSelected: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#6366f1',
+  },
+  packageDetails: {
+    flex: 1,
+  },
+  packageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    flexWrap: 'wrap',
+  },
+  packageTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginRight: 8,
+  },
+  trialBadge: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  trialBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  packagePrice: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  packageDescription: {
+    fontSize: 13,
+    color: '#6B7280',
+    lineHeight: 18,
   },
 });
 
