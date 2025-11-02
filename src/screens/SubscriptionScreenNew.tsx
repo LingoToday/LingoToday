@@ -142,6 +142,16 @@ export default function SubscriptionScreenNew() {
     await WebBrowser.openBrowserAsync('https://www.lingotoday.co/privacy');
   };
 
+  const handleManageSubscription = async () => {
+    // Open App Store subscription management on iOS
+    if (Platform.OS === 'ios') {
+      await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
+    } else {
+      // For Android, open Google Play subscriptions
+      await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+    }
+  };
+
   if (userLoading || subLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -292,6 +302,13 @@ export default function SubscriptionScreenNew() {
               <View style={styles.buttonContent}>
                 <Ionicons name="refresh" size={16} color={theme.colors.foreground} />
                 <Text style={[styles.buttonText, { color: theme.colors.foreground }]}>Restore Purchases</Text>
+              </View>
+            </Button>
+
+            <Button variant="outline" onPress={handleManageSubscription} testID="manage-subscription-button">
+              <View style={styles.buttonContent}>
+                <Ionicons name="settings" size={16} color={theme.colors.foreground} />
+                <Text style={[styles.buttonText, { color: theme.colors.foreground }]}>Manage Subscription</Text>
               </View>
             </Button>
 

@@ -633,11 +633,46 @@ const RegistrationScreen = ({
   };
 
   const handleRestorePurchase = async () => {
-    RNAlert.alert(
-      'Restore Purchase',
-      'This feature will restore your previous purchases.',
-      [{ text: 'OK' }]
-    );
+    try {
+      RNAlert.alert('Restore Purchases', 'Checking for existing subscriptions...');
+      
+      const result = await purchaseService.restorePurchases();
+      
+      if (result.success) {
+        // Notify backend about restored purchase to sync entitlements
+        try {
+          // Refresh user data to get updated subscription status
+          const updatedUser = await apiClient.getCurrentUser();
+          console.log('✅ User data refreshed after restore:', updatedUser);
+        } catch (backendError) {
+          console.warn('⚠️ Failed to refresh user after restore:', backendError);
+          // Continue anyway - RevenueCat webhook will eventually sync
+        }
+
+        RNAlert.alert(
+          '✅ Purchase Restored',
+          'Your subscription has been restored successfully!'
+        );
+      } else {
+        RNAlert.alert(
+          'No Purchases Found',
+          'We couldn\'t find any previous purchases for this account.'
+        );
+      }
+    } catch (error: any) {
+      console.error('Restore error:', error);
+      RNAlert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    // Open App Store subscription management on iOS
+    if (Platform.OS === 'ios') {
+      await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
+    } else {
+      // For Android, open Google Play subscriptions
+      await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+    }
   };
 
   return (
@@ -756,7 +791,8 @@ const RegistrationScreen = ({
               <Text style={styles.restoreText}>
                 Alternatively,{' '}
                 <Text style={styles.termsLink} onPress={handleRestorePurchase}>Restore</Text>
-                {' '}your purchase
+                {' '}your purchase or{' '}
+                <Text style={styles.termsLink} onPress={handleManageSubscription}>Manage Subscription</Text>
               </Text>
             </View>
           </View>
@@ -1079,6 +1115,16 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   };
 
+  const handleManageSubscription = async () => {
+    // Open App Store subscription management on iOS
+    if (Platform.OS === 'ios') {
+      await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
+    } else {
+      // For Android, open Google Play subscriptions
+      await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+    }
+  };
+
   if (loadingOfferings) {
     return (
       <View style={styles.stripeFormContainer}>
@@ -1144,6 +1190,11 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {/* Restore Purchases Button */}
       <TouchableOpacity onPress={handleRestore} disabled={isProcessing} style={styles.restorePurchasesButton}>
         <Text style={styles.restorePurchasesText}>Restore Purchases</Text>
+      </TouchableOpacity>
+
+      {/* Manage Subscription Link */}
+      <TouchableOpacity onPress={handleManageSubscription} disabled={isProcessing} style={styles.restorePurchasesButton}>
+        <Text style={styles.restorePurchasesText}>Manage Subscription</Text>
       </TouchableOpacity>
 
       <Text style={styles.stripeTermsText}>
