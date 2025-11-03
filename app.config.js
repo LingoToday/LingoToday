@@ -4,7 +4,7 @@ export default ({ config }) => {
     extra: {
       ...config.extra,
       // API Base URL - can be overridden via environment variables for EAS builds
-      apiBaseUrl: process.env.API_BASE_URL || config.extra?.apiBaseUrl || 'https://www.lingotoday.co',
+      apiBaseUrl: process.env.API_BASE_URL || config.extra?.apiBaseUrl || 'https://lingotoday.replit.app',
       // RevenueCat API keys - injected from environment variables
       // For local dev: Set in app.json extra section
       // For EAS builds: Set via EAS Secrets (eas secret:create)
