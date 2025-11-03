@@ -15,7 +15,7 @@ export const queryClient = new QueryClient({
 });
 
 // Default query function for the API
-export const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }): Promise<any> => {
+export const defaultQueryFn = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<any> => {
   const [url] = queryKey;
   
   if (typeof url !== 'string') {
