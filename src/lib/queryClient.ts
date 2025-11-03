@@ -1,5 +1,4 @@
 import { QueryClient } from '@tanstack/react-query';
-import Constants from 'expo-constants';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,14 +14,14 @@ export const queryClient = new QueryClient({
 });
 
 // Default query function for the API
-export const defaultQueryFn = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<any> => {
+export const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }): Promise<any> => {
   const [url] = queryKey;
   
   if (typeof url !== 'string') {
     throw new Error('Invalid query key');
   }
   
-  const API_BASE_URL = Constants?.expoConfig?.extra?.apiBaseUrl;
+  const API_BASE_URL = __DEV__ ? 'http://localhost:5000' : 'https://your-production-url.com';
   const response = await fetch(`${API_BASE_URL}${url}`);
   
   if (!response.ok) {
