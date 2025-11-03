@@ -37,7 +37,7 @@ Do not make changes to the file `package-lock.json`.
 - Legal links consistently styled and opened in native webview.
 
 ### Technical Implementations
-- Uses Expo Constants for environment variables (`apiBaseUrl`).
+- **API Configuration**: Both `apiClient.ts` and `queryClient.ts` use `Constants.expoConfig.extra.apiBaseUrl` for consistent API endpoints. Production URL is `https://lingotoday.replit.app`. For EAS builds, set `PRODUCTION_API_URL` environment variable to override.
 - RevenueCat integrated for in-app purchases and subscription management on native platforms.
 - **Dynamic subscription offerings**: Subscription paywall (`IAPPurchaseForm` in onboarding flow) dynamically loads all available packages from RevenueCat's `Purchases.getOfferings()` API with pricing, trial periods, and product metadata - no hardcoded pricing.
 - Custom Metro bundler configuration for video file extensions and asset aliases.
