@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+import Constants from 'expo-constants';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +22,7 @@ export const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }): Promise
     throw new Error('Invalid query key');
   }
   
-  const API_BASE_URL = __DEV__ ? 'http://localhost:5000' : 'https://your-production-url.com';
+  const API_BASE_URL = Constants?.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
   const response = await fetch(`${API_BASE_URL}${url}`);
   
   if (!response.ok) {
