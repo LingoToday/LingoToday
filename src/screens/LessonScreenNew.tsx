@@ -1284,12 +1284,9 @@ export default function LessonScreen() {
                     {!stepData.hasAccess && (
                       <View style={styles.videoOverlay}>
                         <View style={styles.upgradeOverlayCard}>
-                          <Ionicons name="diamond" size={48} color="#F59E0B" />
                           <Text style={styles.upgradeOverlayTitle}>Unlock Pro Learner video lessons</Text>
                           <Text style={styles.upgradeOverlaySubtitle}>to accelerate your learning!</Text>
-                          <Text style={styles.upgradePrice}>
-                            <Text style={styles.oldPrice}>£4.99</Text> £2.49/month
-                          </Text>
+                          <Text style={styles.upgradePrice}>£2.99/month</Text>
                           <Button
                             title="Upgrade & Unlock All Videos"
                             onPress={() => {
@@ -1921,7 +1918,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: theme.borderRadius.lg,
