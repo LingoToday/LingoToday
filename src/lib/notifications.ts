@@ -5,13 +5,15 @@ import { Platform } from 'react-native';
 import { getLanguageSpecificNotification } from '../screens/DashboardScreenNew';
 
 // Configure notifications behavior
+// This determines how notifications are presented when the app is in the foreground
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
     shouldShowBanner: true,
     shouldShowList: true,
+    priority: Notifications.AndroidNotificationPriority.MAX,
   }),
 });
 
@@ -27,6 +29,9 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#6366f1',
+      sound: 'default',
+      enableVibrate: true,
+      showBadge: true,
     });
   }
 
@@ -217,6 +222,8 @@ export async function scheduleLanguageLearningReminders(
             title: notificationContent.title,
             body: notificationContent.body,
             sound: 'default',
+            priority: Notifications.AndroidNotificationPriority.MAX,
+            ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
             data: {
               type: 'language_reminder',
               language: language,

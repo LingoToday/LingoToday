@@ -25,6 +25,9 @@
         "NSUserTrackingUsageDescription": "We use your data to provide a better experience and to improve our services.",
         "NSLocationWhenInUseUsageDescription": "We use your location to provide a better experience and to improve our services.",
         "NSCameraUsageDescription": "We use your camera to take photos of your progress."
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -37,6 +40,8 @@
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
+        "android.permission.VIBRATE",
+        "android.permission.USE_EXACT_ALARM",
         "com.android.vending.BILLING"
       ],
       "useNextNotificationsApi": true
@@ -45,7 +50,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-notifications"
+      [
+        "expo-notifications",
+        {
+          "color": "#6366f1"
+        }
+      ]
     ],
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
