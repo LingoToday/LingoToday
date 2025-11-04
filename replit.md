@@ -45,6 +45,7 @@ Do not make changes to the file `package-lock.json`.
 - Dynamic lesson step counting to support various lesson formats and report accurate progress.
 - `SheetManagerProvider` to enforce a single-sheet policy for modals/sheets.
 - Lessons use push navigation instead of modal presentation.
+- **Background Notifications (Updated Nov 2025)**: Implemented proper background notification support using expo-notifications and expo-task-manager. Notifications are scheduled as repeating calendar triggers (specific weekdays/times) and persist even when the app is closed or terminated. Background task handler registered in App.js ensures notifications work reliably across all app states (foreground, background, terminated).
 
 ### Project Structure
 - `src/components/`: Reusable UI components.
@@ -64,6 +65,7 @@ Do not make changes to the file `package-lock.json`.
 - **React Query**: For state management.
 - **RevenueCat**: For in-app purchases (Apple In-App Purchase, Google Play Billing) and subscription management.
 - **AsyncStorage**: For local data persistence and authentication token management.
-- **expo-notifications**: For push notifications (native only).
+- **expo-notifications**: For local scheduled push notifications (native only).
+- **expo-task-manager**: For background notification task handling.
 - **expo-web-browser**: For opening web links in a native webview.
 - **expo-video**: For modern video playback.
