@@ -1925,7 +1925,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
   },
   upgradeOverlayCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.xl,
     alignItems: 'center',
