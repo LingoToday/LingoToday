@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 
 import { useAuth } from '../hooks/useAuth';
@@ -232,6 +232,16 @@ useEffect(() => {
     responseSubscription.remove();
   };
 }, [navigation]);
+
+  // Refetch dashboard data when screen comes into focus (e.g., after completing a lesson)
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('🔄 Dashboard screen focused - refetching data');
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/upcoming-lessons"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/course-stats"] });
+    }, [queryClient])
+  );
 
   // Fetch dashboard data with proper error handling and fallback
   const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
