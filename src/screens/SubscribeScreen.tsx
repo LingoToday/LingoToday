@@ -34,59 +34,21 @@ export default function SubscribeScreen() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
-  const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
-  const [selectedInterval, setSelectedInterval] = useState<PlanInterval>('annual');
+  const [processingStage, setProcessingStage] = useState<'idle' | 'loading' | 'payment' | 'activating'>('idle');
+  const [selectedInterval, setSelectedInterval] = useState<PlanInterval | null>(null);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  // Fetch RevenueCat offerings - wait for authenticated user
-  const { data: packages, isLoading: packagesLoading, error: packagesError } = useQuery<PurchasesPackage[]>({
-    queryKey: ['revenuecat-offerings', user?.id],
-    queryFn: async () => {
-      if (!user?.id) {
-        throw new Error('User not authenticated');
-      }
-      await purchaseService.initialize(user.id);
-      const offerings = await purchaseService.getOfferings();
-      
-      if (!offerings || offerings.length === 0) {
-        throw new Error('No subscription packages available. Please try again later.');
-      }
-      
-      return offerings;
-    },
-    enabled: !!user?.id,
-    staleTime: 60000,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-  });
-
-  // Check if user is already a pro member - matching web exactly
+  // Check if user is already a pro member
   const { data: subscriptionStatus, isLoading: statusLoading } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/subscription-status'],
     queryFn: async () => {
       const response = await apiClient.getSubscriptionStatus();
       return (response as any).data || response;
     },
-    staleTime: 30000, // 30 seconds
-  });
-
-  // Create subscription mutation - matching web exactly
-  const createSubscriptionMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.createSubscription();
-      return (response as any).data || response;
-    },
-    onError: (error) => {
-      Alert.alert(
-        'Subscription Error',
-        'Failed to create subscription. Please try again.',
-        [{ text: 'OK' }]
-      );
-    },
+    staleTime: 30000,
   });
 
   // Poll subscription status until webhook upgrades account
@@ -116,18 +78,50 @@ export default function SubscribeScreen() {
     return false; // Timeout - webhook didn't arrive in time
   };
 
-  const handleSubscribe = async (packageToPurchase: PurchasesPackage) => {
-    if (!packageToPurchase) {
-      Alert.alert('Error', 'Please select a subscription plan.');
+  const handleSelectPlan = async (interval: PlanInterval) => {
+    if (!user?.id) {
+      Alert.alert('Error', 'Please log in to subscribe.');
       return;
     }
 
+    setSelectedInterval(interval);
     setIsProcessing(true);
-    setProcessingStage('payment');
+    setProcessingStage('loading');
 
     try {
-      // Purchase via RevenueCat IAP
-      const result = await purchaseService.purchasePackage(packageToPurchase);
+      // Initialize RevenueCat and fetch offerings
+      await purchaseService.initialize(user.id);
+      const packages = await purchaseService.getOfferings();
+      
+      if (!packages || packages.length === 0) {
+        Alert.alert('Error', 'No subscription packages available. Please try again later.');
+        setIsProcessing(false);
+        setProcessingStage('idle');
+        setSelectedInterval(null);
+        return;
+      }
+
+      // Find the package that matches the selected interval
+      const selectedPackage = packages.find(pkg => {
+        const identifier = pkg.identifier.toLowerCase();
+        if (interval === 'monthly') {
+          return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
+        } else {
+          return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
+        }
+      });
+
+      if (!selectedPackage) {
+        Alert.alert('Error', `${interval === 'monthly' ? 'Monthly' : 'Annual'} plan not available. Please try the other option.`);
+        setIsProcessing(false);
+        setProcessingStage('idle');
+        setSelectedInterval(null);
+        return;
+      }
+
+      // Proceed with purchase
+      setProcessingStage('payment');
+      const result = await purchaseService.purchasePackage(selectedPackage);
       
       if (result.success) {
         setProcessingStage('activating');
@@ -164,56 +158,19 @@ export default function SubscribeScreen() {
           );
         }
       } else if (result.error === 'Purchase cancelled') {
-        // User cancelled - just reset state
         console.log('User cancelled purchase');
       } else {
         Alert.alert('Purchase Failed', result.error || 'Unable to complete purchase. Please try again.');
       }
-      
-      setIsProcessing(false);
-      setProcessingStage('idle');
     } catch (error: any) {
       console.error('Purchase error:', error);
-      Alert.alert('Error', 'Failed to process subscription. Please try again.');
+      Alert.alert('Error', error.message || 'Failed to process subscription. Please try again.');
+    } finally {
       setIsProcessing(false);
       setProcessingStage('idle');
+      setSelectedInterval(null);
     }
   };
-
-  // Auto-select package based on selected interval
-  useEffect(() => {
-    if (packages && packages.length > 0) {
-      const monthlyPkg = packages.find(pkg => {
-        const identifier = pkg.identifier.toLowerCase();
-        return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
-      });
-      
-      const annualPkg = packages.find(pkg => {
-        const identifier = pkg.identifier.toLowerCase();
-        return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
-      });
-      
-      if (selectedInterval === 'monthly') {
-        if (monthlyPkg) {
-          setSelectedPackage(monthlyPkg);
-        } else if (annualPkg) {
-          setSelectedPackage(annualPkg);
-          setSelectedInterval('annual');
-        } else {
-          setSelectedPackage(packages[0]);
-        }
-      } else if (selectedInterval === 'annual') {
-        if (annualPkg) {
-          setSelectedPackage(annualPkg);
-        } else if (monthlyPkg) {
-          setSelectedPackage(monthlyPkg);
-          setSelectedInterval('monthly');
-        } else {
-          setSelectedPackage(packages[0]);
-        }
-      }
-    }
-  }, [packages, selectedInterval]);
 
   // Redirect if already pro
   useEffect(() => {
@@ -240,111 +197,16 @@ export default function SubscribeScreen() {
     'No ads',
   ];
 
-  if (statusLoading || packagesLoading) {
+  if (statusLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Loading subscription options...</Text>
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </SafeAreaView>
     );
   }
-
-  if (packagesError) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={48} color="#ef4444" />
-          <Text style={styles.errorTitle}>Unable to Load Subscriptions</Text>
-          <Text style={styles.errorMessage}>
-            {packagesError instanceof Error 
-              ? packagesError.message 
-              : 'Failed to load subscription packages. Please check your connection and try again.'}
-          </Text>
-          <Button
-            style={styles.retryButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.retryButtonText}>Go Back</Text>
-          </Button>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (!packages || packages.length === 0) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Ionicons name="information-circle" size={48} color="#f59e0b" />
-          <Text style={styles.errorTitle}>No Subscriptions Available</Text>
-          <Text style={styles.errorMessage}>
-            Subscription packages are not currently available. Please try again later.
-          </Text>
-          <Button
-            style={styles.retryButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.retryButtonText}>Go Back</Text>
-          </Button>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  // Helper function to check what packages are available
-  const getAvailablePackages = () => {
-    if (!packages || packages.length === 0) return { monthly: null, annual: null };
-    
-    const monthlyPkg = packages.find(pkg => {
-      const identifier = pkg.identifier.toLowerCase();
-      return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
-    });
-    
-    const annualPkg = packages.find(pkg => {
-      const identifier = pkg.identifier.toLowerCase();
-      return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
-    });
-    
-    return { monthly: monthlyPkg || null, annual: annualPkg || null };
-  };
-
-  // Helper function to get package display name
-  const getPackageName = (pkg: PurchasesPackage): string => {
-    const identifier = pkg.identifier.toLowerCase();
-    if (identifier.includes('annual') || identifier.includes('year')) {
-      return 'Annual';
-    }
-    if (identifier.includes('monthly') || identifier.includes('month')) {
-      return 'Monthly';
-    }
-    return pkg.product.title;
-  };
-
-  // Helper function to get savings text
-  const getSavingsText = (pkg: PurchasesPackage): string | null => {
-    const identifier = pkg.identifier.toLowerCase();
-    if (identifier.includes('annual') || identifier.includes('year')) {
-      return 'Save 20%';
-    }
-    return null;
-  };
-
-  // Get actual interval from selected package
-  const getActualInterval = (): PlanInterval => {
-    if (!selectedPackage) return selectedInterval;
-    
-    const identifier = selectedPackage.identifier.toLowerCase();
-    if (identifier.includes('annual') || identifier.includes('year') || selectedPackage.packageType === 'ANNUAL') {
-      return 'annual';
-    }
-    if (identifier.includes('monthly') || identifier.includes('month') || selectedPackage.packageType === 'MONTHLY') {
-      return 'monthly';
-    }
-    
-    return selectedInterval;
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -377,80 +239,47 @@ export default function SubscribeScreen() {
               ))}
             </View>
 
-            {/* Monthly/Annual Toggle */}
-            {packages && packages.length > 0 && (() => {
-              const availablePackages = getAvailablePackages();
-              const actualInterval = getActualInterval();
-              
-              return (
-                <View style={styles.toggleContainer}>
-                  <TouchableOpacity
-                    style={[
-                      styles.toggleButton,
-                      styles.toggleButtonLeft,
-                      actualInterval === 'monthly' && styles.toggleButtonActive,
-                      !availablePackages.monthly && styles.toggleButtonDisabled
-                    ]}
-                    onPress={() => setSelectedInterval('monthly')}
-                    disabled={isProcessing || !availablePackages.monthly}
-                  >
-                    <Text style={[
-                      styles.toggleButtonText,
-                      actualInterval === 'monthly' && styles.toggleButtonTextActive,
-                      !availablePackages.monthly && styles.toggleButtonTextDisabled
-                    ]}>
-                      Monthly
-                    </Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    style={[
-                      styles.toggleButton,
-                      styles.toggleButtonRight,
-                      actualInterval === 'annual' && styles.toggleButtonActive,
-                      !availablePackages.annual && styles.toggleButtonDisabled
-                    ]}
-                    onPress={() => setSelectedInterval('annual')}
-                    disabled={isProcessing || !availablePackages.annual}
-                  >
-                    <Text style={[
-                      styles.toggleButtonText,
-                      actualInterval === 'annual' && styles.toggleButtonTextActive,
-                      !availablePackages.annual && styles.toggleButtonTextDisabled
-                    ]}>
-                      Annual
-                    </Text>
-                    {availablePackages.annual && getSavingsText(availablePackages.annual) && (
-                      <View style={styles.savingsBadgeSmall}>
-                        <Text style={styles.savingsTextSmall}>Save 20%</Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                </View>
-              );
-            })()}
-
-            {/* Subscribe Button */}
-            <Button
-              style={[styles.subscribeButton, (isProcessing || !selectedPackage) && styles.subscribeButtonDisabled]}
-              onPress={() => selectedPackage && handleSubscribe(selectedPackage)}
-              disabled={isProcessing || !selectedPackage}
-            >
-              {isProcessing ? (
+            {/* Plan Selection Buttons */}
+            {isProcessing ? (
+              <Button
+                style={[styles.subscribeButton, styles.subscribeButtonDisabled]}
+                disabled={true}
+              >
                 <View style={styles.processingContent}>
                   <ActivityIndicator size="small" color="#ffffff" />
                   <Text style={styles.subscribeButtonText}>
-                    {processingStage === 'payment' ? 'Processing Payment...' : 'Activating Subscription...'}
+                    {processingStage === 'loading' && 'Loading...'}
+                    {processingStage === 'payment' && 'Processing Payment...'}
+                    {processingStage === 'activating' && 'Activating Subscription...'}
                   </Text>
                 </View>
-              ) : (
-                <Text style={styles.subscribeButtonText}>
-                  {selectedPackage 
-                    ? `Start 7-Day Free Trial - ${selectedPackage.product.priceString}/${getActualInterval() === 'annual' ? 'year' : 'month'}`
-                    : 'Loading...'}
-                </Text>
-              )}
-            </Button>
+              </Button>
+            ) : (
+              <>
+                <Button
+                  style={styles.subscribeButton}
+                  onPress={() => handleSelectPlan('monthly')}
+                >
+                  <Text style={styles.subscribeButtonText}>
+                    Select Monthly Plan
+                  </Text>
+                </Button>
+
+                <Button
+                  style={[styles.subscribeButton, styles.annualButton]}
+                  onPress={() => handleSelectPlan('annual')}
+                >
+                  <View style={styles.annualButtonContent}>
+                    <Text style={styles.subscribeButtonText}>
+                      Select Annual Plan
+                    </Text>
+                    <View style={styles.savingsBadge}>
+                      <Text style={styles.savingsText}>Save 20%</Text>
+                    </View>
+                  </View>
+                </Button>
+              </>
+            )}
 
             {/* Back Button - matching web */}
             <Button
@@ -711,6 +540,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing.sm,
+  },
+  annualButton: {
+    position: 'relative',
+  },
+  annualButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing.sm,
+  },
+  savingsBadge: {
+    backgroundColor: '#10b981',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: theme.borderRadius.sm,
+  },
+  savingsText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   backToAppButton: {
     backgroundColor: 'transparent',
