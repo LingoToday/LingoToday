@@ -27,6 +27,8 @@ interface SubscriptionStatus {
   status: string;
 }
 
+type PlanInterval = 'monthly' | 'annual';
+
 export default function SubscribeScreen() {
   const navigation = useNavigation();
   const { user } = useAuth();
@@ -34,23 +36,32 @@ export default function SubscribeScreen() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
   const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState<PlanInterval>('annual');
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   // Fetch RevenueCat offerings - wait for authenticated user
-  const { data: packages, isLoading: packagesLoading } = useQuery<PurchasesPackage[]>({
+  const { data: packages, isLoading: packagesLoading, error: packagesError } = useQuery<PurchasesPackage[]>({
     queryKey: ['revenuecat-offerings', user?.id],
     queryFn: async () => {
       if (!user?.id) {
         throw new Error('User not authenticated');
       }
       await purchaseService.initialize(user.id);
-      return await purchaseService.getOfferings();
+      const offerings = await purchaseService.getOfferings();
+      
+      if (!offerings || offerings.length === 0) {
+        throw new Error('No subscription packages available. Please try again later.');
+      }
+      
+      return offerings;
     },
-    enabled: !!user?.id, // Only fetch when user is available
-    staleTime: 60000, // 1 minute
+    enabled: !!user?.id,
+    staleTime: 60000,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   // Check if user is already a pro member - matching web exactly
@@ -169,12 +180,40 @@ export default function SubscribeScreen() {
     }
   };
 
-  // Auto-select first package when offerings load
+  // Auto-select package based on selected interval
   useEffect(() => {
-    if (packages && packages.length > 0 && !selectedPackage) {
-      setSelectedPackage(packages[0]);
+    if (packages && packages.length > 0) {
+      const monthlyPkg = packages.find(pkg => {
+        const identifier = pkg.identifier.toLowerCase();
+        return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
+      });
+      
+      const annualPkg = packages.find(pkg => {
+        const identifier = pkg.identifier.toLowerCase();
+        return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
+      });
+      
+      if (selectedInterval === 'monthly') {
+        if (monthlyPkg) {
+          setSelectedPackage(monthlyPkg);
+        } else if (annualPkg) {
+          setSelectedPackage(annualPkg);
+          setSelectedInterval('annual');
+        } else {
+          setSelectedPackage(packages[0]);
+        }
+      } else if (selectedInterval === 'annual') {
+        if (annualPkg) {
+          setSelectedPackage(annualPkg);
+        } else if (monthlyPkg) {
+          setSelectedPackage(monthlyPkg);
+          setSelectedInterval('monthly');
+        } else {
+          setSelectedPackage(packages[0]);
+        }
+      }
     }
-  }, [packages, selectedPackage]);
+  }, [packages, selectedInterval]);
 
   // Redirect if already pro
   useEffect(() => {
@@ -212,6 +251,65 @@ export default function SubscribeScreen() {
     );
   }
 
+  if (packagesError) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle" size={48} color="#ef4444" />
+          <Text style={styles.errorTitle}>Unable to Load Subscriptions</Text>
+          <Text style={styles.errorMessage}>
+            {packagesError instanceof Error 
+              ? packagesError.message 
+              : 'Failed to load subscription packages. Please check your connection and try again.'}
+          </Text>
+          <Button
+            style={styles.retryButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.retryButtonText}>Go Back</Text>
+          </Button>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!packages || packages.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="information-circle" size={48} color="#f59e0b" />
+          <Text style={styles.errorTitle}>No Subscriptions Available</Text>
+          <Text style={styles.errorMessage}>
+            Subscription packages are not currently available. Please try again later.
+          </Text>
+          <Button
+            style={styles.retryButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.retryButtonText}>Go Back</Text>
+          </Button>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Helper function to check what packages are available
+  const getAvailablePackages = () => {
+    if (!packages || packages.length === 0) return { monthly: null, annual: null };
+    
+    const monthlyPkg = packages.find(pkg => {
+      const identifier = pkg.identifier.toLowerCase();
+      return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
+    });
+    
+    const annualPkg = packages.find(pkg => {
+      const identifier = pkg.identifier.toLowerCase();
+      return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
+    });
+    
+    return { monthly: monthlyPkg || null, annual: annualPkg || null };
+  };
+
   // Helper function to get package display name
   const getPackageName = (pkg: PurchasesPackage): string => {
     const identifier = pkg.identifier.toLowerCase();
@@ -233,6 +331,21 @@ export default function SubscribeScreen() {
     return null;
   };
 
+  // Get actual interval from selected package
+  const getActualInterval = (): PlanInterval => {
+    if (!selectedPackage) return selectedInterval;
+    
+    const identifier = selectedPackage.identifier.toLowerCase();
+    if (identifier.includes('annual') || identifier.includes('year') || selectedPackage.packageType === 'ANNUAL') {
+      return 'annual';
+    }
+    if (identifier.includes('monthly') || identifier.includes('month') || selectedPackage.packageType === 'MONTHLY') {
+      return 'monthly';
+    }
+    
+    return selectedInterval;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -250,60 +363,6 @@ export default function SubscribeScreen() {
           </View>
         </View>
 
-        {/* Subscription Plans */}
-        {packages && packages.length > 0 && (
-          <View style={styles.plansContainer}>
-            <Text style={styles.plansTitle}>Choose Your Plan</Text>
-            <View style={styles.plansGrid}>
-              {packages.map((pkg) => {
-                const isSelected = selectedPackage?.identifier === pkg.identifier;
-                const savingsText = getSavingsText(pkg);
-                
-                return (
-                  <TouchableOpacity
-                    key={pkg.identifier}
-                    style={[
-                      styles.planCard,
-                      isSelected && styles.planCardSelected
-                    ]}
-                    onPress={() => setSelectedPackage(pkg)}
-                    disabled={isProcessing}
-                  >
-                    {savingsText && (
-                      <View style={styles.savingsBadge}>
-                        <Text style={styles.savingsText}>{savingsText}</Text>
-                      </View>
-                    )}
-                    
-                    <Text style={[
-                      styles.planName,
-                      isSelected && styles.planNameSelected
-                    ]}>
-                      {getPackageName(pkg)}
-                    </Text>
-                    
-                    <Text style={[
-                      styles.planPrice,
-                      isSelected && styles.planPriceSelected
-                    ]}>
-                      {pkg.product.priceString}
-                    </Text>
-                    
-                    <Text style={styles.planPeriod}>
-                      {pkg.packageType === 'ANNUAL' ? 'per year' : 'per month'}
-                    </Text>
-                    
-                    {isSelected && (
-                      <View style={styles.selectedIndicator}>
-                        <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-        )}
 
         {/* Pricing Card - matching web exactly */}
         <Card style={styles.pricingCard}>
@@ -318,17 +377,58 @@ export default function SubscribeScreen() {
               ))}
             </View>
 
-            {/* Pricing Display */}
-            {selectedPackage && (
-              <View style={styles.pricingDisplay}>
-                <Text style={styles.priceAmount}>
-                  {selectedPackage.product.priceString}
-                </Text>
-                <Text style={styles.pricePeriod}>
-                  {selectedPackage.packageType === 'ANNUAL' ? 'per year' : 'per month'}
-                </Text>
-              </View>
-            )}
+            {/* Monthly/Annual Toggle */}
+            {packages && packages.length > 0 && (() => {
+              const availablePackages = getAvailablePackages();
+              const actualInterval = getActualInterval();
+              
+              return (
+                <View style={styles.toggleContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.toggleButton,
+                      styles.toggleButtonLeft,
+                      actualInterval === 'monthly' && styles.toggleButtonActive,
+                      !availablePackages.monthly && styles.toggleButtonDisabled
+                    ]}
+                    onPress={() => setSelectedInterval('monthly')}
+                    disabled={isProcessing || !availablePackages.monthly}
+                  >
+                    <Text style={[
+                      styles.toggleButtonText,
+                      actualInterval === 'monthly' && styles.toggleButtonTextActive,
+                      !availablePackages.monthly && styles.toggleButtonTextDisabled
+                    ]}>
+                      Monthly
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={[
+                      styles.toggleButton,
+                      styles.toggleButtonRight,
+                      actualInterval === 'annual' && styles.toggleButtonActive,
+                      !availablePackages.annual && styles.toggleButtonDisabled
+                    ]}
+                    onPress={() => setSelectedInterval('annual')}
+                    disabled={isProcessing || !availablePackages.annual}
+                  >
+                    <Text style={[
+                      styles.toggleButtonText,
+                      actualInterval === 'annual' && styles.toggleButtonTextActive,
+                      !availablePackages.annual && styles.toggleButtonTextDisabled
+                    ]}>
+                      Annual
+                    </Text>
+                    {availablePackages.annual && getSavingsText(availablePackages.annual) && (
+                      <View style={styles.savingsBadgeSmall}>
+                        <Text style={styles.savingsTextSmall}>Save 20%</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              );
+            })()}
 
             {/* Subscribe Button */}
             <Button
@@ -346,7 +446,7 @@ export default function SubscribeScreen() {
               ) : (
                 <Text style={styles.subscribeButtonText}>
                   {selectedPackage 
-                    ? `Subscribe for ${selectedPackage.product.priceString}`
+                    ? `Start 7-Day Free Trial - ${selectedPackage.product.priceString}/${getActualInterval() === 'annual' ? 'year' : 'month'}`
                     : 'Loading...'}
                 </Text>
               )}
@@ -440,6 +540,38 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
   },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing.xl,
+    gap: theme.spacing.md,
+  },
+  errorTitle: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700',
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginTop: theme.spacing.md,
+  },
+  errorMessage: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  retryButton: {
+    backgroundColor: '#1d4ed8',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.borderRadius.lg,
+    marginTop: theme.spacing.lg,
+  },
+  retryButtonText: {
+    color: '#ffffff',
+    fontSize: theme.fontSize.base,
+    fontWeight: '600',
+  },
 
   // Header
   header: {
@@ -471,83 +603,6 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
 
-  // Plans
-  plansContainer: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.xl,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
-  },
-  plansTitle: {
-    fontSize: theme.fontSize.lg,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-    marginBottom: theme.spacing.lg,
-    textAlign: 'center',
-  },
-  plansGrid: {
-    flexDirection: 'row',
-    gap: theme.spacing.md,
-    justifyContent: 'center',
-  },
-  planCard: {
-    flex: 1,
-    maxWidth: 160,
-    backgroundColor: '#f8fafc',
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.lg,
-    borderWidth: 2,
-    borderColor: '#e5e7eb',
-    position: 'relative',
-    alignItems: 'center',
-  },
-  planCardSelected: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
-  },
-  savingsBadge: {
-    position: 'absolute',
-    top: -10,
-    right: -5,
-    backgroundColor: '#10b981',
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: 4,
-    borderRadius: theme.borderRadius.md,
-  },
-  savingsText: {
-    color: '#ffffff',
-    fontSize: theme.fontSize.xs,
-    fontWeight: '600',
-  },
-  planName: {
-    fontSize: theme.fontSize.lg,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-    marginBottom: theme.spacing.xs,
-  },
-  planNameSelected: {
-    color: '#1d4ed8',
-  },
-  planPrice: {
-    fontSize: theme.fontSize['2xl'],
-    fontWeight: '700',
-    color: theme.colors.foreground,
-    marginBottom: 4,
-  },
-  planPriceSelected: {
-    color: '#1d4ed8',
-  },
-  planPeriod: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.mutedForeground,
-  },
-  selectedIndicator: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-  },
-
   // Pricing Card
   pricingCard: {
     marginHorizontal: theme.spacing.lg,
@@ -574,22 +629,65 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
 
-  // Pricing Display
-  pricingDisplay: {
-    alignItems: 'center',
-    paddingVertical: theme.spacing.xl,
-    backgroundColor: '#f8fafc',
+  // Toggle
+  toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#f1f5f9',
     borderRadius: theme.borderRadius.lg,
+    padding: 4,
     marginBottom: theme.spacing.xl,
   },
-  priceAmount: {
-    fontSize: theme.fontSize['3xl'],
-    fontWeight: '700',
-    color: theme.colors.foreground,
+  toggleButton: {
+    flex: 1,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
   },
-  pricePeriod: {
-    fontSize: theme.fontSize.sm,
+  toggleButtonLeft: {
+    borderTopLeftRadius: theme.borderRadius.md,
+    borderBottomLeftRadius: theme.borderRadius.md,
+  },
+  toggleButtonRight: {
+    borderTopRightRadius: theme.borderRadius.md,
+    borderBottomRightRadius: theme.borderRadius.md,
+  },
+  toggleButtonActive: {
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  toggleButtonText: {
+    fontSize: theme.fontSize.base,
+    fontWeight: '600',
     color: theme.colors.mutedForeground,
+  },
+  toggleButtonTextActive: {
+    color: '#1d4ed8',
+  },
+  toggleButtonDisabled: {
+    opacity: 0.4,
+  },
+  toggleButtonTextDisabled: {
+    color: '#94a3b8',
+  },
+  savingsBadgeSmall: {
+    position: 'absolute',
+    top: -8,
+    right: 4,
+    backgroundColor: '#10b981',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: theme.borderRadius.sm,
+  },
+  savingsTextSmall: {
+    color: '#ffffff',
+    fontSize: 10,
+    fontWeight: '600',
   },
 
   // Buttons
