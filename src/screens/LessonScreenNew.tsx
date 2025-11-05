@@ -1192,10 +1192,10 @@ export default function LessonScreen() {
                 <Video
                   style={styles.video}
                   source={
-                    courseId === 'course1' ? require('../attached_assets/Avatar IV Video (22)_1762365232232.mov') :
+                    courseId === 'course1' ? require('../attached_assets/Italian_beginner_course1_intro_1762365232232.MOV') :
                     courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
                     courseId === 'course3' ? require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV') :
-                    require('../attached_assets/Avatar IV Video (22)_1762365232232.mov')
+                    require('../attached_assets/Italian_beginner_course1_intro_1762365232232.MOV')
                   }
                   useNativeControls
                   resizeMode={ResizeMode.CONTAIN}
