@@ -239,6 +239,25 @@ export default function SubscribeScreen() {
               ))}
             </View>
 
+            {/* Pricing Section */}
+            {!isProcessing && (
+              <View style={styles.pricingSection}>
+                <View style={styles.priceItem}>
+                  <Text style={styles.priceAmount}>£2.99</Text>
+                  <Text style={styles.priceInterval}>per month</Text>
+                </View>
+                <View style={styles.priceItem}>
+                  <View style={styles.priceWithBadge}>
+                    <Text style={styles.priceAmount}>£28.99</Text>
+                    <View style={styles.discountBadge}>
+                      <Text style={styles.discountText}>20% off</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.priceInterval}>per year</Text>
+                </View>
+              </View>
+            )}
+
             {/* Plan Selection Buttons */}
             {isProcessing ? (
               <Button
@@ -456,6 +475,44 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
+  },
+
+  // Pricing
+  pricingSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: theme.spacing.xl,
+    paddingHorizontal: theme.spacing.md,
+  },
+  priceItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  priceWithBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+  },
+  priceAmount: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: theme.colors.foreground,
+  },
+  priceInterval: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    marginTop: theme.spacing.xs,
+  },
+  discountBadge: {
+    backgroundColor: '#10b981',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: theme.borderRadius.sm,
+  },
+  discountText: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: '600',
   },
 
   // Toggle
