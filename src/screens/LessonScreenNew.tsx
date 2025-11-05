@@ -29,6 +29,7 @@ import { Progress } from '../components/ui/Progress';
 import { Badge } from '../components/ui/Badge';
 import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
+import { purchaseService } from '../services/purchaseService';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const isTablet = screenWidth >= 768;
@@ -129,6 +130,10 @@ export default function LessonScreen() {
   const [showVideoControls, setShowVideoControls] = useState(true);
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
+  
+  // Purchase flow states
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
 
   // Check if user came from notification
   useEffect(() => {
@@ -1091,6 +1096,56 @@ export default function LessonScreen() {
     }
   };
 
+  // Handle upgrade button press - trigger RevenueCat purchase flow
+  const handleUpgrade = async () => {
+    setIsPurchasing(true);
+    setPurchaseError(null);
+
+    try {
+      // Initialize RevenueCat if needed
+      await purchaseService.initialize(user?.id);
+
+      // Fetch available offerings
+      const packages = await purchaseService.getOfferings();
+      
+      if (packages.length === 0) {
+        throw new Error('No subscription packages available');
+      }
+
+      // Get the first package (typically monthly subscription)
+      const packageToPurchase = packages[0];
+
+      // Trigger the purchase
+      const result = await purchaseService.purchasePackage(packageToPurchase);
+
+      if (result.success) {
+        // Purchase successful - refresh user data to update subscription status
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] })
+        ]);
+        
+        Alert.alert(
+          'Success!',
+          'You now have access to all Pro Learner video lessons!',
+          [{ text: 'OK' }]
+        );
+      } else if (result.error !== 'Purchase cancelled') {
+        throw new Error(result.error || 'Purchase failed');
+      }
+    } catch (error: any) {
+      console.error('❌ Purchase error:', error);
+      setPurchaseError(error.message || 'Something went wrong');
+      Alert.alert(
+        'Purchase Failed',
+        error.message || 'Unable to complete purchase. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
   // Loading state
   if (lessonLoading || (!currentLesson && !lessonError)) {
     return (
@@ -1288,11 +1343,9 @@ export default function LessonScreen() {
                           <Text style={styles.upgradeOverlaySubtitle}>to accelerate your learning!</Text>
                           <Text style={styles.upgradePrice}>£2.99/month</Text>
                           <Button
-                            title="Upgrade & Unlock All Videos"
-                            onPress={() => {
-                              // TODO: Navigate to subscription screen
-                              console.log('Navigate to subscription');
-                            }}
+                            title={isPurchasing ? "Processing..." : "Upgrade & Unlock All Videos"}
+                            onPress={handleUpgrade}
+                            disabled={isPurchasing}
                             style={styles.upgradeButton}
                           />
                           <TouchableOpacity
