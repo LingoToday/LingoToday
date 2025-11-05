@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Platform,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,9 +29,6 @@ import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
 import { scheduleLanguageLearningReminders, stopLanguageLearningReminders } from '../lib/notifications';
-
-const { width } = Dimensions.get('window');
-const isTablet = width >= 768;
 
 // Type definitions - matching web exactly
 interface User {
@@ -134,6 +131,8 @@ export const getLanguageSpecificNotification = (languageCode: string) => {
 }
 
 export default function DashboardScreenNew() {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const { user, logout } = useAuth();
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
@@ -449,6 +448,8 @@ useEffect(() => {
   const handleNavigateToCourses = () => {
     navigation.navigate('Courses');
   };
+
+  const styles = useMemo(() => createStyles(isTablet), [isTablet]);
 
   if (!user) {
     return (
@@ -847,7 +848,7 @@ useEffect(() => {
 }
 
 // ADDED: New styles for the additional components
-const styles = StyleSheet.create({
+const createStyles = (isTablet: boolean) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',
@@ -953,8 +954,9 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   leftColumn: {
-    flex: 3,
+    flex: 2,
     gap: 24,
+    maxWidth: isTablet ? '60%' : '100%',
   },
   mobileColumn: {
     flex: 1,
@@ -963,6 +965,7 @@ const styles = StyleSheet.create({
   rightSidebar: {
     flex: 1,
     gap: 24,
+    minWidth: isTablet ? 320 : 0,
   },
   mobileSidebar: {
     flex: 1,

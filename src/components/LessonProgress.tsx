@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -27,6 +28,8 @@ interface CategoryProgress {
 }
 
 export default function LessonProgress({ completedLessonIds }: LessonProgressProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -129,6 +132,8 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
     getProgressFromAPI();
   }, [completedLessonIds]);
 
+  const styles = useMemo(() => createStyles(isTablet), [isTablet]);
+
   if (isLoading) {
     return (
       <Card style={styles.card}>
@@ -212,7 +217,7 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isTablet: boolean) => StyleSheet.create({
   // Card
   card: {
     backgroundColor: '#ffffff',
@@ -239,10 +244,10 @@ const styles = StyleSheet.create({
 
   // Content
   cardContent: {
-    padding: theme.spacing.lg,
+    padding: isTablet ? theme.spacing.xl : theme.spacing.lg,
   },
   cardTitle: {
-    fontSize: theme.fontSize.lg,
+    fontSize: isTablet ? 20 : theme.fontSize.lg,
     fontWeight: '700',
     color: '#111827', // text-gray-900
     marginBottom: theme.spacing.lg,
@@ -250,22 +255,22 @@ const styles = StyleSheet.create({
 
   // Progress List
   progressList: {
-    gap: theme.spacing.sm,
+    gap: isTablet ? theme.spacing.md : theme.spacing.sm,
   },
   progressItem: {
-    marginBottom: theme.spacing.sm,
+    marginBottom: isTablet ? theme.spacing.md : theme.spacing.sm,
   },
   progressHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing.sm,
+    gap: isTablet ? theme.spacing.md : theme.spacing.sm,
   },
 
   // Progress Icon
   progressIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: isTablet ? 40 : 32,
+    height: isTablet ? 40 : 32,
+    borderRadius: isTablet ? 20 : 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -279,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f4f6', // gray-100
   },
   progressEmoji: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? 18 : theme.fontSize.sm,
   },
 
   // Progress Details
@@ -294,19 +299,22 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xs,
   },
   progressName: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
     color: '#111827', // text-gray-900
     flex: 1,
+    flexWrap: 'wrap',
   },
   progressNameLocked: {
     color: '#9ca3af', // text-gray-400
   },
   progressCount: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
     color: '#6b7280', // text-gray-500
     marginLeft: theme.spacing.sm,
+    minWidth: isTablet ? 45 : 40,
+    textAlign: 'right',
   },
   progressCountCompleted: {
     color: '#10b981', // text-green-600
@@ -317,13 +325,13 @@ const styles = StyleSheet.create({
 
   // Progress Bar
   progressBar: {
-    height: 8,
+    height: isTablet ? 10 : 8,
   },
 
   // Course Summary
   courseSummary: {
     marginTop: theme.spacing.lg,
-    padding: theme.spacing.md,
+    padding: isTablet ? theme.spacing.lg : theme.spacing.md,
     backgroundColor: '#dbeafe', // bg-blue-50
     borderRadius: theme.borderRadius.lg,
   },
@@ -331,12 +339,12 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xs,
   },
   courseSummaryTitle: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
     color: '#1e40af', // text-blue-800
   },
   courseSummarySubtitle: {
-    fontSize: theme.fontSize.sm,
+    fontSize: isTablet ? 14 : theme.fontSize.sm,
     color: '#2563eb', // text-blue-600
   },
 });

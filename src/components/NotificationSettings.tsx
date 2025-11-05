@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Linking,
   TouchableOpacity,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -54,6 +55,8 @@ function hourOptions(): { label: string; value: string }[] {
 }
 
 export default function NotificationSettings() {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const queryClient = useQueryClient();
   const [isTesting, setIsTesting] = useState(false);
   const [devicePermissionStatus, setDevicePermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
@@ -264,6 +267,8 @@ export default function NotificationSettings() {
   ];
   const timeOptions = hourOptions();
 
+  const styles = useMemo(() => createStyles(isTablet), [isTablet]);
+
   if (isLoading || !settings) {
     return (
       <Card style={styles.card}>
@@ -413,7 +418,7 @@ export default function NotificationSettings() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isTablet: boolean) => StyleSheet.create({
   // Card styles
   card: {
     backgroundColor: '#FFFFFF',
@@ -438,13 +443,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  titleText: { fontSize: 18, fontWeight: '600', color: '#111827' },
+  titleText: { fontSize: isTablet ? 20 : 18, fontWeight: '600', color: '#111827' },
 
   // Content
-  cardContent: { gap: 20 },
+  cardContent: { gap: isTablet ? 24 : 20, padding: isTablet ? 24 : 16 },
 
   // Loading
-  loadingContent: { padding: 24 },
+  loadingContent: { padding: isTablet ? 28 : 24 },
   loadingContainer: { gap: 16 },
   loadingSkeleton: {
     height: 40,
@@ -454,35 +459,35 @@ const styles = StyleSheet.create({
   },
 
   // Sections
-  sectionBlock: { gap: 12 },
+  sectionBlock: { gap: isTablet ? 16 : 12 },
   sectionDivider: { paddingTop: 12, borderTopWidth: 1, borderTopColor: '#E5E7EB' },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: '#111827' },
+  sectionTitle: { fontSize: isTablet ? 17 : 16, fontWeight: '600', color: '#111827' },
 
   // Generic settings
-  settingSection: { gap: 8 },
-  sectionLabel: { fontSize: 14, fontWeight: '500', color: '#374151' },
+  settingSection: { gap: isTablet ? 10 : 8 },
+  sectionLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: '#374151' },
   selectWrapper: { flex: 1 },
   select: {
     backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#D1D5DB',
     borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
+    paddingHorizontal: isTablet ? 14 : 12,
+    paddingVertical: isTablet ? 12 : 10,
+    fontSize: isTablet ? 15 : 14,
   },
 
   // Days row
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8,
+    gap: isTablet ? 10 : 8,
   },
   dayCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: isTablet ? 44 : 40,
+    height: isTablet ? 44 : 40,
+    borderRadius: isTablet ? 22 : 20,
     backgroundColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
@@ -490,7 +495,7 @@ const styles = StyleSheet.create({
   dayCircleSelected: {
     backgroundColor: '#2563EB',
   },
-  dayCircleText: { color: '#4B5563', fontWeight: '600' },
+  dayCircleText: { color: '#4B5563', fontWeight: '600', fontSize: isTablet ? 15 : 14 },
   dayCircleTextSelected: { color: '#FFFFFF' },
 
   // Rows
@@ -498,10 +503,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingVertical: isTablet ? 4 : 0,
   },
-  rowLabel: { fontSize: 14, fontWeight: '500', color: '#374151' },
+  rowLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: '#374151' },
 
-  timeRow: { flexDirection: 'row', alignItems: 'center' },
+  timeRow: { flexDirection: 'row', alignItems: 'center', gap: isTablet ? 16 : 12 },
 
   // Banner
   banner: {
@@ -509,9 +515,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FDE68A',
     borderRadius: 8,
-    padding: 12,
+    padding: isTablet ? 16 : 12,
+    gap: isTablet ? 12 : 8,
   },
-  bannerText: { fontSize: 12, color: '#92400E', flex: 1 },
+  bannerText: { fontSize: isTablet ? 13 : 12, color: '#92400E', flex: 1 },
 
   // layout for banner: text left, inline action right (web-like)
   bannerRow: {
@@ -523,17 +530,18 @@ const styles = StyleSheet.create({
 
   // inline Test Now touchable (keeps minimal chrome like web)
   testNowTouchable: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: isTablet ? 10 : 8,
+    paddingVertical: isTablet ? 6 : 4,
     borderRadius: 6,
   },
   testNowContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
   },
   testNowText: {
     color: '#92400E',
-    fontSize: 13,
+    fontSize: isTablet ? 14 : 13,
     fontWeight: '600',
   },
 
@@ -547,5 +555,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: isTablet ? 4 : 0,
   },
 });
