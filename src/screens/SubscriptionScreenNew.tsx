@@ -152,6 +152,47 @@ export default function SubscriptionScreenNew() {
     }
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert(
+              'Confirm Deletion',
+              'This will permanently delete your account and all associated data. Are you absolutely sure?',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Yes, Delete My Account',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      Alert.alert('Account Deletion', 'Account deletion feature will be implemented soon.');
+                    } catch (error) {
+                      console.error('Delete account error:', error);
+                      Alert.alert('Error', 'Failed to delete account. Please try again.');
+                    }
+                  },
+                },
+              ]
+            );
+          },
+        },
+      ]
+    );
+  };
+
   if (userLoading || subLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -312,6 +353,13 @@ export default function SubscriptionScreenNew() {
               </View>
             </Button>
 
+            {/* Delete Account Link */}
+            <View style={styles.deleteAccountContainer}>
+              <TouchableOpacity onPress={handleDeleteAccount} testID="delete-account-link">
+                <Text style={styles.deleteAccountLink}>Delete Account</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Terms and Privacy Policy Links */}
             <View style={styles.legalLinksContainer}>
               <TouchableOpacity onPress={handleOpenTerms} testID="terms-link">
@@ -383,6 +431,16 @@ const styles = StyleSheet.create({
 
   buttonContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '500' },
+
+  deleteAccountContainer: {
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  deleteAccountLink: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    textDecorationLine: 'underline',
+  },
 
   legalLinksContainer: { 
     flexDirection: 'row', 
