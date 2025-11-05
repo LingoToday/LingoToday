@@ -35,34 +35,36 @@ const getRevenueCatKey = (platform: 'ios' | 'android'): string => {
 
 class PurchaseService {
   private initialized = false;
+  private currentUserId: string | null = null;
 
   async initialize(userId?: string): Promise<void> {
-    if (this.initialized) {
-      return;
-    }
-
     try {
-      if (__DEV__) {
-        Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+      // If not initialized yet, configure the SDK
+      if (!this.initialized) {
+        if (__DEV__) {
+          Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+        }
+
+        const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+        const apiKey = getRevenueCatKey(platform);
+        
+        if (!apiKey) {
+          console.error('RevenueCat API key not found for platform:', Platform.OS);
+          const keyName = Platform.OS === 'ios' ? 'revenuecatIosKey' : 'revenuecatAndroidKey';
+          throw new Error(`RevenueCat API key not configured for ${Platform.OS}. Please add "${keyName}" to app.json extra section.`);
+        }
+
+        await Purchases.configure({ apiKey });
+        this.initialized = true;
+        console.log('✅ RevenueCat SDK configured for', Platform.OS);
       }
 
-      const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-      const apiKey = getRevenueCatKey(platform);
-      
-      if (!apiKey) {
-        console.error('RevenueCat API key not found for platform:', Platform.OS);
-        const keyName = Platform.OS === 'ios' ? 'revenuecatIosKey' : 'revenuecatAndroidKey';
-        throw new Error(`RevenueCat API key not configured for ${Platform.OS}. Please add "${keyName}" to app.json extra section.`);
-      }
-
-      await Purchases.configure({ apiKey });
-
-      if (userId) {
+      // Log in user if userId is provided and different from current
+      if (userId && userId !== this.currentUserId) {
         await Purchases.logIn(userId);
+        this.currentUserId = userId;
+        console.log('✅ User logged in to RevenueCat:', userId);
       }
-
-      this.initialized = true;
-      console.log('✅ RevenueCat initialized successfully for', Platform.OS);
     } catch (error) {
       console.error('❌ Error initializing RevenueCat:', error);
       throw error;
@@ -170,6 +172,7 @@ class PurchaseService {
   async logOut(): Promise<void> {
     try {
       await Purchases.logOut();
+      this.currentUserId = null;
       console.log('✅ User logged out from RevenueCat');
     } catch (error) {
       console.error('❌ Error logging out from RevenueCat:', error);

@@ -12,6 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { PurchasesPackage } from 'react-native-purchases';
 
 import { theme } from '../lib/theme';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
@@ -19,6 +20,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { apiClient } from '../lib/apiClient';
 import { useAuth } from '../hooks/useAuth';
+import { purchaseService } from '../services/purchaseService';
 
 interface SubscriptionStatus {
   isProUser: boolean;
@@ -31,11 +33,25 @@ export default function SubscribeScreen() {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStage, setProcessingStage] = useState<'idle' | 'payment' | 'activating'>('idle');
-  const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
+  const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  // Fetch RevenueCat offerings - wait for authenticated user
+  const { data: packages, isLoading: packagesLoading } = useQuery<PurchasesPackage[]>({
+    queryKey: ['revenuecat-offerings', user?.id],
+    queryFn: async () => {
+      if (!user?.id) {
+        throw new Error('User not authenticated');
+      }
+      await purchaseService.initialize(user.id);
+      return await purchaseService.getOfferings();
+    },
+    enabled: !!user?.id, // Only fetch when user is available
+    staleTime: 60000, // 1 minute
+  });
 
   // Check if user is already a pro member - matching web exactly
   const { data: subscriptionStatus, isLoading: statusLoading } = useQuery<SubscriptionStatus>({
@@ -62,7 +78,7 @@ export default function SubscribeScreen() {
     },
   });
 
-  // Poll subscription status until webhook upgrades account - matching web exactly
+  // Poll subscription status until webhook upgrades account
   const pollSubscriptionStatus = async (): Promise<boolean> => {
     let attempts = 0;
     const maxAttempts = 60; // 5 minutes max (5 seconds * 60)
@@ -89,84 +105,78 @@ export default function SubscribeScreen() {
     return false; // Timeout - webhook didn't arrive in time
   };
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (packageToPurchase: PurchasesPackage) => {
+    if (!packageToPurchase) {
+      Alert.alert('Error', 'Please select a subscription plan.');
+      return;
+    }
+
     setIsProcessing(true);
     setProcessingStage('payment');
 
     try {
-      // In a real app, this would integrate with Stripe or another payment processor
-      // For now, simulate the payment process
+      // Purchase via RevenueCat IAP
+      const result = await purchaseService.purchasePackage(packageToPurchase);
       
-      Alert.alert(
-        'Payment Required',
-        'This would process payment with Stripe. Integration needed for production.',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-            onPress: () => {
-              setIsProcessing(false);
-              setProcessingStage('idle');
-            }
-          },
-          {
-            text: 'Simulate Success',
-            onPress: async () => {
-              setProcessingStage('activating');
-              
-              // Simulate webhook processing
-              Alert.alert(
-                'Payment Successful',
-                'Activating your Pro subscription...',
-                [{ text: 'OK' }]
-              );
-
-              // Poll subscription status until webhook upgrades account
-              const webhookSuccess = await pollSubscriptionStatus();
-              
-              if (webhookSuccess) {
-                // Invalidate all queries that depend on user's pro status
-                await Promise.all([
-                  queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
-                  queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
-                  queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
-                  queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
-                  queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
-                ]);
-                
-                Alert.alert(
-                  'Welcome to Pro Learner!',
-                  'Your subscription is now active. You have access to all premium features.',
-                  [{ 
-                    text: 'OK', 
-                    onPress: () => navigation.navigate('MainTabs' as never) 
-                  }]
-                );
-              } else {
-                Alert.alert(
-                  'Payment Processed',
-                  'Your payment was successful. If you don\'t see Pro features immediately, please refresh the app in a few minutes.',
-                  [{ 
-                    text: 'OK', 
-                    onPress: () => navigation.navigate('MainTabs' as never) 
-                  }]
-                );
-              }
-              
-              setIsProcessing(false);
-              setProcessingStage('idle');
-            }
-          }
-        ]
-      );
-    } catch (error) {
+      if (result.success) {
+        setProcessingStage('activating');
+        
+        // Poll subscription status until webhook upgrades account
+        const webhookSuccess = await pollSubscriptionStatus();
+        
+        if (webhookSuccess) {
+          // Invalidate all queries that depend on user's pro status
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/courses'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/progress'] }),
+          ]);
+          
+          Alert.alert(
+            'Welcome to Pro Learner!',
+            'Your subscription is now active. You have access to all premium features.',
+            [{ 
+              text: 'OK', 
+              onPress: () => navigation.navigate('MainTabs' as never) 
+            }]
+          );
+        } else {
+          Alert.alert(
+            'Payment Processed',
+            'Your payment was successful. If you don\'t see Pro features immediately, please refresh the app in a few minutes.',
+            [{ 
+              text: 'OK', 
+              onPress: () => navigation.navigate('MainTabs' as never) 
+            }]
+          );
+        }
+      } else if (result.error === 'Purchase cancelled') {
+        // User cancelled - just reset state
+        console.log('User cancelled purchase');
+      } else {
+        Alert.alert('Purchase Failed', result.error || 'Unable to complete purchase. Please try again.');
+      }
+      
+      setIsProcessing(false);
+      setProcessingStage('idle');
+    } catch (error: any) {
+      console.error('Purchase error:', error);
       Alert.alert('Error', 'Failed to process subscription. Please try again.');
       setIsProcessing(false);
       setProcessingStage('idle');
     }
   };
 
-  // Redirect if already pro - matching web exactly
+  // Auto-select first package when offerings load
+  useEffect(() => {
+    if (packages && packages.length > 0 && !selectedPackage) {
+      setSelectedPackage(packages[0]);
+    }
+  }, [packages, selectedPackage]);
+
+  // Redirect if already pro
   useEffect(() => {
     if (subscriptionStatus && subscriptionStatus.isProUser) {
       Alert.alert(
@@ -191,16 +201,37 @@ export default function SubscribeScreen() {
     'No ads',
   ];
 
-  if (statusLoading) {
+  if (statusLoading || packagesLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Setting up your subscription...</Text>
+          <Text style={styles.loadingText}>Loading subscription options...</Text>
         </View>
       </SafeAreaView>
     );
   }
+
+  // Helper function to get package display name
+  const getPackageName = (pkg: PurchasesPackage): string => {
+    const identifier = pkg.identifier.toLowerCase();
+    if (identifier.includes('annual') || identifier.includes('year')) {
+      return 'Annual';
+    }
+    if (identifier.includes('monthly') || identifier.includes('month')) {
+      return 'Monthly';
+    }
+    return pkg.product.title;
+  };
+
+  // Helper function to get savings text
+  const getSavingsText = (pkg: PurchasesPackage): string | null => {
+    const identifier = pkg.identifier.toLowerCase();
+    if (identifier.includes('annual') || identifier.includes('year')) {
+      return 'Save 20%';
+    }
+    return null;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -219,40 +250,60 @@ export default function SubscribeScreen() {
           </View>
         </View>
 
-        {/* Currency Toggle - matching web desktop functionality */}
-        <View style={styles.currencyContainer}>
-          <Text style={styles.currencyLabel}>Currency:</Text>
-          <View style={styles.currencyToggle}>
-            <TouchableOpacity
-              style={[
-                styles.currencyOption,
-                currency === 'GBP' && styles.currencyOptionActive
-              ]}
-              onPress={() => setCurrency('GBP')}
-            >
-              <Text style={[
-                styles.currencyOptionText,
-                currency === 'GBP' && styles.currencyOptionTextActive
-              ]}>
-                GBP (£)
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.currencyOption,
-                currency === 'USD' && styles.currencyOptionActive
-              ]}
-              onPress={() => setCurrency('USD')}
-            >
-              <Text style={[
-                styles.currencyOptionText,
-                currency === 'USD' && styles.currencyOptionTextActive
-              ]}>
-                USD ($)
-              </Text>
-            </TouchableOpacity>
+        {/* Subscription Plans */}
+        {packages && packages.length > 0 && (
+          <View style={styles.plansContainer}>
+            <Text style={styles.plansTitle}>Choose Your Plan</Text>
+            <View style={styles.plansGrid}>
+              {packages.map((pkg) => {
+                const isSelected = selectedPackage?.identifier === pkg.identifier;
+                const savingsText = getSavingsText(pkg);
+                
+                return (
+                  <TouchableOpacity
+                    key={pkg.identifier}
+                    style={[
+                      styles.planCard,
+                      isSelected && styles.planCardSelected
+                    ]}
+                    onPress={() => setSelectedPackage(pkg)}
+                    disabled={isProcessing}
+                  >
+                    {savingsText && (
+                      <View style={styles.savingsBadge}>
+                        <Text style={styles.savingsText}>{savingsText}</Text>
+                      </View>
+                    )}
+                    
+                    <Text style={[
+                      styles.planName,
+                      isSelected && styles.planNameSelected
+                    ]}>
+                      {getPackageName(pkg)}
+                    </Text>
+                    
+                    <Text style={[
+                      styles.planPrice,
+                      isSelected && styles.planPriceSelected
+                    ]}>
+                      {pkg.product.priceString}
+                    </Text>
+                    
+                    <Text style={styles.planPeriod}>
+                      {pkg.packageType === 'ANNUAL' ? 'per year' : 'per month'}
+                    </Text>
+                    
+                    {isSelected && (
+                      <View style={styles.selectedIndicator}>
+                        <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Pricing Card - matching web exactly */}
         <Card style={styles.pricingCard}>
@@ -268,18 +319,22 @@ export default function SubscribeScreen() {
             </View>
 
             {/* Pricing Display */}
-            <View style={styles.pricingDisplay}>
-              <Text style={styles.priceAmount}>
-                {currency === 'GBP' ? '£2.99' : '$2.99'}
-              </Text>
-              <Text style={styles.pricePeriod}>per month</Text>
-            </View>
+            {selectedPackage && (
+              <View style={styles.pricingDisplay}>
+                <Text style={styles.priceAmount}>
+                  {selectedPackage.product.priceString}
+                </Text>
+                <Text style={styles.pricePeriod}>
+                  {selectedPackage.packageType === 'ANNUAL' ? 'per year' : 'per month'}
+                </Text>
+              </View>
+            )}
 
             {/* Subscribe Button */}
             <Button
-              style={[styles.subscribeButton, isProcessing && styles.subscribeButtonDisabled]}
-              onPress={handleSubscribe}
-              disabled={isProcessing}
+              style={[styles.subscribeButton, (isProcessing || !selectedPackage) && styles.subscribeButtonDisabled]}
+              onPress={() => selectedPackage && handleSubscribe(selectedPackage)}
+              disabled={isProcessing || !selectedPackage}
             >
               {isProcessing ? (
                 <View style={styles.processingContent}>
@@ -290,7 +345,9 @@ export default function SubscribeScreen() {
                 </View>
               ) : (
                 <Text style={styles.subscribeButtonText}>
-                  Subscribe for {currency === 'GBP' ? '£2.99' : '$2.99'}/month
+                  {selectedPackage 
+                    ? `Subscribe for ${selectedPackage.product.priceString}`
+                    : 'Loading...'}
                 </Text>
               )}
             </Button>
@@ -414,48 +471,81 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
 
-  // Currency Toggle
-  currencyContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: theme.spacing.lg,
+  // Plans
+  plansContainer: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.xl,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#f1f5f9',
   },
-  currencyLabel: {
-    fontSize: theme.fontSize.base,
-    fontWeight: '500',
+  plansTitle: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
     color: theme.colors.foreground,
-    marginRight: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
+    textAlign: 'center',
   },
-  currencyToggle: {
+  plansGrid: {
     flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
-    borderRadius: theme.borderRadius.lg,
-    padding: 2,
+    gap: theme.spacing.md,
+    justifyContent: 'center',
   },
-  currencyOption: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.sm,
+  planCard: {
+    flex: 1,
+    maxWidth: 160,
+    backgroundColor: '#f8fafc',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    position: 'relative',
+    alignItems: 'center',
+  },
+  planCardSelected: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#3b82f6',
+  },
+  savingsBadge: {
+    position: 'absolute',
+    top: -10,
+    right: -5,
+    backgroundColor: '#10b981',
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: 4,
     borderRadius: theme.borderRadius.md,
   },
-  currencyOptionActive: {
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+  savingsText: {
+    color: '#ffffff',
+    fontSize: theme.fontSize.xs,
+    fontWeight: '600',
   },
-  currencyOptionText: {
+  planName: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.xs,
+  },
+  planNameSelected: {
+    color: '#1d4ed8',
+  },
+  planPrice: {
+    fontSize: theme.fontSize['2xl'],
+    fontWeight: '700',
+    color: theme.colors.foreground,
+    marginBottom: 4,
+  },
+  planPriceSelected: {
+    color: '#1d4ed8',
+  },
+  planPeriod: {
     fontSize: theme.fontSize.sm,
-    fontWeight: '500',
     color: theme.colors.mutedForeground,
   },
-  currencyOptionTextActive: {
-    color: theme.colors.foreground,
+  selectedIndicator: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
   },
 
   // Pricing Card
