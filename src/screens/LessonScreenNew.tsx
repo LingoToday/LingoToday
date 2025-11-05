@@ -1672,14 +1672,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingVertical: theme.spacing.md,
+    padding: theme.spacing.md,
     paddingBottom: theme.spacing.xl,
   },
 
   // Intro Video
   introVideoCard: {
     marginTop: theme.spacing.lg,
-    marginHorizontal: theme.spacing.md,
     // marginBottom: theme.spacing.lg,
   },
   introVideoContent: {
@@ -1701,7 +1700,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
-    marginHorizontal: theme.spacing.md,
     marginBottom: theme.spacing.lg,
   },
   notificationContent: {
@@ -1725,7 +1723,6 @@ const styles = StyleSheet.create({
   // Lesson Card
   lessonCard: {
     flex: 1,
-    marginHorizontal: theme.spacing.md,
   },
   lessonContent: {
     gap: theme.spacing.lg,
@@ -1736,7 +1733,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.sm,
     padding: theme.spacing.md,
-    marginHorizontal: theme.spacing.md,
     backgroundColor: theme.colors.muted + '50',
     borderRadius: theme.borderRadius.lg,
   },
@@ -1761,11 +1757,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   video: (() => {
-    const videoWidth = screenWidth;
-    const videoHeight = (videoWidth * 9) / 16;
+    const videoWidth = Math.min(screenWidth - (theme.spacing.md * 4), 280);
+    const videoHeight = Math.min((videoWidth * 16) / 9, 500);
     return {
       width: videoWidth,
       height: videoHeight,
+      borderRadius: theme.borderRadius.lg,
     };
   })(),
 
@@ -1774,7 +1771,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.lg,
     padding: theme.spacing.xl,
-    marginHorizontal: theme.spacing.md,
     backgroundColor: '#EFF6FF',
     borderRadius: theme.borderRadius.lg,
   },
@@ -1890,7 +1886,6 @@ const styles = StyleSheet.create({
   // Input
   inputContainer: {
     gap: theme.spacing.sm,
-    marginHorizontal: theme.spacing.md,
   },
   inputLabel: {
     fontSize: theme.fontSize.base,
@@ -2037,19 +2032,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
     paddingTop: theme.spacing.lg,
-    marginHorizontal: theme.spacing.md,
     gap: theme.spacing.md,
   },
 
   // Buttons
   submitButton: {
     marginTop: theme.spacing.md,
-    marginHorizontal: theme.spacing.md,
   },
   nextButton: {
     backgroundColor: '#10b981',
     marginTop: theme.spacing.md,
-    marginHorizontal: theme.spacing.md,
   },
   continueButton: {
     backgroundColor: '#2563EB',
