@@ -1338,7 +1338,6 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'pro_video' && (
                 <>
                   <View style={styles.quickCheckHeader}>
-                    <Text style={styles.quickCheckTitle}>{currentStep}. Pro Video</Text>
                     <Text style={styles.quickCheckQuestion}>{stepData.prompt}</Text>
                   </View>
 

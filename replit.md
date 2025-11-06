@@ -35,7 +35,7 @@ Do not make changes to the file `package-lock.json`.
 - Bottom tabs for primary navigation with active tab highlighting.
 - Platform-optimized spacing for navigation bars.
 - Legal links consistently styled and opened in native webview.
-- **Lesson Step Headers (Updated Nov 2025)**: Consistent header styling across lesson steps (Quick Check, Type Practice, Listen and Choose, Pro Video) with dynamic step numbers, cyan color titles (#06B6D4), and clean question formatting. Progress bar displays under header for all lesson types.
+- **Lesson Step Headers (Updated Nov 2025)**: Consistent header styling across lesson steps (Quick Check, Type Practice, Listen and Choose) with dynamic step numbers, cyan color titles (#06B6D4), and clean question formatting. Pro Video steps display only the prompt text without a numbered title. Progress bar displays under header for all lesson types.
 - **Quick Check Styling (Updated Nov 2025)**: Multiple choice options feature circular letter badges (A, B, C, D), white rounded cards, and cyan submit button (#7DD3FC) for improved visual clarity and user experience.
 
 ### Technical Implementations
