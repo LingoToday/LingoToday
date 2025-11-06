@@ -46,7 +46,7 @@ Do not make changes to the file `package-lock.json`.
 - Dynamic lesson step counting to support various lesson formats and report accurate progress.
 - `SheetManagerProvider` to enforce a single-sheet policy for modals/sheets.
 - Lessons use push navigation instead of modal presentation.
-- **Background Notifications (Updated Nov 2025)**: Implemented proper background notification support using expo-notifications and expo-task-manager. Notifications are scheduled as repeating calendar triggers (specific weekdays/times) and persist even when the app is closed or terminated. Background task handler registered in App.js ensures notifications work reliably across all app states (foreground, background, terminated).
+- **Background Notifications (Updated Nov 2025)**: Implemented proper background notification support using expo-notifications and expo-task-manager. Notifications are scheduled as repeating calendar triggers (specific weekdays/times) and persist even when the app is closed or terminated. Background task handler registered in App.js ensures notifications work reliably across all app states (foreground, background, terminated). The app uses **inexact alarm scheduling** (not exact alarms) for Google Play Store compliance - exact alarm permissions (`USE_EXACT_ALARM`, `SCHEDULE_EXACT_ALARM`) have been removed as they are restricted to alarm clock, calendar, and timer apps. Inexact scheduling is sufficient for language learning reminders and is battery-efficient.
 
 ### Project Structure
 - `src/components/`: Reusable UI components.
