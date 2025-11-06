@@ -33,7 +33,6 @@ interface User {
 }
 
 
-// Helper functions - matching web exactly
 function getLanguageDisplayName(code: string): string {
   const languages: { [key: string]: string } = {
     italian: 'Italian',
@@ -46,6 +45,20 @@ function getLanguageDisplayName(code: string): string {
     korean: 'Korean',
   };
   return languages[code.toLowerCase()] || code.charAt(0).toUpperCase() + code.slice(1);
+}
+
+function getLanguageFlag(code: string): string {
+  const flags: { [key: string]: string } = {
+    italian: '🇮🇹',
+    spanish: '🇪🇸',
+    french: '🇫🇷',
+    german: '🇩🇪',
+    portuguese: '🇵🇹',
+    mandarin: '🇨🇳',
+    japanese: '🇯🇵',
+    korean: '🇰🇷',
+  };
+  return flags[code.toLowerCase()] || '🌍';
 }
 
 function getLearningTier(priceTier?: string): string {
@@ -141,7 +154,9 @@ export default function AccountScreen() {
         >
           <View style={styles.gridContainer}>
             <Text style={styles.pageTitle}>Profile</Text>
-            <Text style={styles.userName} testID="user-name">{userName}</Text>
+            <Text style={styles.userName} testID="user-name">
+              Hey {userName}, your language journey continues!
+            </Text>
 
             <View style={styles.divider} />
 
@@ -178,12 +193,18 @@ export default function AccountScreen() {
               
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Language</Text>
-                <Text style={styles.infoValue} testID="learning-language">
-                  {user.selectedLanguage 
-                    ? getLanguageDisplayName(user.selectedLanguage)
-                    : 'Not selected'
-                  }
-                </Text>
+                {user.selectedLanguage ? (
+                  <View>
+                    <Text style={styles.languageWithFlag} testID="learning-language">
+                      {getLanguageDisplayName(user.selectedLanguage)} {getLanguageFlag(user.selectedLanguage)}
+                    </Text>
+                    <Text style={styles.motivationalText}>
+                      Stay consistent — Keep showing up! You'll be chatting like a local soon.
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={styles.infoValue}>Not selected</Text>
+                )}
               </View>
 
               <View style={styles.infoItem}>
@@ -312,6 +333,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '400',
     color: '#000000',
+  },
+  languageWithFlag: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000000',
+    marginBottom: 8,
+  },
+  motivationalText: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: '#666666',
+    fontStyle: 'italic',
+    lineHeight: 18,
   },
   subscriptionButton: {
     flexDirection: 'row',
