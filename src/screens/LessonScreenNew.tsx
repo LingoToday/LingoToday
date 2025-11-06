@@ -1514,9 +1514,9 @@ export default function LessonScreen() {
               {/* Typing Step */}
               {stepData && stepData.type === 'type' && (
                 <>
-                  <View style={styles.stepHeader}>
-                    <Text style={styles.stepTitle}>✏️ Type Practice</Text>
-                    <Text style={styles.questionText}>Complete the word:</Text>
+                  <View style={styles.quickCheckHeader}>
+                    <Text style={styles.quickCheckTitle}>{currentStep}. Type Practice</Text>
+                    <Text style={styles.quickCheckQuestion}>Complete the word:</Text>
                     <Text style={styles.promptText}>{stepData.prompt}</Text>
                   </View>
 
@@ -1544,9 +1544,9 @@ export default function LessonScreen() {
               {/* FIXED: Audio Step with improved audio button */}
               {stepData && stepData.type === 'audio' && (
                 <>
-                  <View style={styles.stepHeader}>
-                    <Text style={styles.stepTitle}>🎧 Listen and Choose</Text>
-                    <Text style={styles.questionText}>What do you hear?</Text>
+                  <View style={styles.quickCheckHeader}>
+                    <Text style={styles.quickCheckTitle}>{currentStep}. Listen and Choose</Text>
+                    <Text style={styles.quickCheckQuestion}>What do you hear?</Text>
                     
                     <TouchableOpacity 
                       style={styles.listenButton}
