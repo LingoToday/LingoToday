@@ -15,7 +15,7 @@ export const Progress: React.FC<ProgressProps> = ({
   value,
   max = 100,
   style,
-  trackColor = theme.colors.secondary,
+  trackColor = theme.colors.muted,
   progressColor = theme.colors.primary,
   height = 8,
 }) => {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   track: {
     borderRadius: theme.borderRadius.full,
     overflow: 'hidden',
-    backgroundColor: theme.colors.secondary,
+    backgroundColor: theme.colors.muted,
   },
   progress: {
     borderRadius: theme.borderRadius.full,

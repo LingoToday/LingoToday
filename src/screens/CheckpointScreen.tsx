@@ -14,6 +14,7 @@ import { apiClient } from '../lib/apiClient';
 import { CheckpointQuestion } from '../types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ParamListBase, RouteProp } from '@react-navigation/native';
+import { theme } from '../lib/theme';
 
 type CheckpointScreenProps = {
   navigation: NativeStackNavigationProp<ParamListBase, 'Checkpoint'>;
@@ -127,14 +128,14 @@ export default function CheckpointScreen({ navigation, route }: CheckpointScreen
   };
 
   const getScoreColor = (passed: boolean) => {
-    return passed ? '#10b981' : '#ef4444';
+    return passed ? theme.colors.success500 : theme.colors.destructive;
   };
 
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3b82f6" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text style={styles.loadingText}>Loading checkpoint...</Text>
         </View>
       </SafeAreaView>

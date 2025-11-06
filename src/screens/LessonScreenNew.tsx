@@ -1248,7 +1248,7 @@ export default function LessonScreen() {
           {fromNotification && (
             <View style={styles.notificationBanner}>
               <View style={styles.notificationContent}>
-                <Ionicons name="notifications" size={20} color="#2563EB" />
+                <Ionicons name="notifications" size={20} color={theme.colors.primary} />
                 <View style={styles.notificationText}>
                   <Text style={styles.notificationTitle}>Welcome back!</Text>
                   <Text style={styles.notificationSubtitle}>You clicked on a notification. Let's answer this question!</Text>
@@ -1515,7 +1515,7 @@ export default function LessonScreen() {
                       onPress={() => speakText(stepData.audioSentence)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={32} color="#8B5CF6" />
+                      <Ionicons name="volume-high" size={32} color={theme.colors.primary} />
                       <Text style={styles.listenText}>Tap to listen</Text>
                     </TouchableOpacity>
                   </View>

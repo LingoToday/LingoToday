@@ -134,7 +134,7 @@ export default function AdminScreen() {
         <Card style={styles.statCard}>
           <CardContent style={styles.statCardContent}>
             <View style={styles.statIcon}>
-              <Ionicons name="people" size={24} color="#3b82f6" />
+              <Ionicons name="people" size={24} color={theme.colors.primary} />
             </View>
             <Text style={styles.statValue}>{adminStats?.totalUsers?.toLocaleString() || '0'}</Text>
             <Text style={styles.statLabel}>Total Users</Text>
@@ -144,7 +144,7 @@ export default function AdminScreen() {
         <Card style={styles.statCard}>
           <CardContent style={styles.statCardContent}>
             <View style={styles.statIcon}>
-              <Ionicons name="book" size={24} color="#10b981" />
+              <Ionicons name="book" size={24} color={theme.colors.success500} />
             </View>
             <Text style={styles.statValue}>{adminStats?.totalCourses || '0'}</Text>
             <Text style={styles.statLabel}>Total Courses</Text>
@@ -154,7 +154,7 @@ export default function AdminScreen() {
         <Card style={styles.statCard}>
           <CardContent style={styles.statCardContent}>
             <View style={styles.statIcon}>
-              <Ionicons name="library" size={24} color="#f59e0b" />
+              <Ionicons name="library" size={24} color={theme.colors.warning500} />
             </View>
             <Text style={styles.statValue}>{adminStats?.totalLessons || '0'}</Text>
             <Text style={styles.statLabel}>Total Lessons</Text>
@@ -164,7 +164,7 @@ export default function AdminScreen() {
         <Card style={styles.statCard}>
           <CardContent style={styles.statCardContent}>
             <View style={styles.statIcon}>
-              <Ionicons name="pulse" size={24} color="#ef4444" />
+              <Ionicons name="pulse" size={24} color={theme.colors.destructive} />
             </View>
             <Text style={styles.statValue}>{adminStats?.activeUsers?.toLocaleString() || '0'}</Text>
             <Text style={styles.statLabel}>Active Users</Text>
@@ -178,7 +178,7 @@ export default function AdminScreen() {
           <View style={styles.activityList}>
             <View style={styles.activityItem}>
               <View style={styles.activityIcon}>
-                <Ionicons name="person-add" size={16} color="#10b981" />
+                <Ionicons name="person-add" size={16} color={theme.colors.success500} />
               </View>
               <View style={styles.activityContent}>
                 <Text style={styles.activityText}>New user registration</Text>
@@ -188,7 +188,7 @@ export default function AdminScreen() {
             
             <View style={styles.activityItem}>
               <View style={styles.activityIcon}>
-                <Ionicons name="book-outline" size={16} color="#3b82f6" />
+                <Ionicons name="book-outline" size={16} color={theme.colors.primary} />
               </View>
               <View style={styles.activityContent}>
                 <Text style={styles.activityText}>Course completed: French Basics</Text>
@@ -198,7 +198,7 @@ export default function AdminScreen() {
             
             <View style={styles.activityItem}>
               <View style={styles.activityIcon}>
-                <Ionicons name="trending-up" size={16} color="#f59e0b" />
+                <Ionicons name="trending-up" size={16} color={theme.colors.warning500} />
               </View>
               <View style={styles.activityContent}>
                 <Text style={styles.activityText}>Daily active users: +15%</Text>

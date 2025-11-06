@@ -192,7 +192,7 @@ export default function AccountScreen() {
                 <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Email Address</Text>
                   <View style={styles.infoValueRow}>
-                    <Ionicons name="mail" size={16} color="#6B7280" />
+                    <Ionicons name="mail" size={16} color={theme.colors.mutedForeground} />
                     <Text style={styles.infoValue} testID="user-email">{user.email}</Text>
                   </View>
                 </View>
@@ -200,7 +200,7 @@ export default function AccountScreen() {
                 <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Member Since</Text>
                   <View style={styles.infoValueRow}>
-                    <Ionicons name="calendar" size={16} color="#6B7280" />
+                    <Ionicons name="calendar" size={16} color={theme.colors.mutedForeground} />
                     <Text style={styles.infoValue} testID="member-since">
                       {memberSince 
                         ? format(memberSince, 'MMMM d, yyyy')
@@ -213,7 +213,7 @@ export default function AccountScreen() {
                 <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Learning Tier</Text>
                   <View style={styles.infoValueRow}>
-                    <Ionicons name="diamond" size={16} color="#D97706" />
+                    <Ionicons name="diamond" size={16} color={theme.colors.warning600} />
                     <Badge 
                       variant={getLearningTier(user.priceTier) === 'Free' ? 'secondary' : 'default'}
                       style={StyleSheet.flatten([
@@ -250,7 +250,7 @@ export default function AccountScreen() {
                 <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Language Course</Text>
                   <View style={styles.infoValueRow}>
-                    <Ionicons name="globe" size={16} color="#2563EB" />
+                    <Ionicons name="globe" size={16} color={theme.colors.primary} />
                     <Text style={[styles.infoValue, styles.languageValue]} testID="learning-language">
                       {user.selectedLanguage 
                         ? getLanguageDisplayName(user.selectedLanguage)
@@ -263,7 +263,7 @@ export default function AccountScreen() {
                 <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Current Level</Text>
                   <View style={styles.infoValueRow}>
-                    <Ionicons name="trophy" size={16} color="#7C3AED" />
+                    <Ionicons name="trophy" size={16} color={theme.colors.primary} />
                     <Badge style={styles.levelBadge} testID="current-level">
                       <Text style={styles.levelBadgeText}>
                         {user.selectedLevel 
@@ -362,7 +362,7 @@ export default function AccountScreen() {
                   onPress={handleLogout}
                   testID="logout-button"
                 >
-                  <Ionicons name="arrow-back" size={16} color="#DC2626" />
+                  <Ionicons name="arrow-back" size={16} color={theme.colors.destructive} />
                   <Text style={styles.signOutButtonText}>Sign Out</Text>
                 </TouchableOpacity>
               </View>
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     marginTop: 16,
     textAlign: 'center',
   },
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   loginButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
@@ -415,9 +415,9 @@ const styles = StyleSheet.create({
 
   // Header - matching web exactly
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: theme.colors.border,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     fontSize: 18, // text-lg sm:text-xl
     fontWeight: '600',
     marginTop: 10,
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
   },
   headerRight: {
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 12, // text-xs sm:text-sm
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     // Hide on small screens
     ...(Platform.OS === 'android' && {
       display: 'none',
@@ -519,10 +519,10 @@ const styles = StyleSheet.create({
 
   // Cards
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     marginBottom: 24,
     ...Platform.select({
       ios: {
@@ -562,17 +562,17 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 14, // text-sm
     fontWeight: '500',
-    color: '#6B7280', // text-gray-600
+    color: theme.colors.mutedForeground, // text-gray-600
   },
   infoValue: {
     fontSize: 18, // text-lg
     fontWeight: '500',
-    color: '#111827', // text-gray-900
+    color: theme.colors.foreground, // text-gray-900
   },
   languageValue: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#2563EB', // text-blue-600
+    color: theme.colors.primary, // text-blue-600
   },
   infoValueRow: {
     flexDirection: 'row',
@@ -584,46 +584,46 @@ const styles = StyleSheet.create({
   // Badges - matching web exactly
   tierBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E5E7EB', // Default secondary
+    backgroundColor: theme.colors.border, // Default secondary
   },
   tierBadgeText: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 12,
     fontWeight: '500',
   },
   tierBadgeTextWhite: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
   },
   proBadge: {
-    backgroundColor: '#2563EB', // bg-blue-600
+    backgroundColor: theme.colors.primary, // bg-blue-600
   },
   plusBadge: {
-    backgroundColor: '#7C3AED', // bg-purple-600
+    backgroundColor: theme.colors.primary, // bg-purple-600
   },
   levelBadge: {
-    backgroundColor: '#7C3AED', // bg-purple-600
+    backgroundColor: theme.colors.primary, // bg-purple-600
     alignSelf: 'flex-start',
   },
   levelBadgeText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 12,
     fontWeight: '500',
   },
   completedBadge: {
-    backgroundColor: '#059669', // bg-green-600
+    backgroundColor: theme.colors.success500, // bg-green-600
     alignSelf: 'flex-start',
   },
   incompleteBadge: {
-    backgroundColor: '#E5E7EB', // Default secondary
+    backgroundColor: theme.colors.border, // Default secondary
     alignSelf: 'flex-start',
   },
   onboardingBadgeText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
   onboardingBadgeTextWhite: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
   },
 
   // Stats Grid - matching web exactly (grid-cols-2 gap-4)
@@ -657,10 +657,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(219, 234, 254, 1)', // border-blue-100
   },
   blueStatText: {
-    color: '#2563EB', // text-blue-600
+    color: theme.colors.primary, // text-blue-600
   },
   blueStatLabel: {
-    color: '#1E40AF', // text-blue-800
+    color: theme.colors.primary, // text-blue-800
   },
 
   greenStat: {
@@ -668,10 +668,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(220, 252, 231, 1)', // border-green-100
   },
   greenStatText: {
-    color: '#059669', // text-green-600
+    color: theme.colors.success500, // text-green-600
   },
   greenStatLabel: {
-    color: '#047857', // text-green-800
+    color: theme.colors.success600, // text-green-800
   },
 
   purpleStat: {
@@ -679,10 +679,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(243, 232, 255, 1)', // border-purple-100
   },
   purpleStatText: {
-    color: '#7C3AED', // text-purple-600
+    color: theme.colors.primary, // text-purple-600
   },
   purpleStatLabel: {
-    color: '#6B21A8', // text-purple-800
+    color: theme.colors.primary, // text-purple-800
   },
 
   amberStat: {
@@ -690,10 +690,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(254, 243, 199, 1)', // border-amber-100
   },
   amberStatText: {
-    color: '#D97706', // text-amber-600
+    color: theme.colors.warning600, // text-amber-600
   },
   amberStatLabel: {
-    color: '#92400E', // text-amber-800
+    color: theme.colors.warning600, // text-amber-800
   },
 
   // Quick Actions - matching web exactly
@@ -708,9 +708,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     gap: 8,
   },
   actionButtonText: {
@@ -719,12 +719,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   signOutButton: {
-    borderColor: '#FEE2E2', // hover:bg-red-50 equivalent
-    backgroundColor: '#FFFFFF',
+    borderColor: theme.colors.destructive,
+    backgroundColor: theme.colors.card,
   },
   signOutButtonText: {
     fontSize: 14,
-    color: '#DC2626', // text-red-600
+    color: theme.colors.destructive, // text-red-600
     fontWeight: '500',
   },
 });

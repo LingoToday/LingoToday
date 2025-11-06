@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { VideoView, useVideoPlayer } from 'expo-video';
+import { theme } from '../lib/theme';
 
 const portraitVideo = require('../../attached_assets/copy_10F92020-BB3D-4CA0-947B-2634A0946F72_1761142720055.MOV');
 
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   logoIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.colors.primary,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   videoContainer: {
     marginVertical: 16,
@@ -146,14 +147,14 @@ const styles = StyleSheet.create({
   tagline: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
     marginBottom: 12,
   },
   description: {
     fontSize: 15,
     lineHeight: 22,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     maxWidth: 360,
   },
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   joinButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.colors.primary,
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 32,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: theme.colors.border,
   },
   loginButtonText: {
     color: '#374151',

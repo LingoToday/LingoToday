@@ -393,16 +393,16 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     marginTop: 16,
     textAlign: 'center',
   },
 
   // Header
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: theme.colors.border,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
   },
   headerRight: {
@@ -472,10 +472,10 @@ const styles = StyleSheet.create({
 
   // Cards
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     marginBottom: 24,
     ...Platform.select({
       ios: {
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     marginBottom: 4,
   },
   planBadgeContainer: {
@@ -529,18 +529,18 @@ const styles = StyleSheet.create({
   },
   planBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.border,
   },
   planBadgeText: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 12,
     fontWeight: '500',
   },
   planBadgeTextWhite: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
   },
   proBadge: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.colors.primary,
   },
   plusBadge: {
     backgroundColor: '#7C3AED',
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
   priceValue: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   renewalSection: {
     marginTop: 8,
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   renewalValue: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
     marginTop: 4,
   },
 
@@ -569,15 +569,15 @@ const styles = StyleSheet.create({
   },
   featureBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.border,
   },
   featureBadgeText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
   featureBadgeTextWhite: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
   },
   featureList: {
     gap: 4,
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   featureText: {
     flex: 1,
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
 
   // Action Buttons
@@ -608,14 +608,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 16,
     fontWeight: '600',
   },
   secondaryButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   deleteAccountText: {
-    color: '#2563EB',
+    color: theme.colors.primary,
     fontSize: 14,
     textDecorationLine: 'underline',
   },
@@ -645,12 +645,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   legalLinkText: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 12,
     textDecorationLine: 'underline',
   },
   legalLinkSeparator: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 12,
   },
 });

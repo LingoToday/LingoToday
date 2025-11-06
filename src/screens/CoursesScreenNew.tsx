@@ -191,7 +191,7 @@ export default function CoursesScreen() {
             
             <View style={styles.logoContainer}>
               <View style={styles.logoIcon}>
-                <Ionicons name="globe" size={20} color="#ffffff" />
+                <Ionicons name="globe" size={20} color={theme.colors.primaryForeground} />
               </View>
               <Text style={styles.logoText}>LingoToday</Text>
             </View>
@@ -329,7 +329,7 @@ export default function CoursesScreen() {
                         <View style={styles.outlineContent}>
                           {language.courses.beginner.outline.map((topic, index) => (
                             <View key={index} style={styles.outlineItem}>
-                              <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+                              <Ionicons name="checkmark-circle" size={16} color={theme.colors.success500} />
                               <Text style={styles.outlineItemText}>{topic}</Text>
                             </View>
                           ))}
@@ -410,7 +410,7 @@ export default function CoursesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     minWidth: 100, // Prevent text wrapping
     textAlign: 'left',
   },
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: theme.colors.border,
     borderRadius: 18,
     paddingHorizontal: 12,
     paddingVertical: 7,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signInButtonText: {
-    color: '#374151',
+    color: theme.colors.foreground,
     fontSize: 13,
     fontWeight: '500',
   },
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   freeTrialButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 13,
     fontWeight: '500',
   },
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     maxWidth: 80,
   },
   logoutButton: {
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   logoutButtonText: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 13,
   },
 
@@ -549,11 +549,11 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   pageDescription: {
     fontSize: 20,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     lineHeight: 28,
     maxWidth: 600,
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
   },
   languageCard: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -608,22 +608,22 @@ const styles = StyleSheet.create({
   languageTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     marginBottom: 4,
   },
   languageDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     lineHeight: 20,
   },
   availableBadge: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: theme.colors.success50,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   availableBadgeText: {
-    color: '#166534',
+    color: theme.colors.success600,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -644,23 +644,23 @@ const styles = StyleSheet.create({
   courseTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
     flex: 1,
   },
   levelBadge: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   levelBadgeText: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     fontSize: 12,
   },
   courseDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     lineHeight: 20,
     marginBottom: 16,
   },
@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
 
   // Outline Section
@@ -807,7 +807,7 @@ const styles = StyleSheet.create({
   },
   featureDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     lineHeight: 20,
   },

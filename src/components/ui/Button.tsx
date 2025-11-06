@@ -16,7 +16,7 @@ interface ButtonProps {
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: 'default' | 'outline' | 'ghost' | 'destructive';
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'destructive';
   size?: 'sm' | 'default' | 'lg';
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
@@ -46,6 +46,12 @@ export const Button: React.FC<ButtonProps> = ({
     };
 
     switch (variant) {
+      case 'secondary':
+        return {
+          ...baseStyle,
+          backgroundColor: theme.colors.secondary,
+          borderWidth: 0,
+        };
       case 'outline':
         return {
           ...baseStyle,
@@ -82,6 +88,11 @@ export const Button: React.FC<ButtonProps> = ({
     };
 
     switch (variant) {
+      case 'secondary':
+        return {
+          ...baseTextStyle,
+          color: theme.colors.secondaryForeground || '#ffffff',
+        };
       case 'outline':
         return {
           ...baseTextStyle,

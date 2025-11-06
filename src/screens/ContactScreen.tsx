@@ -153,7 +153,7 @@ export default function ContactScreen() {
           
           <View style={styles.logoContainer}>
             <View style={styles.logoIcon}>
-              <Ionicons name="globe" size={16} color="#ffffff" />
+              <Ionicons name="globe" size={16} color={theme.colors.primaryForeground} />
             </View>
             <Text style={styles.logoText}>LingoToday</Text>
           </View>
@@ -173,7 +173,7 @@ export default function ContactScreen() {
             <Card style={styles.infoCard}>
               <CardHeader>
                 <CardTitle style={styles.cardTitle}>
-                  <Ionicons name="mail" size={20} color="#6366f1" style={styles.cardIcon} />
+                  <Ionicons name="mail" size={20} color={theme.colors.primary} style={styles.cardIcon} />
                   Get in Touch
                 </CardTitle>
               </CardHeader>
@@ -184,7 +184,7 @@ export default function ContactScreen() {
                     Send us an email and we'll get back to you as soon as possible.
                   </Text>
                   <TouchableOpacity onPress={handleEmailPress} style={styles.emailLink}>
-                    <Ionicons name="mail" size={16} color="#6366f1" />
+                    <Ionicons name="mail" size={16} color={theme.colors.primary} />
                     <Text style={styles.emailLinkText}>hello@lingotoday.co</Text>
                   </TouchableOpacity>
                 </View>
@@ -272,7 +272,7 @@ export default function ContactScreen() {
                     style={[styles.submitButton, isSubmitting && styles.disabledButton]}
                   >
                     <View style={styles.buttonContent}>
-                      <Ionicons name="send" size={16} color="#ffffff" style={styles.buttonIcon} />
+                      <Ionicons name="send" size={16} color={theme.colors.primaryForeground} style={styles.buttonIcon} />
                       <Text style={styles.submitButtonText}>
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                       </Text>
@@ -291,7 +291,7 @@ export default function ContactScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   scrollContent: {
     paddingBottom: theme.spacing.xl,
@@ -363,15 +363,15 @@ const styles = StyleSheet.create({
 
   // Cards
   infoCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.lg,
   },
   formCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.lg,
   },
   cardTitle: {
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.border,
     marginVertical: theme.spacing.md,
   },
 
@@ -431,32 +431,32 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.md,
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.sm,
     fontSize: theme.fontSize.base,
     color: theme.colors.foreground,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   textarea: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.md,
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.sm,
     fontSize: theme.fontSize.base,
     color: theme.colors.foreground,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     height: 120,
     textAlignVertical: 'top',
   },
   inputError: {
-    borderColor: '#EF4444',
+    borderColor: theme.colors.destructive,
   },
   errorText: {
     fontSize: theme.fontSize.sm,
-    color: '#EF4444',
+    color: theme.colors.destructive,
     marginTop: 4,
   },
 
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.xs,
   },
   submitButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.base,
     fontWeight: '500',
   },

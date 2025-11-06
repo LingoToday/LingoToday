@@ -1,9 +1,9 @@
 export const theme = {
   colors: {
-    // Light theme inspired by Taaskhub
+    // Brand colors from style guide
     background: '#ffffff',
     foreground: '#09090b',
-    muted: '#f8fafc',
+    muted: '#ECECF0',
     mutedForeground: '#64748b',
     popover: '#ffffff',
     popoverForeground: '#09090b',
@@ -11,32 +11,32 @@ export const theme = {
     cardForeground: '#09090b',
     border: '#e2e8f0',
     input: '#e2e8f0',
-    primary: '#6366f1',
+    primary: '#50B8FD',
     primaryForeground: '#ffffff',
-    secondary: '#f8fafc',
-    secondaryForeground: '#09090b',
-    accent: '#f8fafc',
+    secondary: '#50B8FD',
+    secondaryForeground: '#ffffff',
+    accent: '#E9EBEF',
     accentForeground: '#09090b',
-    destructive: '#ef4444',
-    destructiveForeground: '#fefefe',
-    ring: '#6366f1',
+    destructive: '#EF4444',
+    destructiveForeground: '#ffffff',
+    ring: '#50B8FD',
 
-    // Custom Taaskhub-inspired colors
-    primary50: '#f0f4ff',
-    primary100: '#e0ecff',
-    primary500: '#6366f1',
-    primary600: '#5855eb',
-    primary700: '#4f46e5',
+    // Extended brand colors
+    primary50: '#e6f6ff',
+    primary100: '#b3e5ff',
+    primary500: '#50B8FD',
+    primary600: '#40a8ed',
+    primary700: '#3098dd',
 
-    secondary50: '#fffbeb',
-    secondary100: '#fef3c7',
-    secondary500: '#f59e0b',
-    secondary600: '#d97706',
-    secondary700: '#b45309',
+    secondary50: '#e6f6ff',
+    secondary100: '#b3e5ff',
+    secondary500: '#50B8FD',
+    secondary600: '#40a8ed',
+    secondary700: '#3098dd',
 
-    success50: '#f0fdf4',
-    success500: '#22c55e',
-    success600: '#16a34a',
+    success50: '#d1fae5',
+    success500: '#10B981',
+    success600: '#059669',
 
     warning50: '#fffbeb',
     warning500: '#f59e0b',
@@ -44,17 +44,17 @@ export const theme = {
 
     // Surface colors for clean cards
     surface: '#ffffff',
-    surfaceContainer: '#f8fafc',
-    surfaceVariant: '#f1f5f9',
+    surfaceContainer: '#ECECF0',
+    surfaceVariant: '#E9EBEF',
 
     // Text colors
     onSurface: '#09090b',
     onSurfaceVariant: '#64748b',
     onPrimary: '#ffffff',
-    onSecondary: '#09090b',
+    onSecondary: '#ffffff',
 
     // Status colors
-    error: '#ef4444',
+    error: '#EF4444',
     errorContainer: '#fee2e2',
     onError: '#ffffff',
     onErrorContainer: '#7f1d1d',
@@ -70,20 +70,20 @@ export const theme = {
   spacing: {
     xs: 4,
     sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-    xxxl: 64,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    xxl: 32,
+    xxxl: 48,
   },
 
   borderRadius: {
     none: 0,
     sm: 4,
-    md: 8,
-    lg: 12,
-    xl: 16,
-    xxl: 24,
+    md: 6,
+    lg: 8,
+    xl: 12,
+    '2xl': 16,
     full: 9999,
   },
 
@@ -105,6 +105,12 @@ export const theme = {
     semibold: '600',
     bold: '700',
     extrabold: '800',
+  },
+  
+  lineHeight: {
+    tight: 1.25,
+    normal: 1.5,
+    relaxed: 1.75,
   },
 
   shadows: {

@@ -233,7 +233,7 @@ export default function SubscribeScreen() {
             <View style={styles.featuresSection}>
               {features.map((feature, index) => (
                 <View key={index} style={styles.featureItem}>
-                  <Ionicons name="checkmark-circle" size={16} color="#10b981" />
+                  <Ionicons name="checkmark-circle" size={16} color={theme.colors.success500} />
                   <Text style={styles.featureText}>{feature}</Text>
                 </View>
               ))}
@@ -265,7 +265,7 @@ export default function SubscribeScreen() {
                 disabled={true}
               >
                 <View style={styles.processingContent}>
-                  <ActivityIndicator size="small" color="#ffffff" />
+                  <ActivityIndicator size="small" color={theme.colors.primaryForeground} />
                   <Text style={styles.subscribeButtonText}>
                     {processingStage === 'loading' && 'Loading...'}
                     {processingStage === 'payment' && 'Processing Payment...'}
@@ -409,14 +409,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   retryButton: {
-    backgroundColor: '#1d4ed8',
+    backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.xl,
     borderRadius: theme.borderRadius.lg,
     marginTop: theme.spacing.lg,
   },
   retryButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.base,
     fontWeight: '600',
   },
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.lg,
     paddingTop: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   backButton: {
     padding: theme.spacing.sm,
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   pricingCard: {
     marginHorizontal: theme.spacing.lg,
     marginTop: theme.spacing.lg,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   pricingContent: {
     paddingVertical: theme.spacing.xl,
@@ -504,13 +504,13 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
   discountBadge: {
-    backgroundColor: '#10b981',
+    backgroundColor: theme.colors.success500,
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: theme.borderRadius.sm,
   },
   discountText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: 11,
     fontWeight: '600',
   },
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: theme.borderRadius.md,
   },
   toggleButtonActive: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -553,32 +553,32 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
   toggleButtonTextActive: {
-    color: '#1d4ed8',
+    color: theme.colors.primary,
   },
   toggleButtonDisabled: {
     opacity: 0.4,
   },
   toggleButtonTextDisabled: {
-    color: '#94a3b8',
+    color: theme.colors.mutedForeground,
   },
   savingsBadgeSmall: {
     position: 'absolute',
     top: -8,
     right: 4,
-    backgroundColor: '#10b981',
+    backgroundColor: theme.colors.success500,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: theme.borderRadius.sm,
   },
   savingsTextSmall: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: 10,
     fontWeight: '600',
   },
 
   // Buttons
   subscribeButton: {
-    backgroundColor: '#1d4ed8',
+    backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.lg,
     borderRadius: theme.borderRadius.lg,
     marginBottom: theme.spacing.md,
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   subscribeButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.base,
     fontWeight: '600',
     textAlign: 'center',
@@ -608,20 +608,20 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   savingsBadge: {
-    backgroundColor: '#10b981',
+    backgroundColor: theme.colors.success500,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: theme.borderRadius.sm,
   },
   savingsText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: 12,
     fontWeight: '600',
   },
   backToAppButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
     paddingVertical: theme.spacing.md,
     borderRadius: theme.borderRadius.lg,
   },
@@ -648,7 +648,7 @@ const styles = StyleSheet.create({
   // Pro Features
   proFeaturesCard: {
     marginHorizontal: theme.spacing.lg,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   proFeaturesTitle: {
     flexDirection: 'row',

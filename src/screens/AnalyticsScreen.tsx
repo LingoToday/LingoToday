@@ -258,7 +258,7 @@ export default function AnalyticsScreen() {
         <View style={styles.errorContainer}>
           <Card style={styles.errorCard}>
             <CardContent style={styles.errorContent}>
-              <Ionicons name="warning" size={48} color="#ef4444" />
+              <Ionicons name="warning" size={48} color={theme.colors.destructive} />
               <Text style={styles.errorTitle}>Error</Text>
               <Text style={styles.errorText}>Failed to load analytics data</Text>
               <Button onPress={onRefresh} style={styles.retryButton}>
@@ -582,7 +582,7 @@ export default function AnalyticsScreen() {
                   handleLogout();
                 }}
               >
-                <Ionicons name="log-out" size={16} color="#ef4444" />
+                <Ionicons name="log-out" size={16} color={theme.colors.destructive} />
                 <Text style={[styles.modalOptionText, styles.logoutText]}>Sign Out</Text>
               </TouchableOpacity>
             </View>
@@ -605,9 +605,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: theme.colors.border,
     gap: theme.spacing.md,
   },
   screenTitle: {
@@ -623,9 +623,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: theme.colors.border,
   },
   backButton: {
     padding: theme.spacing.sm,
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   logoIcon: {
     width: 24,
     height: 24,
-    backgroundColor: '#3b82f6',
+    backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.sm,
     alignItems: 'center',
     justifyContent: 'center',
@@ -698,18 +698,18 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '600',
-    color: '#dc2626',
+    color: theme.colors.destructive,
   },
   errorText: {
     fontSize: theme.fontSize.base,
-    color: '#dc2626',
+    color: theme.colors.destructive,
     textAlign: 'center',
   },
   retryButton: {
     marginTop: theme.spacing.md,
   },
   retryButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
   },
 
   // Content
@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
   // Filters
   filtersCard: {
     margin: theme.spacing.lg,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   filtersContent: {
     gap: theme.spacing.md,
@@ -759,9 +759,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.md,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.md,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   filterButtonText: {
     fontSize: theme.fontSize.sm,
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.md,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.md,
     fontSize: theme.fontSize.sm,
     color: theme.colors.foreground,
@@ -794,7 +794,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   statContent: {
     paddingVertical: theme.spacing.lg,
@@ -820,7 +820,7 @@ const styles = StyleSheet.create({
   chartCard: {
     marginHorizontal: theme.spacing.lg,
     marginBottom: theme.spacing.lg,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   chartCardContent: {
     paddingVertical: theme.spacing.lg,
@@ -921,7 +921,7 @@ const styles = StyleSheet.create({
   tableCard: {
     marginHorizontal: theme.spacing.lg,
     marginBottom: theme.spacing.xl,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
   },
   tableContent: {
     paddingVertical: theme.spacing.lg,
@@ -1016,7 +1016,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderTopLeftRadius: theme.borderRadius.xl,
     borderTopRightRadius: theme.borderRadius.xl,
     maxHeight: '80%',
@@ -1081,6 +1081,6 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
   },
   logoutText: {
-    color: '#ef4444',
+    color: theme.colors.destructive,
   },
 });

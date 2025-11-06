@@ -135,7 +135,7 @@ export default function ProgressScreenNew() {
         <View style={styles.errorContainer}>
           <Card style={styles.errorCard}>
             <CardContent style={styles.errorContent}>
-              <Ionicons name="warning" size={48} color="#ef4444" />
+              <Ionicons name="warning" size={48} color={theme.colors.destructive} />
               <Text style={styles.errorTitle}>Error</Text>
               <Text style={styles.errorText}>Failed to load progress data</Text>
               <TouchableOpacity style={styles.retryButton} onPress={onRefresh}>
@@ -185,7 +185,7 @@ export default function ProgressScreenNew() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#F9FAFB',
   },
 
   // Simple header with just back button
@@ -194,9 +194,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: theme.colors.border,
     gap: theme.spacing.md,
   },
   screenTitle: {
@@ -212,9 +212,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: theme.colors.border,
   },
   backButton: {
     padding: theme.spacing.sm,
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   logoIcon: {
     width: 24,
     height: 24,
-    backgroundColor: '#3b82f6',
+    backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.sm,
     alignItems: 'center',
     justifyContent: 'center',
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
   },
   errorCard: {
-    borderColor: '#fee2e2',
+    borderColor: theme.colors.destructive50,
   },
   errorContent: {
     alignItems: 'center',
@@ -287,11 +287,11 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '600',
-    color: '#dc2626',
+    color: theme.colors.destructive,
   },
   errorText: {
     fontSize: theme.fontSize.base,
-    color: '#dc2626',
+    color: theme.colors.destructive,
     textAlign: 'center',
   },
   retryButton: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.md,
   },
   retryButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontWeight: '600',
   },
 

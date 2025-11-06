@@ -65,7 +65,7 @@ export default function MissionScreen() {
             {/* Card 1 - Problem */}
             <View style={styles.card}>
               <View style={styles.cardIcon}>
-                <Ionicons name="time" size={20} color="#EF4444" />
+                <Ionicons name="time" size={20} color={theme.colors.destructive} />
               </View>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>The Challenge</Text>
@@ -78,7 +78,7 @@ export default function MissionScreen() {
             {/* Card 2 - Understanding */}
             <View style={styles.card}>
               <View style={styles.cardIcon}>
-                <Ionicons name="people" size={20} color="#F59E0B" />
+                <Ionicons name="people" size={20} color={theme.colors.warning500} />
               </View>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>We Understand You</Text>
@@ -91,7 +91,7 @@ export default function MissionScreen() {
             {/* Card 3 - Solution */}
             <View style={styles.card}>
               <View style={styles.cardIcon}>
-                <Ionicons name="bulb" size={20} color="#10B981" />
+                <Ionicons name="bulb" size={20} color={theme.colors.success500} />
               </View>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>Our Solution</Text>

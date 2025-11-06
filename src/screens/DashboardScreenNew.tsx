@@ -611,18 +611,18 @@ useEffect(() => {
                     {/* Stats Cards */}
                     <View style={styles.statsGrid}>
                       <View style={[styles.statCard, styles.statCardBlue]}>
-                        <Text style={[styles.statValue, { color: '#2563eb' }]}>{stats.streak}</Text>
-                        <Text style={[styles.statLabel, { color: '#1e40af' }]}>Day Streak</Text>
+                        <Text style={[styles.statValue, { color: theme.colors.primary }]}>{stats.streak}</Text>
+                        <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Day Streak</Text>
                       </View>
                       
                       <View style={[styles.statCard, styles.statCardGreen]}>
-                        <Text style={[styles.statValue, { color: '#059669' }]}>{stats.lessonsCompleted}</Text>
-                        <Text style={[styles.statLabel, { color: '#047857' }]}>Lessons Done</Text>
+                        <Text style={[styles.statValue, { color: theme.colors.success500 }]}>{stats.lessonsCompleted}</Text>
+                        <Text style={[styles.statLabel, { color: theme.colors.success600 }]}>Lessons Done</Text>
                       </View>
                       
                       <View style={[styles.statCard, styles.statCardPurple]}>
-                        <Text style={[styles.statValue, { color: '#7c3aed' }]}>{stats.wordsLearned}</Text>
-                        <Text style={[styles.statLabel, { color: '#6b21a8' }]}>Words Learned</Text>
+                        <Text style={[styles.statValue, { color: theme.colors.primary }]}>{stats.wordsLearned}</Text>
+                        <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Words Learned</Text>
                       </View>
                     </View>
                   </CardContent>
@@ -634,7 +634,7 @@ useEffect(() => {
                   <Card style={styles.disabledNotificationCard}>
                     <CardContent style={styles.disabledNotificationContent}>
                       <View style={styles.disabledNotificationIcon}>
-                        <Ionicons name="notifications-off" size={20} color="#f59e0b" />
+                        <Ionicons name="notifications-off" size={20} color={theme.colors.warning500} />
                       </View>
                       <View style={styles.disabledNotificationInfo}>
                         <Text style={styles.disabledNotificationTitle}>
@@ -664,12 +664,12 @@ useEffect(() => {
                         {/* Next lesson - prominent display */}
                         <View style={[
                           styles.nextLessonCard,
-                          { backgroundColor: upcomingLessons[0]?.isReview ? '#eab308' : '#7c3aed' }
+                          { backgroundColor: upcomingLessons[0]?.isReview ? theme.colors.warning500 : theme.colors.primary }
                         ]}>
                           <View style={styles.nextLessonInfo}>
                             <View style={styles.nextLessonHeader}>
                               {upcomingLessons[0]?.isReview && (
-                                <Ionicons name="trophy" size={20} color="#fef3c7" />
+                                <Ionicons name="trophy" size={20} color={theme.colors.warning50} />
                               )}
                               <Text style={styles.nextLessonTitle}>
                                 {upcomingLessons[0]?.title || 'Basic Greetings'}
@@ -728,7 +728,7 @@ useEffect(() => {
                       </>
                     ) : (
                       <View style={styles.noLessonsContainer}>
-                        <Ionicons name="checkmark-circle" size={48} color="#10b981" />
+                        <Ionicons name="checkmark-circle" size={48} color={theme.colors.success500} />
                         <Text style={styles.noLessonsTitle}>All lessons completed!</Text>
                         <Text style={styles.noLessonsSubtitle}>Check back later for new content.</Text>
                       </View>
@@ -748,7 +748,7 @@ useEffect(() => {
                           <Ionicons 
                             name="checkmark-circle" 
                             size={20} 
-                            color="#10b981" 
+                            color={theme.colors.success500} 
                           />
                         </View>
                         <View style={styles.recentInfo}>
@@ -787,14 +787,14 @@ useEffect(() => {
                           item.status === 'locked' && styles.pathIconLocked
                         ]}>
                           {item.status === 'completed' ? (
-                            <Ionicons name="checkmark-circle" size={16} color="#ffffff" />
+                            <Ionicons name="checkmark-circle" size={16} color={theme.colors.primaryForeground} />
                           ) : (
                             <Text style={[
                               styles.pathIconText,
-                              item.status === 'completed' && { color: '#ffffff' },
-                              item.status === 'current' && { color: '#ffffff' },
-                              item.status === 'available' && { color: '#2563eb' },
-                              item.status === 'locked' && { color: '#9ca3af' }
+                              item.status === 'completed' && { color: theme.colors.primaryForeground },
+                              item.status === 'current' && { color: theme.colors.primaryForeground },
+                              item.status === 'available' && { color: theme.colors.primary },
+                              item.status === 'locked' && { color: theme.colors.mutedForeground }
                             ]}>
                               {index + 1}
                             </Text>
@@ -851,7 +851,7 @@ useEffect(() => {
 const createStyles = (isTablet: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#F9FAFB',
   },
   safeArea: {
     flex: 1,
@@ -863,15 +863,15 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: '#ef4444',
+    color: theme.colors.destructive,
     textAlign: 'center',
   },
 
   // Header - matching web exactly
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: theme.colors.border,
     marginTop: 10,
   },
   headerContent: {
@@ -897,7 +897,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   logoIcon: {
     width: 32,
     height: 32,
-    backgroundColor: '#2563eb',
+    backgroundColor: theme.colors.primary,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -905,7 +905,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   logoText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   dashboardButton: {
     paddingVertical: 8,
@@ -913,7 +913,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   dashboardButtonText: {
     fontSize: 16,
-    color: '#2563eb',
+    color: theme.colors.primary,
     fontWeight: '500',
     paddingRight: 5,
   },
@@ -974,10 +974,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
 
   // Loading Card
   loadingCard: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: theme.colors.primary50,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#dbeafe',
+    borderColor: theme.colors.primary100,
   },
   loadingContent: {
     flexDirection: 'row',
@@ -988,15 +988,15 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   loadingText: {
     fontSize: 14,
-    color: '#2563eb',
+    color: theme.colors.primary,
   },
 
   // Welcome Card - matching web exactly
   welcomeCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
   },
   welcomeContent: {
     padding: 24,
@@ -1005,14 +1005,14 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   welcomeTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   welcomeSubtitle: {
     fontSize: 16,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   languageText: {
-    color: '#2563eb',
+    color: theme.colors.primary,
     fontWeight: '500',
   },
   levelContainer: {
@@ -1021,13 +1021,13 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     justifyContent: 'space-between',
   },
   levelBadge: {
-    backgroundColor: '#2563eb',
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 16,
   },
   levelBadgeText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -1036,7 +1036,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
 
   // Stats Grid - Mobile/Desktop Responsive (matching web exactly)
@@ -1052,16 +1052,16 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     borderWidth: 1,
   },
   statCardBlue: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#dbeafe',
+    backgroundColor: theme.colors.primary50,
+    borderColor: theme.colors.primary100,
   },
   statCardGreen: {
-    backgroundColor: '#f0fdf4',
-    borderColor: '#dcfce7',
+    backgroundColor: theme.colors.success50,
+    borderColor: theme.colors.success50,
   },
   statCardPurple: {
-    backgroundColor: '#faf5ff',
-    borderColor: '#e9d5ff',
+    backgroundColor: theme.colors.primary50,
+    borderColor: theme.colors.primary100,
   },
   statValue: {
     fontSize: 24,
@@ -1077,8 +1077,8 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   sessionCard: {
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#bfdbfe',
-    backgroundColor: '#f0f9ff',
+    borderColor: theme.colors.primary100,
+    backgroundColor: theme.colors.primary50,
   },
   sessionContent: {
     padding: 24,
@@ -1090,21 +1090,21 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   sessionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1e3a8a',
+    color: theme.colors.primary,
     marginBottom: 8,
   },
   sessionSubtitle: {
     fontSize: 14,
-    color: '#3b82f6',
+    color: theme.colors.primary,
   },
   sessionNote: {
     fontSize: 12,
-    color: '#059669',
+    color: theme.colors.success500,
     fontWeight: '500',
     marginTop: 8,
   },
   sessionButton: {
-    backgroundColor: '#2563eb',
+    backgroundColor: theme.colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1117,7 +1117,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     marginRight: 4,
   },
   sessionButtonText: {
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
     fontSize: 16,
     fontWeight: '500',
   },
@@ -1126,8 +1126,8 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   activeSessionCard: {
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#bbf7d0',
-    backgroundColor: '#f0fdf4',
+    borderColor: theme.colors.success50,
+    backgroundColor: theme.colors.success50,
   },
   activeSessionContent: {
     flexDirection: 'row',
@@ -1138,7 +1138,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   activeSessionIcon: {
     width: 32,
     height: 32,
-    backgroundColor: '#dcfce7',
+    backgroundColor: theme.colors.success50,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1149,19 +1149,19 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   activeSessionTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#14532d',
+    color: theme.colors.success600,
   },
   activeSessionSubtitle: {
     fontSize: 12,
-    color: '#166534',
+    color: theme.colors.success600,
   },
 
   // Upcoming Card (matching web exactly)
   upcomingCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
   },
   upcomingHeader: {
     flexDirection: 'row',
@@ -1173,16 +1173,16 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   upcomingTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   upcomingBadge: {
-    backgroundColor: '#f3e8ff',
+    backgroundColor: theme.colors.primary50,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   upcomingBadgeText: {
-    color: '#7c3aed',
+    color: theme.colors.primary,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -1211,20 +1211,20 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   nextLessonTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
+    color: theme.colors.primaryForeground,
   },
   nextLessonDescription: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
   },
   nextLessonButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
   },
   nextLessonButtonText: {
-    color: '#7c3aed',
+    color: theme.colors.primary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -1238,12 +1238,12 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#F9FAFB',
   },
   upcomingItemReview: {
-    backgroundColor: '#fefce8',
+    backgroundColor: theme.colors.warning50,
     borderLeftWidth: 2,
-    borderLeftColor: '#eab308',
+    borderLeftColor: theme.colors.warning500,
   },
   upcomingItemContent: {
     flex: 1,
@@ -1251,17 +1251,17 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   upcomingItemTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   upcomingItemTitleReview: {
-    color: '#92400e',
+    color: theme.colors.warning600,
   },
   upcomingItemDescription: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   upcomingItemDescriptionReview: {
-    color: '#a16207',
+    color: theme.colors.warning600,
   },
 
   // No Lessons (matching web exactly)
@@ -1273,24 +1273,24 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   noLessonsTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   noLessonsSubtitle: {
     fontSize: 14,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
 
   // Recent Card (matching web exactly)
   recentCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
   },
   recentTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
     padding: 16,
     paddingBottom: 0,
   },
@@ -1304,12 +1304,12 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     gap: 12,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#F9FAFB',
   },
   recentIcon: {
     width: 32,
     height: 32,
-    backgroundColor: '#dcfce7',
+    backgroundColor: theme.colors.success50,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1320,11 +1320,11 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   recentItemTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   recentItemSubtitle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   recentScore: {
     alignItems: 'flex-end',
@@ -1332,15 +1332,15 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   recentScoreText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#10b981',
+    color: theme.colors.success500,
   },
   recentDate: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   viewAllButton: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: theme.colors.border,
     borderRadius: 6,
     paddingVertical: 12,
     alignItems: 'center',
@@ -1348,20 +1348,20 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   viewAllButtonText: {
     fontSize: 14,
-    color: '#374151',
+    color: theme.colors.foreground,
   },
 
   // Learning Path (matching web exactly)
   pathCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: theme.colors.border,
   },
   pathTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
     padding: 16,
     paddingBottom: 0,
   },
@@ -1382,16 +1382,16 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     justifyContent: 'center',
   },
   pathIconCompleted: {
-    backgroundColor: '#059669',
+    backgroundColor: theme.colors.success500,
   },
   pathIconCurrent: {
-    backgroundColor: '#2563eb',
+    backgroundColor: theme.colors.primary,
   },
   pathIconAvailable: {
-    backgroundColor: '#dbeafe',
+    backgroundColor: theme.colors.primary100,
   },
   pathIconLocked: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: theme.colors.border,
   },
   pathIconText: {
     fontSize: 12,
@@ -1403,42 +1403,42 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   pathName: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   pathProgress: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   pathStatus: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   pathFooter: {
     alignItems: 'center',
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: theme.colors.border,
     gap: 8,
   },
   pathFooterTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#2563eb',
+    color: theme.colors.primary,
   },
   pathFooterSubtitle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.mutedForeground,
   },
   pathFooterButton: {
     borderWidth: 1,
-    borderColor: '#2563eb',
+    borderColor: theme.colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 4,
   },
   pathFooterButtonText: {
     fontSize: 14,
-    color: '#2563eb',
+    color: theme.colors.primary,
   },
 
   // Add these new styles:
@@ -1446,7 +1446,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#fef2f2',
+    backgroundColor: theme.colors.destructive50,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1454,8 +1454,8 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationCard: {
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#fde68a',
-    backgroundColor: '#fffbeb',
+    borderColor: theme.colors.warning200,
+    backgroundColor: theme.colors.warning50,
   },
   disabledNotificationContent: {
     flexDirection: 'row',
@@ -1466,7 +1466,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationIcon: {
     width: 32,
     height: 32,
-    backgroundColor: '#fef3c7',
+    backgroundColor: theme.colors.warning50,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1477,10 +1477,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#92400e',
+    color: theme.colors.warning600,
   },
   disabledNotificationSubtitle: {
     fontSize: 12,
-    color: '#a16207',
+    color: theme.colors.warning600,
   },
 });

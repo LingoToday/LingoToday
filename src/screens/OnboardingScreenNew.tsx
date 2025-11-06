@@ -687,7 +687,7 @@ const RegistrationScreen = ({
         
         {registerErrors.general && (
           <Alert style={styles.errorAlert}>
-            <Ionicons name="alert-circle" size={16} color="#dc2626" />
+            <Ionicons name="alert-circle" size={16} color={theme.colors.destructive} />
             <AlertDescription>
               <Text style={styles.errorAlertText}>{registerErrors.general}</Text>
             </AlertDescription>
@@ -887,7 +887,7 @@ const NotificationScreen = ({
         
         {isUpdatingSettings && (
           <View style={styles.loadingContainer}>
-            <Ionicons name="hourglass" size={20} color="#6366f1" />
+            <Ionicons name="hourglass" size={20} color={theme.colors.primary} />
             <Text style={styles.loadingText}>Saving preferences...</Text>
           </View>
         )}
@@ -898,7 +898,7 @@ const NotificationScreen = ({
   return (
     <View style={styles.screenContent}>
       <View style={styles.notificationIconContainer}>
-        <Ionicons name="notifications" size={32} color="#6366f1" />
+        <Ionicons name="notifications" size={32} color={theme.colors.primary} />
       </View>
       <Text style={styles.screenTitle}>
         Stay on track with gentle nudges
@@ -1139,7 +1139,7 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     return (
       <View style={styles.stripeFormContainer}>
         <View style={styles.loadingContainer}>
-          <Ionicons name="hourglass" size={32} color="#6366f1" />
+          <Ionicons name="hourglass" size={32} color={theme.colors.primary} />
           <Text style={styles.loadingText}>Loading subscription options...</Text>
         </View>
       </View>
@@ -1150,14 +1150,14 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     return (
       <View style={styles.stripeFormContainer}>
         <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={48} color="#EF4444" style={{ marginBottom: 16 }} />
+          <Ionicons name="alert-circle" size={48} color={theme.colors.destructive} style={{ marginBottom: 16 }} />
           <Text style={styles.errorTitle}>Unable to Load Subscription Options</Text>
           <Text style={styles.errorText}>
             {errorMessage || 'No subscription options available at this time.'}
           </Text>
           <Button onPress={initializeAndFetchOfferings} style={styles.retryButton}>
             <View style={styles.stripeButtonContent}>
-              <Ionicons name="refresh" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
+              <Ionicons name="refresh" size={16} color="#ffffff" style={{ marginRight: 8 }} />
               <Text style={styles.retryButtonText}>Retry</Text>
             </View>
           </Button>
@@ -1241,7 +1241,7 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
           ]}
         >
           <View style={styles.stripeButtonContent}>
-            {isProcessing && <Ionicons name="hourglass" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />}
+            {isProcessing && <Ionicons name="hourglass" size={16} color="#ffffff" style={{ marginRight: 8 }} />}
             <Text style={[
               styles.stripeSubmitButtonText,
               (isProcessing || !selectedPackage) && styles.stripeSubmitButtonTextDisabled
@@ -1305,7 +1305,7 @@ const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
       <View style={styles.screenContent}>
         <Text style={styles.screenTitle}>Setting up Payment</Text>
         <View style={styles.loadingContainer}>
-          <Ionicons name="hourglass" size={32} color="#6366f1" />
+          <Ionicons name="hourglass" size={32} color={theme.colors.primary} />
           <Text style={styles.loadingText}>Loading payment form...</Text>
         </View>
       </View>
@@ -1382,8 +1382,8 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
       name: "Anna Müller",
       title: "Property Manager, Berlin",
       initials: "AM",
-      avatarBg: '#D1FAE5', // green-100
-      avatarText: '#059669', // green-600
+      avatarBg: theme.colors.success500,
+      avatarText: theme.colors.success500,
     },
     {
       id: 2,
@@ -1391,8 +1391,8 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
       name: "Paul Martinez",
       title: "Product Manager, London",
       initials: "SM",
-      avatarBg: '#DBEAFE', // blue-100
-      avatarText: '#2563EB', // blue-600
+      avatarBg: theme.colors.primary,
+      avatarText: theme.colors.primary,
     },
     {
       id: 3,
@@ -1400,8 +1400,8 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
       name: "Sophie Liu",
       title: "Software Engineer, London",
       initials: "AL",
-      avatarBg: '#EDE9FE', // purple-100
-      avatarText: '#7C3AED', // purple-600
+      avatarBg: theme.colors.primary,
+      avatarText: theme.colors.primary,
     }
   ];
 
@@ -1444,7 +1444,7 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
               <View style={styles.testimonialCard}>
                 <View style={styles.testimonialStarsRow}>
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Ionicons key={i} name="star" size={20} color="#FBBF24" />
+                    <Ionicons key={i} name="star" size={20} color={theme.colors.warning500} />
                   ))}
                 </View>
                 <Text style={styles.testimonialText}>"{t.text}"</Text>
@@ -1466,7 +1466,7 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
 
         <View style={styles.testimonialNavContainer}>
           <Button onPress={scrollPrev} style={styles.testimonialArrowButton}>
-            <Ionicons name="chevron-back" size={20} color="#111827" />
+            <Ionicons name="chevron-back" size={20} color={theme.colors.foreground} />
           </Button>
           <View style={styles.testimonialDotsRow}>
             {testimonials.map((_, i) => (
@@ -1476,7 +1476,7 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
             ))}
           </View>
           <Button onPress={scrollNext} style={styles.testimonialArrowButton}>
-            <Ionicons name="chevron-forward" size={20} color="#111827" />
+            <Ionicons name="chevron-forward" size={20} color={theme.colors.foreground} />
           </Button>
         </View>
       </View>

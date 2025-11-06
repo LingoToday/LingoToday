@@ -92,7 +92,7 @@ export default function LoginScreen() {
               style={styles.logoContainer}
             >
               <View style={styles.logoIcon}>
-                <Ionicons name="globe" size={18} color="#ffffff" />
+                <Ionicons name="globe" size={18} color={theme.colors.primaryForeground} />
               </View>
               <Text style={styles.logoText}>LingoToday</Text>
             </TouchableOpacity>
@@ -119,7 +119,7 @@ export default function LoginScreen() {
                 {/* General Error Alert */}
                 {loginErrors.general && (
                   <View style={styles.errorAlert}>
-                    <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                    <Ionicons name="alert-circle" size={16} color={theme.colors.destructive} />
                     <Text style={styles.errorText}>{loginErrors.general}</Text>
                   </View>
                 )}
@@ -133,7 +133,7 @@ export default function LoginScreen() {
                       <Ionicons 
                         name="mail-outline" 
                         size={16} 
-                        color="#9CA3AF" 
+                        color={theme.colors.mutedForeground} 
                         style={styles.inputIcon} 
                       />
                       <Input
@@ -162,7 +162,7 @@ export default function LoginScreen() {
                       <Ionicons 
                         name="lock-closed-outline" 
                         size={16} 
-                        color="#9CA3AF" 
+                        color={theme.colors.mutedForeground} 
                         style={styles.inputIcon} 
                       />
                       <Input
@@ -255,12 +255,12 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   headerTitle: {
     fontSize: 30,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
   linkText: {
     fontSize: 14,
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   formCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
     marginBottom: 16,
   },
 
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
     marginBottom: 6,
   },
   inputContainer: {
@@ -353,11 +353,11 @@ const styles = StyleSheet.create({
   input: {
     paddingLeft: 40, // Space for icon
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: theme.colors.input,
     borderRadius: 6,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
     height: 40, // Match web h-10 (40px)
     marginBottom: 0, // Remove default margin from Input component
   },
@@ -368,11 +368,11 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   inputError: {
-    borderColor: '#DC2626',
+    borderColor: theme.colors.destructive,
   },
   fieldError: {
     fontSize: 14,
-    color: '#DC2626',
+    color: theme.colors.destructive,
     marginTop: 4,
   },
 
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
   bottomLink: {
     fontSize: 14,

@@ -308,7 +308,7 @@ export default function SubscriptionScreenNew() {
                 <View style={{ height: 8 }} />
                 {planFeatures.pro.map((feature, idx) => (
                   <View key={`pro-${idx}`} style={styles.featureRow}>
-                    <Ionicons name="checkmark" size={16} color="#2563EB" style={{ marginRight: 8 }} />
+                    <Ionicons name="checkmark" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
                     <Text style={styles.featureText}>{feature}</Text>
                   </View>
                 ))}
@@ -334,7 +334,7 @@ export default function SubscriptionScreenNew() {
           <View style={{ gap: 12 }}>
             <Button onPress={handleChangePlan} testID="change-plan-button">
               <View style={styles.buttonContent}>
-                <Ionicons name="diamond" size={16} color="#FFFFFF" />
+                <Ionicons name="diamond" size={16} color={theme.colors.primaryForeground} />
                 <Text style={styles.buttonText}>Change Plan</Text>
               </View>
             </Button>
@@ -382,12 +382,12 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'rgba(249, 250, 251, 1)' },
   safeArea: { flex: 1 },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(249, 250, 251, 1)' },
-  loadingText: { marginTop: 12, color: '#6B7280', fontSize: 16 },
+  loadingText: { marginTop: 12, color: theme.colors.mutedForeground, fontSize: 16 },
 
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: theme.colors.border,
     ...Platform.select({
       ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
       android: { elevation: 2 },
@@ -399,38 +399,38 @@ const styles = StyleSheet.create({
   },
   backButton: { paddingVertical: 6, paddingHorizontal: 8, borderRadius: 6 },
   headerCenter: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: -1 },
-  headerTitle: { fontSize: 18, fontWeight: '600', color: '#111827', marginTop: 10 },
+  headerTitle: { fontSize: 18, fontWeight: '600', color: theme.colors.foreground, marginTop: 10 },
 
   contentWrapper: { maxWidth: 896, alignSelf: 'center', width: '100%', paddingHorizontal: 16, paddingVertical: 24 },
   stack: { gap: 16 },
 
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8 }, android: { elevation: 3 } }),
   },
   cardTitle: { flexDirection: 'row', alignItems: 'center' },
-  cardTitleText: { fontSize: 18, fontWeight: '600', color: '#111827' },
+  cardTitleText: { fontSize: 18, fontWeight: '600', color: theme.colors.foreground },
 
-  muted: { fontSize: 12, color: '#6B7280' },
+  muted: { fontSize: 12, color: theme.colors.mutedForeground },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  price: { fontSize: 24, fontWeight: '700', color: '#111827' },
-  renewal: { fontSize: 16, fontWeight: '500', color: '#111827' },
+  price: { fontSize: 24, fontWeight: '700', color: theme.colors.foreground },
+  renewal: { fontSize: 16, fontWeight: '500', color: theme.colors.foreground },
 
-  badge: { backgroundColor: '#E5E7EB', alignSelf: 'flex-start' },
-  badgePro: { backgroundColor: '#2563EB' },
+  badge: { backgroundColor: theme.colors.border, alignSelf: 'flex-start' },
+  badgePro: { backgroundColor: theme.colors.primary },
   badgePlus: { backgroundColor: '#7C3AED' },
-  badgeText: { fontSize: 12, fontWeight: '500', color: '#6B7280' },
-  badgeTextWhite: { color: '#FFFFFF' },
+  badgeText: { fontSize: 12, fontWeight: '500', color: theme.colors.mutedForeground },
+  badgeTextWhite: { color: theme.colors.primaryForeground },
 
   featureRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 6 },
-  featureText: { color: '#4B5563', fontSize: 14 },
+  featureText: { color: theme.colors.mutedForeground, fontSize: 14 },
 
   buttonContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '500' },
+  buttonText: { color: theme.colors.primaryForeground, fontSize: 16, fontWeight: '500' },
 
   deleteAccountContainer: {
     alignItems: 'center',
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   deleteAccountLink: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: theme.colors.mutedForeground,
     textDecorationLine: 'underline',
   },
 
@@ -451,11 +451,11 @@ const styles = StyleSheet.create({
   },
   legalLink: { 
     fontSize: 12, 
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textDecorationLine: 'underline',
   },
   legalSeparator: { 
     fontSize: 12, 
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
 });

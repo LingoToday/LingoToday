@@ -105,7 +105,7 @@ export default function CourseTestScreen() {
           <Card style={styles.errorCard}>
             <CardContent style={styles.errorContent}>
               <View style={styles.errorIcon}>
-                <Ionicons name="warning" size={48} color="#ef4444" />
+                <Ionicons name="warning" size={48} color={theme.colors.destructive} />
               </View>
               <Text style={styles.errorTitle}>Error Loading Data</Text>
               <Text style={styles.errorText}>
