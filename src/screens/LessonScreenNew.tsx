@@ -1216,29 +1216,45 @@ export default function LessonScreen() {
       
       {/* FIXED: Improved Header - Hide when showing intro video */}
       {!showIntroVideo && (
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={20} color={theme.colors.foreground} />
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.headerContent}>
-            <Text style={styles.headerTitle} numberOfLines={1} adjustsFontSizeToFit>
-              {currentLesson?.lesson?.title || 'Lesson'}
-            </Text>
-            <Text style={styles.headerSubtitle} numberOfLines={1}>
-              {courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')}
-            </Text>
-            {stepData?.isReview ? (
-              <Text style={styles.headerProgress}>Question {currentStep} of {stepData.totalQuestions}</Text>
-            ) : stepData?.type === 'irl_video' ? null : (
-              <Text style={styles.headerProgress}>Step {currentStep} of {getTotalSteps()}</Text>
-            )}
+        <>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="arrow-back" size={20} color={theme.colors.foreground} />
+            </TouchableOpacity>
+            
+            <View style={styles.headerContent}>
+              <Text style={styles.headerTitle} numberOfLines={1} adjustsFontSizeToFit>
+                {currentLesson?.lesson?.title || 'Lesson'}
+              </Text>
+              <Text style={styles.headerSubtitle} numberOfLines={1}>
+                {courseId?.replace('course', 'Course ')} - {lessonId?.replace('lesson', 'Lesson ').replace('review', 'Review ')} - {stepData?.isReview ? `Question ${currentStep} of ${stepData.totalQuestions}` : `Step ${currentStep} of ${getTotalSteps()}`}
+              </Text>
+            </View>
+            
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+          
+          {/* Progress Bar */}
+          {stepData?.type !== 'irl_video' && (
+            <View style={styles.progressBarContainer}>
+              <View
+                style={[styles.progressBar, { 
+                  width: `${stepData?.isReview 
+                    ? (currentStep / (stepData.totalQuestions || 1)) * 100 
+                    : (currentStep / getTotalSteps()) * 100}%` 
+                }]}
+              />
+            </View>
+          )}
+        </>
       )}
 
       {/* Lesson Content - Hide when showing intro video */}
@@ -1409,34 +1425,53 @@ export default function LessonScreen() {
               {/* Quick Check Step */}
               {stepData && stepData.type === 'quick_check' && (
                 <>
-                  <View style={styles.stepHeader}>
-                    <Text style={styles.stepTitle}>🎯 Quick Check</Text>
-                    <Text style={styles.questionText}>{stepData.question}</Text>
+                  <View style={styles.quickCheckHeader}>
+                    <Text style={styles.quickCheckTitle}>{currentStep}. Quick Check</Text>
+                    <Text style={styles.quickCheckQuestion}>{stepData.question}</Text>
                   </View>
 
                   <View style={styles.optionsContainer}>
-                    {stepData.options.map((option: string, index: number) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={[
-                          styles.optionButton,
-                          selectedAnswer === option && styles.selectedOption,
-                          showResult && option === stepData.answer && styles.correctOption,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
-                        ]}
-                        onPress={() => !showResult && setSelectedAnswer(option)}
-                        disabled={showResult}
-                      >
-                        <Text style={[
-                          styles.optionText,
-                          selectedAnswer === option && styles.selectedOptionText,
-                          showResult && option === stepData.answer && styles.correctOptionText,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
-                        ]}>
-                          {option} {showResult && option === stepData.answer && '✅'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                    {stepData.options.map((option: string, index: number) => {
+                      const letters = ['A', 'B', 'C', 'D'];
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          style={[
+                            styles.optionButton,
+                            selectedAnswer === option && styles.selectedOption,
+                            showResult && option === stepData.answer && styles.correctOption,
+                            showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                          ]}
+                          onPress={() => !showResult && setSelectedAnswer(option)}
+                          disabled={showResult}
+                        >
+                          <View style={styles.optionLabelContainer}>
+                            <View style={[
+                              styles.optionLabel,
+                              selectedAnswer === option && styles.selectedOptionLabel
+                            ]}>
+                              <Text style={[
+                                styles.optionLabelText,
+                                selectedAnswer === option && styles.selectedOptionLabelText
+                              ]}>
+                                {letters[index]}
+                              </Text>
+                            </View>
+                          </View>
+                          <Text style={[
+                            styles.optionText,
+                            selectedAnswer === option && styles.selectedOptionText,
+                            showResult && option === stepData.answer && styles.correctOptionText,
+                            showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
+                          ]}>
+                            {option}
+                          </Text>
+                          {showResult && option === stepData.answer && (
+                            <Text style={styles.checkmark}>✓</Text>
+                          )}
+                        </TouchableOpacity>
+                      );
+                    })}
                   </View>
                 </>
               )}
@@ -1629,6 +1664,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
     borderBottomWidth: 1,
@@ -1642,16 +1678,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: theme.spacing.xs,
     paddingRight: theme.spacing.sm,
-    minWidth: 60, // Ensure touch target
+    minWidth: 40,
   },
   backButtonText: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.foreground,
     marginLeft: theme.spacing.xs,
   },
+  closeButton: {
+    padding: theme.spacing.xs,
+    minWidth: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: theme.colors.foreground,
+    fontWeight: '300' as any,
+  },
   headerContent: {
     flex: 1,
-    marginLeft: theme.spacing.xs,
+    marginHorizontal: theme.spacing.xs,
+    alignItems: 'center',
     paddingRight: theme.spacing.sm, // Prevent text from touching edge
   },
   headerTitle: {
@@ -1668,6 +1716,17 @@ const styles = StyleSheet.create({
   headerProgress: {
     fontSize: theme.fontSize.xs,
     color: theme.colors.mutedForeground,
+  },
+  
+  // Progress Bar
+  progressBarContainer: {
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    width: '100%',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#60A5FA',
   },
 
   // Content
@@ -1844,6 +1903,26 @@ const styles = StyleSheet.create({
     lineHeight: theme.fontSize.sm * 1.5,
   },
 
+  // Quick Check Specific Styles
+  quickCheckHeader: {
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
+  },
+  quickCheckTitle: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '600' as any,
+    color: '#06B6D4',
+    textAlign: 'left',
+    letterSpacing: 0.5,
+  },
+  quickCheckQuestion: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '500' as any,
+    color: theme.colors.foreground,
+    textAlign: 'left',
+    marginTop: theme.spacing.xs,
+  },
+  
   // Questions and Options
   questionText: {
     fontSize: theme.fontSize.lg,
@@ -1861,12 +1940,44 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   optionButton: {
-    backgroundColor: theme.colors.card,
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 2,
-    borderColor: theme.colors.border,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
     padding: theme.spacing.lg,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: theme.spacing.md,
+  },
+  optionLabelContainer: {
+    marginRight: theme.spacing.xs,
+  },
+  optionLabel: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedOptionLabel: {
+    backgroundColor: '#DBEAFE',
+    borderColor: '#3B82F6',
+  },
+  optionLabelText: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '600' as any,
+    color: '#6B7280',
+  },
+  selectedOptionLabelText: {
+    color: '#3B82F6',
+  },
+  checkmark: {
+    fontSize: 18,
+    color: '#10b981',
+    marginLeft: 'auto',
   },
   selectedOption: {
     borderColor: theme.colors.primary,
@@ -1883,7 +1994,8 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: theme.fontSize.base,
     color: theme.colors.foreground,
-    textAlign: 'center',
+    textAlign: 'left',
+    flex: 1,
   },
   selectedOptionText: {
     color: theme.colors.primary,
@@ -2053,6 +2165,7 @@ const styles = StyleSheet.create({
   // Buttons
   submitButton: {
     marginTop: theme.spacing.md,
+    backgroundColor: '#7DD3FC',
   },
   nextButton: {
     backgroundColor: '#10b981',
