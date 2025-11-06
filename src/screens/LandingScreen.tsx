@@ -7,14 +7,15 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { theme } from '../lib/theme';
 
 const portraitVideo = require('../../attached_assets/copy_10F92020-BB3D-4CA0-947B-2634A0946F72_1761142720055.MOV');
+const logo = require('../../assets/logo.png');
 
 export default function LandingScreen() {
   const navigation = useNavigation();
@@ -47,9 +48,11 @@ export default function LandingScreen() {
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <View style={styles.logoIcon}>
-            <Ionicons name="globe" size={24} color="#ffffff" />
-          </View>
+          <Image 
+            source={logo} 
+            style={styles.logoIcon}
+            resizeMode="contain"
+          />
           <Text style={styles.logoText}>LingoToday</Text>
         </View>
 
@@ -113,15 +116,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   logoIcon: {
     width: 40,
     height: 40,
-    backgroundColor: theme.colors.primary,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginRight: 12,
   },
   logoText: {
