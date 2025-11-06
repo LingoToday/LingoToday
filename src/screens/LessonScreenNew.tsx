@@ -1376,27 +1376,30 @@ export default function LessonScreen() {
                 </>
               )}
 
-              {/* FIXED: Word Review Step with improved audio button */}
+              {/* Word Review Step - Updated to match screenshot */}
               {stepData && stepData.type === 'word_review' && (
                 <>
                   <View style={styles.wordReviewContainer}>
-                    <Text style={styles.lessonEmoji}>👋</Text>
-                    <Text style={styles.wordText}>{stepData.word}</Text>
+                    <Text style={styles.translationLabel}>TRANSLATION</Text>
                     <Text style={styles.translationText}>{stepData.translation}</Text>
+                    <Text style={styles.wordText}>{stepData.word}</Text>
                     
                     <TouchableOpacity 
                       style={styles.speakButton}
                       onPress={() => speakText(stepData.word)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={24} color="#ffffff" />
-                      <Text style={styles.speakButtonText}>Listen</Text>
+                      <Ionicons name="volume-high" size={20} color="#000000" />
+                      <Text style={styles.speakButtonText}>Pronunciation</Text>
                     </TouchableOpacity>
                   </View>
                   
                   {stepData.note && (
                     <View style={styles.noteContainer}>
-                      <Text style={styles.noteTitle}>Usage Note</Text>
+                      <View style={styles.noteTitleRow}>
+                        <Ionicons name="information-circle-outline" size={20} color="#3B82F6" />
+                        <Text style={styles.noteTitle}>When to use</Text>
+                      </View>
                       <Text style={styles.noteText}>{stepData.note}</Text>
                     </View>
                   )}
@@ -1766,67 +1769,79 @@ const styles = StyleSheet.create({
     };
   })(),
 
-  // FIXED: Word Review with better styling
+  // Word Review - Updated styling to match screenshot
   wordReviewContainer: {
     alignItems: 'center',
-    gap: theme.spacing.lg,
+    gap: theme.spacing.md,
     padding: theme.spacing.xl,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.borderRadius.lg,
+  },
+  translationLabel: {
+    fontSize: theme.fontSize.xs,
+    fontWeight: '600' as any,
+    color: '#6B7280',
+    textAlign: 'center',
+    letterSpacing: 0.5,
+    marginBottom: theme.spacing.xs,
   },
   lessonEmoji: {
     fontSize: 48,
     marginBottom: theme.spacing.sm,
   },
+  translationText: {
+    fontSize: theme.fontSize.base,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: theme.spacing.xs,
+  },
   wordText: {
     fontSize: theme.fontSize['3xl'],
     fontWeight: '700' as any,
-    color: '#2563EB',
+    color: '#3B82F6',
     textAlign: 'center',
+    marginBottom: theme.spacing.lg,
   },
-  translationText: {
-    fontSize: theme.fontSize.xl,
-    color: '#1E40AF',
-    textAlign: 'center',
-    marginBottom: theme.spacing.md,
-  },
-  // FIXED: Improved speak button styling
+  // Updated speak button to match screenshot
   speakButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#F3F4F6',
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.full,
     gap: theme.spacing.sm,
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   speakButtonText: {
-    color: '#ffffff',
-    fontSize: theme.fontSize.base,
-    fontWeight: '600' as any,
+    color: '#000000',
+    fontSize: theme.fontSize.sm,
+    fontWeight: '500' as any,
   },
   noteContainer: {
-    backgroundColor: '#EFF6FF',
-    borderLeftWidth: 4,
-    borderLeftColor: '#3B82F6',
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
     borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.md,
+    padding: theme.spacing.lg,
+    marginTop: theme.spacing.lg,
+  },
+  noteTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
   },
   noteTitle: {
-    fontSize: theme.fontSize.base,
+    fontSize: theme.fontSize.sm,
     fontWeight: '600' as any,
-    color: '#1E40AF',
-    marginBottom: theme.spacing.sm,
+    color: '#111827',
   },
   noteText: {
     fontSize: theme.fontSize.sm,
-    color: '#2563EB',
-    lineHeight: theme.fontSize.sm * 1.4,
+    color: '#6B7280',
+    lineHeight: theme.fontSize.sm * 1.5,
   },
 
   // Questions and Options
