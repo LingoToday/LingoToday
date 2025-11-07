@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthContext } from '../contexts/AuthContext';
 import styles from '../styles/OnboardingStyles';
+import { theme } from '../lib/theme';
 
 // Import UI components exactly like web version
 import { Button } from '../components/ui/Button';
@@ -413,7 +414,7 @@ const handlePaymentSuccess = async () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#EBF4FF" />
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
           {/* Progress bar - matching web exactly */}

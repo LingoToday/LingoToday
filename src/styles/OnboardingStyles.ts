@@ -1,41 +1,42 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextStyle } from 'react-native';
+import { theme } from '../lib/theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EBF4FF', // bg-gradient-to-br from-blue-50 to-indigo-100
+    backgroundColor: theme.colors.background, // Clean white background
   },
   safeArea: {
     flex: 1,
   },
   content: {
     flex: 1,
-    maxWidth: 512, // max-w-2xl
+    maxWidth: 512,
     alignSelf: 'center',
-    paddingHorizontal: 16, // px-4
-    paddingVertical: 24, // py-6
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.xl,
     width: '100%',
   },
 
-  // Progress bar - matching web exactly
+  // Progress bar
   progressSection: {
-    marginBottom: 32, // mb-8
+    marginBottom: theme.spacing.xxl,
   },
   progressBackground: {
     width: '100%',
-    backgroundColor: '#E5E7EB', // bg-gray-200
-    borderRadius: 9999, // rounded-full
-    height: 8, // h-2
+    backgroundColor: theme.colors.muted,
+    borderRadius: theme.borderRadius.full,
+    height: 8,
   },
   progressBar: {
-    height: 8, // h-2
-    backgroundColor: '#6366f1', // bg-primary
-    borderRadius: 9999, // rounded-full
+    height: 8,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.full,
   },
   progressText: {
-    fontSize: 14, // text-sm
-    color: '#6B7280', // text-gray-600
-    marginTop: 8, // mt-2
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    marginTop: theme.spacing.sm,
     textAlign: 'center',
   },
 
@@ -47,36 +48,36 @@ const styles = StyleSheet.create({
   },
   screenTransitioning: {
     opacity: 0,
-    transform: [{ translateX: 16 }], // transform translate-x-4
+    transform: [{ translateX: theme.spacing.lg }],
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: theme.spacing.xl,
   },
 
-  // Continue button - matching web exactly
+  // Continue button
   continueSection: {
-    marginTop: 32,
+    marginTop: theme.spacing.xxl,
     alignItems: 'center',
-    minHeight: 80, // Ensure consistent height regardless of hint text
+    minHeight: 80,
   },
   continueButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 14, // Slightly larger padding
-    borderRadius: 9999,
-    minWidth: 140, // Slightly wider
-    shadowColor: '#6366f1',
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
+    minWidth: 140,
+    shadowColor: theme.colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
   },
   continueButtonDisabled: {
-    backgroundColor: '#F3F4F6', // bg-gray-100 - lighter disabled state
-    borderWidth: 2, // Thicker border
-    borderColor: '#E5E7EB', // border-gray-200
-    shadowColor: '#000',
+    backgroundColor: theme.colors.muted,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    shadowColor: theme.colors.shadow,
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
@@ -87,374 +88,373 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   continueButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600', // font-semibold - slightly bolder
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "600" as TextStyle["fontWeight"],
   },
   continueButtonTextDisabled: {
-    color: '#6B7280', // text-gray-500 - better contrast than gray-400
+    color: theme.colors.mutedForeground,
   },
   continueButtonIcon: {
-    marginLeft: 8,
+    marginLeft: theme.spacing.sm,
   },
   continueHint: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 12, // mt-3 - more space from button
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    marginTop: theme.spacing.md,
     textAlign: 'center',
-    backgroundColor: '#F9FAFB', // bg-gray-50
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20, // rounded-full
+    backgroundColor: theme.colors.surfaceVariant,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius['2xl'],
     borderWidth: 1,
-    borderColor: '#E5E7EB', // border-gray-200
+    borderColor: theme.colors.border,
     overflow: 'hidden',
   },
 
-  // Screen Content - matching web
+  // Screen Content
   screenContent: {
-    alignItems: 'center', // text-center
+    alignItems: 'center',
     flex: 1,
   },
   screenTitle: {
-    fontSize: 30, // text-3xl
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
+    fontSize: theme.fontSize['3xl'],
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
     textAlign: 'center',
-    marginBottom: 8, // mb-2
+    marginBottom: theme.spacing.sm,
   },
   screenSubtitle: {
-    fontSize: 18, // text-lg
-    color: '#6B7280', // text-gray-600
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
-    marginBottom: 32, // mb-8
-    lineHeight: 28,
+    marginBottom: theme.spacing.xxl,
+    lineHeight: theme.lineHeight.lg,
   },
 
-  // Language Selection - matching web grid grid-cols-2 gap-4 max-w-md mx-auto
+  // Language Selection
   languageGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 16, // gap-4
-    maxWidth: 384, // max-w-md
+    gap: theme.spacing.lg,
+    maxWidth: 384,
     width: '100%',
   },
   languageCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12, // rounded-xl
-    padding: 24, // p-6
-    alignItems: 'center', // text-center
-    width: '47%', // 2 columns
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    alignItems: 'center',
+    width: '47%',
     borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
+    borderColor: theme.colors.border,
   },
   languageCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary50,
   },
   languageFlag: {
-    fontSize: 48, // text-4xl
-    marginBottom: 8, // mb-2
+    fontSize: theme.fontSize['4xl'],
+    marginBottom: theme.spacing.sm,
   },
   languageTitle: {
-    fontSize: 16, // font-semibold
-    fontWeight: '600',
-    color: '#111827', // text-gray-900
+    fontSize: theme.fontSize.base,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
   },
   languageTitleSelected: {
-    color: '#111827',
+    color: theme.colors.foreground,
   },
 
-  // Level Selection - matching web space-y-4 max-w-lg mx-auto
+  // Level Selection
   levelsList: {
-    gap: 16, // space-y-4
-    maxWidth: 512, // max-w-lg
+    gap: theme.spacing.lg,
+    maxWidth: 512,
     width: '100%',
   },
   levelCard: {
     width: '100%',
-    padding: 24, // p-6
-    borderRadius: 12, // rounded-xl
+    padding: theme.spacing.xl,
+    borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
-    backgroundColor: '#FFFFFF',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
   },
   levelCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary50,
   },
   levelTitle: {
-    fontSize: 20, // text-xl
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 8, // mb-2
+    fontSize: theme.fontSize.xl,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.sm,
   },
   levelTitleSelected: {
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   levelDescription: {
-    fontSize: 16, // text-base
-    color: '#6B7280', // text-gray-600
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
   },
   levelDescriptionSelected: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
 
-  // Style Selection - matching web design
+  // Style Selection
   styleCard: {
     width: '100%',
-    padding: 24, // p-6
-    borderRadius: 12, // rounded-xl
+    padding: theme.spacing.xl,
+    borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
-    borderColor: '#E5E7EB', // border-gray-200
-    backgroundColor: '#FFFFFF',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
     flexDirection: 'row',
-    alignItems: 'center', // flex items-center space-x-4
+    alignItems: 'center',
   },
   styleCardSelected: {
-    borderColor: '#6366f1', // border-primary
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary50,
   },
   styleIcon: {
-    fontSize: 28, // text-3xl
-    marginRight: 16, // space-x-4
+    fontSize: theme.fontSize['2.5xl'],
+    marginRight: theme.spacing.lg,
   },
   styleContent: {
     flex: 1,
   },
   styleTitle: {
-    fontSize: 20, // text-xl
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 4, // mb-1
+    fontSize: theme.fontSize.xl,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.xs,
   },
   styleTitleSelected: {
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   styleDescription: {
-    fontSize: 16, // text-base
-    color: '#6B7280', // text-gray-600
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
   },
   styleDescriptionSelected: {
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
 
-  // Registration Screen - matching web exactly
+  // Registration Screen
   errorAlert: {
-    borderColor: '#FECACA', // border-red-200
-    backgroundColor: '#FEF2F2', // bg-red-50
-    marginBottom: 24, // mb-6
+    borderColor: theme.colors.errorContainer,
+    backgroundColor: theme.colors.errorContainer,
+    marginBottom: theme.spacing.xl,
   },
   errorAlertText: {
-    color: '#B91C1C', // text-red-700
+    color: theme.colors.onErrorContainer,
   },
   formSpace: {
-    gap: 12, // Reduced from 16 to 12
-    maxWidth: 384, // max-w-md
+    gap: theme.spacing.md,
+    maxWidth: 384,
     width: '100%',
   },
   formField: {
-    marginBottom: 8, // Reduced from 16 to 8
+    marginBottom: theme.spacing.sm,
   },
   formLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 4, // Reduced from 6 to 4
+    fontSize: theme.fontSize.sm,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.xs,
   },
   formInput: {
-    // Input component handles its own styling
-    marginBottom: 0, // Ensure no extra bottom margin
+    marginBottom: 0,
   },
   formInputError: {
-    borderColor: '#EF4444', // border-red-500
+    borderColor: theme.colors.error,
   },
   fieldErrorText: {
-    fontSize: 12,
-    color: '#EF4444', // text-red-500
-    marginTop: 2, // Reduced from 4 to 2
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.error,
+    marginTop: theme.spacing.xxs,
   },
   registerButton: {
-    backgroundColor: '#6366f1', // bg-primary hover:bg-primary/90
-    paddingHorizontal: 32, // px-8
-    paddingVertical: 12, // py-3
-    borderRadius: 9999, // rounded-full
-    marginTop: 16, // Reduced from 24 to 16
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
+    marginTop: theme.spacing.lg,
     width: '100%',
   },
   registerButtonDisabled: {
-    opacity: 0.5, // disabled:opacity-50
+    opacity: 0.5,
   },
   registerButtonText: {
-    color: '#FFFFFF', // text-white
-    fontSize: 16, // font-medium
-    fontWeight: '500',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   registerButtonTextDisabled: {
-    color: '#9CA3AF',
+    color: theme.colors.mutedForeground,
   },
 
-  // Terms section - reduced spacing
+  // Terms section
   termsSection: {
-    marginTop: 16, // Reduced from 24 to 16
-    paddingTop: 12, // Reduced from 16 to 12
+    marginTop: theme.spacing.lg,
+    paddingTop: theme.spacing.md,
   },
   termsText: {
-    fontSize: 12, // text-xs
-    color: '#6B7280', // text-gray-600
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: theme.lineHeight.sm,
   },
   restoreText: {
-    fontSize: 12, // text-xs
-    color: '#6B7280', // text-gray-600
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
-    lineHeight: 20,
-    marginTop: 8,
+    lineHeight: theme.lineHeight.sm,
+    marginTop: theme.spacing.sm,
   },
   termsLink: {
-    color: '#374151', // text-gray-700
+    color: theme.colors.foreground,
     textDecorationLine: 'underline',
-    fontSize: 12, // Ensure same size as termsText
+    fontSize: theme.fontSize.xs,
   },
   featuresCard: {
-    backgroundColor: '#FFFFFF', // bg-white
-    borderRadius: 12, // rounded-xl
-    padding: 20, // Reduced from 24 to 20
-    marginTop: 16, // Reduced from 24 to 16
-    shadowColor: '#000',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    marginTop: theme.spacing.lg,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
-    elevation: 2, // shadow-sm
+    elevation: 2,
   },
   featuresTitle: {
-    fontSize: 16, // Reduced from 18 to 16
-    fontWeight: '700', // font-bold
-    color: '#111827', // text-gray-900
-    marginBottom: 12, // Reduced from 16 to 12
+    fontSize: theme.fontSize.base,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.md,
   },
   featuresSpace: {
-    gap: 8, // Reduced from 12 to 8
+    gap: theme.spacing.sm,
   },
   featureItem: {
-    fontSize: 16, // Reduced from 18 to 16
-    color: '#111827', // text-gray-900
-    fontWeight: '600', // font-semibold
-    lineHeight: 24, // Reduced from 28 to 24
+    fontSize: theme.fontSize.base,
+    color: theme.colors.foreground,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    lineHeight: theme.lineHeight.md,
   },
 
   // Notification Screen
   notificationIconContainer: {
-    width: 64, // w-16
-    height: 64, // h-16
-    borderRadius: 32, // rounded-full
-    marginBottom: 16, // mb-4
+    width: 64,
+    height: 64,
+    borderRadius: theme.borderRadius.full,
+    marginBottom: theme.spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)', // bg-primary/10
+    backgroundColor: theme.colors.primary50,
   },
   notificationEnabled: {
-    backgroundColor: 'rgba(16, 185, 129, 0.1)', // bg-green-100
+    backgroundColor: theme.colors.success50,
   },
   notificationDisabled: {
-    backgroundColor: 'rgba(217, 119, 6, 0.1)', // bg-yellow-100
+    backgroundColor: theme.colors.warning50,
   },
   notificationButtonContainer: {
-    gap: 12,
-    marginBottom: 32,
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.xxl,
     width: '100%',
     maxWidth: 384,
   },
   notificationButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
     width: '100%',
   },
   notificationButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '500',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.lg,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   notificationButtonDisabled: {
     opacity: 0.5,
   },
   notificationButtonTextDisabled: {
-    color: '#9CA3AF',
+    color: theme.colors.mutedForeground,
   },
   notificationSkipButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: theme.colors.transparent,
     borderWidth: 2,
-    borderColor: '#6366f1',
-    borderRadius: 9999,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.full,
     width: '100%',
   },
   notificationSkipButtonText: {
-    color: '#6366f1',
-    fontSize: 18,
-    fontWeight: '500',
+    color: theme.colors.primary,
+    fontSize: theme.fontSize.lg,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
 
   // Learning Plan Screen
   timelineCard: {
-    backgroundColor: '#FFFFFF', // bg-white
-    borderRadius: 12, // rounded-xl
-    padding: 24, // p-6
-    marginBottom: 24, // mb-6
-    shadowColor: '#000',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    marginBottom: theme.spacing.xl,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
-    elevation: 2, // shadow-sm
+    elevation: 2,
     width: '100%',
     maxWidth: 512,
   },
   timelineSpace: {
-    gap: 24, // space-y-6
+    gap: theme.spacing.xl,
   },
   timelineItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // flex items-start space-x-4
-    gap: 16,
+    alignItems: 'flex-start',
+    gap: theme.spacing.lg,
   },
   timelineIcon: {
-    width: 48, // w-12
-    height: 48, // h-12
-    borderRadius: 12, // rounded-xl
+    width: 48,
+    height: 48,
+    borderRadius: theme.borderRadius.xl,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 4, // shadow-lg
+    elevation: 4,
   },
   timelineEmoji: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontWeight: '700',
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.primaryForeground,
+    fontWeight: "700" as TextStyle["fontWeight"],
   },
   timelineContent: {
     flex: 1,
-    paddingTop: 4, // pt-1
+    paddingTop: theme.spacing.xs,
   },
   timelineText: {
-    fontSize: 18, // text-lg
-    color: '#111827', // text-gray-900
-    fontWeight: '600', // font-semibold
-    lineHeight: 28, // leading-relaxed
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.foreground,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    lineHeight: theme.lineHeight.lg,
   },
 
   // Start Free Trial Section
   trialSection: {
-    marginTop: 32, // mt-8
-    gap: 16, // space-y-4
+    marginTop: theme.spacing.xxl,
+    gap: theme.spacing.lg,
     width: '100%',
     maxWidth: 384,
   },
@@ -462,155 +462,155 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   noPaymentText: {
-    fontSize: 16,
-    color: '#374151', // text-gray-700
-    fontWeight: '500', // font-medium
+    fontSize: theme.fontSize.base,
+    color: theme.colors.foreground,
+    fontWeight: "500" as TextStyle["fontWeight"],
   },
   startTrialButton: {
-    backgroundColor: '#6366f1', // bg-primary hover:bg-primary/90
-    paddingHorizontal: 32, // px-8
-    paddingVertical: 12, // py-3
-    borderRadius: 9999, // rounded-full
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
     width: '100%',
   },
   startTrialButtonText: {
-    color: '#FFFFFF', // text-white
-    fontSize: 16, // font-medium
-    fontWeight: '500',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   trialPriceContainer: {
     alignItems: 'center',
-    marginTop: 12, // mt-3
+    marginTop: theme.spacing.md,
   },
   trialPriceText: {
-    fontSize: 14, // text-sm
-    color: '#6B7280', // text-gray-500
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
   },
 
   // Payment Screen - Stripe Integration Styles
   loadingContainer: {
     alignItems: 'center',
-    marginTop: 32,
+    marginTop: theme.spacing.xxl,
   },
   loadingText: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginTop: 12,
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
+    marginTop: theme.spacing.md,
   },
   errorButtonsContainer: {
-    gap: 12,
-    marginTop: 24,
+    gap: theme.spacing.md,
+    marginTop: theme.spacing.xl,
     width: '100%',
     maxWidth: 384,
   },
   errorButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
     width: '100%',
   },
   errorButtonSecondary: {
-    backgroundColor: 'transparent',
+    backgroundColor: theme.colors.transparent,
     borderWidth: 1,
-    borderColor: '#6366f1',
+    borderColor: theme.colors.primary,
   },
   errorButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   errorButtonSecondaryText: {
-    color: '#6366f1',
+    color: theme.colors.primary,
   },
   paymentPlanCard: {
-    backgroundColor: '#EFF6FF', // bg-blue-50
-    borderRadius: 12, // rounded-xl
-    padding: 16, // p-4
-    marginBottom: 24, // mb-6
+    backgroundColor: theme.colors.primary50,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.xl,
     width: '100%',
   },
   paymentPlanHeader: {
-    marginBottom: 12,
+    marginBottom: theme.spacing.md,
   },
   paymentPlanTitle: {
-    fontSize: 20,
-    color: '#6366f1',
-    fontWeight: '700',
-    marginBottom: 4,
+    fontSize: theme.fontSize.xl,
+    color: theme.colors.primary,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    marginBottom: theme.spacing.xs,
   },
   paymentPlanTrial: {
-    fontSize: 14,
-    color: '#374151',
-    marginBottom: 4,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.xs,
   },
   paymentPlanPrice: {
-    fontSize: 24,
-    color: '#111827',
-    fontWeight: '700',
-    marginBottom: 4,
+    fontSize: theme.fontSize['2xl'],
+    color: theme.colors.foreground,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    marginBottom: theme.spacing.xs,
   },
   paymentPlanCancel: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginBottom: 12,
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
+    marginBottom: theme.spacing.md,
   },
   paymentPlanFeatures: {
-    gap: 4,
+    gap: theme.spacing.xs,
   },
   paymentPlanFeature: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 20,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.foreground,
+    lineHeight: theme.lineHeight.sm,
   },
   stripeFormContainer: {
-    gap: 24,
+    gap: theme.spacing.xl,
     width: '100%',
   },
   cardFieldContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 24,
-    shadowColor: '#000',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
   },
   cardFieldLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 8,
+    fontSize: theme.fontSize.base,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.sm,
   },
   cardFieldWrapper: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.lg,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
   },
   stripeButtonContainer: {
-    marginTop: 8,
+    marginTop: theme.spacing.sm,
   },
   cardField: {
     width: '100%',
     height: 50,
   },
   cardFieldStyle: {
-    backgroundColor: '#FFFFFF',
-    fontSize: 16,
+    backgroundColor: theme.colors.card,
+    fontSize: theme.fontSize.base,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.lg,
   },
   stripeSubmitButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 9999,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.lg,
+    borderRadius: theme.borderRadius.full,
     width: '100%',
   },
   stripeSubmitButtonDisabled: {
@@ -622,17 +622,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stripeSubmitButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.lg,
+    fontWeight: "600" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   stripeSubmitButtonTextDisabled: {
-    color: '#9CA3AF',
+    color: theme.colors.mutedForeground,
   },
   stripeTermsText: {
-    fontSize: 12,
-    color: '#6B7280',
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
   },
   
@@ -643,32 +643,32 @@ const styles = StyleSheet.create({
   },
   paymentScrollContent: {
     flexGrow: 1,
-    paddingBottom: 20,
-    paddingTop: 24,
+    paddingBottom: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
   },
   paymentScreenContent: {
     flex: 1,
     maxWidth: 384,
     alignSelf: 'center',
     width: '100%',
-    paddingHorizontal: 16,
+    paddingHorizontal: theme.spacing.lg,
   },
 
-  // Testimonials - mirrors web layout
+  // Testimonials
   testimonialCarousel: {
     width: '100%',
     maxWidth: 512,
     alignSelf: 'center',
-    marginBottom: 24,
+    marginBottom: theme.spacing.xl,
   },
   testimonialSlide: {
-    paddingHorizontal: 16,
+    paddingHorizontal: theme.spacing.lg,
   },
   testimonialCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
@@ -676,159 +676,159 @@ const styles = StyleSheet.create({
   },
   testimonialStarsRow: {
     flexDirection: 'row',
-    gap: 4,
-    marginBottom: 12,
+    gap: theme.spacing.xs,
+    marginBottom: theme.spacing.md,
   },
   testimonialText: {
-    color: '#374151',
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
+    color: theme.colors.foreground,
+    fontSize: theme.fontSize.base,
+    lineHeight: theme.lineHeight.md,
+    marginBottom: theme.spacing.lg,
   },
   testimonialUserRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: theme.spacing.md,
   },
   testimonialAvatar: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: theme.borderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
   },
   testimonialAvatarText: {
-    fontWeight: '600',
-    fontSize: 12,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    fontSize: theme.fontSize.xs,
   },
   testimonialUserName: {
-    color: '#111827',
-    fontWeight: '600',
+    color: theme.colors.foreground,
+    fontWeight: "600" as TextStyle["fontWeight"],
   },
   testimonialUserTitle: {
-    color: '#6B7280',
-    fontSize: 12,
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.xs,
   },
   testimonialNavContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 16,
-    marginTop: 16,
+    gap: theme.spacing.lg,
+    marginTop: theme.spacing.lg,
   },
   testimonialDotsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   testimonialDot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
-    backgroundColor: '#D1D5DB',
+    borderRadius: theme.borderRadius.sm,
+    backgroundColor: theme.colors.border,
   },
   testimonialDotActive: {
     width: 24,
-    backgroundColor: '#6366f1',
+    backgroundColor: theme.colors.primary,
   },
   testimonialArrowButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 9999,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.full,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
   },
   testimonialContinueButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 9999,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xxl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
     alignSelf: 'center',
     width: '100%',
     maxWidth: 384,
   },
   testimonialContinueButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textAlign: 'center',
   },
   
   // IAP Specific Styles
   errorContainer: {
     alignItems: 'center',
-    paddingVertical: 32,
-    paddingHorizontal: 16,
+    paddingVertical: theme.spacing.xxl,
+    paddingHorizontal: theme.spacing.lg,
   },
   errorTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontSize: theme.fontSize.lg,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: theme.spacing.sm,
   },
   errorText: {
-    color: '#6B7280',
-    fontSize: 14,
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.sm,
     textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 20,
+    marginBottom: theme.spacing.xl,
+    lineHeight: theme.lineHeight.sm,
   },
   retryButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
     alignSelf: 'center',
   },
   retryButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: "600" as TextStyle["fontWeight"],
   },
   iapPackageCard: {
-    backgroundColor: '#F9FAFB',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 24,
+    backgroundColor: theme.colors.surfaceVariant,
+    padding: theme.spacing.xl,
+    borderRadius: theme.borderRadius.xl,
+    marginBottom: theme.spacing.xl,
     borderWidth: 2,
-    borderColor: '#6366f1',
+    borderColor: theme.colors.primary,
   },
   iapPackagePrice: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#111827',
+    fontSize: theme.fontSize['4xl'],
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: theme.spacing.sm,
   },
   iapPackageDescription: {
-    fontSize: 14,
-    color: '#6B7280',
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
   },
   restorePurchasesButton: {
-    paddingVertical: 12,
+    paddingVertical: theme.spacing.md,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: theme.spacing.lg,
   },
   restorePurchasesText: {
-    color: '#6366f1',
-    fontSize: 14,
-    fontWeight: '500',
+    color: theme.colors.primary,
+    fontSize: theme.fontSize.sm,
+    fontWeight: "500" as TextStyle["fontWeight"],
     textDecorationLine: 'underline',
   },
   packageOption: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
-    padding: 16,
-    marginBottom: 12,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.md,
   },
   packageOptionSelected: {
-    borderColor: '#6366f1',
-    backgroundColor: '#EEF2FF',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary50,
   },
   packageOptionContent: {
     flexDirection: 'row',
@@ -837,19 +837,19 @@ const styles = StyleSheet.create({
   packageRadio: {
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: theme.borderRadius.full,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
-    marginRight: 12,
-    marginTop: 2,
+    borderColor: theme.colors.border,
+    marginRight: theme.spacing.md,
+    marginTop: theme.spacing.xxs,
     justifyContent: 'center',
     alignItems: 'center',
   },
   packageRadioSelected: {
     width: 10,
     height: 10,
-    borderRadius: 5,
-    backgroundColor: '#6366f1',
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.primary,
   },
   packageDetails: {
     flex: 1,
@@ -857,37 +857,37 @@ const styles = StyleSheet.create({
   packageHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: theme.spacing.xs,
     flexWrap: 'wrap',
   },
   packageTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginRight: 8,
+    fontSize: theme.fontSize.base,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginRight: theme.spacing.sm,
   },
   trialBadge: {
-    backgroundColor: '#10B981',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
+    backgroundColor: theme.colors.success500,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xxs,
+    borderRadius: theme.borderRadius.xl,
   },
   trialBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '600',
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.xxs,
+    fontWeight: "600" as TextStyle["fontWeight"],
     textTransform: 'uppercase',
   },
   packagePrice: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
+    fontSize: theme.fontSize.xl,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.xs,
   },
   packageDescription: {
-    fontSize: 13,
-    color: '#6B7280',
-    lineHeight: 18,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    lineHeight: theme.lineHeight.xs,
   },
 });
 

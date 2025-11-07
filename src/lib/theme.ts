@@ -65,9 +65,11 @@ export const theme = {
     inverseSurface: '#18181b',
     inverseOnSurface: '#fafafa',
     inversePrimary: '#a5b4fc',
+    transparent: 'transparent',
   },
   
   spacing: {
+    xxs: 2,
     xs: 4,
     sm: 8,
     md: 12,
@@ -88,12 +90,14 @@ export const theme = {
   },
 
   fontSize: {
+    xxs: 11,
     xs: 12,
     sm: 14,
     base: 16,
     lg: 18,
     xl: 20,
     '2xl': 24,
+    '2.5xl': 28,
     '3xl': 30,
     '4xl': 36,
     '5xl': 48,
@@ -111,6 +115,11 @@ export const theme = {
     tight: 1.25,
     normal: 1.5,
     relaxed: 1.75,
+    // Absolute values for specific use cases
+    xs: 18,
+    sm: 20,
+    md: 24,
+    lg: 28,
   },
 
   shadows: {
