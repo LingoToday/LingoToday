@@ -17,6 +17,7 @@ import { format } from 'date-fns';
 import { theme } from '../lib/theme';
 import { useAuth } from '../hooks/useAuth';
 import { apiClient } from '../lib/apiClient';
+import { Card } from '../components/ui/Card';
 
 // Type definitions - matching web exactly
 interface User {
@@ -158,67 +159,65 @@ export default function AccountScreen() {
               Hey {userName}, your language journey continues!
             </Text>
 
-            <View style={styles.divider} />
+            <Card>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Account</Text>
+                
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>Email</Text>
+                  <Text style={styles.infoValue} testID="user-email">{user.email}</Text>
+                </View>
 
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Account</Text>
-              
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Email</Text>
-                <Text style={styles.infoValue} testID="user-email">{user.email}</Text>
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>Member Since</Text>
+                  <Text style={styles.infoValue} testID="member-since">
+                    {memberSince 
+                      ? format(memberSince, 'MMMM d, yyyy')
+                      : 'Unknown'
+                    }
+                  </Text>
+                </View>
+
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>Learning Tier</Text>
+                  <Text style={styles.infoValue} testID="learning-tier">
+                    {getLearningTier(user.priceTier)}
+                  </Text>
+                </View>
               </View>
+            </Card>
 
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Member Since</Text>
-                <Text style={styles.infoValue} testID="member-since">
-                  {memberSince 
-                    ? format(memberSince, 'MMMM d, yyyy')
-                    : 'Unknown'
-                  }
-                </Text>
+            <Card style={styles.cardSpacing}>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Learning</Text>
+                
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>Language</Text>
+                  {user.selectedLanguage ? (
+                    <View>
+                      <Text style={styles.languageWithFlag} testID="learning-language">
+                        {getLanguageDisplayName(user.selectedLanguage)} {getLanguageFlag(user.selectedLanguage)}
+                      </Text>
+                      <Text style={styles.motivationalText}>
+                        Stay consistent and keep showing up! You'll be chatting like a local in no time!
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.infoValue}>Not selected</Text>
+                  )}
+                </View>
+
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>Level</Text>
+                  <Text style={styles.infoValue} testID="current-level">
+                    {user.selectedLevel 
+                      ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase()
+                      : 'Not selected'
+                    }
+                  </Text>
+                </View>
               </View>
-
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Learning Tier</Text>
-                <Text style={styles.infoValue} testID="learning-tier">
-                  {getLearningTier(user.priceTier)}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Learning</Text>
-              
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Language</Text>
-                {user.selectedLanguage ? (
-                  <View>
-                    <Text style={styles.languageWithFlag} testID="learning-language">
-                      {getLanguageDisplayName(user.selectedLanguage)} {getLanguageFlag(user.selectedLanguage)}
-                    </Text>
-                    <Text style={styles.motivationalText}>
-                      Stay consistent — Keep showing up! You'll be chatting like a local soon.
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={styles.infoValue}>Not selected</Text>
-                )}
-              </View>
-
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Level</Text>
-                <Text style={styles.infoValue} testID="current-level">
-                  {user.selectedLevel 
-                    ? user.selectedLevel.charAt(0).toUpperCase() + user.selectedLevel.slice(1).toLowerCase()
-                    : 'Not selected'
-                  }
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
+            </Card>
 
             <TouchableOpacity 
               style={styles.subscriptionButton}
@@ -385,5 +384,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#FF3B30',
     fontWeight: '400',
+  },
+  cardSpacing: {
+    marginTop: 16,
   },
 });
