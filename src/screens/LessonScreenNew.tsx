@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TextInput,
   ActivityIndicator,
   Dimensions,
+  Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -134,6 +135,49 @@ export default function LessonScreen() {
   // Purchase flow states
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+
+  // Animation for correct answer
+  const correctAnswerScale = useRef(new Animated.Value(1)).current;
+  const correctAnswerBorder = useRef(new Animated.Value(0)).current;
+
+  // Trigger animation when answer is correct
+  useEffect(() => {
+    if (showResult && isCorrect) {
+      // Reset animation values
+      correctAnswerScale.setValue(1);
+      correctAnswerBorder.setValue(0);
+      
+      // Create sequence: scale up slightly, then back, with border pulse
+      Animated.parallel([
+        Animated.sequence([
+          Animated.spring(correctAnswerScale, {
+            toValue: 1.05,
+            friction: 3,
+            tension: 40,
+            useNativeDriver: true,
+          }),
+          Animated.spring(correctAnswerScale, {
+            toValue: 1,
+            friction: 5,
+            tension: 40,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.sequence([
+          Animated.timing(correctAnswerBorder, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: false,
+          }),
+          Animated.timing(correctAnswerBorder, {
+            toValue: 0.7,
+            duration: 200,
+            useNativeDriver: false,
+          }),
+        ]),
+      ]).start();
+    }
+  }, [showResult, isCorrect]);
 
   // Check if user came from notification
   useEffect(() => {
@@ -1433,31 +1477,49 @@ export default function LessonScreen() {
                   <View style={styles.optionsContainer}>
                     {stepData.options.map((option: string, index: number) => {
                       const letters = ['A', 'B', 'C', 'D'];
+                      const isCorrectAnswer = showResult && option === stepData.answer;
+                      const shouldAnimate = isCorrectAnswer && isCorrect;
+                      
                       return (
-                        <TouchableOpacity
+                        <Animated.View
                           key={index}
                           style={[
-                            styles.optionButton,
-                            selectedAnswer === option && styles.selectedOption,
-                            showResult && option === stepData.answer && styles.correctOption,
-                            showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                            shouldAnimate && {
+                              transform: [{ scale: correctAnswerScale }],
+                              shadowColor: '#10b981',
+                              shadowOffset: { width: 0, height: 0 },
+                              shadowOpacity: correctAnswerBorder,
+                              shadowRadius: correctAnswerBorder.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, 12]
+                              }),
+                              elevation: 8,
+                            }
                           ]}
-                          onPress={() => !showResult && setSelectedAnswer(option)}
-                          disabled={showResult}
                         >
-                          <View style={styles.optionLabelContainer}>
-                            <View style={[
-                              styles.optionLabel,
-                              selectedAnswer === option && styles.selectedOptionLabel
-                            ]}>
-                              <Text style={[
-                                styles.optionLabelText,
-                                selectedAnswer === option && styles.selectedOptionLabelText
+                          <TouchableOpacity
+                            style={[
+                              styles.optionButton,
+                              selectedAnswer === option && styles.selectedOption,
+                              showResult && option === stepData.answer && styles.correctOption,
+                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                            ]}
+                            onPress={() => !showResult && setSelectedAnswer(option)}
+                            disabled={showResult}
+                          >
+                            <View style={styles.optionLabelContainer}>
+                              <View style={[
+                                styles.optionLabel,
+                                selectedAnswer === option && styles.selectedOptionLabel
                               ]}>
-                                {letters[index]}
-                              </Text>
+                                <Text style={[
+                                  styles.optionLabelText,
+                                  selectedAnswer === option && styles.selectedOptionLabelText
+                                ]}>
+                                  {letters[index]}
+                                </Text>
+                              </View>
                             </View>
-                          </View>
                           <Text style={[
                             styles.optionText,
                             selectedAnswer === option && styles.selectedOptionText,
@@ -1470,6 +1532,7 @@ export default function LessonScreen() {
                             <Text style={styles.checkmark}>✓</Text>
                           )}
                         </TouchableOpacity>
+                        </Animated.View>
                       );
                     })}
                   </View>
@@ -1485,28 +1548,49 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.optionsContainer}>
-                    {stepData.options.map((option: string, index: number) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={[
-                          styles.optionButton,
-                          selectedAnswer === option && styles.selectedOption,
-                          showResult && option === stepData.answer && styles.correctOption,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
-                        ]}
-                        onPress={() => !showResult && setSelectedAnswer(option)}
-                        disabled={showResult}
-                      >
-                        <Text style={[
-                          styles.optionText,
-                          selectedAnswer === option && styles.selectedOptionText,
-                          showResult && option === stepData.answer && styles.correctOptionText,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
-                        ]}>
-                          {option} {showResult && option === stepData.answer && '✅'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                    {stepData.options.map((option: string, index: number) => {
+                      const isCorrectAnswer = showResult && option === stepData.answer;
+                      const shouldAnimate = isCorrectAnswer && isCorrect;
+                      
+                      return (
+                        <Animated.View
+                          key={index}
+                          style={[
+                            shouldAnimate && {
+                              transform: [{ scale: correctAnswerScale }],
+                              shadowColor: '#10b981',
+                              shadowOffset: { width: 0, height: 0 },
+                              shadowOpacity: correctAnswerBorder,
+                              shadowRadius: correctAnswerBorder.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, 12]
+                              }),
+                              elevation: 8,
+                            }
+                          ]}
+                        >
+                          <TouchableOpacity
+                            style={[
+                              styles.optionButton,
+                              selectedAnswer === option && styles.selectedOption,
+                              showResult && option === stepData.answer && styles.correctOption,
+                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                            ]}
+                            onPress={() => !showResult && setSelectedAnswer(option)}
+                            disabled={showResult}
+                          >
+                            <Text style={[
+                              styles.optionText,
+                              selectedAnswer === option && styles.selectedOptionText,
+                              showResult && option === stepData.answer && styles.correctOptionText,
+                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
+                            ]}>
+                              {option} {showResult && option === stepData.answer && '✅'}
+                            </Text>
+                          </TouchableOpacity>
+                        </Animated.View>
+                      );
+                    })}
                   </View>
                 </>
               )}
@@ -1520,7 +1604,22 @@ export default function LessonScreen() {
                     <Text style={styles.promptText}>{stepData.prompt}</Text>
                   </View>
 
-                  <View style={styles.inputContainer}>
+                  <Animated.View 
+                    style={[
+                      styles.inputContainer,
+                      showResult && isCorrect && {
+                        transform: [{ scale: correctAnswerScale }],
+                        shadowColor: '#10b981',
+                        shadowOffset: { width: 0, height: 0 },
+                        shadowOpacity: correctAnswerBorder,
+                        shadowRadius: correctAnswerBorder.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, 12]
+                        }),
+                        elevation: 8,
+                      }
+                    ]}
+                  >
                     <TextInput
                       style={[
                         styles.textInput,
@@ -1537,7 +1636,7 @@ export default function LessonScreen() {
                         Correct answer: {stepData.expected}
                       </Text>
                     )}
-                  </View>
+                  </Animated.View>
                 </>
               )}
 
@@ -1559,28 +1658,49 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.optionsContainer}>
-                    {stepData.options.map((option: string, index: number) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={[
-                          styles.optionButton,
-                          selectedAnswer === option && styles.selectedOption,
-                          showResult && option === stepData.answer && styles.correctOption,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
-                        ]}
-                        onPress={() => !showResult && setSelectedAnswer(option)}
-                        disabled={showResult}
-                      >
-                        <Text style={[
-                          styles.optionText,
-                          selectedAnswer === option && styles.selectedOptionText,
-                          showResult && option === stepData.answer && styles.correctOptionText,
-                          showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
-                        ]}>
-                          {option} {showResult && option === stepData.answer && '✅'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                    {stepData.options.map((option: string, index: number) => {
+                      const isCorrectAnswer = showResult && option === stepData.answer;
+                      const shouldAnimate = isCorrectAnswer && isCorrect;
+                      
+                      return (
+                        <Animated.View
+                          key={index}
+                          style={[
+                            shouldAnimate && {
+                              transform: [{ scale: correctAnswerScale }],
+                              shadowColor: '#10b981',
+                              shadowOffset: { width: 0, height: 0 },
+                              shadowOpacity: correctAnswerBorder,
+                              shadowRadius: correctAnswerBorder.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, 12]
+                              }),
+                              elevation: 8,
+                            }
+                          ]}
+                        >
+                          <TouchableOpacity
+                            style={[
+                              styles.optionButton,
+                              selectedAnswer === option && styles.selectedOption,
+                              showResult && option === stepData.answer && styles.correctOption,
+                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                            ]}
+                            onPress={() => !showResult && setSelectedAnswer(option)}
+                            disabled={showResult}
+                          >
+                            <Text style={[
+                              styles.optionText,
+                              selectedAnswer === option && styles.selectedOptionText,
+                              showResult && option === stepData.answer && styles.correctOptionText,
+                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
+                            ]}>
+                              {option} {showResult && option === stepData.answer && '✅'}
+                            </Text>
+                          </TouchableOpacity>
+                        </Animated.View>
+                      );
+                    })}
                   </View>
                 </>
               )}
