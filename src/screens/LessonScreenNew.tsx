@@ -154,13 +154,13 @@ export default function LessonScreen() {
             toValue: 1.05,
             friction: 3,
             tension: 40,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.spring(correctAnswerScale, {
             toValue: 1,
             friction: 5,
             tension: 40,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
         ]),
         Animated.sequence([
