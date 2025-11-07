@@ -4,6 +4,31 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { getLanguageSpecificNotification } from '../screens/DashboardScreenNew';
 
+// Configure notification categories for iOS background notifications
+async function setupNotificationCategories() {
+  if (Platform.OS === 'ios') {
+    await Notifications.setNotificationCategoryAsync('language_reminder', [
+      {
+        identifier: 'open_lesson',
+        buttonTitle: 'Start Lesson',
+        options: {
+          opensAppToForeground: true,
+        },
+      },
+      {
+        identifier: 'dismiss',
+        buttonTitle: 'Dismiss',
+        options: {
+          opensAppToForeground: false,
+        },
+      },
+    ]);
+  }
+}
+
+// Initialize notification categories on module load
+setupNotificationCategories();
+
 // Configure notifications behavior
 // This determines how notifications are presented when the app is in the foreground
 Notifications.setNotificationHandler({
@@ -36,27 +61,50 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus, ios } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     
+    // Log detailed iOS permission status for debugging
+    if (Platform.OS === 'ios' && ios) {
+      console.log('📱 iOS Notification Permissions:', {
+        status: ios.status,
+        allowsAlert: ios.allowsAlert,
+        allowsBadge: ios.allowsBadge,
+        allowsSound: ios.allowsSound,
+      });
+    }
+    
     if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
+      // Request permissions with iOS-specific options for background notifications
+      // Note: allowAlert enables both lock screen and notification center display
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+          allowCriticalAlerts: false, // Set to false unless app qualifies for critical alerts
+          provideAppNotificationSettings: true,
+        },
+      });
       finalStatus = status;
+      
+      console.log('🔔 Notification permission request result:', finalStatus);
     }
     
     if (finalStatus !== 'granted') {
-      console.log('Failed to get push token for push notification!');
+      console.log('⚠️ Failed to get push token - permission not granted!');
+      console.log('📲 User must enable notifications in iOS Settings > LingoToday > Notifications');
       return null;
     }
     
     try {
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log('Push token:', token);
+      console.log('✅ Push token obtained:', token);
     } catch (error) {
-      console.log('Error getting push token:', error);
+      console.log('❌ Error getting push token:', error);
     }
   } else {
-    console.log('Must use physical device for Push Notifications');
+    console.log('⚠️ Must use physical device for Push Notifications');
   }
 
   return token;
@@ -224,6 +272,10 @@ export async function scheduleLanguageLearningReminders(
             sound: 'default',
             priority: Notifications.AndroidNotificationPriority.MAX,
             ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
+            ...(Platform.OS === 'ios' ? { 
+              categoryIdentifier: 'language_reminder',
+              interruptionLevel: 'timeSensitive' as any,
+            } : {}),
             data: {
               type: 'language_reminder',
               language: language,
@@ -244,6 +296,17 @@ export async function scheduleLanguageLearningReminders(
     }
     
     console.log(`✅ Scheduled ${notificationsPerDay} notifications per day (every ${frequencyMinutes} min) for ${language} on ${daysToSchedule.join(', ')} between ${startTime} and ${endTime}`);
+    
+    // Log all scheduled notifications for debugging
+    const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
+    console.log(`📅 Total scheduled notifications: ${allScheduled.length}`);
+    if (Platform.OS === 'ios') {
+      console.log('⚠️ iOS IMPORTANT: If notifications don\'t appear when locked/backgrounded:');
+      console.log('   1. Check Settings > Focus - ensure LingoToday is allowed in active Focus modes');
+      console.log('   2. Check Settings > Notifications > LingoToday - ensure all options are enabled');
+      console.log('   3. Time Sensitive notifications may be blocked by Focus modes');
+    }
+    
     return true;
   } catch (error) {
     console.error('Error scheduling notifications:', error);
@@ -281,6 +344,21 @@ export async function sendTestNotification(): Promise<void> {
         title: "LingoToday Test",
         body: "This is a test notification! 🎉",
         sound: 'default',
+        ...(Platform.OS === 'android' ? { 
+          channelId: 'language-reminders',
+          priority: Notifications.AndroidNotificationPriority.MAX,
+        } : {}),
+        ...(Platform.OS === 'ios' ? { 
+          categoryIdentifier: 'language_reminder',
+          interruptionLevel: 'timeSensitive' as any,
+        } : {}),
+        data: {
+          type: 'test_notification',
+          action: 'openLesson',
+          courseId: 'test',
+          lessonId: 'test',
+          timestamp: Date.now()
+        },
       },
       trigger: { seconds: 2 } as Notifications.TimeIntervalTriggerInput,
     });
@@ -317,10 +395,11 @@ export async function getUserNotificationSettings(): Promise<{
 }
 
 // Save user's notification settings (placeholder - implement with your backend)
+// NOTE: This function is deprecated - use the API client and NotificationSettings component instead
 export async function saveUserNotificationSettings(settings: {
   startTime: string;
   endTime: string;
-  frequency: number;
+  frequencyMinutes: number; // Minutes between each notification
   enabled: boolean;
 }): Promise<boolean> {
   try {
@@ -331,7 +410,7 @@ export async function saveUserNotificationSettings(settings: {
       return await scheduleLanguageLearningReminders(
         settings.startTime,
         settings.endTime,
-        settings.frequency
+        settings.frequencyMinutes
       );
     } else {
       await stopLanguageLearningReminders();

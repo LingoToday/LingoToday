@@ -47,6 +47,16 @@ Do not make changes to the file `package-lock.json`.
 - `SheetManagerProvider` to enforce a single-sheet policy for modals/sheets.
 - Lessons use push navigation instead of modal presentation.
 - **Background Notifications (Updated Nov 2025)**: Implemented proper background notification support using expo-notifications and expo-task-manager. Notifications are scheduled as repeating calendar triggers (specific weekdays/times) and persist even when the app is closed or terminated. Background task handler registered in App.js ensures notifications work reliably across all app states (foreground, background, terminated). The app uses **inexact alarm scheduling** (not exact alarms) for Google Play Store compliance - exact alarm permissions (`USE_EXACT_ALARM`, `SCHEDULE_EXACT_ALARM`) have been removed as they are restricted to alarm clock, calendar, and timer apps. Inexact scheduling is sufficient for language learning reminders and is battery-efficient.
+- **iOS Background Notifications (Updated Nov 2025)**: Added iOS-specific notification configuration for proper background and lock screen delivery:
+  - Notification categories with action buttons ("Start Lesson", "Dismiss")
+  - Time-sensitive interruption level to break through quiet modes
+  - Enhanced permission requests (alert, badge, sound)
+  - Detailed logging for debugging iOS notification issues
+  - **IMPORTANT**: Users must configure iOS Focus modes to allow notifications from LingoToday. If notifications don't appear when the phone is locked or in Do Not Disturb/Focus mode, users need to:
+    1. Go to Settings > Focus > [Active Focus Mode] (e.g., Do Not Disturb, Sleep, Work)
+    2. Under "Allowed Notifications", tap "Apps"
+    3. Add LingoToday to the allowed list
+    4. Alternatively, disable Focus mode or ensure "Time Sensitive Notifications" are enabled for LingoToday in Settings > Notifications > LingoToday
 
 ### Project Structure
 - `src/components/`: Reusable UI components.
