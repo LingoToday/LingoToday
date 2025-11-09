@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import { apiClient } from '../lib/apiClient';
 import { User } from '../types';
+import { purchaseService } from '../services/purchaseService';
 
 export interface AuthContextType {
   user: User | null;
@@ -66,6 +67,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Handle different response formats
         const userObj = (userData as any).data || userData;
         setUser(userObj as User);
+        
+        // Initialize RevenueCat with user ID on native platforms
+        if (Platform.OS !== 'web' && userObj?.id) {
+          try {
+            await purchaseService.initialize(userObj.id);
+            console.log('✅ RevenueCat initialized for user:', userObj.id);
+          } catch (error) {
+            console.error('⚠️ RevenueCat initialization failed during auth restore:', error);
+          }
+        }
       } else {
         // Token is invalid, remove it
         if (Platform.OS === 'web') {
@@ -77,12 +88,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     } catch (error) {
       console.log('No authenticated user found or token invalid:', error);
-      // Clean up invalid token
+      // Clean up invalid token and RevenueCat session
       try {
         if (Platform.OS === 'web') {
           localStorage.removeItem('authToken');
         } else {
           await SecureStore.deleteItemAsync('authToken');
+          
+          // Clear RevenueCat session for invalid/expired tokens
+          try {
+            await purchaseService.logOut();
+            console.log('✅ Cleared RevenueCat session for invalid token');
+          } catch (revenueCatError) {
+            console.error('⚠️ RevenueCat logout error during cleanup:', revenueCatError);
+          }
         }
       } catch (cleanupError) {
         console.error('Error cleaning up auth token:', cleanupError);
@@ -104,6 +123,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
+        
+        // Initialize RevenueCat with user ID on native platforms
+        if (Platform.OS !== 'web' && userObj?.id) {
+          try {
+            await purchaseService.initialize(userObj.id);
+            console.log('✅ RevenueCat initialized after login for user:', userObj.id);
+          } catch (error) {
+            console.error('⚠️ RevenueCat initialization failed after login:', error);
+          }
+        }
       } else {
         throw new Error((response as any).error || 'Login failed');
       }
@@ -144,6 +173,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
+        
+        // Initialize RevenueCat with user ID on native platforms
+        if (Platform.OS !== 'web' && userObj?.id) {
+          try {
+            await purchaseService.initialize(userObj.id);
+            console.log('✅ RevenueCat initialized after registration for user:', userObj.id);
+          } catch (error) {
+            console.error('⚠️ RevenueCat initialization failed after registration:', error);
+          }
+        }
       } else {
         throw new Error((response as any).error || 'Registration failed');
       }
@@ -157,7 +196,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
-      // Try to logout from server first
+      // Logout from RevenueCat on native platforms first
+      if (Platform.OS !== 'web') {
+        try {
+          await purchaseService.logOut();
+          console.log('✅ Logged out from RevenueCat');
+        } catch (revenueCatError) {
+          console.error('⚠️ RevenueCat logout error (continuing):', revenueCatError);
+        }
+      }
+      
+      // Try to logout from server
       await apiClient.logout();
     } catch (error) {
       console.error('Server logout error (continuing with local cleanup):', error);
