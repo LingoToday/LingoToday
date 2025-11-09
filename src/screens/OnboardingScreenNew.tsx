@@ -1008,7 +1008,7 @@ const LearningPlanScreen = ({
         
         {/* Small text underneath */}
         <View style={styles.trialPriceContainer}>
-          <Text style={styles.trialPriceText}>5 days free trial then £2.49/month</Text>
+          <Text style={styles.trialPriceText}>3 days free trial then £2.99/month</Text>
         </View>
       </View>
     </View>

@@ -75,7 +75,7 @@ function getPriceDisplay(priceTier?: string): string {
     return 'Free';
   }
   if (priceTier === 'pro-monthly') {
-    return '£2.49/month';
+    return '£2.99/month';
   }
   if (priceTier === 'pro-yearly') {
     return '£14.99/year';

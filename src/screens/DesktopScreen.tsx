@@ -52,7 +52,7 @@ export default function DesktopScreen() {
   // Pricing data - matching web exactly
   const prices = {
     GBP: {
-      monthly: '£2.49',
+      monthly: '£2.99',
       yearly: '£14.99',
       savings: '£33'
     },
@@ -162,7 +162,7 @@ export default function DesktopScreen() {
     },
     {
       question: 'Is there really no credit card required for the free trial?',
-      answer: 'Absolutely! Start your 7-day free trial with just an email address. No credit card, no hidden fees. If you love LingoToday, you can upgrade to a paid plan after your trial ends.'
+      answer: 'Absolutely! Start your 3 days free trial with just an email address. No credit card, no hidden fees. If you love LingoToday, you can upgrade to a paid plan after your trial ends.'
     },
     {
       question: 'Can I cancel anytime?',

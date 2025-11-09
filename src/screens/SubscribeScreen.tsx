@@ -314,7 +314,7 @@ export default function SubscribeScreen() {
         {/* Additional Info - matching web */}
         <View style={styles.additionalInfo}>
           <Text style={styles.infoText}>
-            7-day free trial • Cancel anytime • No commitment
+            3 days free trial • Cancel anytime • No commitment
           </Text>
           <Text style={styles.infoText}>
             By subscribing, you agree to our Terms of Service and Privacy Policy
