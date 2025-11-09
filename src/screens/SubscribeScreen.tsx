@@ -320,51 +320,6 @@ export default function SubscribeScreen() {
             By subscribing, you agree to our Terms of Service and Privacy Policy
           </Text>
         </View>
-
-        {/* Pro Features Highlight */}
-        <Card style={styles.proFeaturesCard}>
-          <CardHeader>
-            <CardTitle style={styles.proFeaturesTitle}>
-              <Ionicons name="star" size={20} color="#f59e0b" />
-              <Text style={styles.proFeaturesTitleText}>What Pro Users Get</Text>
-            </CardTitle>
-          </CardHeader>
-          <CardContent style={styles.proFeaturesContent}>
-            <View style={styles.proFeatureGrid}>
-              <View style={styles.proFeatureItem}>
-                <Ionicons name="play-circle" size={24} color="#3b82f6" />
-                <Text style={styles.proFeatureTitle}>Premium Videos</Text>
-                <Text style={styles.proFeatureDescription}>
-                  Access all video lessons with native speakers
-                </Text>
-              </View>
-              
-              <View style={styles.proFeatureItem}>
-                <Ionicons name="phone-portrait" size={24} color="#10b981" />
-                <Text style={styles.proFeatureTitle}>Mobile App</Text>
-                <Text style={styles.proFeatureDescription}>
-                  Early access to our mobile learning app
-                </Text>
-              </View>
-              
-              <View style={styles.proFeatureItem}>
-                <Ionicons name="analytics" size={24} color="#8b5cf6" />
-                <Text style={styles.proFeatureTitle}>Progress Tracking</Text>
-                <Text style={styles.proFeatureDescription}>
-                  Detailed analytics and learning insights
-                </Text>
-              </View>
-              
-              <View style={styles.proFeatureItem}>
-                <Ionicons name="headset" size={24} color="#f59e0b" />
-                <Text style={styles.proFeatureTitle}>Priority Support</Text>
-                <Text style={styles.proFeatureDescription}>
-                  Get help faster with priority customer support
-                </Text>
-              </View>
-            </View>
-          </CardContent>
-        </Card>
       </ScrollView>
     </SafeAreaView>
   );
@@ -643,51 +598,5 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
     textAlign: 'center',
     marginBottom: theme.spacing.xs,
-  },
-
-  // Pro Features
-  proFeaturesCard: {
-    marginHorizontal: theme.spacing.lg,
-    backgroundColor: theme.colors.card,
-  },
-  proFeaturesTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing.sm,
-  },
-  proFeaturesTitleText: {
-    fontSize: theme.fontSize.lg,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-  },
-  proFeaturesContent: {
-    paddingTop: 0,
-  },
-  proFeatureGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: theme.spacing.lg,
-  },
-  proFeatureItem: {
-    flex: 1,
-    minWidth: '45%',
-    alignItems: 'center',
-    padding: theme.spacing.md,
-    backgroundColor: '#f8fafc',
-    borderRadius: theme.borderRadius.lg,
-  },
-  proFeatureTitle: {
-    fontSize: theme.fontSize.base,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-    marginTop: theme.spacing.sm,
-    marginBottom: theme.spacing.xs,
-    textAlign: 'center',
-  },
-  proFeatureDescription: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.mutedForeground,
-    textAlign: 'center',
-    lineHeight: 18,
   },
 });
