@@ -93,13 +93,37 @@ class PurchaseService {
     error?: string;
   }> {
     try {
-      const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
+      await Purchases.purchasePackage(packageToPurchase);
       
-      const hasProAccess = typeof customerInfo.entitlements.active['pro'] !== 'undefined';
+      console.log('✅ Purchase completed, invalidating cache and refetching customer info...');
+      
+      await Purchases.invalidateCustomerInfoCache();
+      
+      const freshCustomerInfo = await Purchases.getCustomerInfo();
+      
+      const hasProAccess = typeof freshCustomerInfo.entitlements.active['pro'] !== 'undefined';
+      
+      console.log(`Entitlement check after cache invalidation: ${hasProAccess ? '✅ Active' : '❌ Not active'}`);
+      
+      if (!hasProAccess) {
+        console.warn('⚠️ Entitlement not immediately active, waiting 2 seconds and retrying...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        await Purchases.invalidateCustomerInfoCache();
+        const retryCustomerInfo = await Purchases.getCustomerInfo();
+        const retryHasProAccess = typeof retryCustomerInfo.entitlements.active['pro'] !== 'undefined';
+        
+        console.log(`Retry entitlement check: ${retryHasProAccess ? '✅ Active' : '❌ Not active'}`);
+        
+        return {
+          success: retryHasProAccess,
+          customerInfo: retryCustomerInfo,
+        };
+      }
       
       return {
         success: hasProAccess,
-        customerInfo,
+        customerInfo: freshCustomerInfo,
       };
     } catch (error: any) {
       if (error.userCancelled) {
@@ -123,13 +147,37 @@ class PurchaseService {
     error?: string;
   }> {
     try {
-      const customerInfo = await Purchases.restorePurchases();
+      await Purchases.restorePurchases();
       
-      const hasProAccess = typeof customerInfo.entitlements.active['pro'] !== 'undefined';
+      console.log('✅ Restore completed, invalidating cache and refetching customer info...');
+      
+      await Purchases.invalidateCustomerInfoCache();
+      
+      const freshCustomerInfo = await Purchases.getCustomerInfo();
+      
+      const hasProAccess = typeof freshCustomerInfo.entitlements.active['pro'] !== 'undefined';
+      
+      console.log(`Entitlement check after restore: ${hasProAccess ? '✅ Active' : '❌ Not active'}`);
+      
+      if (!hasProAccess) {
+        console.warn('⚠️ Entitlement not immediately active after restore, waiting 2 seconds and retrying...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        await Purchases.invalidateCustomerInfoCache();
+        const retryCustomerInfo = await Purchases.getCustomerInfo();
+        const retryHasProAccess = typeof retryCustomerInfo.entitlements.active['pro'] !== 'undefined';
+        
+        console.log(`Retry entitlement check after restore: ${retryHasProAccess ? '✅ Active' : '❌ Not active'}`);
+        
+        return {
+          success: retryHasProAccess,
+          customerInfo: retryCustomerInfo,
+        };
+      }
       
       return {
         success: hasProAccess,
-        customerInfo,
+        customerInfo: freshCustomerInfo,
       };
     } catch (error: any) {
       console.error('Restore error:', error);
