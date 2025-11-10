@@ -1450,11 +1450,6 @@ const TestimonialsScreen = ({ onContinue }: { onContinue: () => void }) => {
                 </View>
                 <Text style={styles.testimonialText}>"{t.text}"</Text>
                 <View style={styles.testimonialUserRow}>
-                  <View style={[styles.testimonialAvatar, { backgroundColor: t.avatarBg }]}>
-                    <Text style={[styles.testimonialAvatarText, { color: t.avatarText }]}>
-                      {t.initials}
-                    </Text>
-                  </View>
                   <View>
                     <Text style={styles.testimonialUserName}>{t.name}</Text>
                     <Text style={styles.testimonialUserTitle}>{t.title}</Text>
