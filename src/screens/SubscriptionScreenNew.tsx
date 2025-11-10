@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
@@ -13,6 +13,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { apiClient } from '../lib/apiClient';
 import { purchaseService } from '../services/purchaseService';
+import { useAuth } from '../hooks/useAuth';
 
 interface User {
   id: string;
@@ -76,6 +77,8 @@ const planFeatures = {
 
 export default function SubscriptionScreenNew() {
   const navigation = useNavigation();
+  const { logout } = useAuth();
+  const queryClient = useQueryClient();
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/auth/user'],
@@ -182,11 +185,48 @@ export default function SubscriptionScreenNew() {
                   text: 'Yes, Delete My Account',
                   style: 'destructive',
                   onPress: async () => {
+                    let deleteSuccess = false;
+                    let errorMessage = '';
+                    
                     try {
-                      Alert.alert('Account Deletion', 'Account deletion feature will be implemented soon.');
-                    } catch (error) {
-                      console.error('Delete account error:', error);
-                      Alert.alert('Error', 'Failed to delete account. Please try again.');
+                      console.log('🗑️ Attempting to delete account...');
+                      await apiClient.deleteAccount();
+                      console.log('✅ Account deleted successfully');
+                      deleteSuccess = true;
+                    } catch (error: any) {
+                      console.error('❌ Delete account error:', error);
+                      errorMessage = error?.message || 'Unknown error';
+                    } finally {
+                      console.log('🚪 Logging out and clearing cache...');
+                      queryClient.clear();
+                      await logout();
+                      
+                      if (deleteSuccess) {
+                        Alert.alert(
+                          'Account Deleted',
+                          'Your account has been permanently deleted and you have been logged out.'
+                        );
+                      } else {
+                        const is404 = errorMessage.includes('404') || errorMessage.includes('Not Found');
+                        const is500 = errorMessage.includes('500') || errorMessage.includes('Internal Server Error');
+                        
+                        if (is404) {
+                          Alert.alert(
+                            'Feature Unavailable',
+                            'The account deletion feature is not yet available on the server. Please contact support to delete your account. You have been logged out.'
+                          );
+                        } else if (is500) {
+                          Alert.alert(
+                            'Server Error',
+                            'There was a problem deleting your account. Please contact support. You have been logged out.'
+                          );
+                        } else {
+                          Alert.alert(
+                            'Error',
+                            `Failed to delete account: ${errorMessage}. You have been logged out.`
+                          );
+                        }
+                      }
                     }
                   },
                 },

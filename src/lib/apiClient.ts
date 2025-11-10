@@ -299,6 +299,12 @@ export class ApiClient {
     return this.makeRequest('/api/auth/user');
   }
 
+  async deleteAccount() {
+    return this.makeRequest('/api/user/delete-account', {
+      method: 'DELETE',
+    });
+  }
+
   // Subscription routes - matching web routes exactly
   async createSubscription() {
     return this.makeRequest('/api/create-subscription', {
