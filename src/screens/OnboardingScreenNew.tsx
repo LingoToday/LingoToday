@@ -290,24 +290,17 @@ export default function OnboardingScreen() {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      if (error.message && error.message.includes('API Error')) {
-        // Parse API errors from backend
-        try {
-          const errorBody = JSON.parse(error.message.split(' - ')[1]);
-          if (errorBody.errors) {
-            const fieldErrors: Record<string, string> = {};
-            errorBody.errors.forEach((err: any) => {
-              fieldErrors[err.path?.[0] || 'general'] = err.message;
-            });
-            setRegisterErrors(fieldErrors);
-          } else {
-            setRegisterErrors({ general: errorBody.message || 'Registration failed' });
-          }
-        } catch {
-          setRegisterErrors({ general: error.message || 'Registration failed' });
-        }
-      } else {
+      
+      // Check if this is a network connectivity error
+      if (error.message && (
+        error.message.includes('Network connection failed') ||
+        error.message.includes('Network request failed') ||
+        error.message.includes('fetch')
+      )) {
         setRegisterErrors({ general: 'Network error. Please check your connection and try again.' });
+      } else {
+        // This is an API error with a specific message - display it directly
+        setRegisterErrors({ general: error.message || 'Registration failed. Please try again.' });
       }
     } finally {
       setIsRegistering(false);

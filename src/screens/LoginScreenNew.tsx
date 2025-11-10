@@ -66,9 +66,19 @@ export default function LoginScreen() {
       // If we get here without an error, login was successful
       // Navigation will be handled by the auth state change
     } catch (error: any) {
-      setLoginErrors({ 
-        general: error.message || 'Login failed. Please check your credentials and try again.' 
-      });
+      console.error('Login error:', error);
+      
+      // Check if this is a network connectivity error
+      if (error.message && (
+        error.message.includes('Network connection failed') ||
+        error.message.includes('Network request failed') ||
+        error.message.includes('fetch')
+      )) {
+        setLoginErrors({ general: 'Network error. Please check your connection and try again.' });
+      } else {
+        // This is an API error with a specific message - display it directly
+        setLoginErrors({ general: error.message || 'Login failed. Please check your credentials and try again.' });
+      }
     } finally {
       setIsLoggingIn(false);
     }
