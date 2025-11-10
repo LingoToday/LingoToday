@@ -278,7 +278,7 @@ export default function SubscribeScreen() {
             <View style={styles.featuresSection}>
               {features.map((feature, index) => (
                 <View key={index} style={styles.featureItem}>
-                  <Ionicons name="checkmark" size={20} color="#60A5FA" />
+                  <Ionicons name="checkmark" size={20} color={theme.colors.primary} />
                   <Text style={styles.featureText}>{feature}</Text>
                 </View>
               ))}
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xs,
   },
   priceAmount: {
-    fontSize: 48,
+    fontSize: 36,
     fontWeight: '700',
     color: theme.colors.foreground,
   },
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -6,
     right: 8,
-    backgroundColor: '#60A5FA',
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
@@ -538,13 +538,13 @@ const styles = StyleSheet.create({
   savingsTextToggle: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#60A5FA',
+    color: theme.colors.primary,
     marginTop: 2,
   },
 
   // Buttons
   subscribeButton: {
-    backgroundColor: '#60A5FA',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 18,
     borderRadius: 12,
   },
