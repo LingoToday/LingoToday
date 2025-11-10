@@ -219,6 +219,7 @@ function dayToWeekday(day: Day): number {
 
 // Schedule language learning reminders with custom content, navigation data, and specific days
 // frequencyMinutes: minutes between each notification (e.g., 15, 30, 60)
+// This schedules notifications for the next 14 days only (not repeating) to prevent accumulation
 export async function scheduleLanguageLearningReminders(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -253,49 +254,95 @@ export async function scheduleLanguageLearningReminders(
     
     // Calculate how many notifications fit in the window based on frequency
     const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
+    
+    // Safety limit: max 50 notifications total
+    const MAX_NOTIFICATIONS = 50;
+    let scheduledCount = 0;
 
-    // Schedule notifications for each selected day
-    for (const day of daysToSchedule) {
-      const weekday = dayToWeekday(day);
+    // Get day name mapping (0 = Sunday, 1 = Monday, etc.)
+    const dayNameToNumber: Record<Day, number> = {
+      'Sun': 0,
+      'Mon': 1,
+      'Tue': 2,
+      'Wed': 3,
+      'Thu': 4,
+      'Fri': 5,
+      'Sat': 6,
+    };
+
+    // Schedule notifications for the next 14 days
+    const now = new Date();
+    const daysToScheduleAhead = 14;
+    
+    for (let dayOffset = 0; dayOffset < daysToScheduleAhead; dayOffset++) {
+      const targetDate = new Date(now);
+      targetDate.setDate(targetDate.getDate() + dayOffset);
       
-      // Schedule multiple notifications throughout the day for this weekday
+      // Get day name for this date
+      const dayNumber = targetDate.getDay(); // 0-6
+      const dayName = Object.keys(dayNameToNumber).find(
+        key => dayNameToNumber[key as Day] === dayNumber
+      ) as Day;
+      
+      // Skip if this day is not in the selected days
+      if (!daysToSchedule.includes(dayName)) {
+        continue;
+      }
+      
+      // Schedule notifications for this day
       for (let i = 0; i < notificationsPerDay; i++) {
-        const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 10);
+        if (scheduledCount >= MAX_NOTIFICATIONS) {
+          console.log(`⚠️ Reached max notification limit (${MAX_NOTIFICATIONS})`);
+          break;
+        }
+        
+        const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 5); // Smaller random offset
         const notificationTime = startMinutes + offsetMinutes;
         const hour = Math.floor(notificationTime / 60) % 24;
         const minute = Math.floor(notificationTime % 60);
 
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: notificationContent.title,
-            body: notificationContent.body,
-            sound: 'default',
-            priority: Notifications.AndroidNotificationPriority.MAX,
-            ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
-            ...(Platform.OS === 'ios' ? { 
-              categoryIdentifier: 'language_reminder',
-              interruptionLevel: 'timeSensitive' as any,
-            } : {}),
-            data: {
-              type: 'language_reminder',
-              language: language,
-              action: 'openLesson',
-              courseId: lessonData.courseId,
-              lessonId: lessonData.lessonId,
-              timestamp: Date.now()
+        // Create the exact trigger date/time
+        const triggerDate = new Date(targetDate);
+        triggerDate.setHours(hour, minute, 0, 0);
+        
+        // Only schedule if the notification is in the future
+        if (triggerDate > now) {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: notificationContent.title,
+              body: notificationContent.body,
+              sound: 'default',
+              priority: Notifications.AndroidNotificationPriority.MAX,
+              ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
+              ...(Platform.OS === 'ios' ? { 
+                categoryIdentifier: 'language_reminder',
+                interruptionLevel: 'timeSensitive' as any,
+              } : {}),
+              data: {
+                type: 'language_reminder',
+                language: language,
+                action: 'openLesson',
+                courseId: lessonData.courseId,
+                lessonId: lessonData.lessonId,
+                timestamp: Date.now(),
+                scheduledFor: triggerDate.toISOString()
+              },
             },
-          },
-          trigger: {
-            weekday,
-            hour,
-            minute,
-            repeats: true,
-          } as Notifications.CalendarTriggerInput,
-        });
+            trigger: {
+              date: triggerDate,
+            } as Notifications.DateTriggerInput,
+          });
+          
+          scheduledCount++;
+        }
+      }
+      
+      if (scheduledCount >= MAX_NOTIFICATIONS) {
+        break;
       }
     }
     
-    console.log(`✅ Scheduled ${notificationsPerDay} notifications per day (every ${frequencyMinutes} min) for ${language} on ${daysToSchedule.join(', ')} between ${startTime} and ${endTime}`);
+    console.log(`✅ Scheduled ${scheduledCount} notifications for next ${daysToScheduleAhead} days (${frequencyMinutes} min frequency) for ${language} on ${daysToSchedule.join(', ')} between ${startTime} and ${endTime}`);
     
     // Log all scheduled notifications for debugging
     const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
@@ -333,6 +380,43 @@ export async function getScheduledNotificationCount(): Promise<number> {
   } catch (error) {
     console.error('Error getting scheduled notifications:', error);
     return 0;
+  }
+}
+
+// Check if we need to reschedule notifications (if running low)
+// Returns true if rescheduling was performed
+export async function checkAndRescheduleIfNeeded(
+  startTime: string = "09:00",
+  endTime: string = "18:00", 
+  frequencyMinutes: number = 60,
+  language: string = "italian",
+  nextLessonData?: { courseId: string; lessonId: string },
+  selectedDays?: Day[]
+): Promise<boolean> {
+  try {
+    const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    
+    // If we have less than 10 notifications scheduled, reschedule
+    const MINIMUM_THRESHOLD = 10;
+    
+    if (scheduledNotifications.length < MINIMUM_THRESHOLD) {
+      console.log(`📅 Low notification count (${scheduledNotifications.length}), rescheduling...`);
+      await scheduleLanguageLearningReminders(
+        startTime,
+        endTime,
+        frequencyMinutes,
+        language,
+        nextLessonData,
+        selectedDays
+      );
+      return true;
+    }
+    
+    console.log(`✅ Sufficient notifications scheduled (${scheduledNotifications.length}), no rescheduling needed`);
+    return false;
+  } catch (error) {
+    console.error('Error checking/rescheduling notifications:', error);
+    return false;
   }
 }
 

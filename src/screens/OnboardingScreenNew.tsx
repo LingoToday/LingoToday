@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
+import * as Notifications from 'expo-notifications';
 import { AuthContext } from '../contexts/AuthContext';
 import styles from '../styles/OnboardingStyles';
 import { theme } from '../lib/theme';
@@ -192,18 +193,39 @@ export default function OnboardingScreen() {
   };
 
   const requestNotificationPermission = async () => {
-    // Mobile notification permission logic - matching web behavior
-    setNotificationsEnabled(true);
-    // Update AsyncStorage immediately after permission is resolved
-    const data = {
-      language: selectedLanguage,
-      level: selectedLevel,
-      learningStyle: selectedLearningStyle,
-      notifications: true,
-      currentScreen
-    };
-    await AsyncStorage.setItem('lingoToday_onboarding_temp', JSON.stringify(data));
-    return true;
+    try {
+      // Request actual OS notification permissions
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+          allowCriticalAlerts: false,
+          provideAppNotificationSettings: true,
+        },
+      });
+      
+      const permissionGranted = status === 'granted';
+      setNotificationsEnabled(permissionGranted);
+      
+      console.log('🔔 Notification permission result:', status);
+      
+      // Update AsyncStorage with the permission result
+      const data = {
+        language: selectedLanguage,
+        level: selectedLevel,
+        learningStyle: selectedLearningStyle,
+        notifications: permissionGranted,
+        currentScreen
+      };
+      await AsyncStorage.setItem('lingoToday_onboarding_temp', JSON.stringify(data));
+      
+      return permissionGranted;
+    } catch (error) {
+      console.error('Error requesting notification permissions:', error);
+      setNotificationsEnabled(false);
+      return false;
+    }
   };
 
   const handleRegister = async () => {

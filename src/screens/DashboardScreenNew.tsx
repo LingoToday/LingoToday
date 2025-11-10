@@ -25,10 +25,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import NotificationSettings from '../components/NotificationSettings';
-import NotificationSetupOverlay from '../components/NotificationSetupOverlay';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
-import { scheduleLanguageLearningReminders, stopLanguageLearningReminders } from '../lib/notifications';
+import { scheduleLanguageLearningReminders, stopLanguageLearningReminders, checkAndRescheduleIfNeeded } from '../lib/notifications';
 
 // Type definitions - matching web exactly
 interface User {
@@ -39,7 +38,6 @@ interface User {
   selectedLanguage?: string;
   selectedLevel?: string;
   completedOnboarding?: boolean;
-  hasSeenNotificationSetup?: boolean;
 }
 
 interface ProgressData {
@@ -138,7 +136,6 @@ export default function DashboardScreenNew() {
   const queryClient = useQueryClient();
   const sheetManager = useSheetManager();
   const [refreshing, setRefreshing] = useState(false);
-  const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   
   // REMOVED: const [isDailySessionActive, setIsDailySessionActive] = useState(false);
   // We'll calculate this dynamically instead
@@ -153,7 +150,6 @@ export default function DashboardScreenNew() {
       selectedLanguage: user?.selectedLanguage || 'italian',
       selectedLevel: user?.selectedLevel || 'beginner',
       completedOnboarding: true,
-      hasSeenNotificationSetup: true, // Default to true to prevent overlay spam
     },
     settings: {
       notificationsEnabled: false,
@@ -301,89 +297,35 @@ useEffect(() => {
   const effectiveCourseStats = courseStats || { totalCourses: 5, totalLessons: 78 };
   const upcomingLessons = upcomingLessonsResponse?.lessons || fallbackUpcomingLessons;
 
-  // Mark notification setup as seen mutation
-  const markNotificationSetupSeenMutation = useMutation({
-    mutationFn: async () => {
-      try {
-        await apiClient.updateNotificationSetupStatus(true);
-        return { success: true };
-      } catch (error) {
-        console.warn('⚠️ Failed to update notification status, proceeding locally:', error);
-        return { success: true }; // Proceed anyway
-      }
-    },
-    onSuccess: () => {
-      setShowNotificationSetup(false);
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
-    },
-    onError: () => {
-      setShowNotificationSetup(false); // Hide anyway
-    },
-  });
-
-  // SINGLE useEffect for overlay logic - only show for truly new users
+  // Automatically check and reschedule notifications when app opens if enabled
   useEffect(() => {
-    if (effectiveDashboardData?.user) {
-      const hasSeenSetup = effectiveDashboardData.user.hasSeenNotificationSetup;
-      console.log('🔍 Overlay check:', { 
-        hasSeenSetup, 
-        userId: effectiveDashboardData.user.id 
-      });
-
-      // Only show for genuinely new users who haven't seen it
-      if (hasSeenSetup === false) {
-        console.log('📱 New user - showing notification setup overlay');
-        const timer = setTimeout(() => {
-          setShowNotificationSetup(true);
-        }, 2000);
-        return () => clearTimeout(timer);
-      } else {
-        console.log('🔇 User has seen setup - not showing overlay');
-        setShowNotificationSetup(false);
-      }
-    }
-  }, [effectiveDashboardData?.user?.hasSeenNotificationSetup]);
-
-  // Close notification overlay handler
-  const handleCloseNotificationOverlay = () => {
-    console.log('🚫 User closed notification overlay');
-    setShowNotificationSetup(false);
-    markNotificationSetupSeenMutation.mutate();
-  };
-
-
-  // NEW: Automatically schedule notifications on app start if enabled
-  useEffect(() => {
-    const autoScheduleNotifications = async () => {
+    const autoCheckAndReschedule = async () => {
       const settings = effectiveDashboardData?.settings;
       
+      // Only proceed if notifications are enabled
       if (!settings?.mobileNotificationsEnabled) {
-        console.log('🔕 Auto-schedule: Notifications not enabled');
+        console.log('🔕 Auto-reschedule: Notifications not enabled');
         return;
       }
 
+      // Check if permissions are granted
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== 'granted') {
-        console.log('⚠️ Auto-schedule: Notification permission not granted');
+        console.log('⚠️ Auto-reschedule: Notification permission not granted');
         return;
       }
 
+      // Check if user has selected a language
       if (!user?.selectedLanguage) {
-        console.log('⚠️ Auto-schedule: No language selected');
+        console.log('⚠️ Auto-reschedule: No language selected');
         return;
       }
 
       try {
-        const scheduledCount = await Notifications.getAllScheduledNotificationsAsync();
+        console.log('🔍 Checking notification schedule...');
         
-        if (scheduledCount.length > 0) {
-          console.log(`✅ Auto-schedule: ${scheduledCount.length} notifications already scheduled`);
-          return;
-        }
-
-        console.log('📅 Auto-schedule: Setting up notifications based on user settings');
-        
-        await scheduleLanguageLearningReminders(
+        // Use the new checkAndRescheduleIfNeeded function
+        await checkAndRescheduleIfNeeded(
           settings.mobileNotificationStartTime || '09:00',
           settings.mobileNotificationEndTime || '18:00',
           settings.mobileNotificationFrequency || 60,
@@ -391,15 +333,13 @@ useEffect(() => {
           undefined,
           (settings as any).mobileNotificationDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
         );
-        
-        console.log('✅ Auto-schedule: Notifications successfully scheduled');
       } catch (error) {
-        console.error('❌ Auto-schedule error:', error);
+        console.error('❌ Auto-reschedule error:', error);
       }
     };
 
     if (effectiveDashboardData && user) {
-      autoScheduleNotifications();
+      autoCheckAndReschedule();
     }
   }, [effectiveDashboardData?.settings?.mobileNotificationsEnabled, user?.selectedLanguage]);
 
@@ -474,7 +414,6 @@ useEffect(() => {
     statsData: stats,
     progressCount: allProgress.length,
     upcomingCount: upcomingLessons.length,
-    hasSeenSetup: effectiveDashboardData.user.hasSeenNotificationSetup,
   });
 
   // Generate recent lessons - matching web logic exactly
@@ -836,12 +775,6 @@ useEffect(() => {
             </View>
           </View>
         </ScrollView>
-        
-        {/* Notification Setup Overlay */}
-        <NotificationSetupOverlay 
-          isVisible={showNotificationSetup} 
-          onClose={handleCloseNotificationOverlay}
-        />
       </SafeAreaView>
     </View>
   );
@@ -1446,7 +1379,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: theme.colors.destructive50,
+    backgroundColor: theme.colors.destructive,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1454,7 +1387,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationCard: {
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: theme.colors.warning200,
+    borderColor: theme.colors.warning500,
     backgroundColor: theme.colors.warning50,
   },
   disabledNotificationContent: {
