@@ -60,8 +60,13 @@ const planFeatures = {
     'Limited lessons per day',
   ],
   pro: [
-    'Unlimited access to all courses',
-    'Priority support and new features',
+    'Unlimited premium video lessons',
+    'Cultural and bonus tips',
+    'Exclusive \'Explore\' content',
+    'Early access to new features',
+    'Ad-free experience',
+    'Priority support',
+    'Cancel anytime',
   ],
   plus: [
     'Everything in Pro',
@@ -301,7 +306,7 @@ export default function SubscriptionScreenNew() {
               </View>
 
               {/* Pro */}
-              <View style={{ marginBottom: 16 }}>
+              <View>
                 <Badge style={StyleSheet.flatten([styles.badge, styles.badgePro])}>
                   <Text style={[styles.badgeText, styles.badgeTextWhite]}>Pro</Text>
                 </Badge>
@@ -309,20 +314,6 @@ export default function SubscriptionScreenNew() {
                 {planFeatures.pro.map((feature, idx) => (
                   <View key={`pro-${idx}`} style={styles.featureRow}>
                     <Ionicons name="checkmark" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
-                    <Text style={styles.featureText}>{feature}</Text>
-                  </View>
-                ))}
-              </View>
-
-              {/* Plus */}
-              <View>
-                <Badge style={StyleSheet.flatten([styles.badge, styles.badgePlus])}>
-                  <Text style={[styles.badgeText, styles.badgeTextWhite]}>Plus</Text>
-                </Badge>
-                <View style={{ height: 8 }} />
-                {planFeatures.plus.map((feature, idx) => (
-                  <View key={`plus-${idx}`} style={styles.featureRow}>
-                    <Ionicons name="checkmark" size={16} color="#7C3AED" style={{ marginRight: 8 }} />
                     <Text style={styles.featureText}>{feature}</Text>
                   </View>
                 ))}
