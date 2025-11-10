@@ -35,7 +35,7 @@ export default function SubscribeScreen() {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStage, setProcessingStage] = useState<'idle' | 'loading' | 'payment' | 'activating'>('idle');
-  const [selectedInterval, setSelectedInterval] = useState<PlanInterval | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState<PlanInterval>('annual');
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -78,13 +78,12 @@ export default function SubscribeScreen() {
     return false; // Timeout - webhook didn't arrive in time
   };
 
-  const handleSelectPlan = async (interval: PlanInterval) => {
+  const handleSelectPlan = async () => {
     if (!user?.id) {
       Alert.alert('Error', 'Please log in to subscribe.');
       return;
     }
 
-    setSelectedInterval(interval);
     setIsProcessing(true);
     setProcessingStage('loading');
 
@@ -97,14 +96,13 @@ export default function SubscribeScreen() {
         Alert.alert('Error', 'No subscription packages available. Please try again later.');
         setIsProcessing(false);
         setProcessingStage('idle');
-        setSelectedInterval(null);
         return;
       }
 
       // Find the package that matches the selected interval
       const selectedPackage = packages.find(pkg => {
         const identifier = pkg.identifier.toLowerCase();
-        if (interval === 'monthly') {
+        if (selectedInterval === 'monthly') {
           return identifier.includes('monthly') || identifier.includes('month') || pkg.packageType === 'MONTHLY';
         } else {
           return identifier.includes('annual') || identifier.includes('year') || pkg.packageType === 'ANNUAL';
@@ -112,10 +110,9 @@ export default function SubscribeScreen() {
       });
 
       if (!selectedPackage) {
-        Alert.alert('Error', `${interval === 'monthly' ? 'Monthly' : 'Annual'} plan not available. Please try the other option.`);
+        Alert.alert('Error', `${selectedInterval === 'monthly' ? 'Monthly' : 'Annual'} plan not available. Please try the other option.`);
         setIsProcessing(false);
         setProcessingStage('idle');
-        setSelectedInterval(null);
         return;
       }
 
@@ -168,7 +165,6 @@ export default function SubscribeScreen() {
     } finally {
       setIsProcessing(false);
       setProcessingStage('idle');
-      setSelectedInterval(null);
     }
   };
 
@@ -186,15 +182,15 @@ export default function SubscribeScreen() {
     }
   }, [subscriptionStatus, navigation]);
 
-  // Features list - matching web exactly
+  // Features list - matching design
   const features = [
-    'Access to all premium video lessons',
-    'Early mobile app access',
+    'Unlimited Pro video lessons',
+    'Cultural and bonus tips',
+    'Exclusive \'Explore\' content',
+    'Early access to new features',
+    'Ad-free experience',
+    'Priority support',
     'Cancel anytime',
-    'Advanced progress tracking',
-    'Offline lesson downloads',
-    'Priority customer support',
-    'No ads',
   ];
 
   if (statusLoading) {
@@ -211,14 +207,14 @@ export default function SubscribeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header - matching web */}
+        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
           </TouchableOpacity>
           
           <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>Upgrade to Pro Learner</Text>
+            <Text style={styles.headerTitle}>Upgrade to Pro</Text>
             <Text style={styles.headerSubtitle}>
               Unlock your full language learning potential
             </Text>
@@ -226,39 +222,86 @@ export default function SubscribeScreen() {
         </View>
 
 
-        {/* Pricing Card - matching web exactly */}
+        {/* Pricing Card */}
         <Card style={styles.pricingCard}>
           <CardContent style={styles.pricingContent}>
+            {/* Monthly/Annual Toggle */}
+            <View style={styles.toggleContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.toggleButton,
+                  styles.toggleButtonLeft,
+                  selectedInterval === 'monthly' && styles.toggleButtonActive,
+                  isProcessing && styles.toggleButtonDisabled,
+                ]}
+                onPress={() => !isProcessing && setSelectedInterval('monthly')}
+                disabled={isProcessing}
+              >
+                <Text
+                  style={[
+                    styles.toggleButtonText,
+                    selectedInterval === 'monthly' && styles.toggleButtonTextActive,
+                  ]}
+                >
+                  Monthly
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.toggleButton,
+                  styles.toggleButtonRight,
+                  selectedInterval === 'annual' && styles.toggleButtonActive,
+                  isProcessing && styles.toggleButtonDisabled,
+                ]}
+                onPress={() => !isProcessing && setSelectedInterval('annual')}
+                disabled={isProcessing}
+              >
+                <Text
+                  style={[
+                    styles.toggleButtonText,
+                    selectedInterval === 'annual' && styles.toggleButtonTextActive,
+                  ]}
+                >
+                  Annual
+                </Text>
+                {selectedInterval === 'annual' && (
+                  <View style={styles.popularBadge}>
+                    <Text style={styles.popularText}>Popular</Text>
+                  </View>
+                )}
+                <Text style={styles.savingsTextToggle}>Save 19%</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Features List */}
             <View style={styles.featuresSection}>
               {features.map((feature, index) => (
                 <View key={index} style={styles.featureItem}>
-                  <Ionicons name="checkmark-circle" size={16} color={theme.colors.success500} />
+                  <Ionicons name="checkmark" size={20} color="#60A5FA" />
                   <Text style={styles.featureText}>{feature}</Text>
                 </View>
               ))}
             </View>
 
-            {/* Pricing Section */}
-            {!isProcessing && (
-              <View style={styles.pricingSection}>
-                <View style={styles.priceItem}>
+            {/* Pricing Display */}
+            <View style={styles.pricingDisplaySection}>
+              {selectedInterval === 'monthly' ? (
+                <>
                   <Text style={styles.priceAmount}>£2.99</Text>
-                  <Text style={styles.priceInterval}>per month</Text>
-                </View>
-                <View style={styles.priceItem}>
-                  <View style={styles.priceWithBadge}>
-                    <Text style={styles.priceAmount}>£28.99</Text>
-                    <View style={styles.discountBadge}>
-                      <Text style={styles.discountText}>20% off</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.priceInterval}>per year</Text>
-                </View>
-              </View>
-            )}
+                  <Text style={styles.priceInterval}>/month</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.strikethroughPrice}>£2.99</Text>
+                  <Text style={styles.priceAmount}>£2.41</Text>
+                  <Text style={styles.priceInterval}>/month</Text>
+                  <Text style={styles.billedText}>Billed £28.99 annually</Text>
+                </>
+              )}
+            </View>
 
-            {/* Plan Selection Buttons */}
+            {/* CTA Button */}
             {isProcessing ? (
               <Button
                 style={[styles.subscribeButton, styles.subscribeButtonDisabled]}
@@ -274,51 +317,22 @@ export default function SubscribeScreen() {
                 </View>
               </Button>
             ) : (
-              <>
-                <Button
-                  style={styles.subscribeButton}
-                  onPress={() => handleSelectPlan('monthly')}
-                >
-                  <Text style={styles.subscribeButtonText}>
-                    Select Monthly Plan
-                  </Text>
-                </Button>
-
-                <Button
-                  style={[styles.subscribeButton, styles.annualButton]}
-                  onPress={() => handleSelectPlan('annual')}
-                >
-                  <View style={styles.annualButtonContent}>
-                    <Text style={styles.subscribeButtonText}>
-                      Select Annual Plan
-                    </Text>
-                    <View style={styles.savingsBadge}>
-                      <Text style={styles.savingsText}>Save 20%</Text>
-                    </View>
-                  </View>
-                </Button>
-              </>
+              <Button
+                style={styles.subscribeButton}
+                onPress={handleSelectPlan}
+              >
+                <Text style={styles.subscribeButtonText}>Join Pro</Text>
+              </Button>
             )}
-
-            {/* Back Button - matching web */}
-            <Button
-              style={styles.backToAppButton}
-              onPress={() => navigation.navigate('MainTabs' as never)}
-              disabled={isProcessing}
-            >
-              <Text style={styles.backToAppButtonText}>Back to Dashboard</Text>
-            </Button>
           </CardContent>
         </Card>
 
-        {/* Additional Info - matching web */}
+        {/* Additional Info */}
         <View style={styles.additionalInfo}>
-          <Text style={styles.infoText}>
-            3 days free trial • Cancel anytime • No commitment
-          </Text>
-          <Text style={styles.infoText}>
-            By subscribing, you agree to our Terms of Service and Privacy Policy
-          </Text>
+          <View style={styles.infoRow}>
+            <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+            <Text style={styles.infoText}>3-day free trial • Cancel anytime</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -418,132 +432,128 @@ const styles = StyleSheet.create({
 
   // Features
   featuresSection: {
-    marginBottom: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
+    backgroundColor: '#F9FAFB',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
   },
   featureItem: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: theme.spacing.sm,
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
   featureText: {
     flex: 1,
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.base,
+    color: theme.colors.foreground,
+    lineHeight: 24,
   },
 
-  // Pricing
-  pricingSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  // Pricing Display
+  pricingDisplaySection: {
+    alignItems: 'center',
     marginBottom: theme.spacing.xl,
-    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.lg,
   },
-  priceItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  priceWithBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing.xs,
+  strikethroughPrice: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
+    color: theme.colors.mutedForeground,
+    textDecorationLine: 'line-through',
+    marginBottom: theme.spacing.xs,
   },
   priceAmount: {
-    fontSize: 28,
+    fontSize: 48,
     fontWeight: '700',
     color: theme.colors.foreground,
   },
   priceInterval: {
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.mutedForeground,
+  },
+  billedText: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
     marginTop: theme.spacing.xs,
-  },
-  discountBadge: {
-    backgroundColor: theme.colors.success500,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: theme.borderRadius.sm,
-  },
-  discountText: {
-    color: theme.colors.primaryForeground,
-    fontSize: 11,
-    fontWeight: '600',
   },
 
   // Toggle
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
-    borderRadius: theme.borderRadius.lg,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
     padding: 4,
     marginBottom: theme.spacing.xl,
+    gap: 4,
   },
   toggleButton: {
     flex: 1,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: 16,
+    paddingHorizontal: theme.spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    borderRadius: 8,
   },
   toggleButtonLeft: {
-    borderTopLeftRadius: theme.borderRadius.md,
-    borderBottomLeftRadius: theme.borderRadius.md,
+    borderRadius: 8,
   },
   toggleButtonRight: {
-    borderTopRightRadius: theme.borderRadius.md,
-    borderBottomRightRadius: theme.borderRadius.md,
+    borderRadius: 8,
   },
   toggleButtonActive: {
-    backgroundColor: theme.colors.card,
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
     elevation: 2,
   },
   toggleButtonText: {
     fontSize: theme.fontSize.base,
     fontWeight: '600',
-    color: theme.colors.mutedForeground,
+    color: '#6B7280',
   },
   toggleButtonTextActive: {
-    color: theme.colors.primary,
+    color: '#111827',
   },
   toggleButtonDisabled: {
-    opacity: 0.4,
+    opacity: 0.5,
   },
-  toggleButtonTextDisabled: {
-    color: theme.colors.mutedForeground,
-  },
-  savingsBadgeSmall: {
+  popularBadge: {
     position: 'absolute',
-    top: -8,
-    right: 4,
-    backgroundColor: theme.colors.success500,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: theme.borderRadius.sm,
+    top: -6,
+    right: 8,
+    backgroundColor: '#60A5FA',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
   },
-  savingsTextSmall: {
-    color: theme.colors.primaryForeground,
+  popularText: {
+    color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '600',
+  },
+  savingsTextToggle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#60A5FA',
+    marginTop: 2,
   },
 
   // Buttons
   subscribeButton: {
-    backgroundColor: theme.colors.primary,
-    paddingVertical: theme.spacing.lg,
-    borderRadius: theme.borderRadius.lg,
-    marginBottom: theme.spacing.md,
+    backgroundColor: '#60A5FA',
+    paddingVertical: 18,
+    borderRadius: 12,
   },
   subscribeButtonDisabled: {
     opacity: 0.7,
   },
   subscribeButtonText: {
-    color: theme.colors.primaryForeground,
-    fontSize: theme.fontSize.base,
+    color: '#FFFFFF',
+    fontSize: theme.fontSize.lg,
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -553,39 +563,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing.sm,
   },
-  annualButton: {
-    position: 'relative',
-  },
-  annualButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.spacing.sm,
-  },
-  savingsBadge: {
-    backgroundColor: theme.colors.success500,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: theme.borderRadius.sm,
-  },
-  savingsText: {
-    color: theme.colors.primaryForeground,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  backToAppButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    paddingVertical: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
-  },
-  backToAppButtonText: {
-    color: theme.colors.foreground,
-    fontSize: theme.fontSize.base,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
 
   // Additional Info
   additionalInfo: {
@@ -593,10 +570,14 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.lg,
     alignItems: 'center',
   },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+  },
   infoText: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
     textAlign: 'center',
-    marginBottom: theme.spacing.xs,
   },
 });
