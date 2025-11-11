@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import DashboardScreenNew from '../screens/DashboardScreenNew';
 import AccountScreenNew from '../screens/AccountScreenNew';
@@ -14,6 +15,8 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export default function BottomTabNavigator() {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Tab.Navigator
       screenOptions={{
@@ -25,8 +28,8 @@ export default function BottomTabNavigator() {
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
           paddingTop: Platform.OS === 'ios' ? 8 : 4,
-          paddingBottom: Platform.OS === 'ios' ? 20 : 8,
-          height: Platform.OS === 'ios' ? 88 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 20 : Math.max(8, insets.bottom),
+          height: Platform.OS === 'ios' ? 88 : 64 + insets.bottom,
         },
         tabBarLabelStyle: {
           fontSize: 12,
