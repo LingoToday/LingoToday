@@ -28,6 +28,7 @@ import NotificationSettings from '../components/NotificationSettings';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
 import { scheduleLanguageLearningReminders, stopLanguageLearningReminders, checkAndRescheduleIfNeeded } from '../lib/notifications';
+import { useResponsiveBreakpoints } from '../hooks/useResponsiveBreakpoints';
 
 // Type definitions - matching web exactly
 interface User {
@@ -131,6 +132,7 @@ export const getLanguageSpecificNotification = (languageCode: string) => {
 export default function DashboardScreenNew() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { isSmallHandset } = useResponsiveBreakpoints();
   const { user, logout } = useAuth();
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
@@ -549,18 +551,18 @@ useEffect(() => {
 
                     {/* Stats Cards */}
                     <View style={styles.statsGrid}>
-                      <View style={[styles.statCard, styles.statCardBlue]}>
-                        <Text style={[styles.statValue, { color: theme.colors.primary }]}>{stats.streak}</Text>
+                      <View style={[styles.statCard, styles.statCardBlue, { padding: isSmallHandset ? 12 : 16 }]}>
+                        <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.streak}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Day Streak</Text>
                       </View>
                       
-                      <View style={[styles.statCard, styles.statCardGreen]}>
-                        <Text style={[styles.statValue, { color: theme.colors.success500 }]}>{stats.lessonsCompleted}</Text>
+                      <View style={[styles.statCard, styles.statCardGreen, { padding: isSmallHandset ? 12 : 16 }]}>
+                        <Text style={[styles.statValue, { color: theme.colors.success500, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.lessonsCompleted}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.success600 }]}>Lessons Done</Text>
                       </View>
                       
-                      <View style={[styles.statCard, styles.statCardPurple]}>
-                        <Text style={[styles.statValue, { color: theme.colors.primary }]}>{stats.wordsLearned}</Text>
+                      <View style={[styles.statCard, styles.statCardPurple, { padding: isSmallHandset ? 12 : 16 }]}>
+                        <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.wordsLearned}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Words Learned</Text>
                       </View>
                     </View>
@@ -980,7 +982,6 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   statCard: {
     flex: 1,
     borderRadius: 8,
-    padding: 16,
     alignItems: 'center',
     borderWidth: 1,
   },
@@ -997,7 +998,6 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     borderColor: theme.colors.primary100,
   },
   statValue: {
-    fontSize: 24,
     fontWeight: '700',
     marginBottom: 4,
   },

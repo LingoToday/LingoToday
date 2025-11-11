@@ -22,6 +22,7 @@ import { Select } from './ui/Select';
 import { apiClient } from '../lib/apiClient';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { scheduleLanguageLearningReminders, stopLanguageLearningReminders } from '../lib/notifications';
+import { useResponsiveBreakpoints } from '../hooks/useResponsiveBreakpoints';
 
 // Replace local UserSettings shape to match the web version
 type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
@@ -57,9 +58,43 @@ function hourOptions(): { label: string; value: string }[] {
 export default function NotificationSettings() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { isSmallHandset, screenWidth } = useResponsiveBreakpoints();
   const queryClient = useQueryClient();
   const [isTesting, setIsTesting] = useState(false);
   const [devicePermissionStatus, setDevicePermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
+
+  // Calculate day circle size based on available width (Android only)
+  const dayCircleStyle = useMemo(() => {
+    if (!isSmallHandset) {
+      // iOS and larger screens: use fixed sizing
+      const size = isTablet ? 44 : 40;
+      const gap = isTablet ? 10 : 8;
+      return {
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        marginHorizontal: gap / 2,
+        marginBottom: gap,
+      };
+    }
+
+    // Small Android handsets: calculate responsive size
+    // Available width: screenWidth - horizontal padding (20px each side) - card content padding (16px each side)
+    const availableWidth = screenWidth - 72;
+    const gap = 5;
+    // Calculate: (availableWidth) = 7 × circleSize + 7 × gap
+    const circleSize = Math.floor((availableWidth - 7 * gap) / 7);
+    // Ensure minimum of 28px for usability
+    const finalSize = Math.max(28, circleSize);
+
+    return {
+      width: finalSize,
+      height: finalSize,
+      borderRadius: finalSize / 2,
+      marginHorizontal: gap / 2,
+      marginBottom: gap,
+    };
+  }, [screenWidth, isSmallHandset, isTablet]);
 
   // Fetch settings (same key as web)
   const { data: settings, isLoading } = useQuery<UserSettings>({
@@ -312,7 +347,11 @@ export default function NotificationSettings() {
                 <TouchableOpacity
                   key={d}
                   onPress={() => toggleDay('mobile', d)}
-                  style={[styles.dayCircle, selected && styles.dayCircleSelected]}
+                  style={[
+                    dayCircleStyle,
+                    { backgroundColor: '#E5E7EB', alignItems: 'center', justifyContent: 'center' },
+                    selected && styles.dayCircleSelected
+                  ]}
                   accessibilityRole="button"
                   accessibilityLabel={`Mobile ${d}`}
                 >
@@ -482,15 +521,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: isTablet ? 10 : 8,
-  },
-  dayCircle: {
-    width: isTablet ? 44 : 40,
-    height: isTablet ? 44 : 40,
-    borderRadius: isTablet ? 22 : 20,
-    backgroundColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   dayCircleSelected: {
     backgroundColor: '#2563EB',
