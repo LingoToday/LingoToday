@@ -1,0 +1,161 @@
+1. What I Need the Notification System to Do
+
+For both iOS and Android:
+
+Users can:
+
+Enable / disable notifications
+
+Choose which days of the week they want reminders
+
+Choose a time window (e.g. 09:00–18:00)
+
+Choose a frequency (e.g. every 15 / 30 / 60 minutes)
+
+Reminders must:
+
+Fire reliably when the app is in the background
+
+Fire when the app is killed
+
+Fire when the device is locked
+
+Tapping a notification should open the app directly into the next lesson.
+
+The key point: these are true OS-level reminders, not “only while the JS process is running” timers.
+
+2. Why the Current iOS Behaviour Isn’t Quite Right
+
+Right now, according to your explanation:
+
+You’re pre-scheduling 50+ (often many more) one-off notifications with specific date/times.
+
+iOS then appears to batch them and deliver in bursts, which you’re attributing entirely to “intelligent notification delivery”.
+
+However:
+
+iOS does have features like Notification Summary, Focus modes, and “Deliver Quietly” which can batch/delay notifications — but those apply to all apps and are driven by user settings, not just “too many notifications”.
+
+The symptom I care about is that reminders are not arriving consistently in the time window as a user would expect, even when those system features aren’t explicitly configured.
+
+In other words: the current approach is fighting iOS instead of working with how its calendar/notification system is designed.
+
+3. Proposed High-Level Architecture
+
+The main change I’d like:
+
+Use different scheduling strategies for iOS and Android, tailored to each platform.
+
+A. Shared High-Level Data Model
+
+Keep using a single shared concept of “user preferences”:
+
+enabled flag
+
+frequencyMinutes (15/30/60 etc.)
+
+daysOfWeek (0–6 for Sun–Sat)
+
+startTime and endTime (e.g. 09:00 to 18:00)
+
+Those values come from the settings screen I already have.
+
+4. iOS Strategy: Weekly Repeating Calendar Triggers
+
+Instead of:
+
+Generating dozens/hundreds of one-off notifications per day across a 14-day horizon,
+
+I’d like iOS to see:
+
+A stable weekly schedule of reminders:
+
+“At 09:00, 09:15, 09:30, … every Monday”
+
+“At 09:00, 09:15, 09:30, … every Tuesday”
+
+etc., only for the days the user selected
+
+In practice this means:
+
+For each selected weekday:
+
+Within the chosen time window, step forward by the chosen frequency and create a calendar-based, repeating trigger for each time slot.
+
+These triggers repeat weekly and don’t need to be regenerated every 14 days.
+
+Why this helps:
+
+iOS is no longer looking at a huge backlog of one-off alerts that might be interpreted as spammy.
+
+Instead, it sees a small, regular pattern: “every Monday at 09:00, show a notification”.
+
+This aligns with how iOS expects recurring reminders/alarms to behave and cooperates better with its “intelligent delivery”.
+
+Important nuance:
+
+iOS system features like Notification Summary and Focus can still batch or silence notifications if the user chooses that — and I fully accept that.
+
+What I want is: within normal settings, reminders should arrive individually and reliably in their time slots, rather than being grouped in strange bursts due to the scheduling approach.
+
+5. Android Strategy: Keep the Horizon-Based Scheduling
+
+Android is less opinionated about “intelligent delivery” in this way, so the current “pre-schedule for the next N days” approach is fine there.
+
+For Android only, I’m happy with:
+
+Generating notifications for the next X days (e.g. 14 days) using date/time triggers based on:
+
+chosen days of the week
+
+frequency
+
+start/end times
+
+Clearing and regenerating them whenever the user changes preferences, and optionally topping up at app launch.
+
+So:
+
+Android → horizon-based scheduling of concrete dates (what you have now, just ensure it’s purely OS-level, not JS timers).
+
+iOS → calendar-based weekly repeating schedule, not hundreds of per-instance notifications.
+
+6. Behaviour I’d Like to Confirm After Changes
+
+Once this architecture is in:
+
+On iOS:
+
+With normal notification settings (no Focus, no Summary for the app), the user should see reminders arriving at (roughly) each configured time slot during their chosen days and time window.
+
+Closing/killing the app and locking the device should not stop the reminders.
+
+On Android:
+
+The current spread of notifications across the day should continue to work as-is, including when the app is closed/locked.
+
+On both platforms:
+
+If the user disables notifications from our in-app toggle, all scheduled notifications are cancelled.
+
+If they change frequency, days or time window, the existing schedule is cleared and a new one is created from these preferences.
+
+7. What I’m not expecting you to fix
+
+I completely understand that:
+
+You cannot override iOS Notification Summary, Focus, or the user choosing “Deliver Quietly”.
+
+There will always be some level of system-level batching that no developer can defeat.
+
+What I am asking for is:
+
+A platform-aware scheduling strategy that doesn’t encourage iOS to treat my reminders as a giant burst of spam.
+
+A design that aligns with how each OS wants repeating reminders to look:
+
+Calendar-style repeating triggers on iOS
+
+Horizon-based per-date scheduling on Android
+
+If you can rework the implementation along those lines and verify that it behaves correctly on physical devices, that should solve the practical issues I’m seeing without trying to “fight” iOS’s intelligent delivery system.
