@@ -349,6 +349,8 @@ function dayToWeekday(day: Day): number {
   return dayMap[day];
 }
 
+// DEPRECATED: Local notification scheduling replaced with backend push notifications
+// This function is no longer used - backend now handles all notification scheduling
 // iOS-specific: Schedule weekly repeating calendar triggers
 async function scheduleIOSRepeatingNotifications(
   startTime: string,
@@ -478,6 +480,8 @@ async function scheduleIOSRepeatingNotifications(
   return scheduledCount;
 }
 
+// DEPRECATED: Local notification scheduling replaced with backend push notifications
+// This function is no longer used - backend now handles all notification scheduling
 // Android-specific: Schedule notifications for next N days with specific dates
 async function scheduleAndroidHorizonNotifications(
   startTime: string,
@@ -605,6 +609,9 @@ async function scheduleAndroidHorizonNotifications(
   return scheduledCount;
 }
 
+// DEPRECATED: Local notification scheduling replaced with backend push notifications
+// This function is no longer used - backend now handles all notification scheduling via push notifications
+// Kept for backward compatibility but does nothing
 // Schedule language learning reminders with platform-specific strategies
 // iOS: Weekly repeating calendar triggers
 // Android: Horizon-based scheduling for next 14 days
@@ -717,6 +724,8 @@ export async function scheduleLanguageLearningReminders(
   return schedulingPromise;
 }
 
+// DEPRECATED: Local notification scheduling replaced with backend push notifications
+// This function is no longer used - backend controls notification delivery
 // Stop all language learning reminders
 export async function stopLanguageLearningReminders(): Promise<void> {
   try {
@@ -744,6 +753,8 @@ export async function getScheduledNotificationCount(): Promise<number> {
   }
 }
 
+// DEPRECATED: Local notification scheduling replaced with backend push notifications
+// This function is no longer needed - backend handles scheduling
 // Check if we need to reschedule notifications (if running low)
 // Platform-specific logic:
 // - iOS: Reschedule if 0 (weekly repeaters should persist, but recreate if missing)
