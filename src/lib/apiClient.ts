@@ -527,7 +527,7 @@ export class ApiClient {
     deviceId?: string;
     appVersion?: string;
   }) {
-    return this.makeRequest('/api/mobile-notifications/register-token', {
+    return this.makeRequest('/api/notifications/register-token', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -537,8 +537,8 @@ export class ApiClient {
     token?: string;
     deviceId?: string;
   }) {
-    return this.makeRequest('/api/mobile-notifications/unregister-token', {
-      method: 'POST',
+    return this.makeRequest('/api/notifications/unregister-token', {
+      method: 'DELETE',
       body: JSON.stringify(data),
     });
   }
