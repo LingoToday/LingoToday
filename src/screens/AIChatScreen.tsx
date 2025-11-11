@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#6B7280',
     textAlign: 'center',
     marginBottom: 32,
-    lineHeight: 24,
+    lineHeight: 26,
     paddingHorizontal: 10,
   },
   imageGrid: {
