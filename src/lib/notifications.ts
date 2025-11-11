@@ -254,16 +254,25 @@ async function scheduleIOSRepeatingNotifications(
   const [endHour, endMinute] = endTime.split(':').map(Number);
   
   const startMinutes = startHour * 60 + startMinute;
-  const endMinutes = endHour * 60 + endMinute;
-  const windowDurationMinutes = endMinutes - startMinutes;
+  let endMinutes = endHour * 60 + endMinute;
   
-  // Calculate time slots within the window
-  const timeSlots: { hour: number; minute: number }[] = [];
+  // Handle cross-midnight windows (e.g., 18:00 to 09:00)
+  // If end is before start, add 24 hours to end
+  let windowDurationMinutes = endMinutes - startMinutes;
+  if (windowDurationMinutes <= 0) {
+    windowDurationMinutes += 24 * 60; // Add 24 hours
+    logNotification('🌙', `iOS: Detected cross-midnight window (${startTime} to ${endTime})`);
+  }
+  
+  // Calculate time slots within the window, tracking which day offset they belong to
+  const timeSlots: { hour: number; minute: number; dayOffset: number }[] = [];
   for (let offsetMinutes = 0; offsetMinutes < windowDurationMinutes; offsetMinutes += frequencyMinutes) {
     const totalMinutes = startMinutes + offsetMinutes;
     const hour = Math.floor(totalMinutes / 60) % 24;
     const minute = totalMinutes % 60;
-    timeSlots.push({ hour, minute });
+    // Calculate day offset: if total minutes >= 24*60, it's the next day
+    const dayOffset = Math.floor(totalMinutes / (24 * 60));
+    timeSlots.push({ hour, minute, dayOffset });
   }
   
   // iOS has a limit of 64 total notifications, so we need to cap
@@ -286,7 +295,8 @@ async function scheduleIOSRepeatingNotifications(
       const totalMinutes = startMinutes + offsetMinutes;
       const hour = Math.floor(totalMinutes / 60) % 24;
       const minute = totalMinutes % 60;
-      adjustedTimeSlots.push({ hour, minute });
+      const dayOffset = Math.floor(totalMinutes / (24 * 60));
+      adjustedTimeSlots.push({ hour, minute, dayOffset });
     }
     
     adjustedFrequency = adjustedFreq;
@@ -309,9 +319,17 @@ async function scheduleIOSRepeatingNotifications(
   
   // Schedule repeating notifications for each day and time slot
   for (const day of daysToSchedule) {
-    const weekday = dayToWeekdayMap[day];
+    const baseWeekday = dayToWeekdayMap[day];
     
     for (const slot of adjustedTimeSlots) {
+      // If slot is for the next day (dayOffset > 0), increment weekday
+      let targetWeekday = baseWeekday + slot.dayOffset;
+      // Wrap weekday: 1-7 range, where 8 becomes 1
+      if (targetWeekday > 7) {
+        targetWeekday = targetWeekday % 7;
+        if (targetWeekday === 0) targetWeekday = 7;
+      }
+      
       await Notifications.scheduleNotificationAsync({
         content: {
           title: notificationContent.title,
@@ -329,7 +347,7 @@ async function scheduleIOSRepeatingNotifications(
           },
         },
         trigger: {
-          weekday: weekday,
+          weekday: targetWeekday,
           hour: slot.hour,
           minute: slot.minute,
           repeats: true,
@@ -365,8 +383,15 @@ async function scheduleAndroidHorizonNotifications(
   const [endHour, endMinute] = endTime.split(':').map(Number);
   
   const startMinutes = startHour * 60 + startMinute;
-  const endMinutes = endHour * 60 + endMinute;
-  const windowDurationMinutes = endMinutes - startMinutes;
+  let endMinutes = endHour * 60 + endMinute;
+  
+  // Handle cross-midnight windows (e.g., 18:00 to 09:00)
+  // If end is before start, add 24 hours to end
+  let windowDurationMinutes = endMinutes - startMinutes;
+  if (windowDurationMinutes <= 0) {
+    windowDurationMinutes += 24 * 60; // Add 24 hours
+    logNotification('🌙', `Android: Detected cross-midnight window (${startTime} to ${endTime})`);
+  }
   
   // Calculate how many notifications fit in the window based on frequency
   const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
@@ -413,12 +438,19 @@ async function scheduleAndroidHorizonNotifications(
       }
       
       const offsetMinutes = i * frequencyMinutes;
-      const notificationTime = startMinutes + offsetMinutes;
-      const hour = Math.floor(notificationTime / 60) % 24;
-      const minute = Math.floor(notificationTime % 60);
+      const totalNotificationMinutes = startMinutes + offsetMinutes;
+      const hour = Math.floor(totalNotificationMinutes / 60) % 24;
+      const minute = totalNotificationMinutes % 60;
+      
+      // Calculate day offset: if total minutes >= 24*60, it's the next day
+      const dayOffset = Math.floor(totalNotificationMinutes / (24 * 60));
       
       // Create the exact trigger date/time
       const triggerDate = new Date(targetDate);
+      // Add day offset if the time wrapped past midnight
+      if (dayOffset > 0) {
+        triggerDate.setDate(triggerDate.getDate() + dayOffset);
+      }
       triggerDate.setHours(hour, minute, 0, 0);
       
       // Only schedule if the notification is in the future
@@ -602,8 +634,9 @@ export async function getScheduledNotificationCount(): Promise<number> {
 }
 
 // Check if we need to reschedule notifications (if running low)
-// Returns true if rescheduling was performed
-// Includes debouncing to prevent multiple rapid calls
+// Platform-specific logic:
+// - iOS: Reschedule if 0 (weekly repeaters should persist, but recreate if missing)
+// - Android: Reschedule if below threshold (horizon needs refilling)
 export async function checkAndRescheduleIfNeeded(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -613,7 +646,7 @@ export async function checkAndRescheduleIfNeeded(
   selectedDays?: Day[]
 ): Promise<boolean> {
   try {
-    logNotification('🔍', 'Checking if rescheduling is needed');
+    logNotification('🔍', `${Platform.OS.toUpperCase()}: Checking if rescheduling is needed`);
     
     // Debounce: Check last schedule time to prevent rapid rescheduling
     const lastScheduleTimeStr = await AsyncStorage.getItem(LAST_SCHEDULE_TIME_KEY);
@@ -629,12 +662,30 @@ export async function checkAndRescheduleIfNeeded(
     }
     
     const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    const count = scheduledNotifications.length;
     
-    // If we have less than 10 notifications scheduled, reschedule
-    const MINIMUM_THRESHOLD = 10;
+    let shouldReschedule = false;
     
-    if (scheduledNotifications.length < MINIMUM_THRESHOLD) {
-      logNotification('📅', `Low notification count (${scheduledNotifications.length}), rescheduling...`);
+    if (Platform.OS === 'ios') {
+      // iOS: Weekly repeaters should persist, but recreate if completely missing
+      if (count === 0) {
+        logNotification('📅', `iOS: No notifications scheduled, recreating weekly repeaters...`);
+        shouldReschedule = true;
+      } else {
+        logNotification('✅', `iOS: ${count} weekly repeating notifications active`);
+      }
+    } else {
+      // Android: Refill horizon if below threshold
+      const ANDROID_MINIMUM_THRESHOLD = 10;
+      if (count < ANDROID_MINIMUM_THRESHOLD) {
+        logNotification('📅', `Android: Low notification count (${count}), refilling 14-day horizon...`);
+        shouldReschedule = true;
+      } else {
+        logNotification('✅', `Android: ${count} notifications scheduled for horizon`);
+      }
+    }
+    
+    if (shouldReschedule) {
       await scheduleLanguageLearningReminders(
         startTime,
         endTime,
@@ -646,7 +697,6 @@ export async function checkAndRescheduleIfNeeded(
       return true;
     }
     
-    logNotification('✅', `Sufficient notifications scheduled (${scheduledNotifications.length}), no rescheduling needed`);
     return false;
   } catch (error) {
     logNotification('❌', 'Error checking/rescheduling notifications', error);
