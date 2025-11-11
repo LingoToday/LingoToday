@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { apiClient } from '../lib/apiClient';
 import { User } from '../types';
 import { purchaseService } from '../services/purchaseService';
+import { registerPushTokenWithBackend, unregisterPushToken } from '../lib/notifications';
 
 export interface AuthContextType {
   user: User | null;
@@ -68,13 +69,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const userObj = (userData as any).data || userData;
         setUser(userObj as User);
         
-        // Initialize RevenueCat with user ID on native platforms
+        // Initialize RevenueCat and register push token on native platforms
         if (Platform.OS !== 'web' && userObj?.id) {
           try {
-            await purchaseService.initialize(userObj.id);
-            console.log('✅ RevenueCat initialized for user:', userObj.id);
+            await Promise.all([
+              purchaseService.initialize(userObj.id),
+              registerPushTokenWithBackend()
+            ]);
+            console.log('✅ RevenueCat initialized and push token registered for user:', userObj.id);
           } catch (error) {
-            console.error('⚠️ RevenueCat initialization failed during auth restore:', error);
+            console.error('⚠️ Initialization failed during auth restore:', error);
           }
         }
       } else {
@@ -124,13 +128,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
         
-        // Initialize RevenueCat with user ID on native platforms
+        // Initialize RevenueCat and register push token on native platforms
         if (Platform.OS !== 'web' && userObj?.id) {
           try {
-            await purchaseService.initialize(userObj.id);
-            console.log('✅ RevenueCat initialized after login for user:', userObj.id);
+            await Promise.all([
+              purchaseService.initialize(userObj.id),
+              registerPushTokenWithBackend()
+            ]);
+            console.log('✅ RevenueCat initialized and push token registered after login for user:', userObj.id);
           } catch (error) {
-            console.error('⚠️ RevenueCat initialization failed after login:', error);
+            console.error('⚠️ Initialization failed after login:', error);
           }
         }
       } else {
@@ -174,13 +181,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
         
-        // Initialize RevenueCat with user ID on native platforms
+        // Initialize RevenueCat and register push token on native platforms
         if (Platform.OS !== 'web' && userObj?.id) {
           try {
-            await purchaseService.initialize(userObj.id);
-            console.log('✅ RevenueCat initialized after registration for user:', userObj.id);
+            await Promise.all([
+              purchaseService.initialize(userObj.id),
+              registerPushTokenWithBackend()
+            ]);
+            console.log('✅ RevenueCat initialized and push token registered after registration for user:', userObj.id);
           } catch (error) {
-            console.error('⚠️ RevenueCat initialization failed after registration:', error);
+            console.error('⚠️ Initialization failed after registration:', error);
           }
         }
       } else {
@@ -196,13 +206,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
-      // Logout from RevenueCat on native platforms first
+      // Unregister push token and logout from RevenueCat on native platforms first
       if (Platform.OS !== 'web') {
         try {
-          await purchaseService.logOut();
-          console.log('✅ Logged out from RevenueCat');
-        } catch (revenueCatError) {
-          console.error('⚠️ RevenueCat logout error (continuing):', revenueCatError);
+          await Promise.all([
+            unregisterPushToken(),
+            purchaseService.logOut()
+          ]);
+          console.log('✅ Push token unregistered and logged out from RevenueCat');
+        } catch (cleanupError) {
+          console.error('⚠️ Cleanup error during logout (continuing):', cleanupError);
         }
       }
       

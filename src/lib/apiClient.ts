@@ -520,6 +520,29 @@ export class ApiClient {
     return this.makeRequest(`/api/course-mapping/${languageCode}`);
   }
 
+  // Push notification token management
+  async registerPushToken(data: {
+    token: string;
+    platform: 'ios' | 'android';
+    deviceId?: string;
+    appVersion?: string;
+  }) {
+    return this.makeRequest('/api/mobile-notifications/register-token', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async unregisterPushToken(data: {
+    token?: string;
+    deviceId?: string;
+  }) {
+    return this.makeRequest('/api/mobile-notifications/unregister-token', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Debug method to check API connectivity
   async healthCheck() {
     try {

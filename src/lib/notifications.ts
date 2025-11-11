@@ -3,7 +3,9 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { getLanguageSpecificNotification } from '../screens/DashboardScreenNew';
+import { apiClient } from './apiClient';
 
 // Scheduling lock to prevent concurrent scheduling operations
 let isScheduling = false;
@@ -12,6 +14,8 @@ let schedulingPromise: Promise<boolean> | null = null;
 // Storage keys
 const LAST_SCHEDULE_TIME_KEY = '@notifications_last_schedule_time';
 const SCHEDULE_PARAMS_KEY = '@notifications_schedule_params';
+const PUSH_TOKEN_CACHE_KEY = '@push_token_cache';
+const PUSH_TOKEN_REGISTERED_KEY = '@push_token_registered_at';
 
 // Configure notification categories for iOS background notifications
 async function setupNotificationCategories() {
@@ -64,7 +68,7 @@ function logNotification(emoji: string, message: string, data?: any) {
   }
 }
 
-// Register for push notifications
+// Register for push notifications and obtain Expo push token
 export async function registerForPushNotificationsAsync(): Promise<string | null> {
   let token = null;
 
@@ -131,6 +135,111 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
   }
 
   return token;
+}
+
+// Register push token with backend for server-side notification delivery
+export async function registerPushTokenWithBackend(): Promise<boolean> {
+  try {
+    // Check if we're on web (no push notifications on web)
+    if (Platform.OS === 'web') {
+      logNotification('ℹ️', 'Push notifications not supported on web platform');
+      return false;
+    }
+
+    // Get Expo push token
+    const token = await registerForPushNotificationsAsync();
+    
+    if (!token) {
+      logNotification('⚠️', 'Cannot register with backend - no push token available');
+      return false;
+    }
+
+    // Check cache to avoid redundant uploads
+    const cachedToken = await AsyncStorage.getItem(PUSH_TOKEN_CACHE_KEY);
+    const lastRegisteredAt = await AsyncStorage.getItem(PUSH_TOKEN_REGISTERED_KEY);
+    
+    // If token unchanged and registered recently (within 24 hours), skip
+    if (cachedToken === token && lastRegisteredAt) {
+      const timeSinceRegistration = Date.now() - parseInt(lastRegisteredAt, 10);
+      const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+      
+      if (timeSinceRegistration < CACHE_DURATION) {
+        logNotification('✅', 'Push token already registered (cached)');
+        return true;
+      }
+    }
+
+    // Get device info
+    const deviceId = Constants.sessionId || Device.modelName || 'unknown';
+    const appVersion = Constants.expoConfig?.version || 'unknown';
+    
+    // Register with backend
+    logNotification('🚀', 'Registering push token with backend...', {
+      platform: Platform.OS,
+      deviceId,
+      appVersion,
+    });
+
+    await apiClient.registerPushToken({
+      token,
+      platform: Platform.OS as 'ios' | 'android',
+      deviceId,
+      appVersion,
+    });
+
+    // Cache token and registration time
+    await AsyncStorage.setItem(PUSH_TOKEN_CACHE_KEY, token);
+    await AsyncStorage.setItem(PUSH_TOKEN_REGISTERED_KEY, Date.now().toString());
+    
+    logNotification('✅', 'Push token successfully registered with backend');
+    return true;
+  } catch (error) {
+    logNotification('❌', 'Failed to register push token with backend', error);
+    // Don't throw - this is a non-blocking operation
+    return false;
+  }
+}
+
+// Unregister push token from backend
+export async function unregisterPushToken(): Promise<boolean> {
+  try {
+    if (Platform.OS === 'web') {
+      return false;
+    }
+
+    // Get cached token and device ID
+    const token = await AsyncStorage.getItem(PUSH_TOKEN_CACHE_KEY);
+    const deviceId = Constants.sessionId || Device.modelName;
+
+    if (!token) {
+      logNotification('ℹ️', 'No cached push token to unregister');
+      return false;
+    }
+
+    logNotification('🚀', 'Unregistering push token from backend...');
+
+    await apiClient.unregisterPushToken({
+      token,
+      deviceId,
+    });
+
+    // Clear cache
+    await AsyncStorage.removeItem(PUSH_TOKEN_CACHE_KEY);
+    await AsyncStorage.removeItem(PUSH_TOKEN_REGISTERED_KEY);
+
+    logNotification('✅', 'Push token unregistered from backend');
+    return true;
+  } catch (error) {
+    logNotification('❌', 'Failed to unregister push token', error);
+    // Still clear cache even if API call fails
+    try {
+      await AsyncStorage.removeItem(PUSH_TOKEN_CACHE_KEY);
+      await AsyncStorage.removeItem(PUSH_TOKEN_REGISTERED_KEY);
+    } catch (cacheError) {
+      logNotification('⚠️', 'Failed to clear token cache', cacheError);
+    }
+    return false;
+  }
 }
 
 // Check if current time is within user's notification window
