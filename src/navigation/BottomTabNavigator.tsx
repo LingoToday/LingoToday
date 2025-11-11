@@ -6,9 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import DashboardScreenNew from '../screens/DashboardScreenNew';
 import AccountScreenNew from '../screens/AccountScreenNew';
+import AIChatScreen from '../screens/AIChatScreen';
 
 export type MainTabParamList = {
   Home: undefined;
+  AIChat: undefined;
   Profile: undefined;
 };
 
@@ -49,6 +51,20 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AIChat"
+        component={AIChatScreen}
+        options={{
+          tabBarLabel: 'AI Chat',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
               size={size}
               color={color}
             />
