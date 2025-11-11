@@ -108,7 +108,6 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
           allowAlert: true,
           allowBadge: true,
           allowSound: true,
-          allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
           allowCriticalAlerts: false,
           provideAppNotificationSettings: true,
         },
@@ -209,7 +208,7 @@ export async function unregisterPushToken(): Promise<boolean> {
 
     // Get cached token and device ID
     const token = await AsyncStorage.getItem(PUSH_TOKEN_CACHE_KEY);
-    const deviceId = Constants.sessionId || Device.modelName;
+    const deviceId = Constants.sessionId || Device.modelName || undefined;
 
     if (!token) {
       logNotification('ℹ️', 'No cached push token to unregister');

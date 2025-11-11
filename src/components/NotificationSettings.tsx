@@ -182,7 +182,6 @@ export default function NotificationSettings() {
           allowAlert: true,
           allowBadge: true,
           allowSound: true,
-          allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
         },
       });
       setDevicePermissionStatus(status);
