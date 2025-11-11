@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
 
 // Platform-specific font scaling to match iOS appearance
-// Android renders fonts ~12% larger than iOS at the same pixel size
-const platformFontScale = Platform.OS === 'android' ? 0.88 : 1;
+// Android renders fonts larger than iOS at the same pixel size
+const platformFontScale = Platform.OS === 'android' ? 0.82 : 1;
 
 export const scaleFontSize = (size: number): number => {
   return Math.round(size * platformFontScale);

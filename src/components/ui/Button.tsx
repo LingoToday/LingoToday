@@ -7,6 +7,7 @@ import {
   TextStyle,
   ActivityIndicator,
   StyleProp,
+  Platform,
 } from 'react-native';
 import { theme } from '../../lib/theme';
 
@@ -35,14 +36,17 @@ export const Button: React.FC<ButtonProps> = ({
   textStyle,
 }) => {
   const getButtonStyle = (): ViewStyle => {
+    const androidPaddingReduction = Platform.OS === 'android' ? 2 : 0;
+    const androidHeightReduction = Platform.OS === 'android' ? 4 : 0;
+    
     const baseStyle: ViewStyle = {
       borderRadius: theme.borderRadius.lg,
-      paddingVertical: size === 'sm' ? theme.spacing.sm : size === 'lg' ? theme.spacing.lg : theme.spacing.md,
+      paddingVertical: (size === 'sm' ? theme.spacing.sm : size === 'lg' ? theme.spacing.lg : theme.spacing.md) - androidPaddingReduction,
       paddingHorizontal: size === 'sm' ? theme.spacing.md : size === 'lg' ? theme.spacing.xl : theme.spacing.lg,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
-      minHeight: size === 'sm' ? 36 : size === 'lg' ? 56 : 44,
+      minHeight: (size === 'sm' ? 36 : size === 'lg' ? 56 : 44) - androidHeightReduction,
     };
 
     switch (variant) {

@@ -571,17 +571,26 @@ useEffect(() => {
 
                     {/* Stats Cards */}
                     <View style={styles.statsGrid}>
-                      <View style={[styles.statCard, styles.statCardBlue, { padding: isSmallHandset ? 12 : 16 }]}>
+                      <View style={[styles.statCard, styles.statCardBlue, { 
+                        padding: isSmallHandset ? 12 : 16,
+                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
+                      }]}>
                         <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.streak}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Day Streak</Text>
                       </View>
                       
-                      <View style={[styles.statCard, styles.statCardGreen, { padding: isSmallHandset ? 12 : 16 }]}>
+                      <View style={[styles.statCard, styles.statCardGreen, { 
+                        padding: isSmallHandset ? 12 : 16,
+                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
+                      }]}>
                         <Text style={[styles.statValue, { color: theme.colors.success500, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.lessonsCompleted}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.success600 }]}>Lessons Done</Text>
                       </View>
                       
-                      <View style={[styles.statCard, styles.statCardPurple, { padding: isSmallHandset ? 12 : 16 }]}>
+                      <View style={[styles.statCard, styles.statCardPurple, { 
+                        padding: isSmallHandset ? 12 : 16,
+                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
+                      }]}>
                         <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.wordsLearned}</Text>
                         <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Words Learned</Text>
                       </View>
@@ -1120,7 +1129,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: Platform.OS === 'android' ? 14 : 16,
     paddingBottom: 0,
   },
   upcomingTitle: {
@@ -1140,14 +1149,14 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     fontWeight: '500',
   },
   upcomingContent: {
-    padding: 16,
-    gap: 12,
+    padding: Platform.OS === 'android' ? 14 : 16,
+    gap: Platform.OS === 'android' ? 10 : 12,
   },
 
   // Next Lesson Card (matching web exactly)
   nextLessonCard: {
     borderRadius: 8,
-    padding: 16,
+    padding: Platform.OS === 'android' ? 14 : 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -1172,8 +1181,8 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   nextLessonButton: {
     backgroundColor: theme.colors.background,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: Platform.OS === 'android' ? 14 : 16,
+    paddingVertical: Platform.OS === 'android' ? 6 : 8,
     borderRadius: 6,
   },
   nextLessonButtonText: {
@@ -1189,7 +1198,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   upcomingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: Platform.OS === 'android' ? 10 : 12,
     borderRadius: 8,
     backgroundColor: '#F9FAFB',
   },
