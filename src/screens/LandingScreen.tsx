@@ -47,16 +47,16 @@ export default function LandingScreen() {
   
   if (screenHeight < 700) {
     // Small screens (iPhone SE, etc)
-    videoHeightPercentage = 0.32;
-    maxVideoHeight = 280;
+    videoHeightPercentage = 0.352;
+    maxVideoHeight = 308;
   } else if (screenHeight < 850) {
     // Medium screens (iPhone 12, 13, etc)
-    videoHeightPercentage = 0.38;
-    maxVideoHeight = 350;
+    videoHeightPercentage = 0.418;
+    maxVideoHeight = 385;
   } else {
     // Large screens (iPhone 14 Pro Max, etc)
-    videoHeightPercentage = 0.35;
-    maxVideoHeight = 380;
+    videoHeightPercentage = 0.385;
+    maxVideoHeight = 418;
   }
   
   const videoHeight = Math.min(screenHeight * videoHeightPercentage, maxVideoHeight);
