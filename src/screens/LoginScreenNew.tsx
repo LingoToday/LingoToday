@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { theme } from '../lib/theme';
+import { theme, scaleFontSize } from '../lib/theme';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -263,12 +263,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoText: {
-    fontSize: 20,
+    fontSize: scaleFontSize(20),
     fontWeight: '700',
     color: theme.colors.foreground,
   },
   headerTitle: {
-    fontSize: 30,
+    fontSize: scaleFontSize(30),
     fontWeight: '700',
     color: theme.colors.foreground,
     textAlign: 'center',
@@ -280,11 +280,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   subtitleText: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     color: theme.colors.mutedForeground,
   },
   linkText: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     fontWeight: '500',
     color: theme.colors.primary,
   },
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   welcomeTitle: {
-    fontSize: 16,
+    fontSize: scaleFontSize(16),
     fontWeight: '500',
     color: theme.colors.foreground,
     marginBottom: 16,
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     flex: 1,
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     color: '#B91C1C',
   },
 
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   fieldLabel: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     fontWeight: '500',
     color: theme.colors.foreground,
     marginBottom: 6,
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.input,
     borderRadius: 6,
     padding: 12,
-    fontSize: 16,
+    fontSize: scaleFontSize(16),
     backgroundColor: theme.colors.background,
     height: 40, // Match web h-10 (40px)
     marginBottom: 0, // Remove default margin from Input component
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.destructive,
   },
   fieldError: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     color: theme.colors.destructive,
     marginTop: 4,
   },
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   forgotPasswordText: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     fontWeight: '500',
     color: theme.colors.primary,
   },
@@ -413,11 +413,11 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   bottomText: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     color: theme.colors.mutedForeground,
   },
   bottomLink: {
-    fontSize: 14,
+    fontSize: scaleFontSize(14),
     fontWeight: '500',
     color: theme.colors.primary,
   },

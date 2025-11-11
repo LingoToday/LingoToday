@@ -1,3 +1,13 @@
+import { Platform } from 'react-native';
+
+// Platform-specific font scaling to match iOS appearance
+// Android renders fonts ~12% larger than iOS at the same pixel size
+const platformFontScale = Platform.OS === 'android' ? 0.88 : 1;
+
+export const scaleFontSize = (size: number): number => {
+  return Math.round(size * platformFontScale);
+};
+
 export const theme = {
   colors: {
     // Brand colors from style guide
@@ -90,17 +100,17 @@ export const theme = {
   },
 
   fontSize: {
-    xxs: 11,
-    xs: 12,
-    sm: 14,
-    base: 16,
-    lg: 18,
-    xl: 20,
-    '2xl': 24,
-    '2.5xl': 28,
-    '3xl': 30,
-    '4xl': 36,
-    '5xl': 48,
+    xxs: scaleFontSize(11),
+    xs: scaleFontSize(12),
+    sm: scaleFontSize(14),
+    base: scaleFontSize(16),
+    lg: scaleFontSize(18),
+    xl: scaleFontSize(20),
+    '2xl': scaleFontSize(24),
+    '2.5xl': scaleFontSize(28),
+    '3xl': scaleFontSize(30),
+    '4xl': scaleFontSize(36),
+    '5xl': scaleFontSize(48),
   },
 
   fontWeight: {
@@ -116,10 +126,10 @@ export const theme = {
     normal: 1.5,
     relaxed: 1.75,
     // Absolute values for specific use cases
-    xs: 18,
-    sm: 20,
-    md: 24,
-    lg: 28,
+    xs: scaleFontSize(18),
+    sm: scaleFontSize(20),
+    md: scaleFontSize(24),
+    lg: scaleFontSize(28),
   },
 
   shadows: {
