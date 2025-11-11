@@ -336,7 +336,7 @@ async function scheduleIOSRepeatingNotifications(
           body: notificationContent.body,
           sound: 'default',
           categoryIdentifier: 'language_reminder',
-          interruptionLevel: 'active' as any,
+          interruptionLevel: 'timeSensitive' as any,
           data: {
             type: 'language_reminder',
             language: language,
