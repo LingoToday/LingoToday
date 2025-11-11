@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Platform,
   useWindowDimensions,
   Linking,
+  AppState,
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
@@ -138,6 +139,8 @@ export default function DashboardScreenNew() {
   const queryClient = useQueryClient();
   const sheetManager = useSheetManager();
   const [refreshing, setRefreshing] = useState(false);
+  const hasCheckedNotificationsOnMount = useRef(false);
+  const appState = useRef(AppState.currentState);
   
   // REMOVED: const [isDailySessionActive, setIsDailySessionActive] = useState(false);
   // We'll calculate this dynamically instead
@@ -299,51 +302,68 @@ useEffect(() => {
   const effectiveCourseStats = courseStats || { totalCourses: 5, totalLessons: 78 };
   const upcomingLessons = upcomingLessonsResponse?.lessons || fallbackUpcomingLessons;
 
-  // Automatically check and reschedule notifications when app opens if enabled
+  // Check and reschedule notifications on app foreground (not on every render)
   useEffect(() => {
+    // This function always reads the latest settings from effectiveDashboardData (no stale closure)
     const autoCheckAndReschedule = async () => {
-      const settings = effectiveDashboardData?.settings;
+      // Get fresh settings from current state
+      const currentSettings = effectiveDashboardData?.settings;
+      const currentUser = user;
       
       // Only proceed if notifications are enabled
-      if (!settings?.mobileNotificationsEnabled) {
-        console.log('🔕 Auto-reschedule: Notifications not enabled');
+      if (!currentSettings?.mobileNotificationsEnabled) {
         return;
       }
 
       // Check if permissions are granted
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== 'granted') {
-        console.log('⚠️ Auto-reschedule: Notification permission not granted');
         return;
       }
 
       // Check if user has selected a language
-      if (!user?.selectedLanguage) {
-        console.log('⚠️ Auto-reschedule: No language selected');
+      if (!currentUser?.selectedLanguage) {
         return;
       }
 
       try {
-        console.log('🔍 Checking notification schedule...');
-        
-        // Use the new checkAndRescheduleIfNeeded function
+        // Use the new checkAndRescheduleIfNeeded function (with built-in debouncing)
         await checkAndRescheduleIfNeeded(
-          settings.mobileNotificationStartTime || '09:00',
-          settings.mobileNotificationEndTime || '18:00',
-          settings.mobileNotificationFrequency || 60,
-          user.selectedLanguage,
+          currentSettings.mobileNotificationStartTime || '09:00',
+          currentSettings.mobileNotificationEndTime || '18:00',
+          currentSettings.mobileNotificationFrequency || 60,
+          currentUser.selectedLanguage,
           undefined,
-          (settings as any).mobileNotificationDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+          (currentSettings as any).mobileNotificationDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
         );
       } catch (error) {
         console.error('❌ Auto-reschedule error:', error);
       }
     };
 
-    if (effectiveDashboardData && user) {
+    // Check once on mount
+    if (!hasCheckedNotificationsOnMount.current && effectiveDashboardData && user) {
+      hasCheckedNotificationsOnMount.current = true;
       autoCheckAndReschedule();
     }
-  }, [effectiveDashboardData?.settings?.mobileNotificationsEnabled, user?.selectedLanguage]);
+
+    // Set up AppState listener to check when app comes to foreground
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('📱 App has come to foreground - checking notifications');
+        // Call autoCheckAndReschedule which will read fresh settings
+        autoCheckAndReschedule();
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [effectiveDashboardData, user]);
 
   // Handle refresh
   const onRefresh = async () => {

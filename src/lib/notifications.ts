@@ -2,7 +2,16 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLanguageSpecificNotification } from '../screens/DashboardScreenNew';
+
+// Scheduling lock to prevent concurrent scheduling operations
+let isScheduling = false;
+let schedulingPromise: Promise<boolean> | null = null;
+
+// Storage keys
+const LAST_SCHEDULE_TIME_KEY = '@notifications_last_schedule_time';
+const SCHEDULE_PARAMS_KEY = '@notifications_schedule_params';
 
 // Configure notification categories for iOS background notifications
 async function setupNotificationCategories() {
@@ -23,6 +32,7 @@ async function setupNotificationCategories() {
         },
       },
     ]);
+    console.log('📱 iOS notification categories configured');
   }
 }
 
@@ -44,6 +54,16 @@ Notifications.setNotificationHandler({
 
 let notificationScheduleId: string | null = null;
 
+// Logging utility
+function logNotification(emoji: string, message: string, data?: any) {
+  const timestamp = new Date().toISOString();
+  if (data) {
+    console.log(`${emoji} [${timestamp}] ${message}`, data);
+  } else {
+    console.log(`${emoji} [${timestamp}] ${message}`);
+  }
+}
+
 // Register for push notifications
 export async function registerForPushNotificationsAsync(): Promise<string | null> {
   let token = null;
@@ -58,6 +78,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
       enableVibrate: true,
       showBadge: true,
     });
+    logNotification('📱', 'Android notification channel configured');
   }
 
   if (Device.isDevice) {
@@ -66,7 +87,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     
     // Log detailed iOS permission status for debugging
     if (Platform.OS === 'ios' && ios) {
-      console.log('📱 iOS Notification Permissions:', {
+      logNotification('📱', 'iOS Notification Permissions', {
         status: ios.status,
         allowsAlert: ios.allowsAlert,
         allowsBadge: ios.allowsBadge,
@@ -82,29 +103,29 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
           allowAlert: true,
           allowBadge: true,
           allowSound: true,
-          allowCriticalAlerts: false, // Set to false unless app qualifies for critical alerts
+          allowCriticalAlerts: false,
           provideAppNotificationSettings: true,
         },
       });
       finalStatus = status;
       
-      console.log('🔔 Notification permission request result:', finalStatus);
+      logNotification('🔔', `Notification permission request result: ${finalStatus}`);
     }
     
     if (finalStatus !== 'granted') {
-      console.log('⚠️ Failed to get push token - permission not granted!');
-      console.log('📲 User must enable notifications in iOS Settings > LingoToday > Notifications');
+      logNotification('⚠️', 'Failed to get push token - permission not granted!');
+      logNotification('📲', 'User must enable notifications in iOS Settings > LingoToday > Notifications');
       return null;
     }
     
     try {
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log('✅ Push token obtained:', token);
+      logNotification('✅', `Push token obtained: ${token}`);
     } catch (error) {
-      console.log('❌ Error getting push token:', error);
+      logNotification('❌', 'Error getting push token', error);
     }
   } else {
-    console.log('⚠️ Must use physical device for Push Notifications');
+    logNotification('⚠️', 'Must use physical device for Push Notifications');
   }
 
   return token;
@@ -228,137 +249,186 @@ export async function scheduleLanguageLearningReminders(
   nextLessonData?: { courseId: string; lessonId: string },
   selectedDays?: Day[]
 ): Promise<boolean> {
-  try {
-    // Clear any existing notifications
-    await Notifications.cancelAllScheduledNotificationsAsync();
-    
-    // Get language-specific notification content
-    const notificationContent = getLanguageSpecificNotification(language);
-    
-    // Default lesson data if none provided
-    const lessonData = nextLessonData || {
-      courseId: 'course1',
-      lessonId: 'lesson1'
-    };
+  // Lock mechanism: if already scheduling, return the existing promise
+  if (isScheduling && schedulingPromise) {
+    logNotification('🔒', 'Scheduling already in progress, returning existing promise');
+    return schedulingPromise;
+  }
 
-    // Default to all days if not specified
-    const daysToSchedule: Day[] = selectedDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  // Set the lock
+  isScheduling = true;
+  
+  // Create the scheduling promise
+  schedulingPromise = (async () => {
+    try {
+      logNotification('🚀', 'Starting notification scheduling', {
+        startTime,
+        endTime,
+        frequencyMinutes,
+        language,
+        selectedDays,
+      });
 
-    // Parse start and end times
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const [endHour, endMinute] = endTime.split(':').map(Number);
+      // Clear any existing notifications
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      logNotification('🧹', 'Cleared all existing notifications');
     
-    const startMinutes = startHour * 60 + startMinute;
-    const endMinutes = endHour * 60 + endMinute;
-    const windowDurationMinutes = endMinutes - startMinutes;
-    
-    // Calculate how many notifications fit in the window based on frequency
-    const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
-    
-    // Safety limit: max 50 notifications total
-    const MAX_NOTIFICATIONS = 50;
-    let scheduledCount = 0;
-
-    // Get day name mapping (0 = Sunday, 1 = Monday, etc.)
-    const dayNameToNumber: Record<Day, number> = {
-      'Sun': 0,
-      'Mon': 1,
-      'Tue': 2,
-      'Wed': 3,
-      'Thu': 4,
-      'Fri': 5,
-      'Sat': 6,
-    };
-
-    // Schedule notifications for the next 14 days
-    const now = new Date();
-    const daysToScheduleAhead = 14;
-    
-    for (let dayOffset = 0; dayOffset < daysToScheduleAhead; dayOffset++) {
-      const targetDate = new Date(now);
-      targetDate.setDate(targetDate.getDate() + dayOffset);
+      // Get language-specific notification content
+      const notificationContent = getLanguageSpecificNotification(language);
       
-      // Get day name for this date
-      const dayNumber = targetDate.getDay(); // 0-6
-      const dayName = Object.keys(dayNameToNumber).find(
-        key => dayNameToNumber[key as Day] === dayNumber
-      ) as Day;
+      // Default lesson data if none provided
+      const lessonData = nextLessonData || {
+        courseId: 'course1',
+        lessonId: 'lesson1'
+      };
+
+      // Default to all days if not specified
+      const daysToSchedule: Day[] = selectedDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+      // Parse start and end times
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
       
-      // Skip if this day is not in the selected days
-      if (!daysToSchedule.includes(dayName)) {
-        continue;
-      }
+      const startMinutes = startHour * 60 + startMinute;
+      const endMinutes = endHour * 60 + endMinute;
+      const windowDurationMinutes = endMinutes - startMinutes;
       
-      // Schedule notifications for this day
-      for (let i = 0; i < notificationsPerDay; i++) {
+      // Calculate how many notifications fit in the window based on frequency
+      const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
+      
+      // Safety limit: max 50 notifications total
+      const MAX_NOTIFICATIONS = 50;
+      let scheduledCount = 0;
+
+      // Get day name mapping (0 = Sunday, 1 = Monday, etc.)
+      const dayNameToNumber: Record<Day, number> = {
+        'Sun': 0,
+        'Mon': 1,
+        'Tue': 2,
+        'Wed': 3,
+        'Thu': 4,
+        'Fri': 5,
+        'Sat': 6,
+      };
+
+      // Schedule notifications for the next 14 days
+      const now = new Date();
+      const daysToScheduleAhead = 14;
+      
+      for (let dayOffset = 0; dayOffset < daysToScheduleAhead; dayOffset++) {
+        const targetDate = new Date(now);
+        targetDate.setDate(targetDate.getDate() + dayOffset);
+        
+        // Get day name for this date
+        const dayNumber = targetDate.getDay(); // 0-6
+        const dayName = Object.keys(dayNameToNumber).find(
+          key => dayNameToNumber[key as Day] === dayNumber
+        ) as Day;
+        
+        // Skip if this day is not in the selected days
+        if (!daysToSchedule.includes(dayName)) {
+          continue;
+        }
+        
+        // Schedule notifications for this day
+        for (let i = 0; i < notificationsPerDay; i++) {
+          if (scheduledCount >= MAX_NOTIFICATIONS) {
+            logNotification('⚠️', `Reached max notification limit (${MAX_NOTIFICATIONS})`);
+            break;
+          }
+          
+          const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 5);
+          const notificationTime = startMinutes + offsetMinutes;
+          const hour = Math.floor(notificationTime / 60) % 24;
+          const minute = Math.floor(notificationTime % 60);
+
+          // Create the exact trigger date/time
+          const triggerDate = new Date(targetDate);
+          triggerDate.setHours(hour, minute, 0, 0);
+          
+          // Only schedule if the notification is in the future
+          if (triggerDate > now) {
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                title: notificationContent.title,
+                body: notificationContent.body,
+                sound: 'default',
+                priority: Notifications.AndroidNotificationPriority.MAX,
+                ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
+                ...(Platform.OS === 'ios' ? { 
+                  categoryIdentifier: 'language_reminder',
+                  interruptionLevel: 'active' as any,
+                } : {}),
+                data: {
+                  type: 'language_reminder',
+                  language: language,
+                  action: 'openLesson',
+                  courseId: lessonData.courseId,
+                  lessonId: lessonData.lessonId,
+                  timestamp: Date.now(),
+                  scheduledFor: triggerDate.toISOString()
+                },
+              },
+              trigger: {
+                date: triggerDate,
+              } as Notifications.DateTriggerInput,
+            });
+            
+            scheduledCount++;
+          }
+        }
+        
         if (scheduledCount >= MAX_NOTIFICATIONS) {
-          console.log(`⚠️ Reached max notification limit (${MAX_NOTIFICATIONS})`);
           break;
         }
-        
-        const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 5); // Smaller random offset
-        const notificationTime = startMinutes + offsetMinutes;
-        const hour = Math.floor(notificationTime / 60) % 24;
-        const minute = Math.floor(notificationTime % 60);
-
-        // Create the exact trigger date/time
-        const triggerDate = new Date(targetDate);
-        triggerDate.setHours(hour, minute, 0, 0);
-        
-        // Only schedule if the notification is in the future
-        if (triggerDate > now) {
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: notificationContent.title,
-              body: notificationContent.body,
-              sound: 'default',
-              priority: Notifications.AndroidNotificationPriority.MAX,
-              ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
-              ...(Platform.OS === 'ios' ? { 
-                categoryIdentifier: 'language_reminder',
-                interruptionLevel: 'timeSensitive' as any,
-              } : {}),
-              data: {
-                type: 'language_reminder',
-                language: language,
-                action: 'openLesson',
-                courseId: lessonData.courseId,
-                lessonId: lessonData.lessonId,
-                timestamp: Date.now(),
-                scheduledFor: triggerDate.toISOString()
-              },
-            },
-            trigger: {
-              date: triggerDate,
-            } as Notifications.DateTriggerInput,
-          });
-          
-          scheduledCount++;
-        }
       }
       
-      if (scheduledCount >= MAX_NOTIFICATIONS) {
-        break;
+      logNotification('✅', `Scheduled ${scheduledCount} notifications for next ${daysToScheduleAhead} days`, {
+        frequencyMinutes,
+        language,
+        days: daysToSchedule.join(', '),
+        timeWindow: `${startTime} - ${endTime}`
+      });
+      
+      // Log all scheduled notifications for debugging
+      const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
+      logNotification('📅', `Total scheduled notifications: ${allScheduled.length}`);
+      
+      if (Platform.OS === 'ios') {
+        logNotification('⚠️', 'iOS IMPORTANT: If notifications don\'t appear when locked/backgrounded:');
+        logNotification('📲', '1. Check Settings > Focus - ensure LingoToday is allowed');
+        logNotification('📲', '2. Check Settings > Notifications > LingoToday - ensure all options enabled');
+        logNotification('📲', '3. Notification delivery may be affected by Do Not Disturb/Focus modes');
       }
+      
+      // Store scheduling metadata in AsyncStorage
+      const scheduleMetadata = {
+        lastScheduleTime: Date.now(),
+        params: {
+          startTime,
+          endTime,
+          frequencyMinutes,
+          language,
+          selectedDays: daysToSchedule,
+        },
+        scheduledCount,
+      };
+      await AsyncStorage.setItem(LAST_SCHEDULE_TIME_KEY, scheduleMetadata.lastScheduleTime.toString());
+      await AsyncStorage.setItem(SCHEDULE_PARAMS_KEY, JSON.stringify(scheduleMetadata.params));
+      
+      return true;
+    } catch (error) {
+      logNotification('❌', 'Error scheduling notifications', error);
+      return false;
+    } finally {
+      // Always release the lock
+      isScheduling = false;
+      schedulingPromise = null;
+      logNotification('🔓', 'Scheduling lock released');
     }
-    
-    console.log(`✅ Scheduled ${scheduledCount} notifications for next ${daysToScheduleAhead} days (${frequencyMinutes} min frequency) for ${language} on ${daysToSchedule.join(', ')} between ${startTime} and ${endTime}`);
-    
-    // Log all scheduled notifications for debugging
-    const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
-    console.log(`📅 Total scheduled notifications: ${allScheduled.length}`);
-    if (Platform.OS === 'ios') {
-      console.log('⚠️ iOS IMPORTANT: If notifications don\'t appear when locked/backgrounded:');
-      console.log('   1. Check Settings > Focus - ensure LingoToday is allowed in active Focus modes');
-      console.log('   2. Check Settings > Notifications > LingoToday - ensure all options are enabled');
-      console.log('   3. Time Sensitive notifications may be blocked by Focus modes');
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error scheduling notifications:', error);
-    return false;
-  }
+  })();
+  
+  return schedulingPromise;
 }
 
 // Stop all language learning reminders
@@ -366,9 +436,14 @@ export async function stopLanguageLearningReminders(): Promise<void> {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
     notificationScheduleId = null;
-    console.log('All language learning reminders stopped');
+    
+    // Clear scheduling metadata from AsyncStorage
+    await AsyncStorage.removeItem(LAST_SCHEDULE_TIME_KEY);
+    await AsyncStorage.removeItem(SCHEDULE_PARAMS_KEY);
+    
+    logNotification('🛑', 'All language learning reminders stopped and metadata cleared');
   } catch (error) {
-    console.error('Error stopping notifications:', error);
+    logNotification('❌', 'Error stopping notifications', error);
   }
 }
 
@@ -385,6 +460,7 @@ export async function getScheduledNotificationCount(): Promise<number> {
 
 // Check if we need to reschedule notifications (if running low)
 // Returns true if rescheduling was performed
+// Includes debouncing to prevent multiple rapid calls
 export async function checkAndRescheduleIfNeeded(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -394,13 +470,28 @@ export async function checkAndRescheduleIfNeeded(
   selectedDays?: Day[]
 ): Promise<boolean> {
   try {
+    logNotification('🔍', 'Checking if rescheduling is needed');
+    
+    // Debounce: Check last schedule time to prevent rapid rescheduling
+    const lastScheduleTimeStr = await AsyncStorage.getItem(LAST_SCHEDULE_TIME_KEY);
+    if (lastScheduleTimeStr) {
+      const lastScheduleTime = parseInt(lastScheduleTimeStr, 10);
+      const timeSinceLastSchedule = Date.now() - lastScheduleTime;
+      const DEBOUNCE_INTERVAL = 30000; // 30 seconds
+      
+      if (timeSinceLastSchedule < DEBOUNCE_INTERVAL) {
+        logNotification('⏱️', `Skipping reschedule - last scheduled ${Math.round(timeSinceLastSchedule / 1000)}s ago (debounce: ${DEBOUNCE_INTERVAL / 1000}s)`);
+        return false;
+      }
+    }
+    
     const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
     
     // If we have less than 10 notifications scheduled, reschedule
     const MINIMUM_THRESHOLD = 10;
     
     if (scheduledNotifications.length < MINIMUM_THRESHOLD) {
-      console.log(`📅 Low notification count (${scheduledNotifications.length}), rescheduling...`);
+      logNotification('📅', `Low notification count (${scheduledNotifications.length}), rescheduling...`);
       await scheduleLanguageLearningReminders(
         startTime,
         endTime,
@@ -412,10 +503,10 @@ export async function checkAndRescheduleIfNeeded(
       return true;
     }
     
-    console.log(`✅ Sufficient notifications scheduled (${scheduledNotifications.length}), no rescheduling needed`);
+    logNotification('✅', `Sufficient notifications scheduled (${scheduledNotifications.length}), no rescheduling needed`);
     return false;
   } catch (error) {
-    console.error('Error checking/rescheduling notifications:', error);
+    logNotification('❌', 'Error checking/rescheduling notifications', error);
     return false;
   }
 }
