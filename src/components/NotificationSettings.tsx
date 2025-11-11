@@ -63,38 +63,27 @@ export default function NotificationSettings() {
   const [isTesting, setIsTesting] = useState(false);
   const [devicePermissionStatus, setDevicePermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
 
-  // Calculate day circle size based on available width (Android only)
+  // Calculate day circle size based on available width to ensure 7 buttons fit in one row
   const dayCircleStyle = useMemo(() => {
-    if (!isSmallHandset) {
-      // iOS and larger screens: use fixed sizing
-      const size = isTablet ? 44 : 40;
-      const gap = isTablet ? 10 : 8;
-      return {
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        marginHorizontal: gap / 2,
-        marginBottom: gap,
-      };
-    }
-
-    // Small Android handsets: calculate responsive size
     // Available width: screenWidth - horizontal padding (20px each side) - card content padding (16px each side)
     const availableWidth = screenWidth - 72;
-    const gap = 5;
-    // Calculate: (availableWidth) = 7 × circleSize + 7 × gap
+    const gap = isTablet ? 8 : 5;
+    
+    // Each button has marginHorizontal: gap/2 on both sides
+    // Total space needed: 7 × circleSize + 7 × gap (total horizontal margins)
     const circleSize = Math.floor((availableWidth - 7 * gap) / 7);
-    // Ensure minimum of 28px for usability
-    const finalSize = Math.max(28, circleSize);
+    
+    // For tablets, use larger size but still respect available width
+    const maxSize = isTablet ? 44 : 40;
+    const finalSize = Math.min(maxSize, Math.max(28, circleSize));
 
     return {
       width: finalSize,
       height: finalSize,
       borderRadius: finalSize / 2,
       marginHorizontal: gap / 2,
-      marginBottom: gap,
     };
-  }, [screenWidth, isSmallHandset, isTablet]);
+  }, [screenWidth, isTablet]);
 
   // Fetch settings (same key as web)
   const { data: settings, isLoading } = useQuery<UserSettings>({
@@ -528,7 +517,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
   },
   dayCircleSelected: {
     backgroundColor: '#2563EB',
