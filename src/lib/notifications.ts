@@ -238,9 +238,233 @@ function dayToWeekday(day: Day): number {
   return dayMap[day];
 }
 
-// Schedule language learning reminders with custom content, navigation data, and specific days
-// frequencyMinutes: minutes between each notification (e.g., 15, 30, 60)
-// This schedules notifications for the next 14 days only (not repeating) to prevent accumulation
+// iOS-specific: Schedule weekly repeating calendar triggers
+async function scheduleIOSRepeatingNotifications(
+  startTime: string,
+  endTime: string,
+  frequencyMinutes: number,
+  language: string,
+  lessonData: { courseId: string; lessonId: string },
+  daysToSchedule: Day[]
+): Promise<number> {
+  const notificationContent = getLanguageSpecificNotification(language);
+  
+  // Parse start and end times
+  const [startHour, startMinute] = startTime.split(':').map(Number);
+  const [endHour, endMinute] = endTime.split(':').map(Number);
+  
+  const startMinutes = startHour * 60 + startMinute;
+  const endMinutes = endHour * 60 + endMinute;
+  const windowDurationMinutes = endMinutes - startMinutes;
+  
+  // Calculate time slots within the window
+  const timeSlots: { hour: number; minute: number }[] = [];
+  for (let offsetMinutes = 0; offsetMinutes < windowDurationMinutes; offsetMinutes += frequencyMinutes) {
+    const totalMinutes = startMinutes + offsetMinutes;
+    const hour = Math.floor(totalMinutes / 60) % 24;
+    const minute = totalMinutes % 60;
+    timeSlots.push({ hour, minute });
+  }
+  
+  // iOS has a limit of 64 total notifications, so we need to cap
+  const MAX_IOS_NOTIFICATIONS = 64;
+  const totalNeeded = timeSlots.length * daysToSchedule.length;
+  
+  let adjustedFrequency = frequencyMinutes;
+  let adjustedTimeSlots = timeSlots;
+  
+  // Auto-adjust if we exceed the limit
+  if (totalNeeded > MAX_IOS_NOTIFICATIONS) {
+    logNotification('⚠️', `iOS: Requested ${totalNeeded} notifications exceeds limit (${MAX_IOS_NOTIFICATIONS}). Auto-adjusting...`);
+    
+    // Calculate what frequency we need to stay under the limit
+    const maxSlotsPerDay = Math.floor(MAX_IOS_NOTIFICATIONS / daysToSchedule.length);
+    const adjustedFreq = Math.ceil(windowDurationMinutes / maxSlotsPerDay);
+    
+    adjustedTimeSlots = [];
+    for (let offsetMinutes = 0; offsetMinutes < windowDurationMinutes; offsetMinutes += adjustedFreq) {
+      const totalMinutes = startMinutes + offsetMinutes;
+      const hour = Math.floor(totalMinutes / 60) % 24;
+      const minute = totalMinutes % 60;
+      adjustedTimeSlots.push({ hour, minute });
+    }
+    
+    adjustedFrequency = adjustedFreq;
+    logNotification('✅', `iOS: Adjusted to ${adjustedTimeSlots.length} slots per day (${adjustedFreq} min frequency)`);
+  }
+  
+  let scheduledCount = 0;
+  
+  // Day name to weekday number mapping for expo-notifications
+  // In expo-notifications: 1=Sunday, 2=Monday, ..., 7=Saturday
+  const dayToWeekdayMap: Record<Day, number> = {
+    'Sun': 1,
+    'Mon': 2,
+    'Tue': 3,
+    'Wed': 4,
+    'Thu': 5,
+    'Fri': 6,
+    'Sat': 7,
+  };
+  
+  // Schedule repeating notifications for each day and time slot
+  for (const day of daysToSchedule) {
+    const weekday = dayToWeekdayMap[day];
+    
+    for (const slot of adjustedTimeSlots) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: notificationContent.title,
+          body: notificationContent.body,
+          sound: 'default',
+          categoryIdentifier: 'language_reminder',
+          interruptionLevel: 'active' as any,
+          data: {
+            type: 'language_reminder',
+            language: language,
+            action: 'openLesson',
+            courseId: lessonData.courseId,
+            lessonId: lessonData.lessonId,
+            timestamp: Date.now(),
+          },
+        },
+        trigger: {
+          weekday: weekday,
+          hour: slot.hour,
+          minute: slot.minute,
+          repeats: true,
+        } as Notifications.CalendarTriggerInput,
+      });
+      
+      scheduledCount++;
+    }
+  }
+  
+  logNotification('✅', `iOS: Scheduled ${scheduledCount} weekly repeating notifications`, {
+    days: daysToSchedule.join(', '),
+    slotsPerDay: adjustedTimeSlots.length,
+    effectiveFrequency: adjustedFrequency,
+  });
+  
+  return scheduledCount;
+}
+
+// Android-specific: Schedule notifications for next N days with specific dates
+async function scheduleAndroidHorizonNotifications(
+  startTime: string,
+  endTime: string,
+  frequencyMinutes: number,
+  language: string,
+  lessonData: { courseId: string; lessonId: string },
+  daysToSchedule: Day[]
+): Promise<number> {
+  const notificationContent = getLanguageSpecificNotification(language);
+  
+  // Parse start and end times
+  const [startHour, startMinute] = startTime.split(':').map(Number);
+  const [endHour, endMinute] = endTime.split(':').map(Number);
+  
+  const startMinutes = startHour * 60 + startMinute;
+  const endMinutes = endHour * 60 + endMinute;
+  const windowDurationMinutes = endMinutes - startMinutes;
+  
+  // Calculate how many notifications fit in the window based on frequency
+  const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
+  
+  // Safety limit for Android
+  const MAX_ANDROID_NOTIFICATIONS = 100;
+  let scheduledCount = 0;
+  
+  // Get day name mapping (0 = Sunday, 1 = Monday, etc.)
+  const dayNameToNumber: Record<Day, number> = {
+    'Sun': 0,
+    'Mon': 1,
+    'Tue': 2,
+    'Wed': 3,
+    'Thu': 4,
+    'Fri': 5,
+    'Sat': 6,
+  };
+  
+  // Schedule notifications for the next 14 days
+  const now = new Date();
+  const daysToScheduleAhead = 14;
+  
+  for (let dayOffset = 0; dayOffset < daysToScheduleAhead; dayOffset++) {
+    const targetDate = new Date(now);
+    targetDate.setDate(targetDate.getDate() + dayOffset);
+    
+    // Get day name for this date
+    const dayNumber = targetDate.getDay(); // 0-6
+    const dayName = Object.keys(dayNameToNumber).find(
+      key => dayNameToNumber[key as Day] === dayNumber
+    ) as Day;
+    
+    // Skip if this day is not in the selected days
+    if (!daysToSchedule.includes(dayName)) {
+      continue;
+    }
+    
+    // Schedule notifications for this day
+    for (let i = 0; i < notificationsPerDay; i++) {
+      if (scheduledCount >= MAX_ANDROID_NOTIFICATIONS) {
+        logNotification('⚠️', `Android: Reached max notification limit (${MAX_ANDROID_NOTIFICATIONS})`);
+        break;
+      }
+      
+      const offsetMinutes = i * frequencyMinutes;
+      const notificationTime = startMinutes + offsetMinutes;
+      const hour = Math.floor(notificationTime / 60) % 24;
+      const minute = Math.floor(notificationTime % 60);
+      
+      // Create the exact trigger date/time
+      const triggerDate = new Date(targetDate);
+      triggerDate.setHours(hour, minute, 0, 0);
+      
+      // Only schedule if the notification is in the future
+      if (triggerDate > now) {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: notificationContent.title,
+            body: notificationContent.body,
+            sound: 'default',
+            priority: Notifications.AndroidNotificationPriority.MAX,
+            data: {
+              type: 'language_reminder',
+              language: language,
+              action: 'openLesson',
+              courseId: lessonData.courseId,
+              lessonId: lessonData.lessonId,
+              timestamp: Date.now(),
+              scheduledFor: triggerDate.toISOString(),
+            },
+          },
+          trigger: {
+            channelId: 'language-reminders',
+            date: triggerDate,
+          } as Notifications.NotificationTriggerInput,
+        });
+        
+        scheduledCount++;
+      }
+    }
+    
+    if (scheduledCount >= MAX_ANDROID_NOTIFICATIONS) {
+      break;
+    }
+  }
+  
+  logNotification('✅', `Android: Scheduled ${scheduledCount} horizon-based notifications for next ${daysToScheduleAhead} days`, {
+    frequencyMinutes,
+    days: daysToSchedule.join(', '),
+  });
+  
+  return scheduledCount;
+}
+
+// Schedule language learning reminders with platform-specific strategies
+// iOS: Weekly repeating calendar triggers
+// Android: Horizon-based scheduling for next 14 days
 export async function scheduleLanguageLearningReminders(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -261,7 +485,8 @@ export async function scheduleLanguageLearningReminders(
   // Create the scheduling promise
   schedulingPromise = (async () => {
     try {
-      logNotification('🚀', 'Starting notification scheduling', {
+      logNotification('🚀', `Starting ${Platform.OS.toUpperCase()} notification scheduling`, {
+        platform: Platform.OS,
         startTime,
         endTime,
         frequencyMinutes,
@@ -269,13 +494,10 @@ export async function scheduleLanguageLearningReminders(
         selectedDays,
       });
 
-      // Clear any existing notifications
+      // ALWAYS clear existing notifications first
       await Notifications.cancelAllScheduledNotificationsAsync();
       logNotification('🧹', 'Cleared all existing notifications');
     
-      // Get language-specific notification content
-      const notificationContent = getLanguageSpecificNotification(language);
-      
       // Default lesson data if none provided
       const lessonData = nextLessonData || {
         courseId: 'course1',
@@ -285,120 +507,40 @@ export async function scheduleLanguageLearningReminders(
       // Default to all days if not specified
       const daysToSchedule: Day[] = selectedDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-      // Parse start and end times
-      const [startHour, startMinute] = startTime.split(':').map(Number);
-      const [endHour, endMinute] = endTime.split(':').map(Number);
-      
-      const startMinutes = startHour * 60 + startMinute;
-      const endMinutes = endHour * 60 + endMinute;
-      const windowDurationMinutes = endMinutes - startMinutes;
-      
-      // Calculate how many notifications fit in the window based on frequency
-      const notificationsPerDay = Math.max(1, Math.floor(windowDurationMinutes / frequencyMinutes));
-      
-      // Safety limit: max 50 notifications total
-      const MAX_NOTIFICATIONS = 50;
       let scheduledCount = 0;
-
-      // Get day name mapping (0 = Sunday, 1 = Monday, etc.)
-      const dayNameToNumber: Record<Day, number> = {
-        'Sun': 0,
-        'Mon': 1,
-        'Tue': 2,
-        'Wed': 3,
-        'Thu': 4,
-        'Fri': 5,
-        'Sat': 6,
-      };
-
-      // Schedule notifications for the next 14 days
-      const now = new Date();
-      const daysToScheduleAhead = 14;
       
-      for (let dayOffset = 0; dayOffset < daysToScheduleAhead; dayOffset++) {
-        const targetDate = new Date(now);
-        targetDate.setDate(targetDate.getDate() + dayOffset);
-        
-        // Get day name for this date
-        const dayNumber = targetDate.getDay(); // 0-6
-        const dayName = Object.keys(dayNameToNumber).find(
-          key => dayNameToNumber[key as Day] === dayNumber
-        ) as Day;
-        
-        // Skip if this day is not in the selected days
-        if (!daysToSchedule.includes(dayName)) {
-          continue;
-        }
-        
-        // Schedule notifications for this day
-        for (let i = 0; i < notificationsPerDay; i++) {
-          if (scheduledCount >= MAX_NOTIFICATIONS) {
-            logNotification('⚠️', `Reached max notification limit (${MAX_NOTIFICATIONS})`);
-            break;
-          }
-          
-          const offsetMinutes = (i * frequencyMinutes) + Math.floor(Math.random() * 5);
-          const notificationTime = startMinutes + offsetMinutes;
-          const hour = Math.floor(notificationTime / 60) % 24;
-          const minute = Math.floor(notificationTime % 60);
-
-          // Create the exact trigger date/time
-          const triggerDate = new Date(targetDate);
-          triggerDate.setHours(hour, minute, 0, 0);
-          
-          // Only schedule if the notification is in the future
-          if (triggerDate > now) {
-            await Notifications.scheduleNotificationAsync({
-              content: {
-                title: notificationContent.title,
-                body: notificationContent.body,
-                sound: 'default',
-                priority: Notifications.AndroidNotificationPriority.MAX,
-                ...(Platform.OS === 'android' ? { channelId: 'language-reminders' } : {}),
-                ...(Platform.OS === 'ios' ? { 
-                  categoryIdentifier: 'language_reminder',
-                  interruptionLevel: 'active' as any,
-                } : {}),
-                data: {
-                  type: 'language_reminder',
-                  language: language,
-                  action: 'openLesson',
-                  courseId: lessonData.courseId,
-                  lessonId: lessonData.lessonId,
-                  timestamp: Date.now(),
-                  scheduledFor: triggerDate.toISOString()
-                },
-              },
-              trigger: {
-                date: triggerDate,
-              } as Notifications.DateTriggerInput,
-            });
-            
-            scheduledCount++;
-          }
-        }
-        
-        if (scheduledCount >= MAX_NOTIFICATIONS) {
-          break;
-        }
+      // Platform-specific scheduling
+      if (Platform.OS === 'ios') {
+        scheduledCount = await scheduleIOSRepeatingNotifications(
+          startTime,
+          endTime,
+          frequencyMinutes,
+          language,
+          lessonData,
+          daysToSchedule
+        );
+      } else {
+        scheduledCount = await scheduleAndroidHorizonNotifications(
+          startTime,
+          endTime,
+          frequencyMinutes,
+          language,
+          lessonData,
+          daysToSchedule
+        );
       }
-      
-      logNotification('✅', `Scheduled ${scheduledCount} notifications for next ${daysToScheduleAhead} days`, {
-        frequencyMinutes,
-        language,
-        days: daysToSchedule.join(', '),
-        timeWindow: `${startTime} - ${endTime}`
-      });
       
       // Log all scheduled notifications for debugging
       const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
       logNotification('📅', `Total scheduled notifications: ${allScheduled.length}`);
       
       if (Platform.OS === 'ios') {
-        logNotification('⚠️', 'iOS IMPORTANT: If notifications don\'t appear when locked/backgrounded:');
+        logNotification('ℹ️', 'iOS: Using weekly repeating calendar triggers');
+        logNotification('⚠️', 'iOS: If notifications don\'t appear:');
         logNotification('📲', '1. Check Settings > Focus - ensure LingoToday is allowed');
         logNotification('📲', '2. Check Settings > Notifications > LingoToday - ensure all options enabled');
-        logNotification('📲', '3. Notification delivery may be affected by Do Not Disturb/Focus modes');
+      } else {
+        logNotification('ℹ️', `Android: Scheduled for next 14 days`);
       }
       
       // Store scheduling metadata in AsyncStorage
@@ -412,6 +554,7 @@ export async function scheduleLanguageLearningReminders(
           selectedDays: daysToSchedule,
         },
         scheduledCount,
+        platform: Platform.OS,
       };
       await AsyncStorage.setItem(LAST_SCHEDULE_TIME_KEY, scheduleMetadata.lastScheduleTime.toString());
       await AsyncStorage.setItem(SCHEDULE_PARAMS_KEY, JSON.stringify(scheduleMetadata.params));
