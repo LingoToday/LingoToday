@@ -46,13 +46,15 @@ Do not make changes to the file `package-lock.json`.
 - Dynamic lesson step counting to support various lesson formats and report accurate progress.
 - `SheetManagerProvider` to enforce a single-sheet policy for modals/sheets.
 - Lessons use push navigation instead of modal presentation.
-- **Notification System (Refactored Nov 2025)**: Complete overhaul of notification scheduling to fix critical bugs and improve reliability:
-  - **Onboarding Integration**: Notification permission requests are now properly integrated into the onboarding flow (step 4) using `Notifications.requestPermissionsAsync()` with iOS-specific options. Permissions are only requested after user registration, ensuring explicit opt-in.
-  - **Smart Scheduling**: Notifications are scheduled for the next 14 days only (not repeating weekly) with a hard limit of 50 notifications maximum to prevent notification spam. The system automatically reschedules when running low (< 10 notifications).
-  - **Auto-Rescheduling**: When the app opens, `checkAndRescheduleIfNeeded()` automatically maintains the 14-day notification window without creating duplicates, ensuring users always have upcoming reminders.
-  - **iOS Background Delivery**: Configured with UIBackgroundModes, time-sensitive interruption level, and notification categories with action buttons ("Start Lesson", "Dismiss"). Uses expo-notifications and expo-task-manager for reliable delivery across all app states (foreground, background, terminated).
-  - **Android Compliance**: Uses inexact alarm scheduling (not exact alarms) for Google Play Store compliance. Exact alarm permissions removed as they're restricted to alarm clock apps only.
-  - **Focus Mode Compatibility**: iOS users must allow LingoToday in Focus modes (Settings > Focus > [Mode] > Apps) for lock screen notifications during Do Not Disturb/Sleep/Work modes. Time Sensitive notifications can override some Focus restrictions when properly configured in device settings.
+- **Notification System (Platform-Specific Architecture - Nov 2025)**: Complete platform-specific refactoring to solve iOS notification batching issues while maintaining Android reliability:
+  - **Onboarding Integration**: Notification permission requests are properly integrated into the onboarding flow (step 4) using `Notifications.requestPermissionsAsync()` with iOS-specific options. Permissions are only requested after user registration, ensuring explicit opt-in.
+  - **iOS Strategy - Weekly Repeating Calendar Triggers**: Uses weekly repeating calendar-based notifications (e.g., "Every Monday at 9:00 AM") instead of hundreds of one-off scheduled notifications. This aligns with iOS's expected notification patterns and prevents the system from batching/delaying notifications. Maximum 64 repeating triggers with auto-adjustment of frequency when user settings exceed this limit. Notifications persist indefinitely until user changes settings.
+  - **Android Strategy - 14-Day Horizon Scheduling**: Pre-schedules notifications for the next 14 days using specific date/time triggers. Maximum 100 notifications with automatic refilling when count drops below 10. This horizon-based approach works well with Android's notification system.
+  - **Cross-Midnight Window Support**: Both platforms correctly handle notification windows that span midnight (e.g., 6 PM to 9 AM) by calculating day offsets and scheduling post-midnight notifications for the following day.
+  - **Auto-Rescheduling**: Platform-specific thresholds - iOS recreates weekly repeaters if count reaches 0, Android refills 14-day horizon if count drops below 10. Dashboard automatically checks and reschedules on app launch and when returning from background.
+  - **Settings Integration**: All scheduled notifications are cleared and recreated whenever user changes frequency, time window, or selected days to ensure settings are immediately reflected.
+  - **iOS Background Delivery**: Configured with UIBackgroundModes, active interruption level, and notification categories with action buttons ("Start Lesson", "Dismiss"). Uses expo-notifications for reliable delivery across all app states (foreground, background, terminated).
+  - **Focus Mode Compatibility**: iOS users must allow LingoToday in Focus modes (Settings > Focus > [Mode] > Apps) for lock screen notifications during Do Not Disturb/Sleep/Work modes.
 
 ### Project Structure
 - `src/components/`: Reusable UI components.
