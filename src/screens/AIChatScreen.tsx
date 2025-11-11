@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { theme } from '../lib/theme';
+import { Card, CardContent } from '../components/ui/Card';
 
 export default function AIChatScreen() {
   const { width } = useWindowDimensions();
@@ -16,12 +17,12 @@ export default function AIChatScreen() {
   
   const containerPadding = 40;
   const imageGap = 12;
-  const numColumns = 3;
+  const numColumns = 2;
   const totalMargins = numColumns * imageGap;
   
   const imageSize = isSmallScreen 
     ? (width - containerPadding - totalMargins) / numColumns 
-    : 140;
+    : 160;
 
   const aiPartners = [
     { id: 1, image: require('../../assets/ai-partner-1.jpg') },
@@ -39,59 +40,85 @@ export default function AIChatScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>
-            Coming Soon - Choose Your AI Language Partner
-          </Text>
-          
-          <Text style={styles.subtitle}>
-            Pick your perfect learning partner for your daily lessons - and talk to them in real conversations!
-          </Text>
+          <Card>
+            <CardContent>
+              <Text style={styles.title}>
+                Coming Soon - Choose Your AI Language Partner
+              </Text>
+              
+              <Text style={styles.subtitle}>
+                Pick your perfect learning partner for your daily lessons - and talk to them in real conversations!
+              </Text>
 
-          <View style={styles.imageGrid}>
-            <View style={styles.imageRow}>
-              {aiPartners.slice(0, 3).map((partner) => (
-                <View 
-                  key={partner.id} 
-                  style={[
-                    styles.imageWrapper,
-                    { 
-                      width: imageSize, 
-                      height: imageSize,
-                      marginHorizontal: imageGap / 2,
-                    }
-                  ]}
-                >
-                  <Image
-                    source={partner.image}
-                    style={styles.partnerImage}
-                    resizeMode="cover"
-                  />
+              <View style={styles.imageGrid}>
+                <View style={styles.imageRow}>
+                  {aiPartners.slice(0, 2).map((partner) => (
+                    <View 
+                      key={partner.id} 
+                      style={[
+                        styles.imageWrapper,
+                        { 
+                          width: imageSize, 
+                          height: imageSize,
+                          marginHorizontal: imageGap / 2,
+                        }
+                      ]}
+                    >
+                      <Image
+                        source={partner.image}
+                        style={styles.partnerImage}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  ))}
                 </View>
-              ))}
-            </View>
 
-            <View style={styles.imageRow}>
-              {aiPartners.slice(3, 6).map((partner) => (
-                <View 
-                  key={partner.id} 
-                  style={[
-                    styles.imageWrapper,
-                    { 
-                      width: imageSize, 
-                      height: imageSize,
-                      marginHorizontal: imageGap / 2,
-                    }
-                  ]}
-                >
-                  <Image
-                    source={partner.image}
-                    style={styles.partnerImage}
-                    resizeMode="cover"
-                  />
+                <View style={styles.imageRow}>
+                  {aiPartners.slice(2, 4).map((partner) => (
+                    <View 
+                      key={partner.id} 
+                      style={[
+                        styles.imageWrapper,
+                        { 
+                          width: imageSize, 
+                          height: imageSize,
+                          marginHorizontal: imageGap / 2,
+                        }
+                      ]}
+                    >
+                      <Image
+                        source={partner.image}
+                        style={styles.partnerImage}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  ))}
                 </View>
-              ))}
-            </View>
-          </View>
+
+                <View style={styles.imageRow}>
+                  {aiPartners.slice(4, 6).map((partner) => (
+                    <View 
+                      key={partner.id} 
+                      style={[
+                        styles.imageWrapper,
+                        { 
+                          width: imageSize, 
+                          height: imageSize,
+                          marginHorizontal: imageGap / 2,
+                        }
+                      ]}
+                    >
+                      <Image
+                        source={partner.image}
+                        style={styles.partnerImage}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </CardContent>
+          </Card>
         </View>
       </ScrollView>
     </SafeAreaView>
