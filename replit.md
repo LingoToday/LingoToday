@@ -29,6 +29,7 @@ Do not make changes to the file `package-lock.json`.
 - Subscription management
 - Cross-platform support (iOS, Android, Web)
 - Automatic push notification scheduling based on user preferences (days, frequency, time window)
+- **AI Chat (Coming Soon - Nov 2025)**: Teaser screen for upcoming AI language partner feature, showcasing 6 partner avatars in a responsive 2×3 grid layout. Accessible via center bottom tab with chatbubbles icon.
 
 ### UI/UX Decisions
 - Minimal headers on main tab screens for edge-to-edge content.
