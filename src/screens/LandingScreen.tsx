@@ -35,19 +35,89 @@ export default function LandingScreen() {
     return () => subscription?.remove();
   }, []);
 
-  const videoHeight = Math.min(dimensions.height * 0.5, 450);
+  // Responsive scaling based on screen height
+  const BASELINE_HEIGHT = 780;
+  const screenHeight = dimensions.height;
+  const scaleFactor = Math.max(0.7, Math.min(1.2, screenHeight / BASELINE_HEIGHT));
+  
+  // Video sizing - more conservative on smaller screens
+  const videoHeightPercentage = screenHeight < 700 ? 0.35 : 0.45;
+  const maxVideoHeight = screenHeight < 700 ? 320 : 450;
+  const videoHeight = Math.min(screenHeight * videoHeightPercentage, maxVideoHeight);
   const videoWidth = videoHeight * (9 / 16);
+
+  // Dynamic styles based on scale factor
+  const dynamicStyles = {
+    scrollContent: [
+      styles.scrollContent,
+      {
+        paddingVertical: 16 * scaleFactor,
+        paddingBottom: 24 * scaleFactor,
+      }
+    ],
+    logoContainer: [
+      styles.logoContainer,
+      {
+        marginBottom: Math.max(8, 16 * scaleFactor),
+      }
+    ],
+    videoContainer: [
+      styles.videoContainer,
+      {
+        marginVertical: Math.max(8, 16 * scaleFactor),
+      }
+    ],
+    taglineContainer: [
+      styles.taglineContainer,
+      {
+        marginVertical: Math.max(12, 16 * scaleFactor),
+      }
+    ],
+    tagline: [
+      styles.tagline,
+      {
+        fontSize: Math.max(20, 24 * scaleFactor),
+        marginBottom: Math.max(8, 12 * scaleFactor),
+      }
+    ],
+    description: [
+      styles.description,
+      {
+        fontSize: Math.max(14, 15 * scaleFactor),
+        lineHeight: Math.max(20, 22 * scaleFactor),
+      }
+    ],
+    buttonContainer: [
+      styles.buttonContainer,
+      {
+        marginTop: Math.max(12, 16 * scaleFactor),
+        gap: Math.max(10, 12 * scaleFactor),
+      }
+    ],
+    joinButton: [
+      styles.joinButton,
+      {
+        paddingVertical: Math.max(12, 16 * scaleFactor),
+      }
+    ],
+    loginButton: [
+      styles.loginButton,
+      {
+        paddingVertical: Math.max(12, 16 * scaleFactor),
+      }
+    ],
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       
       <ScrollView 
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={dynamicStyles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Logo */}
-        <View style={styles.logoContainer}>
+        <View style={dynamicStyles.logoContainer}>
           <Image 
             source={logo} 
             style={styles.logoIcon}
@@ -57,7 +127,7 @@ export default function LandingScreen() {
         </View>
 
         {/* Portrait Video (GIF-like) */}
-        <View style={[styles.videoContainer, { width: videoWidth, height: videoHeight }]}>
+        <View style={[dynamicStyles.videoContainer, { width: videoWidth, height: videoHeight }]}>
           <VideoView
             style={styles.portraitVideo}
             player={player}
@@ -68,19 +138,19 @@ export default function LandingScreen() {
         </View>
 
         {/* Tagline */}
-        <View style={styles.taglineContainer}>
-          <Text style={styles.tagline}>
+        <View style={dynamicStyles.taglineContainer}>
+          <Text style={dynamicStyles.tagline}>
             Micro-Lessons. Major Progress.
           </Text>
-          <Text style={styles.description}>
+          <Text style={dynamicStyles.description}>
             Short lessons and engaging videos that teach you bit by bit — no pressure, just consistent wins. Backed by science.
           </Text>
         </View>
 
         {/* Buttons */}
-        <View style={styles.buttonContainer}>
+        <View style={dynamicStyles.buttonContainer}>
           <TouchableOpacity 
-            style={styles.joinButton}
+            style={dynamicStyles.joinButton}
             onPress={() => navigation.navigate('Onboarding' as never)}
             data-testid="button-join"
           >
@@ -88,7 +158,7 @@ export default function LandingScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.loginButton}
+            style={dynamicStyles.loginButton}
             onPress={() => navigation.navigate('Login' as never)}
             data-testid="button-login"
           >
