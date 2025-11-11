@@ -38,46 +38,63 @@ export default function LandingScreen() {
   // Responsive scaling based on screen height
   const BASELINE_HEIGHT = 780;
   const screenHeight = dimensions.height;
-  const scaleFactor = Math.max(0.7, Math.min(1.2, screenHeight / BASELINE_HEIGHT));
+  const scaleFactor = Math.max(0.7, Math.min(1.0, screenHeight / BASELINE_HEIGHT));
   
-  // Video sizing - more conservative on smaller screens
-  const videoHeightPercentage = screenHeight < 700 ? 0.35 : 0.45;
-  const maxVideoHeight = screenHeight < 700 ? 320 : 450;
+  // Video sizing - more conservative approach to ensure all content fits
+  // On larger screens (like iPhone 14 Pro Max), reduce video size proportionally
+  let videoHeightPercentage;
+  let maxVideoHeight;
+  
+  if (screenHeight < 700) {
+    // Small screens (iPhone SE, etc)
+    videoHeightPercentage = 0.32;
+    maxVideoHeight = 280;
+  } else if (screenHeight < 850) {
+    // Medium screens (iPhone 12, 13, etc)
+    videoHeightPercentage = 0.38;
+    maxVideoHeight = 350;
+  } else {
+    // Large screens (iPhone 14 Pro Max, etc)
+    videoHeightPercentage = 0.35;
+    maxVideoHeight = 380;
+  }
+  
   const videoHeight = Math.min(screenHeight * videoHeightPercentage, maxVideoHeight);
   const videoWidth = videoHeight * (9 / 16);
 
   // Dynamic styles based on scale factor
+  // More compact spacing to ensure all content fits
   const dynamicStyles = {
     scrollContent: [
       styles.scrollContent,
       {
-        paddingVertical: 16 * scaleFactor,
-        paddingBottom: 24 * scaleFactor,
+        paddingVertical: Math.max(12, 16 * scaleFactor),
+        paddingBottom: Math.max(32, 40),
       }
     ],
     logoContainer: [
       styles.logoContainer,
       {
-        marginBottom: Math.max(8, 16 * scaleFactor),
+        marginBottom: Math.max(8, 12 * scaleFactor),
       }
     ],
     videoContainer: [
       styles.videoContainer,
       {
-        marginVertical: Math.max(8, 16 * scaleFactor),
+        marginVertical: Math.max(8, 12 * scaleFactor),
       }
     ],
     taglineContainer: [
       styles.taglineContainer,
       {
-        marginVertical: Math.max(12, 16 * scaleFactor),
+        marginVertical: Math.max(10, 12 * scaleFactor),
       }
     ],
     tagline: [
       styles.tagline,
       {
         fontSize: Math.max(20, 24 * scaleFactor),
-        marginBottom: Math.max(8, 12 * scaleFactor),
+        marginBottom: Math.max(6, 10 * scaleFactor),
       }
     ],
     description: [
@@ -90,20 +107,20 @@ export default function LandingScreen() {
     buttonContainer: [
       styles.buttonContainer,
       {
-        marginTop: Math.max(12, 16 * scaleFactor),
+        marginTop: Math.max(12, 14 * scaleFactor),
         gap: Math.max(10, 12 * scaleFactor),
       }
     ],
     joinButton: [
       styles.joinButton,
       {
-        paddingVertical: Math.max(12, 16 * scaleFactor),
+        paddingVertical: Math.max(12, 14 * scaleFactor),
       }
     ],
     loginButton: [
       styles.loginButton,
       {
-        paddingVertical: Math.max(12, 16 * scaleFactor),
+        paddingVertical: Math.max(12, 14 * scaleFactor),
       }
     ],
   };
