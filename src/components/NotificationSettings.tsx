@@ -206,7 +206,14 @@ export default function NotificationSettings() {
 
   const requestDevicePermissionIfNeeded = async (): Promise<boolean> => {
     try {
-      const { status } = await Notifications.requestPermissionsAsync();
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+          allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
+        },
+      });
       setDevicePermissionStatus(status);
       if (status !== 'granted') {
         Alert.alert(

@@ -200,6 +200,7 @@ export default function OnboardingScreen() {
           allowAlert: true,
           allowBadge: true,
           allowSound: true,
+          allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
           allowCriticalAlerts: false,
           provideAppNotificationSettings: true,
         },

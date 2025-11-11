@@ -74,7 +74,14 @@ export default function NotificationSetupOverlay({
     
     if (enabled) {
       try {
-        const { status } = await Notifications.requestPermissionsAsync();
+        const { status } = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
+          },
+        });
         setNotificationPermission(status);
         setNotificationsEnabled(status === 'granted');
       } catch (error) {

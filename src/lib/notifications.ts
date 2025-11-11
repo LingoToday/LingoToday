@@ -98,11 +98,13 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     if (existingStatus !== 'granted') {
       // Request permissions with iOS-specific options for background notifications
       // Note: allowAlert enables both lock screen and notification center display
+      // allowTimeSensitive enables Time Sensitive interruption level for reliable delivery
       const { status } = await Notifications.requestPermissionsAsync({
         ios: {
           allowAlert: true,
           allowBadge: true,
           allowSound: true,
+          allowTimeSensitive: true as any, // Type not yet in SDK 54 definitions but supported
           allowCriticalAlerts: false,
           provideAppNotificationSettings: true,
         },

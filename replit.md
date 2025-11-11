@@ -53,7 +53,7 @@ Do not make changes to the file `package-lock.json`.
   - **Cross-Midnight Window Support**: Both platforms correctly handle notification windows that span midnight (e.g., 6 PM to 9 AM) by calculating day offsets and scheduling post-midnight notifications for the following day.
   - **Auto-Rescheduling**: Platform-specific thresholds - iOS recreates weekly repeaters if count reaches 0, Android refills 14-day horizon if count drops below 10. Dashboard automatically checks and reschedules on app launch and when returning from background.
   - **Settings Integration**: All scheduled notifications are cleared and recreated whenever user changes frequency, time window, or selected days to ensure settings are immediately reflected.
-  - **iOS Background Delivery**: Configured with UIBackgroundModes, active interruption level, and notification categories with action buttons ("Start Lesson", "Dismiss"). Uses expo-notifications for reliable delivery across all app states (foreground, background, terminated).
+  - **iOS Background Delivery**: Configured with timeSensitive interruption level and notification categories with action buttons ("Start Lesson", "Dismiss"). Uses expo-notifications for reliable delivery across all app states (foreground, background, terminated). Requests allowTimeSensitive permission to enable time-sensitive delivery that can break through Focus modes.
   - **Focus Mode Compatibility**: iOS users must allow LingoToday in Focus modes (Settings > Focus > [Mode] > Apps) for lock screen notifications during Do Not Disturb/Sleep/Work modes.
 
 ### Project Structure
