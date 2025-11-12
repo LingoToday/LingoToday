@@ -241,10 +241,17 @@ export class ApiClient {
     learningStyle?: string
     notificationsEnabled?: boolean
   }) {
-    return this.makeRequest('/api/auth/register', {
+    const response = await this.makeRequest('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     });
+    
+    // Store token if provided
+    if ((response as any).token) {
+      await this.setAuthToken((response as any).token);
+    }
+    
+    return response;
   }
 
   async login(email: string, password: string) {
