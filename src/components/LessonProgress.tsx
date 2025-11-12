@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   useWindowDimensions,
+  TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -32,6 +33,7 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
   const isTablet = width >= 768;
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     // Get user progress data and calculate actual progress based on database records - matching web exactly
@@ -134,6 +136,12 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
 
   const styles = useMemo(() => createStyles(isTablet), [isTablet]);
 
+  const INITIAL_DISPLAY_COUNT = 3;
+  const displayedProgress = isExpanded 
+    ? categoryProgress 
+    : categoryProgress.slice(0, INITIAL_DISPLAY_COUNT);
+  const showMoreButton = categoryProgress.length > INITIAL_DISPLAY_COUNT;
+
   if (isLoading) {
     return (
       <Card style={styles.card}>
@@ -151,7 +159,7 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
         <Text style={styles.cardTitle}>Learning Path</Text>
         
         <View style={styles.progressList}>
-          {categoryProgress.map((category, index) => (
+          {displayedProgress.map((category, index) => (
             <View key={category.name} style={styles.progressItem}>
               <View style={styles.progressHeader}>
                 <View style={[
@@ -202,6 +210,18 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
             </View>
           ))}
         </View>
+
+        {showMoreButton && (
+          <TouchableOpacity 
+            style={styles.moreButton}
+            onPress={() => setIsExpanded(!isExpanded)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.moreButtonText}>
+              {isExpanded ? 'Show Less' : 'More'}
+            </Text>
+          </TouchableOpacity>
+        )}
 
         {/* Course Summary - matching web exactly */}
         <View style={styles.courseSummary}>
@@ -326,6 +346,20 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   // Progress Bar
   progressBar: {
     height: isTablet ? 10 : 8,
+  },
+
+  // More Button
+  moreButton: {
+    alignSelf: 'center',
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.lg,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+  },
+  moreButtonText: {
+    fontSize: isTablet ? 14 : theme.fontSize.sm,
+    fontWeight: '500',
+    color: '#3b82f6', // text-primary
   },
 
   // Course Summary
