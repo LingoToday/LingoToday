@@ -480,41 +480,6 @@ useEffect(() => {
         }
       ];
 
-  // Generate learning path - matching web logic exactly
-  const courseData = [
-    { name: 'Greetings', totalLessons: 13 },
-    { name: 'Introducing Yourself', totalLessons: 13 },
-    { name: 'Essential Courtesy Phrases', totalLessons: 13 },
-    { name: 'Numbers', totalLessons: 29 },
-    { name: 'Days and Dates', totalLessons: 10 }
-  ];
-
-  const totalPossibleLessons = courseData.reduce((sum, course) => sum + course.totalLessons, 0);
-  
-  const learningPath = courseData.map((course, index) => {
-    const courseProgress = allProgress.filter(p => p.courseId === `course${index + 1}`);
-    const completed = courseProgress.filter(p => p.completedAt && p.completed).length;
-    const total = course.totalLessons;
-    const completion = total > 0 ? (completed / total) * 100 : 0;
-    
-    let status = 'locked';
-    if (index === 0) {
-      status = completion === 100 ? 'completed' : completion > 0 ? 'current' : 'available';
-    } else if (completion === 100) {
-      status = 'completed';
-    } else if (completion > 0) {
-      status = 'current';
-    }
-    
-    return {
-      name: course.name,
-      progress: `${completed}/${total}`,
-      completion,
-      status
-    };
-  });
-
-
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -563,8 +528,8 @@ useEffect(() => {
                       <View style={styles.progressInfo}>
                         <Text style={styles.progressText}>
                           {stats.lessonsCompleted > 0
-                            ? `${Math.round(learningPath.reduce((acc, course) => acc + course.completion, 0) / learningPath.length)}% complete`
-                            : '0% to Introducing Yourself'}
+                            ? `${stats.lessonsCompleted} lessons completed`
+                            : 'Start your first lesson'}
                         </Text>
                       </View>
                     </View>
@@ -741,65 +706,6 @@ useEffect(() => {
 
               {/* Right Sidebar - matching web exactly */}
               <View style={isTablet ? styles.rightSidebar : styles.mobileSidebar}>
-                {/* Learning Path */}
-                <Card style={styles.pathCard}>
-                  <CardHeader>
-                    <Text style={styles.pathTitle}>Learning Path</Text>
-                  </CardHeader>
-                  <CardContent style={styles.pathContent}>
-                    {learningPath.map((item, index) => (
-                      <View key={index} style={styles.pathItem}>
-                        <View style={[
-                          styles.pathIcon,
-                          item.status === 'completed' && styles.pathIconCompleted,
-                          item.status === 'current' && styles.pathIconCurrent,
-                          item.status === 'available' && styles.pathIconAvailable,
-                          item.status === 'locked' && styles.pathIconLocked
-                        ]}>
-                          {item.status === 'completed' ? (
-                            <Ionicons name="checkmark-circle" size={16} color={theme.colors.primaryForeground} />
-                          ) : (
-                            <Text style={[
-                              styles.pathIconText,
-                              item.status === 'completed' && { color: theme.colors.primaryForeground },
-                              item.status === 'current' && { color: theme.colors.primaryForeground },
-                              item.status === 'available' && { color: theme.colors.primary },
-                              item.status === 'locked' && { color: theme.colors.mutedForeground }
-                            ]}>
-                              {index + 1}
-                            </Text>
-                          )}
-                        </View>
-                        <View style={styles.pathInfo}>
-                          <Text style={styles.pathName}>{item.name}</Text>
-                          <Text style={styles.pathProgress}>{item.progress}</Text>
-                        </View>
-                        <Text style={styles.pathStatus}>
-                          {item.completion === 100 ? 'DONE' : 
-                          item.status === 'current' ? `${Math.round(item.completion)}%` :
-                          item.status === 'available' ? 'START' :
-                          'LOCKED'}
-                        </Text>
-                      </View>
-                    ))}
-                    
-                    <View style={styles.pathFooter}>
-                      <Text style={styles.pathFooterTitle}>
-                        Complete {getLanguageDisplayName(effectiveDashboardData.user.selectedLanguage || 'italian')} Course
-                      </Text>
-                      <Text style={styles.pathFooterSubtitle}>
-                        {effectiveCourseStats.totalLessons} lessons • {effectiveCourseStats.totalCourses} courses
-                      </Text>
-                      <TouchableOpacity 
-                        style={styles.pathFooterButton}
-                        onPress={handleNavigateToCourses}
-                      >
-                        <Text style={styles.pathFooterButtonText}>View</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </CardContent>
-                </Card>
-
                 {/* Notifications - Use updated NotificationSettings component */}
                 <NotificationSettings />
               </View>
@@ -1311,96 +1217,6 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   viewAllButtonText: {
     fontSize: 14,
     color: theme.colors.foreground,
-  },
-
-  // Learning Path (matching web exactly)
-  pathCard: {
-    backgroundColor: theme.colors.card,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  pathTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-    padding: 16,
-    paddingBottom: 0,
-  },
-  pathContent: {
-    padding: 16,
-    gap: 12,
-  },
-  pathItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  pathIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pathIconCompleted: {
-    backgroundColor: theme.colors.success500,
-  },
-  pathIconCurrent: {
-    backgroundColor: theme.colors.primary,
-  },
-  pathIconAvailable: {
-    backgroundColor: theme.colors.primary100,
-  },
-  pathIconLocked: {
-    backgroundColor: theme.colors.border,
-  },
-  pathIconText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  pathInfo: {
-    flex: 1,
-  },
-  pathName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors.foreground,
-  },
-  pathProgress: {
-    fontSize: 12,
-    color: theme.colors.mutedForeground,
-  },
-  pathStatus: {
-    fontSize: 12,
-    color: theme.colors.mutedForeground,
-  },
-  pathFooter: {
-    alignItems: 'center',
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-    gap: 8,
-  },
-  pathFooterTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors.primary,
-  },
-  pathFooterSubtitle: {
-    fontSize: 12,
-    color: theme.colors.mutedForeground,
-  },
-  pathFooterButton: {
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  pathFooterButtonText: {
-    fontSize: 14,
-    color: theme.colors.primary,
   },
 
   // Add these new styles:

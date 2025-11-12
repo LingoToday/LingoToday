@@ -16,8 +16,9 @@ import { format } from 'date-fns';
 
 import { theme } from '../lib/theme';
 import { useAuth } from '../hooks/useAuth';
-import { apiClient } from '../lib/apiClient';
+import { apiClient, DashboardData } from '../lib/apiClient';
 import { Card } from '../components/ui/Card';
+import LessonProgress from '../components/LessonProgress';
 
 // Type definitions - matching web exactly
 interface User {
@@ -87,6 +88,54 @@ export default function AccountScreen() {
     },
     enabled: !!authUser,
   });
+
+  // Fetch dashboard data for progress tracking
+  const { data: dashboardData } = useQuery<DashboardData>({
+    queryKey: ['/api/dashboard'],
+    queryFn: async () => {
+      try {
+        return await apiClient.getDashboardData();
+      } catch (error) {
+        console.error('Dashboard query error:', error);
+        // Return fallback data to prevent UI breaking
+        const fallbackData: DashboardData = {
+          user: {
+            id: authUser?.id || '',
+            email: authUser?.email || '',
+            firstName: authUser?.firstName || 'User',
+          } as DashboardData['user'],
+          settings: {
+            notificationsEnabled: false,
+            mobileNotificationsEnabled: false,
+            mobileNotificationFrequency: 15,
+            mobileNotificationStartTime: '08:00',
+            mobileNotificationEndTime: '22:00',
+            selectedLanguage: authUser?.selectedLanguage || 'italian',
+          },
+          stats: {
+            streak: 0,
+            totalLessons: 0,
+            wordsLearned: 0,
+            lessonsCompleted: 0,
+          },
+          progress: []
+        };
+        return fallbackData;
+      }
+    },
+    enabled: !!authUser,
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Calculate completed lesson IDs from dashboard data
+  const completedLessonIds = React.useMemo(() => {
+    if (!dashboardData?.progress) return [];
+    
+    return dashboardData.progress
+      .filter((p: any) => p.completed === true)
+      .map((p: any) => p.lessonId);
+  }, [dashboardData?.progress]);
 
   const handleLogout = () => {
     Alert.alert(
@@ -218,6 +267,11 @@ export default function AccountScreen() {
                 </View>
               </View>
             </Card>
+
+            {/* Learning Path - moved from dashboard */}
+            <View style={styles.learningPathContainer}>
+              <LessonProgress completedLessonIds={completedLessonIds} />
+            </View>
 
             <TouchableOpacity 
               style={styles.subscriptionButton}
@@ -386,6 +440,9 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   cardSpacing: {
+    marginTop: 16,
+  },
+  learningPathContainer: {
     marginTop: 16,
   },
 });
