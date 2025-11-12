@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { theme } from '../lib/theme';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import funnyItalianComments from '../data/funny_italian_comments.json';
 
 type LessonCompleteRouteProp = RouteProp<RootStackParamList, 'LessonComplete'>;
 type LessonCompleteNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LessonComplete'>;
@@ -23,18 +24,24 @@ export default function LessonCompleteScreen() {
   
   const { lessonTitle, lessonId, courseId, score, language } = route.params;
 
-  // Get comment based on score
-  const getScoreComment = (score: number): string => {
+  // Get random comment based on score range
+  const scoreComment = useMemo(() => {
+    let commentArray: string[];
+    
     if (score >= 76) {
-      return "Are you secretly Italian? 🇮🇹🔥";
+      commentArray = funnyItalianComments["76-100%"];
     } else if (score >= 51) {
-      return "You'd survive in Rome, as long as you don't order pineapple pizza 🍍😏";
+      commentArray = funnyItalianComments["51-75%"];
     } else if (score >= 26) {
-      return "A solid effort — the locals might still switch to English though 😅";
+      commentArray = funnyItalianComments["26-50%"];
     } else {
-      return "Let's call that… a warm-up round 💀💬";
+      commentArray = funnyItalianComments["0-25%"];
     }
-  };
+    
+    // Return a random comment from the appropriate array
+    const randomIndex = Math.floor(Math.random() * commentArray.length);
+    return commentArray[randomIndex];
+  }, [score]);
 
   const handleContinue = () => {
     navigation.navigate('MainTabs' as never);
@@ -65,7 +72,7 @@ export default function LessonCompleteScreen() {
 
             {/* Dynamic Comment */}
             <View style={styles.commentContainer}>
-              <Text style={styles.comment}>{getScoreComment(score)}</Text>
+              <Text style={styles.comment}>{scoreComment}</Text>
             </View>
 
             {/* Progress Message */}
