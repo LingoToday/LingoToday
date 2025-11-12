@@ -2276,9 +2276,7 @@ const styles = StyleSheet.create({
 
   // Quiz Section
   quizSection: {
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-    paddingTop: theme.spacing.lg,
+    paddingTop: theme.spacing.sm,
     gap: theme.spacing.md,
   },
 
