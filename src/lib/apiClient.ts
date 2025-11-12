@@ -524,12 +524,13 @@ export class ApiClient {
   async registerPushToken(data: {
     token: string;
     platform: 'ios' | 'android';
-    deviceId?: string;
-    appVersion?: string;
   }) {
     return this.makeRequest('/api/notifications/register-token', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        expoPushToken: data.token,
+        platform: data.platform,
+      }),
     });
   }
 

@@ -125,7 +125,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     
     try {
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      logNotification('✅', `Push token obtained: ${token}`);
+      logNotification('✅', 'Push token obtained successfully');
     } catch (error) {
       logNotification('❌', 'Error getting push token', error);
     }
@@ -168,22 +168,14 @@ export async function registerPushTokenWithBackend(): Promise<boolean> {
       }
     }
 
-    // Get device info
-    const deviceId = Constants.sessionId || Device.modelName || 'unknown';
-    const appVersion = Constants.expoConfig?.version || 'unknown';
-    
     // Register with backend
     logNotification('🚀', 'Registering push token with backend...', {
       platform: Platform.OS,
-      deviceId,
-      appVersion,
     });
 
     await apiClient.registerPushToken({
       token,
       platform: Platform.OS as 'ios' | 'android',
-      deviceId,
-      appVersion,
     });
 
     // Cache token and registration time
