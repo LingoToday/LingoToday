@@ -293,10 +293,12 @@ export default function SubscribeScreen() {
                 </>
               ) : (
                 <>
-                  <Text style={styles.strikethroughPrice}>£2.99</Text>
-                  <Text style={styles.priceAmount}>£2.41</Text>
-                  <Text style={styles.priceInterval}>/month</Text>
-                  <Text style={styles.billedText}>Billed £28.99 annually</Text>
+                  <Text style={styles.priceAmount}>£28.99</Text>
+                  <Text style={styles.priceInterval}>annually</Text>
+                  <View style={styles.monthlyBreakdown}>
+                    <Text style={styles.strikethroughPrice}>£2.99</Text>
+                    <Text style={styles.billedText}> £2.41/month</Text>
+                  </View>
                 </>
               )}
             </View>
@@ -476,6 +478,11 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
     marginTop: theme.spacing.xs,
+  },
+  monthlyBreakdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: theme.spacing.sm,
   },
 
   // Toggle
