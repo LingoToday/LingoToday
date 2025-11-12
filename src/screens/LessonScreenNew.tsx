@@ -428,6 +428,8 @@ export default function LessonScreen() {
           prompt: "Watch and listen to the video, then reply!",
           answerPrompt: "Reply: 'Hi!'",
           expectedAnswers: ["Ciao!", "Ciao"],
+          options: ["Ciao!", "Salve!", "Buongiorno!", "Arrivederci!"],
+          answer: "Ciao!",
           hasAccess: true,
           requiredTier: []
         };
@@ -1423,15 +1425,82 @@ export default function LessonScreen() {
                   </View>
 
                   {stepData.hasAccess && (
-                    <View style={styles.inputContainer}>
-                      <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
-                      <TextInput
-                        style={styles.textInput}
-                        value={selectedAnswer}
-                        onChangeText={setSelectedAnswer}
-                        placeholder="Type your response..."
-                      />
-                    </View>
+                    <>
+                      <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
+                        <TextInput
+                          style={styles.textInput}
+                          value={selectedAnswer}
+                          onChangeText={setSelectedAnswer}
+                          placeholder="Type your response..."
+                        />
+                      </View>
+                      
+                      {stepData.options && stepData.options.length > 0 && (
+                        <View style={styles.optionsContainer}>
+                          {stepData.options.map((option: string, index: number) => {
+                            const letters = ['A', 'B', 'C', 'D'];
+                            const isCorrectAnswer = showResult && option === stepData.answer;
+                            const shouldAnimate = isCorrectAnswer && isCorrect;
+                            
+                            return (
+                              <Animated.View
+                                key={index}
+                                style={[
+                                  shouldAnimate && {
+                                    transform: [{ scale: correctAnswerScale }],
+                                    shadowColor: '#10b981',
+                                    shadowOffset: { width: 0, height: 0 },
+                                    shadowOpacity: correctAnswerBorder,
+                                    shadowRadius: correctAnswerBorder.interpolate({
+                                      inputRange: [0, 1],
+                                      outputRange: [0, 12]
+                                    }),
+                                    elevation: 8,
+                                  }
+                                ]}
+                              >
+                                <TouchableOpacity
+                                  style={[
+                                    styles.optionButton,
+                                    selectedAnswer === option && styles.selectedOption,
+                                    showResult && option === stepData.answer && styles.correctOption,
+                                    showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                                  ]}
+                                  onPress={() => !showResult && setSelectedAnswer(option)}
+                                  disabled={showResult}
+                                >
+                                  <View style={styles.optionLabelContainer}>
+                                    <View style={[
+                                      styles.optionLabel,
+                                      selectedAnswer === option && styles.selectedOptionLabel
+                                    ]}>
+                                      <Text style={[
+                                        styles.optionLabelText,
+                                        selectedAnswer === option && styles.selectedOptionLabelText
+                                      ]}>
+                                        {letters[index]}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <Text style={[
+                                    styles.optionText,
+                                    selectedAnswer === option && styles.selectedOptionText,
+                                    showResult && option === stepData.answer && styles.correctOptionText,
+                                    showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
+                                  ]}>
+                                    {option}
+                                  </Text>
+                                  {showResult && option === stepData.answer && (
+                                    <Text style={styles.checkmark}>✓</Text>
+                                  )}
+                                </TouchableOpacity>
+                              </Animated.View>
+                            );
+                          })}
+                        </View>
+                      )}
+                    </>
                   )}
                 </>
               )}
