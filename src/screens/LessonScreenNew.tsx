@@ -2204,9 +2204,11 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   inputLabel: {
-    fontSize: theme.fontSize.base,
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700' as any,
     color: theme.colors.foreground,
     textAlign: 'center',
+    marginBottom: theme.spacing.xs,
   },
   textInput: {
     borderWidth: 2,
