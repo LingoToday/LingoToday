@@ -12,6 +12,7 @@ import CoursesScreenNew from '../screens/CoursesScreenNew';
 import AccountScreenNew from '../screens/AccountScreenNew';
 import ProgressScreenNew from '../screens/ProgressScreenNew';
 import LessonScreenNew from '../screens/LessonScreenNew';
+import LessonCompleteScreen from '../screens/LessonCompleteScreen';
 import CheckpointScreen from '../screens/CheckpointScreen';
 import SubscribeScreen from '../screens/SubscribeScreen';
 import TermsScreen from '../screens/TermsScreen';
@@ -43,7 +44,8 @@ export type RootStackParamList = {
   MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
   Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
   Progress: undefined;
-  Lesson: { lessonId: string; language?: string; courseId?: string };
+  Lesson: { lessonId: string; language?: string; courseId?: string; from?: string; id?: string };
+  LessonComplete: { lessonTitle: string; lessonId: string; courseId: string; score: number; language: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
   Terms: undefined;
@@ -236,6 +238,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
               component={LessonScreenNew}
             />
             <Stack.Screen 
+              name="LessonComplete" 
+              component={LessonCompleteScreen}
+            />
+            <Stack.Screen 
               name="Checkpoint" 
               component={CheckpointScreen as any}
             />
@@ -270,6 +276,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             <Stack.Screen 
               name="Lesson" 
               component={LessonScreenNew}
+            />
+            <Stack.Screen 
+              name="LessonComplete" 
+              component={LessonCompleteScreen}
             />
             <Stack.Screen 
               name="Checkpoint" 

@@ -13,6 +13,7 @@ import {
   Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
@@ -31,21 +32,13 @@ import { Badge } from '../components/ui/Badge';
 import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
 import { purchaseService } from '../services/purchaseService';
+import { RootStackParamList } from '../navigation/AppNavigator';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const isTablet = screenWidth >= 768;
 
-type RootStackParamList = {
-  Lesson: {
-    language: string;
-    courseId: string;
-    lessonId: string;
-    from?: string;
-    id?: string;
-  };
-};
-
 type LessonScreenRouteProp = RouteProp<RootStackParamList, 'Lesson'>;
+type LessonScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Lesson'>;
 
 // Type definitions - matching web exactly
 interface Lesson {
@@ -112,7 +105,7 @@ interface UserProgress {
 }
 
 export default function LessonScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<LessonScreenNavigationProp>();
   const route = useRoute<LessonScreenRouteProp>();
   const { user, logout } = useAuth();
   const queryClient = useQueryClient();
@@ -944,17 +937,31 @@ export default function LessonScreen() {
         score,
         completedAt: new Date(),
       });
+      return score;
     },
-    onSuccess: () => {
+    onSuccess: (score) => {
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/progress", language] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats", language] });
       
-      Alert.alert(
-        "Lesson completed!",
-        "Great job! Returning to dashboard...",
-        [{ text: "OK", onPress: () => navigation.navigate('MainTabs' as never) }]
-      );
+      // Navigate to LessonComplete screen instead of showing alert
+      // Use route params to ensure correct data flow across all courses and languages
+      if (score !== undefined && currentLesson && language && courseId) {
+        navigation.navigate('LessonComplete', {
+          lessonTitle: currentLesson?.lesson?.title || currentLesson?.title || 'Lesson',
+          lessonId: lessonId || currentLesson.id,
+          courseId: courseId,
+          score: score,
+          language: language
+        });
+      } else {
+        // Fallback to alert if data is missing
+        Alert.alert(
+          "Lesson completed!",
+          "Great job! Returning to dashboard...",
+          [{ text: "OK", onPress: () => navigation.navigate('MainTabs' as never) }]
+        );
+      }
     },
     onError: (error) => {
       Alert.alert(
