@@ -162,6 +162,10 @@ export default function AccountScreen() {
     navigation.navigate('Subscription' as never);
   };
 
+  const handleNavigateToNotificationSettings = () => {
+    navigation.navigate('NotificationSettings' as never);
+  };
+
   if (userLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -282,6 +286,14 @@ export default function AccountScreen() {
               <Text style={styles.subscriptionBadge}>
                 {getLearningTier(user.priceTier)}
               </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.notificationButton}
+              onPress={handleNavigateToNotificationSettings}
+              testID="notification-settings"
+            >
+              <Text style={styles.notificationButtonText}>Notification Settings</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -421,6 +433,21 @@ const styles = StyleSheet.create({
   subscriptionBadge: {
     fontSize: 13,
     color: '#666666',
+    fontWeight: '400',
+  },
+  notificationButton: {
+    width: '100%',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    marginTop: 8,
+  },
+  notificationButtonText: {
+    fontSize: 15,
+    color: '#000000',
     fontWeight: '400',
   },
   signOutButton: {

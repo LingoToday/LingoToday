@@ -25,7 +25,6 @@ import { theme } from '../lib/theme';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import NotificationSettings from '../components/NotificationSettings';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
 import { useResponsiveBreakpoints } from '../hooks/useResponsiveBreakpoints';
@@ -515,7 +514,7 @@ useEffect(() => {
                           Notifications are disabled
                         </Text>
                         <Text style={styles.disabledNotificationSubtitle}>
-                          Enable notifications below to start receiving lesson reminders
+                          Enable notifications in your Profile settings to start receiving lesson reminders
                         </Text>
                       </View>
                     </CardContent>
@@ -641,12 +640,6 @@ useEffect(() => {
                     </TouchableOpacity>
                   </CardContent>
                 </Card>
-              </View>
-
-              {/* Right Sidebar - matching web exactly */}
-              <View style={isTablet ? styles.rightSidebar : styles.mobileSidebar}>
-                {/* Notifications - Use updated NotificationSettings component */}
-                <NotificationSettings />
               </View>
             </View>
           </View>

@@ -28,6 +28,7 @@ import CourseManagerScreen from '../screens/CourseManagerScreen';
 import CourseTestScreen from '../screens/CourseTestScreen';
 import LessonExampleScreen from '../screens/LessonExampleScreen';
 import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
+import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 
 import { theme } from '../lib/theme';
@@ -59,6 +60,7 @@ export type RootStackParamList = {
   CourseTest: undefined;
   LessonExample: undefined;
   Subscription: undefined;
+  NotificationSettings: undefined;
 };
 
 // Create navigators
@@ -252,6 +254,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
           <>
             <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
             <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
+            <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
             <Stack.Screen name="Progress" component={ProgressScreenNew} />
             
             {/* Course screens - available for authenticated users too */}
