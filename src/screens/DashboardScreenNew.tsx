@@ -28,7 +28,6 @@ import { Badge } from '../components/ui/Badge';
 import NotificationSettings from '../components/NotificationSettings';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
-import { scheduleLanguageLearningReminders, stopLanguageLearningReminders, checkAndRescheduleIfNeeded } from '../lib/notifications';
 import { useResponsiveBreakpoints } from '../hooks/useResponsiveBreakpoints';
 
 // Type definitions - matching web exactly
@@ -302,68 +301,8 @@ useEffect(() => {
   const effectiveCourseStats = courseStats || { totalCourses: 5, totalLessons: 78 };
   const upcomingLessons = upcomingLessonsResponse?.lessons || fallbackUpcomingLessons;
 
-  // Check and reschedule notifications on app foreground (not on every render)
-  useEffect(() => {
-    // This function always reads the latest settings from effectiveDashboardData (no stale closure)
-    const autoCheckAndReschedule = async () => {
-      // Get fresh settings from current state
-      const currentSettings = effectiveDashboardData?.settings;
-      const currentUser = user;
-      
-      // Only proceed if notifications are enabled
-      if (!currentSettings?.mobileNotificationsEnabled) {
-        return;
-      }
-
-      // Check if permissions are granted
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== 'granted') {
-        return;
-      }
-
-      // Check if user has selected a language
-      if (!currentUser?.selectedLanguage) {
-        return;
-      }
-
-      try {
-        // Use the new checkAndRescheduleIfNeeded function (with built-in debouncing)
-        await checkAndRescheduleIfNeeded(
-          currentSettings.mobileNotificationStartTime || '09:00',
-          currentSettings.mobileNotificationEndTime || '18:00',
-          currentSettings.mobileNotificationFrequency || 60,
-          currentUser.selectedLanguage,
-          undefined,
-          (currentSettings as any).mobileNotificationDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-        );
-      } catch (error) {
-        console.error('❌ Auto-reschedule error:', error);
-      }
-    };
-
-    // Check once on mount
-    if (!hasCheckedNotificationsOnMount.current && effectiveDashboardData && user) {
-      hasCheckedNotificationsOnMount.current = true;
-      autoCheckAndReschedule();
-    }
-
-    // Set up AppState listener to check when app comes to foreground
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        console.log('📱 App has come to foreground - checking notifications');
-        // Call autoCheckAndReschedule which will read fresh settings
-        autoCheckAndReschedule();
-      }
-      appState.current = nextAppState;
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, [effectiveDashboardData, user]);
+  // REMOVED: Local notification scheduling (now handled by backend push notifications)
+  // Backend reads user preferences and sends push notifications via Expo Push Service
 
   // Handle refresh
   const onRefresh = async () => {

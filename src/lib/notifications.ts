@@ -602,10 +602,7 @@ async function scheduleAndroidHorizonNotifications(
 
 // DEPRECATED: Local notification scheduling replaced with backend push notifications
 // This function is no longer used - backend now handles all notification scheduling via push notifications
-// Kept for backward compatibility but does nothing
-// Schedule language learning reminders with platform-specific strategies
-// iOS: Weekly repeating calendar triggers
-// Android: Horizon-based scheduling for next 14 days
+// This function does nothing - kept for backward compatibility only
 export async function scheduleLanguageLearningReminders(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -614,123 +611,15 @@ export async function scheduleLanguageLearningReminders(
   nextLessonData?: { courseId: string; lessonId: string },
   selectedDays?: Day[]
 ): Promise<boolean> {
-  // Lock mechanism: if already scheduling, return the existing promise
-  if (isScheduling && schedulingPromise) {
-    logNotification('🔒', 'Scheduling already in progress, returning existing promise');
-    return schedulingPromise;
-  }
-
-  // Set the lock
-  isScheduling = true;
-  
-  // Create the scheduling promise
-  schedulingPromise = (async () => {
-    try {
-      logNotification('🚀', `Starting ${Platform.OS.toUpperCase()} notification scheduling`, {
-        platform: Platform.OS,
-        startTime,
-        endTime,
-        frequencyMinutes,
-        language,
-        selectedDays,
-      });
-
-      // ALWAYS clear existing notifications first
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      logNotification('🧹', 'Cleared all existing notifications');
-    
-      // Default lesson data if none provided
-      const lessonData = nextLessonData || {
-        courseId: 'course1',
-        lessonId: 'lesson1'
-      };
-
-      // Default to all days if not specified
-      const daysToSchedule: Day[] = selectedDays || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-      let scheduledCount = 0;
-      
-      // Platform-specific scheduling
-      if (Platform.OS === 'ios') {
-        scheduledCount = await scheduleIOSRepeatingNotifications(
-          startTime,
-          endTime,
-          frequencyMinutes,
-          language,
-          lessonData,
-          daysToSchedule
-        );
-      } else {
-        scheduledCount = await scheduleAndroidHorizonNotifications(
-          startTime,
-          endTime,
-          frequencyMinutes,
-          language,
-          lessonData,
-          daysToSchedule
-        );
-      }
-      
-      // Log all scheduled notifications for debugging
-      const allScheduled = await Notifications.getAllScheduledNotificationsAsync();
-      logNotification('📅', `Total scheduled notifications: ${allScheduled.length}`);
-      
-      if (Platform.OS === 'ios') {
-        logNotification('ℹ️', 'iOS: Using weekly repeating calendar triggers');
-        logNotification('⚠️', 'iOS: If notifications don\'t appear:');
-        logNotification('📲', '1. Check Settings > Focus - ensure LingoToday is allowed');
-        logNotification('📲', '2. Check Settings > Notifications > LingoToday - ensure all options enabled');
-      } else {
-        logNotification('ℹ️', `Android: Scheduled for next 14 days`);
-      }
-      
-      // Store scheduling metadata in AsyncStorage
-      const scheduleMetadata = {
-        lastScheduleTime: Date.now(),
-        params: {
-          startTime,
-          endTime,
-          frequencyMinutes,
-          language,
-          selectedDays: daysToSchedule,
-        },
-        scheduledCount,
-        platform: Platform.OS,
-      };
-      await AsyncStorage.setItem(LAST_SCHEDULE_TIME_KEY, scheduleMetadata.lastScheduleTime.toString());
-      await AsyncStorage.setItem(SCHEDULE_PARAMS_KEY, JSON.stringify(scheduleMetadata.params));
-      
-      return true;
-    } catch (error) {
-      logNotification('❌', 'Error scheduling notifications', error);
-      return false;
-    } finally {
-      // Always release the lock
-      isScheduling = false;
-      schedulingPromise = null;
-      logNotification('🔓', 'Scheduling lock released');
-    }
-  })();
-  
-  return schedulingPromise;
+  logNotification('ℹ️', 'DEPRECATED: Local scheduling disabled - backend handles all notifications');
+  return true;
 }
 
 // DEPRECATED: Local notification scheduling replaced with backend push notifications
 // This function is no longer used - backend controls notification delivery
-// Stop all language learning reminders
+// This function does nothing - kept for backward compatibility only
 export async function stopLanguageLearningReminders(): Promise<void> {
-  try {
-    await Notifications.cancelAllScheduledNotificationsAsync();
-    notificationScheduleId = null;
-    
-    // Clear scheduling metadata from AsyncStorage
-    await AsyncStorage.removeItem(LAST_SCHEDULE_TIME_KEY);
-    await AsyncStorage.removeItem(SCHEDULE_PARAMS_KEY);
-    
-    logNotification('🛑', 'All language learning reminders stopped and metadata cleared');
-  } catch (error) {
-    logNotification('❌', 'Error stopping notifications', error);
-  }
+  logNotification('ℹ️', 'DEPRECATED: Local scheduling disabled - backend handles all notifications');
 }
 
 // Get scheduled notifications count
@@ -746,10 +635,7 @@ export async function getScheduledNotificationCount(): Promise<number> {
 
 // DEPRECATED: Local notification scheduling replaced with backend push notifications
 // This function is no longer needed - backend handles scheduling
-// Check if we need to reschedule notifications (if running low)
-// Platform-specific logic:
-// - iOS: Reschedule if 0 (weekly repeaters should persist, but recreate if missing)
-// - Android: Reschedule if below threshold (horizon needs refilling)
+// This function does nothing - kept for backward compatibility only
 export async function checkAndRescheduleIfNeeded(
   startTime: string = "09:00",
   endTime: string = "18:00", 
@@ -758,63 +644,8 @@ export async function checkAndRescheduleIfNeeded(
   nextLessonData?: { courseId: string; lessonId: string },
   selectedDays?: Day[]
 ): Promise<boolean> {
-  try {
-    logNotification('🔍', `${Platform.OS.toUpperCase()}: Checking if rescheduling is needed`);
-    
-    // Debounce: Check last schedule time to prevent rapid rescheduling
-    const lastScheduleTimeStr = await AsyncStorage.getItem(LAST_SCHEDULE_TIME_KEY);
-    if (lastScheduleTimeStr) {
-      const lastScheduleTime = parseInt(lastScheduleTimeStr, 10);
-      const timeSinceLastSchedule = Date.now() - lastScheduleTime;
-      const DEBOUNCE_INTERVAL = 30000; // 30 seconds
-      
-      if (timeSinceLastSchedule < DEBOUNCE_INTERVAL) {
-        logNotification('⏱️', `Skipping reschedule - last scheduled ${Math.round(timeSinceLastSchedule / 1000)}s ago (debounce: ${DEBOUNCE_INTERVAL / 1000}s)`);
-        return false;
-      }
-    }
-    
-    const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-    const count = scheduledNotifications.length;
-    
-    let shouldReschedule = false;
-    
-    if (Platform.OS === 'ios') {
-      // iOS: Weekly repeaters should persist, but recreate if completely missing
-      if (count === 0) {
-        logNotification('📅', `iOS: No notifications scheduled, recreating weekly repeaters...`);
-        shouldReschedule = true;
-      } else {
-        logNotification('✅', `iOS: ${count} weekly repeating notifications active`);
-      }
-    } else {
-      // Android: Refill horizon if below threshold
-      const ANDROID_MINIMUM_THRESHOLD = 10;
-      if (count < ANDROID_MINIMUM_THRESHOLD) {
-        logNotification('📅', `Android: Low notification count (${count}), refilling 14-day horizon...`);
-        shouldReschedule = true;
-      } else {
-        logNotification('✅', `Android: ${count} notifications scheduled for horizon`);
-      }
-    }
-    
-    if (shouldReschedule) {
-      await scheduleLanguageLearningReminders(
-        startTime,
-        endTime,
-        frequencyMinutes,
-        language,
-        nextLessonData,
-        selectedDays
-      );
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    logNotification('❌', 'Error checking/rescheduling notifications', error);
-    return false;
-  }
+  logNotification('ℹ️', 'DEPRECATED: Local scheduling disabled - backend handles all notifications');
+  return false;
 }
 
 // Test notification (for debugging)
@@ -875,30 +706,14 @@ export async function getUserNotificationSettings(): Promise<{
   };
 }
 
-// Save user's notification settings (placeholder - implement with your backend)
-// NOTE: This function is deprecated - use the API client and NotificationSettings component instead
+// DEPRECATED: This function is no longer used - use the API client and NotificationSettings component instead
+// This function does nothing - kept for backward compatibility only
 export async function saveUserNotificationSettings(settings: {
   startTime: string;
   endTime: string;
   frequencyMinutes: number; // Minutes between each notification
   enabled: boolean;
 }): Promise<boolean> {
-  try {
-    // This would typically save to your backend API
-    console.log('Saving notification settings:', settings);
-    
-    if (settings.enabled) {
-      return await scheduleLanguageLearningReminders(
-        settings.startTime,
-        settings.endTime,
-        settings.frequencyMinutes
-      );
-    } else {
-      await stopLanguageLearningReminders();
-      return true;
-    }
-  } catch (error) {
-    console.error('Error saving notification settings:', error);
-    return false;
-  }
+  logNotification('ℹ️', 'DEPRECATED: Use NotificationSettings component to save preferences to backend');
+  return true;
 }
