@@ -36,8 +36,9 @@ Do not make changes to the file `package-lock.json`.
   - Dark backgrounds (#2B2D3A for main, #3A3C4A for cards)
   - Colorful gradient stat cards (lime green, indigo, purple) with white text for >6:1 contrast (WCAG AA compliant)
   - Lime green primary buttons and Pro badges
-  - All colors centralized in `src/lib/theme.ts` with no hardcoded hex values in components
+  - All colors centralized in `src/lib/theme.ts` with zero hardcoded hex values in components
   - Accessible contrast ratios across all text and interactive elements
+  - **Comprehensive Screen Coverage**: All screens updated to use centralized theme references including LoginScreenNew, AIChatScreen, ProgressScreenNew, CoursesScreenNew, and MissionScreen. No light theme artifacts remain - all backgrounds, text colors, borders, and icon colors reference theme tokens.
   - **Learning Path Section**: Dark card background with white course titles, lime green progress indicators (1/17 format), distinct visual states for completed (olive green background), unlocked (gray), and locked (dark gray) courses, lime green "More" button, and dark course summary card with lime green stats
   - **Landing Screen**: Dark background (#2B2D3A), white logo and tagline text, dark video container, lime green "Join" button, and dark "Log in" button with proper contrast
   - **Bottom Navigation Bar**: Dark background matching main app theme, lime green active tab icons and labels, gray inactive tabs, subtle border separator. All colors use centralized theme references (no hardcoded values).
