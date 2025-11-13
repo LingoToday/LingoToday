@@ -7,7 +7,6 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +14,6 @@ import { VideoView, useVideoPlayer } from 'expo-video';
 import { theme } from '../lib/theme';
 
 const portraitVideo = require('../../attached_assets/copy_10F92020-BB3D-4CA0-947B-2634A0946F72_1761142720055.MOV');
-const logo = require('../../assets/logo.png');
 
 export default function LandingScreen() {
   const navigation = useNavigation();
@@ -135,11 +133,6 @@ export default function LandingScreen() {
       >
         {/* Logo */}
         <View style={dynamicStyles.logoContainer}>
-          <Image 
-            source={logo} 
-            style={styles.logoIcon}
-            resizeMode="contain"
-          />
           <Text style={styles.logoText}>LingoToday</Text>
         </View>
 
