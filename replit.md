@@ -40,6 +40,8 @@ Do not make changes to the file `package-lock.json`.
   - Accessible contrast ratios across all text and interactive elements
   - **Learning Path Section**: Dark card background with white course titles, lime green progress indicators (1/17 format), distinct visual states for completed (olive green background), unlocked (gray), and locked (dark gray) courses, lime green "More" button, and dark course summary card with lime green stats
   - **Landing Screen**: Dark background (#2B2D3A), white logo and tagline text, dark video container, lime green "Join" button, and dark "Log in" button with proper contrast
+  - **Bottom Navigation Bar**: Dark background matching main app theme, lime green active tab icons and labels, gray inactive tabs, subtle border separator. All colors use centralized theme references (no hardcoded values).
+  - **Onboarding Selection States**: Dark card backgrounds maintained across all selection states. Selected options indicated by thicker lime green border (3px vs 2px) instead of background color change, ensuring white text remains readable and meets WCAG AA contrast standards.
 - Minimal headers on main tab screens for edge-to-edge content.
 - Bottom tabs for primary navigation with active tab highlighting.
 - Platform-optimized spacing for navigation bars.
