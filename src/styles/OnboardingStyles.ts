@@ -827,8 +827,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   packageOptionSelected: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary50,
+    borderColor: theme.colors.success500,
+    borderWidth: 3,
+    backgroundColor: theme.colors.card,
   },
   packageOptionContent: {
     flexDirection: 'row',
