@@ -538,13 +538,15 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
 
   // inline Test Now touchable (keeps minimal chrome like web)
   testNowTouchable: {
-    paddingHorizontal: isTablet ? 10 : 8,
-    paddingVertical: isTablet ? 6 : 4,
-    borderRadius: 6,
+    backgroundColor: '#FFFBEB',
+    paddingHorizontal: isTablet ? 24 : 20,
+    paddingVertical: isTablet ? 12 : 10,
+    borderRadius: 8,
   },
   testNowContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
   },
   testNowText: {

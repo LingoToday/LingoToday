@@ -49,7 +49,7 @@ export default function NotificationSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
   },
   safeArea: {
     flex: 1,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
   },
   backButton: {
     padding: 4,
