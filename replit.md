@@ -32,12 +32,18 @@ Do not make changes to the file `package-lock.json`.
 - **AI Chat (Coming Soon - Nov 2025)**: Teaser screen for upcoming AI language partner feature, showcasing 6 partner avatars in a responsive 3×2 grid layout (3 rows, 2 columns) within a card border. Accessible via center bottom tab with chatbubbles icon.
 
 ### UI/UX Decisions
+- **Dark Mode Theme (Updated Nov 2025)**: Complete dark mode implementation across the entire app with lime green (#A3E635) primary accent color.
+  - Dark backgrounds (#2B2D3A for main, #3A3C4A for cards)
+  - Colorful gradient stat cards (lime green, indigo, purple) with white text for >6:1 contrast (WCAG AA compliant)
+  - Lime green primary buttons and Pro badges
+  - All colors centralized in `src/lib/theme.ts` with no hardcoded hex values in components
+  - Accessible contrast ratios across all text and interactive elements
 - Minimal headers on main tab screens for edge-to-edge content.
 - Bottom tabs for primary navigation with active tab highlighting.
 - Platform-optimized spacing for navigation bars.
 - Legal links consistently styled and opened in native webview.
-- **Lesson Step Headers (Updated Nov 2025)**: Consistent header styling across lesson steps (Quick Check, Type Practice, Listen and Choose) with dynamic step numbers, cyan color titles (#06B6D4), and clean question formatting. Pro Video steps display only the prompt text without a numbered title. Progress bar displays under header for all lesson types.
-- **Quick Check Styling (Updated Nov 2025)**: Multiple choice options feature circular letter badges (A, B, C, D), white rounded cards, and cyan submit button (#7DD3FC) for improved visual clarity and user experience.
+- **Lesson Step Headers (Updated Nov 2025)**: Consistent header styling across lesson steps with dynamic step numbers and clean question formatting. Pro Video steps display only the prompt text without a numbered title. Progress bar displays under header with lime green fill for all lesson types.
+- **Quick Check Styling (Updated Nov 2025)**: Multiple choice options feature circular letter badges (A, B, C, D), dark cards (#3A3C4A), and lime green submit button for improved visual clarity.
 
 ### Technical Implementations
 - **API Configuration**: Both `apiClient.ts` and `queryClient.ts` use `Constants.expoConfig.extra.apiBaseUrl` for consistent API endpoints. Production URL is `https://lingotoday.replit.app`. For EAS builds, set `PRODUCTION_API_URL` environment variable to override.
