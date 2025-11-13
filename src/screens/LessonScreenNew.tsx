@@ -408,6 +408,68 @@ export default function LessonScreen() {
     return 4;
   };
 
+  // Helper function to extract step 2's quiz data (quick_check) for all lesson formats
+  const getQuickCheckData = (): { options: string[], answer: string } | null => {
+    if (!currentLesson?.lesson) return null;
+    
+    try {
+      // Handle steps array format - find step with stepType === 'quick_check'
+      if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
+        const quickCheckStep = currentLesson.lesson.steps.find((step: any) => step.stepType === 'quick_check');
+        if (quickCheckStep) {
+          const options = quickCheckStep.options || quickCheckStep.content?.options || quickCheckStep.content?.mcq?.options || [];
+          let answer = quickCheckStep.answer || quickCheckStep.content?.answer || quickCheckStep.content?.mcq?.answer;
+          
+          // If answer is a number (index), map it to the corresponding option string
+          if (typeof answer === 'number' && options[answer]) {
+            answer = options[answer];
+          }
+          
+          if (options.length > 0 && answer) {
+            return { options, answer: String(answer) };
+          }
+        }
+      }
+      
+      // Handle steps object format - find the entry with stepType === 'quick_check'
+      if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+        const stepKeys = Object.keys(currentLesson.lesson.steps);
+        
+        for (const stepKey of stepKeys) {
+          const stepData = currentLesson.lesson.steps[stepKey as keyof typeof currentLesson.lesson.steps];
+          if (stepData && stepData.stepType === 'quick_check') {
+            const options = stepData.options || stepData.content?.options || stepData.content?.mcq?.options || [];
+            let answer = stepData.answer || stepData.content?.answer || stepData.content?.mcq?.answer;
+            
+            // If answer is a number (index), map it to the corresponding option string
+            if (typeof answer === 'number' && options[answer]) {
+              answer = options[answer];
+            }
+            
+            if (options.length > 0 && answer) {
+              return { options, answer: String(answer) };
+            }
+          }
+        }
+      }
+      
+      // Handle legacy format - check lesson.quiz (which corresponds to step 2)
+      if (currentLesson.lesson.quiz) {
+        const options = currentLesson.lesson.quiz.options || [];
+        const correctIndex = currentLesson.lesson.quiz.correct;
+        const answer = options[correctIndex] || '';
+        if (options.length > 0 && answer) {
+          return { options, answer };
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error extracting quick check data:', error);
+      return null;
+    }
+  };
+
   // Get current step data - matching web logic exactly
   const getCurrentStepData = () => {
     try {
@@ -435,12 +497,16 @@ export default function LessonScreen() {
         const userTier = userData?.priceTier || 'free';
         const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
         
+        const quizData = getQuickCheckData();
+        
         return {
           type: 'pro_video',
           videoUrl: normalizeAssetUrl('/attached_assets/videos/lesson1_hi_female.mp4'),
           prompt: "You meet a new friend on the street.",
           answerPrompt: "Reply: 'Hello!'",
           expectedAnswers: ["Salve!", "Salve", "Ciao!", "Ciao"],
+          options: quizData?.options,
+          answer: quizData?.answer,
           hasAccess,
           requiredTier: ['pro']
         };
@@ -561,12 +627,16 @@ export default function LessonScreen() {
             const videoUrl = stepData.content?.video_url || stepData.video_url || '';
             const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
             
+            const quizData = getQuickCheckData();
+            
             return {
               type: 'pro_video',
               videoUrl: normalizeAssetUrl(fallbackVideoUrl),
               prompt: stepData.content?.prompt || stepData.prompt || '',
               answerPrompt: stepData.content?.answer_prompt || stepData.answer_prompt || '',
               expectedAnswers: stepData.content?.expected_answers || stepData.expected_answers || [],
+              options: quizData?.options,
+              answer: quizData?.answer,
               hasAccess,
               requiredTier
             };
@@ -662,6 +732,8 @@ export default function LessonScreen() {
             
             const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
             
+            const quizData = getQuickCheckData();
+            
             // Return as pro_video type to use existing video rendering logic
             return {
               type: 'pro_video',
@@ -669,6 +741,8 @@ export default function LessonScreen() {
               prompt: currentStepData.content.prompt || '',
               answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
               expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
+              options: quizData?.options,
+              answer: quizData?.answer,
               hasAccess: true,  // Lesson 1 is free content
               requiredTier: []
             };
@@ -688,6 +762,8 @@ export default function LessonScreen() {
             const answerPrompt = currentStepData.content?.answer_prompt || currentStepData.answer_prompt || '';
             const expectedAnswers = currentStepData.content?.expected_answers || currentStepData.expected_answers || [];
             
+            const quizData = getQuickCheckData();
+            
             console.log('🎬 PRO VIDEO HANDLER:', { 
               stepType: currentStepData.stepType,
               hasAccess, 
@@ -696,7 +772,9 @@ export default function LessonScreen() {
               videoUrl,
               prompt,
               answerPrompt,
-              expectedAnswers
+              expectedAnswers,
+              quizOptions: quizData?.options,
+              quizAnswer: quizData?.answer
             });
             
             return {
@@ -705,6 +783,8 @@ export default function LessonScreen() {
               prompt,
               answerPrompt,
               expectedAnswers,
+              options: quizData?.options,
+              answer: quizData?.answer,
               hasAccess,
               requiredTier
             };
