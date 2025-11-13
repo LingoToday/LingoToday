@@ -41,7 +41,7 @@ export default function MissionScreen() {
           
           <View style={styles.logoContainer}>
             <View style={styles.logoIcon}>
-              <Ionicons name="globe" size={16} color="#ffffff" />
+              <Ionicons name="globe" size={16} color={theme.colors.primaryForeground} />
             </View>
             <Text style={styles.logoText}>LingoToday</Text>
           </View>
@@ -118,7 +118,7 @@ export default function MissionScreen() {
             <View style={styles.pointsList}>
               <View style={styles.point}>
                 <View style={styles.pointBullet}>
-                  <Ionicons name="checkmark" size={16} color="#ffffff" />
+                  <Ionicons name="checkmark" size={16} color={theme.colors.primaryForeground} />
                 </View>
                 <Text style={styles.pointText}>
                   <Text style={styles.pointHighlight}>Short bursts:</Text> Quick 2-3 minute lessons that fit into your workflow
@@ -127,7 +127,7 @@ export default function MissionScreen() {
               
               <View style={styles.point}>
                 <View style={styles.pointBullet}>
-                  <Ionicons name="checkmark" size={16} color="#ffffff" />
+                  <Ionicons name="checkmark" size={16} color={theme.colors.primaryForeground} />
                 </View>
                 <Text style={styles.pointText}>
                   <Text style={styles.pointHighlight}>No disruption:</Text> Learn while you work, without losing focus
@@ -136,7 +136,7 @@ export default function MissionScreen() {
               
               <View style={styles.point}>
                 <View style={styles.pointBullet}>
-                  <Ionicons name="checkmark" size={16} color="#ffffff" />
+                  <Ionicons name="checkmark" size={16} color={theme.colors.primaryForeground} />
                 </View>
                 <Text style={styles.pointText}>
                   <Text style={styles.pointHighlight}>Real progress:</Text> Consistent daily practice that builds real skills
@@ -145,7 +145,7 @@ export default function MissionScreen() {
               
               <View style={styles.point}>
                 <View style={styles.pointBullet}>
-                  <Ionicons name="checkmark" size={16} color="#ffffff" />
+                  <Ionicons name="checkmark" size={16} color={theme.colors.primaryForeground} />
                 </View>
                 <Text style={styles.pointText}>
                   <Text style={styles.pointHighlight}>For busy professionals:</Text> Designed specifically for working adults
@@ -162,7 +162,7 @@ export default function MissionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -170,16 +170,16 @@ const styles = StyleSheet.create({
 
   // Header - Enhanced for mobile
   header: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: theme.colors.border,
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 60,
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginRight: 12,
     borderRadius: 8,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: theme.colors.surfaceVariant,
   },
   logoContainer: {
     flexDirection: 'row',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: isTablet ? 20 : 18,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
 
   // Content - Mobile optimized
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 64,
     height: 64,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.colors.surfaceVariant,
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
@@ -240,13 +240,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: isTablet ? 36 : 28,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
     lineHeight: isTablet ? 44 : 36,
   },
   subtitle: {
     fontSize: isTablet ? 20 : 18,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     lineHeight: isTablet ? 28 : 26,
     maxWidth: isTablet ? 600 : '100%',
@@ -257,15 +257,15 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     padding: isTablet ? 24 : 20,
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 16,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: theme.colors.border,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   cardIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.surfaceVariant,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -287,22 +287,22 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: isTablet ? 18 : 16,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.colors.foreground,
     lineHeight: isTablet ? 26 : 24,
   },
   cardText: {
     fontSize: isTablet ? 16 : 15,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     lineHeight: isTablet ? 26 : 24,
   },
 
   // Mission Statement
   missionStatement: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     padding: isTablet ? 32 : 24,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     alignItems: 'center',
   },
   quoteContainer: {
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   quoteText: {
     fontSize: isTablet ? 20 : 18,
     fontWeight: '500',
-    color: '#374151',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     fontStyle: 'italic',
     lineHeight: isTablet ? 30 : 28,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: isTablet ? 24 : 20,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -339,11 +339,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.card,
     padding: isTablet ? 20 : 16,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
   },
   pointBullet: {
     width: 24,
@@ -357,11 +357,11 @@ const styles = StyleSheet.create({
   pointText: {
     flex: 1,
     fontSize: isTablet ? 16 : 15,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     lineHeight: isTablet ? 24 : 22,
   },
   pointHighlight: {
     fontWeight: '600',
-    color: '#374151',
+    color: theme.colors.foreground,
   },
 });

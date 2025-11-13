@@ -692,10 +692,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.surfaceVariant,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
   },
   outlineHeader: {
     flexDirection: 'row',
@@ -705,7 +705,7 @@ const styles = StyleSheet.create({
   outlineTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#111827',
+    color: theme.colors.foreground,
   },
   outlineContent: {
     paddingTop: 16,
@@ -718,7 +718,7 @@ const styles = StyleSheet.create({
   },
   outlineItemText: {
     fontSize: 14,
-    color: '#374151',
+    color: theme.colors.mutedForeground,
     lineHeight: 20,
     flex: 1,
   },
@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 16,
     fontWeight: '500',
   },

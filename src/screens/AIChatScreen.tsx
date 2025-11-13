@@ -128,7 +128,7 @@ export default function AIChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -140,14 +140,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: theme.colors.foreground,
     textAlign: 'center',
     marginBottom: 16,
     lineHeight: 32,
   },
   subtitle: {
     fontSize: 18,
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 26,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   imageWrapper: {
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.surfaceVariant,
   },
   partnerImage: {
     width: '100%',

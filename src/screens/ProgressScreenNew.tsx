@@ -185,7 +185,7 @@ export default function ProgressScreenNew() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.background,
   },
 
   // Simple header with just back button

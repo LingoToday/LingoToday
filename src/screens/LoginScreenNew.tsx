@@ -228,7 +228,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB', // Matching web bg-gray-50
+    backgroundColor: theme.colors.background,
   },
   keyboardAvoid: {
     flex: 1,
@@ -324,9 +324,9 @@ const styles = StyleSheet.create({
   errorAlert: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF2F2',
+    backgroundColor: theme.colors.errorContainer,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: theme.colors.destructive,
     borderRadius: 6,
     padding: 12,
     marginBottom: 16,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   errorText: {
     flex: 1,
     fontSize: scaleFontSize(14),
-    color: '#B91C1C',
+    color: theme.colors.onErrorContainer,
   },
 
   // Form Fields
