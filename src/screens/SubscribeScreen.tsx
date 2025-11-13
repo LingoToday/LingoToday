@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   // Features
   featuresSection: {
     marginBottom: theme.spacing.lg,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.surfaceVariant,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
   },
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   // Toggle
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     padding: 4,
     marginBottom: theme.spacing.xl,
@@ -510,20 +510,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   toggleButtonActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
+    backgroundColor: theme.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 2,
   },
   toggleButtonText: {
     fontSize: theme.fontSize.base,
     fontWeight: '600',
-    color: '#6B7280',
+    color: theme.colors.mutedForeground,
   },
   toggleButtonTextActive: {
-    color: '#111827',
+    color: theme.colors.primaryForeground,
   },
   toggleButtonDisabled: {
     opacity: 0.5,
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   popularText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: 10,
     fontWeight: '600',
   },
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   subscribeButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.lg,
     fontWeight: '600',
     textAlign: 'center',
