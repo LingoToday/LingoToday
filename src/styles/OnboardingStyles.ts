@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   languageCardSelected: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary50,
+    borderWidth: 3,
   },
   languageFlag: {
     fontSize: theme.fontSize['4xl'],
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   levelCardSelected: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary50,
+    borderWidth: 3,
   },
   levelTitle: {
     fontSize: theme.fontSize.xl,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   styleCardSelected: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary50,
+    borderWidth: 3,
   },
   styleIcon: {
     fontSize: theme.fontSize['2.5xl'],
