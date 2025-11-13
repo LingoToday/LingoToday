@@ -1042,10 +1042,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     alignItems: 'center',
     padding: Platform.OS === 'android' ? 10 : 12,
     borderRadius: 8,
-    backgroundColor: theme.colors.cardHover,
+    backgroundColor: theme.colors.surfaceDark,
   },
   upcomingItemReview: {
-    backgroundColor: theme.colors.cardHover,
+    backgroundColor: theme.colors.surfaceDark,
     borderLeftWidth: 2,
     borderLeftColor: theme.colors.warning500,
   },
