@@ -33,6 +33,7 @@ import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
 import { purchaseService } from '../services/purchaseService';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { PRO_PRICING } from '../constants/pricing';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const isTablet = screenWidth >= 768;
@@ -1410,7 +1411,7 @@ export default function LessonScreen() {
                         <View style={styles.upgradeOverlayCard}>
                           <Text style={styles.upgradeOverlayTitle}>Unlock Pro Learner video lessons</Text>
                           <Text style={styles.upgradeOverlaySubtitle}>to accelerate your learning!</Text>
-                          <Text style={styles.upgradePrice}>£2.99/month</Text>
+                          <Text style={styles.upgradePrice}>{PRO_PRICING.GBP.monthly}/month</Text>
                           <Button
                             title={isPurchasing ? "Processing..." : "Upgrade & Unlock All Videos"}
                             onPress={handleUpgrade}

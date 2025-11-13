@@ -11,6 +11,7 @@ import { Button } from '../components/ui/Button';
 import { apiClient } from '../lib/apiClient';
 import { purchaseService } from '../services/purchaseService';
 import { useAuth } from '../hooks/useAuth';
+import { getPriceDisplay } from '../constants/pricing';
 
 interface User {
   id: string;
@@ -29,14 +30,6 @@ function getPlanType(priceTier?: string): string {
   return 'Free';
 }
 
-function getPriceDisplay(priceTier?: string): string {
-  if (!priceTier || priceTier === 'n/a' || priceTier === 'free-trial') return 'Free';
-  if (priceTier === 'pro-monthly') return '£2.99/month';
-  if (priceTier === 'pro-yearly') return '£14.99/year';
-  if (priceTier === 'plus-monthly') return '£16.99/month';
-  if (priceTier === 'plus-yearly') return '£149.99/year';
-  return 'Free';
-}
 
 const freeFeatures = [
   'Access to basic courses',

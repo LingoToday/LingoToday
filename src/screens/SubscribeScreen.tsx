@@ -19,6 +19,7 @@ import { Button } from '../components/ui/Button';
 import { apiClient } from '../lib/apiClient';
 import { useAuth } from '../hooks/useAuth';
 import { purchaseService } from '../services/purchaseService';
+import { PRO_PRICING } from '../constants/pricing';
 
 interface SubscriptionStatus {
   isProUser: boolean;
@@ -286,15 +287,15 @@ export default function SubscribeScreen() {
           {/* Pricing Display */}
           <View style={styles.pricingDisplaySection}>
             <Text style={styles.priceAmount}>
-              {selectedInterval === 'monthly' ? '£2.99' : '£28.99'}
+              {selectedInterval === 'monthly' ? PRO_PRICING.GBP.monthly : PRO_PRICING.GBP.yearly}
             </Text>
             <Text style={styles.priceInterval}>
               {selectedInterval === 'monthly' ? '/month' : 'annually'}
             </Text>
             {selectedInterval === 'annual' && (
               <View style={styles.monthlyBreakdown}>
-                <Text style={styles.strikethroughPrice}>£2.99</Text>
-                <Text style={styles.billedText}> £2.41/month</Text>
+                <Text style={styles.strikethroughPrice}>{PRO_PRICING.GBP.monthly}</Text>
+                <Text style={styles.billedText}> {PRO_PRICING.GBP.yearlyMonthlyBreakdown}/month</Text>
               </View>
             )}
           </View>

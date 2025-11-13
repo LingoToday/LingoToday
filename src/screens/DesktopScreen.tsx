@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../lib/theme';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { PRO_PRICING, calculateYearlySavings } from '../constants/pricing';
 
 const { width } = Dimensions.get('window');
 
@@ -49,17 +50,17 @@ export default function DesktopScreen() {
   const navigation = useNavigation();
   const [currency, setCurrency] = useState<'GBP' | 'USD'>('GBP');
 
-  // Pricing data - matching web exactly
+  // Pricing data from centralized constants
   const prices = {
     GBP: {
-      monthly: '£2.99',
-      yearly: '£14.99',
-      savings: '£33'
+      monthly: PRO_PRICING.GBP.monthly,
+      yearly: PRO_PRICING.GBP.yearly,
+      savings: calculateYearlySavings('GBP')
     },
     USD: {
-      monthly: '$6.99',
-      yearly: '$20.99',
-      savings: '$46'
+      monthly: PRO_PRICING.USD.monthly,
+      yearly: PRO_PRICING.USD.yearly,
+      savings: calculateYearlySavings('USD')
     }
   };
 

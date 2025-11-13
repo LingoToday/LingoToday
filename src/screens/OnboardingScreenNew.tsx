@@ -35,6 +35,7 @@ import { apiClient } from '../lib/apiClient';
 // Import IAP service
 import { purchaseService } from '../services/purchaseService';
 import { PurchasesPackage } from 'react-native-purchases';
+import { PRO_PRICING } from '../constants/pricing';
 
 const { width } = Dimensions.get('window');
 
@@ -1024,7 +1025,7 @@ const LearningPlanScreen = ({
         
         {/* Small text underneath */}
         <View style={styles.trialPriceContainer}>
-          <Text style={styles.trialPriceText}>3 days free trial then £2.99/month</Text>
+          <Text style={styles.trialPriceText}>3 days free trial then {PRO_PRICING.GBP.monthly}/month</Text>
         </View>
       </View>
     </View>
