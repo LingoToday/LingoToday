@@ -14,6 +14,7 @@ import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import funnyItalianComments from '../data/funny_italian_comments.json';
+import italianResultMessages from '../data/italian_result_messages.json';
 
 type LessonCompleteRouteProp = RouteProp<RootStackParamList, 'LessonComplete'>;
 type LessonCompleteNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LessonComplete'>;
@@ -43,6 +44,42 @@ export default function LessonCompleteScreen() {
     return commentArray[randomIndex];
   }, [score]);
 
+  // Get random header based on score range
+  const headerMessage = useMemo(() => {
+    let headerArray: string[];
+    
+    if (score >= 76) {
+      headerArray = italianResultMessages["76-100%"].header;
+    } else if (score >= 51) {
+      headerArray = italianResultMessages["51-75%"].header;
+    } else if (score >= 26) {
+      headerArray = italianResultMessages["26-50%"].header;
+    } else {
+      headerArray = italianResultMessages["0-25%"].header;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * headerArray.length);
+    return headerArray[randomIndex];
+  }, [score]);
+
+  // Get random subtext based on score range
+  const subtextMessage = useMemo(() => {
+    let subtextArray: string[];
+    
+    if (score >= 76) {
+      subtextArray = italianResultMessages["76-100%"].subtext;
+    } else if (score >= 51) {
+      subtextArray = italianResultMessages["51-75%"].subtext;
+    } else if (score >= 26) {
+      subtextArray = italianResultMessages["26-50%"].subtext;
+    } else {
+      subtextArray = italianResultMessages["0-25%"].subtext;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * subtextArray.length);
+    return subtextArray[randomIndex];
+  }, [score]);
+
   const handleContinue = () => {
     navigation.navigate('MainTabs' as never);
   };
@@ -53,7 +90,7 @@ export default function LessonCompleteScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Lesson Complete</Text>
-          <Text style={styles.subtitle}>Fantastico! You crushed it 💪</Text>
+          <Text style={styles.subtitle}>{headerMessage}</Text>
         </View>
 
         {/* Main Card */}
@@ -78,7 +115,7 @@ export default function LessonCompleteScreen() {
             {/* Progress Message */}
             <View style={styles.progressMessage}>
               <Ionicons name="rocket-outline" size={24} color={theme.colors.primary} />
-              <Text style={styles.progressText}>You're getting fluent fast!</Text>
+              <Text style={styles.progressText}>{subtextMessage}</Text>
             </View>
           </CardContent>
         </Card>
