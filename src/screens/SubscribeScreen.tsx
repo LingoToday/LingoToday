@@ -11,13 +11,11 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { PurchasesPackage } from 'react-native-purchases';
 
 import { theme } from '../lib/theme';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import { apiClient } from '../lib/apiClient';
 import { useAuth } from '../hooks/useAuth';
 import { purchaseService } from '../services/purchaseService';
@@ -184,7 +182,7 @@ export default function SubscribeScreen() {
 
   // Features list - matching design
   const features = [
-    'Unlimited Pro video lessons',
+    'Unlimited Pro video Lessons',
     'Cultural and bonus tips',
     'Exclusive \'Explore\' content',
     'Early access to new features',
@@ -210,130 +208,125 @@ export default function SubscribeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
+            <Ionicons name="chevron-back" size={24} color={theme.colors.foreground} />
           </TouchableOpacity>
           
-          <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>Upgrade to Pro</Text>
-            <Text style={styles.headerSubtitle}>
-              Unlock your full language learning potential
-            </Text>
-          </View>
+          <Text style={styles.headerTitle}>Subscription Package</Text>
+          <View style={styles.headerSpacer} />
         </View>
 
+        {/* Content Container */}
+        <View style={styles.contentContainer}>
+          {/* Title and Subtitle */}
+          <Text style={styles.title}>Upgrade to Pro</Text>
+          <Text style={styles.subtitle}>Unlock your full language learning potential</Text>
 
-        {/* Pricing Card */}
-        <Card style={styles.pricingCard}>
-          <CardContent style={styles.pricingContent}>
-            {/* Monthly/Annual Toggle */}
-            <View style={styles.toggleContainer}>
-              <TouchableOpacity
+          {/* Monthly/Annual Toggle */}
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                selectedInterval === 'monthly' && styles.toggleButtonActive,
+                isProcessing && styles.toggleButtonDisabled,
+              ]}
+              onPress={() => !isProcessing && setSelectedInterval('monthly')}
+              disabled={isProcessing}
+            >
+              <Text
                 style={[
-                  styles.toggleButton,
-                  styles.toggleButtonLeft,
-                  selectedInterval === 'monthly' && styles.toggleButtonActive,
-                  isProcessing && styles.toggleButtonDisabled,
+                  styles.toggleButtonText,
+                  selectedInterval === 'monthly' && styles.toggleButtonTextActive,
                 ]}
-                onPress={() => !isProcessing && setSelectedInterval('monthly')}
-                disabled={isProcessing}
               >
-                <Text
-                  style={[
-                    styles.toggleButtonText,
-                    selectedInterval === 'monthly' && styles.toggleButtonTextActive,
-                  ]}
-                >
-                  Monthly
-                </Text>
-              </TouchableOpacity>
+                Monthly
+              </Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[
-                  styles.toggleButton,
-                  styles.toggleButtonRight,
-                  selectedInterval === 'annual' && styles.toggleButtonActive,
-                  isProcessing && styles.toggleButtonDisabled,
-                ]}
-                onPress={() => !isProcessing && setSelectedInterval('annual')}
-                disabled={isProcessing}
-              >
-                <Text
-                  style={[
-                    styles.toggleButtonText,
-                    selectedInterval === 'annual' && styles.toggleButtonTextActive,
-                  ]}
-                >
-                  Annual
-                </Text>
-                {selectedInterval === 'annual' && (
-                  <View style={styles.popularBadge}>
-                    <Text style={styles.popularText}>Popular</Text>
-                  </View>
-                )}
-                <Text style={styles.savingsTextToggle}>Save 19%</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Features List */}
-            <View style={styles.featuresSection}>
-              {features.map((feature, index) => (
-                <View key={index} style={styles.featureItem}>
-                  <Ionicons name="checkmark" size={20} color={theme.colors.primary} />
-                  <Text style={styles.featureText}>{feature}</Text>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                selectedInterval === 'annual' && styles.toggleButtonActive,
+                isProcessing && styles.toggleButtonDisabled,
+              ]}
+              onPress={() => !isProcessing && setSelectedInterval('annual')}
+              disabled={isProcessing}
+            >
+              {selectedInterval === 'annual' && (
+                <View style={styles.popularBadge}>
+                  <Text style={styles.popularText}>Popular</Text>
                 </View>
-              ))}
-            </View>
-
-            {/* Pricing Display */}
-            <View style={styles.pricingDisplaySection}>
-              {selectedInterval === 'monthly' ? (
-                <>
-                  <Text style={styles.priceAmount}>£2.99</Text>
-                  <Text style={styles.priceInterval}>/month</Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.priceAmount}>£28.99</Text>
-                  <Text style={styles.priceInterval}>annually</Text>
-                  <View style={styles.monthlyBreakdown}>
-                    <Text style={styles.strikethroughPrice}>£2.99</Text>
-                    <Text style={styles.billedText}> £2.41/month</Text>
-                  </View>
-                </>
               )}
-            </View>
+              <Text
+                style={[
+                  styles.toggleButtonText,
+                  selectedInterval === 'annual' && styles.toggleButtonTextActive,
+                ]}
+              >
+                Annual
+              </Text>
+              <Text style={[
+                styles.savingsText,
+                selectedInterval === 'annual' && styles.savingsTextActive,
+              ]}>
+                Save 19%
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-            {/* CTA Button */}
-            {isProcessing ? (
-              <Button
-                style={[styles.subscribeButton, styles.subscribeButtonDisabled]}
-                disabled={true}
-              >
-                <View style={styles.processingContent}>
-                  <ActivityIndicator size="small" color={theme.colors.primaryForeground} />
-                  <Text style={styles.subscribeButtonText}>
-                    {processingStage === 'loading' && 'Loading...'}
-                    {processingStage === 'payment' && 'Processing Payment...'}
-                    {processingStage === 'activating' && 'Activating Subscription...'}
-                  </Text>
-                </View>
-              </Button>
-            ) : (
-              <Button
-                style={styles.subscribeButton}
-                onPress={handleSelectPlan}
-              >
-                <Text style={styles.subscribeButtonText}>Join Pro</Text>
-              </Button>
+          {/* Features List - directly on background */}
+          <View style={styles.featuresSection}>
+            {features.map((feature, index) => (
+              <View key={index} style={styles.featureItem}>
+                <Ionicons name="checkmark" size={20} color={theme.colors.primary} />
+                <Text style={styles.featureText}>{feature}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Pricing Display */}
+          <View style={styles.pricingDisplaySection}>
+            <Text style={styles.priceAmount}>
+              {selectedInterval === 'monthly' ? '£2.99' : '£28.99'}
+            </Text>
+            <Text style={styles.priceInterval}>
+              {selectedInterval === 'monthly' ? '/month' : 'annually'}
+            </Text>
+            {selectedInterval === 'annual' && (
+              <View style={styles.monthlyBreakdown}>
+                <Text style={styles.strikethroughPrice}>£2.99</Text>
+                <Text style={styles.billedText}> £2.41/month</Text>
+              </View>
             )}
-          </CardContent>
-        </Card>
+          </View>
 
-        {/* Additional Info */}
-        <View style={styles.additionalInfo}>
-          <View style={styles.infoRow}>
-            <Ionicons name="checkmark-circle" size={16} color="#10B981" />
-            <Text style={styles.infoText}>3-day free trial • Cancel anytime</Text>
+          {/* CTA Button */}
+          {isProcessing ? (
+            <Button
+              style={[styles.subscribeButton, styles.subscribeButtonDisabled]}
+              disabled={true}
+            >
+              <View style={styles.processingContent}>
+                <ActivityIndicator size="small" color={theme.colors.primaryForeground} />
+                <Text style={styles.subscribeButtonText}>
+                  {processingStage === 'loading' && 'Loading...'}
+                  {processingStage === 'payment' && 'Processing Payment...'}
+                  {processingStage === 'activating' && 'Activating Subscription...'}
+                </Text>
+              </View>
+            </Button>
+          ) : (
+            <Button
+              style={styles.subscribeButton}
+              onPress={handleSelectPlan}
+            >
+              <Text style={styles.subscribeButtonText}>Join Pro</Text>
+            </Button>
+          )}
+
+          {/* Additional Info */}
+          <View style={styles.additionalInfo}>
+            <Ionicons name="checkmark-circle" size={16} color={theme.colors.primary} />
+            <Text style={styles.infoText}>3-day free trial, Cancel anytime</Text>
           </View>
         </View>
       </ScrollView>
@@ -344,7 +337,7 @@ export default function SubscribeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     paddingBottom: theme.spacing.xl,
@@ -359,168 +352,74 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
   },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing.xl,
-    gap: theme.spacing.md,
-  },
-  errorTitle: {
-    fontSize: theme.fontSize.xl,
-    fontWeight: '700',
-    color: theme.colors.foreground,
-    textAlign: 'center',
-    marginTop: theme.spacing.md,
-  },
-  errorMessage: {
-    fontSize: theme.fontSize.base,
-    color: theme.colors.mutedForeground,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  retryButton: {
-    backgroundColor: theme.colors.primary,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    borderRadius: theme.borderRadius.lg,
-    marginTop: theme.spacing.lg,
-  },
-  retryButtonText: {
-    color: theme.colors.primaryForeground,
-    fontSize: theme.fontSize.base,
-    fontWeight: '600',
-  },
 
   // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.lg,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     paddingTop: 10,
-    backgroundColor: theme.colors.card,
   },
   backButton: {
-    padding: theme.spacing.sm,
-    marginRight: theme.spacing.md,
-  },
-  headerContent: {
-    flex: 1,
-    alignItems: 'center',
+    width: 40,
   },
   headerTitle: {
-    fontSize: theme.fontSize['2xl'],
-    fontWeight: '700',
-    color: theme.colors.foreground,
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: theme.fontSize.base,
-    color: theme.colors.mutedForeground,
-    textAlign: 'center',
-    marginTop: theme.spacing.xs,
-  },
-
-  // Pricing Card
-  pricingCard: {
-    marginHorizontal: theme.spacing.lg,
-    marginTop: theme.spacing.lg,
-    backgroundColor: theme.colors.card,
-  },
-  pricingContent: {
-    paddingVertical: theme.spacing.xl,
-  },
-
-  // Features
-  featuresSection: {
-    marginBottom: theme.spacing.lg,
-    backgroundColor: theme.colors.surfaceVariant,
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.lg,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: theme.spacing.sm,
-    marginBottom: theme.spacing.sm,
-  },
-  featureText: {
-    flex: 1,
-    fontSize: theme.fontSize.base,
-    color: theme.colors.foreground,
-    lineHeight: 24,
-  },
-
-  // Pricing Display
-  pricingDisplaySection: {
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-    paddingVertical: theme.spacing.lg,
-  },
-  strikethroughPrice: {
     fontSize: theme.fontSize.lg,
     fontWeight: '600',
-    color: theme.colors.mutedForeground,
-    textDecorationLine: 'line-through',
-    marginBottom: theme.spacing.xs,
+    color: theme.colors.foreground,
+    flex: 1,
+    textAlign: 'center',
   },
-  priceAmount: {
-    fontSize: 36,
+  headerSpacer: {
+    width: 40,
+  },
+
+  // Content
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 32,
     fontWeight: '700',
     color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: 8,
   },
-  priceInterval: {
-    fontSize: theme.fontSize.lg,
+  subtitle: {
+    fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
-  },
-  billedText: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.mutedForeground,
-    marginTop: theme.spacing.xs,
-  },
-  monthlyBreakdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: theme.spacing.sm,
+    textAlign: 'center',
+    marginBottom: 32,
   },
 
   // Toggle
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.muted,
     borderRadius: 12,
-    padding: 4,
-    marginBottom: theme.spacing.xl,
-    gap: 4,
+    padding: 6,
+    marginBottom: 32,
+    gap: 6,
   },
   toggleButton: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: theme.spacing.md,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     borderRadius: 8,
   },
-  toggleButtonLeft: {
-    borderRadius: 8,
-  },
-  toggleButtonRight: {
-    borderRadius: 8,
-  },
   toggleButtonActive: {
     backgroundColor: theme.colors.primary,
-    shadowColor: theme.colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 2,
   },
   toggleButtonText: {
     fontSize: theme.fontSize.base,
     fontWeight: '600',
-    color: theme.colors.mutedForeground,
+    color: theme.colors.foreground,
   },
   toggleButtonTextActive: {
     color: theme.colors.primaryForeground,
@@ -530,7 +429,7 @@ const styles = StyleSheet.create({
   },
   popularBadge: {
     position: 'absolute',
-    top: -6,
+    top: -8,
     right: 8,
     backgroundColor: theme.colors.primary,
     paddingHorizontal: 8,
@@ -542,11 +441,62 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '600',
   },
-  savingsTextToggle: {
+  savingsText: {
     fontSize: 12,
     fontWeight: '500',
+    color: theme.colors.mutedForeground,
+    marginTop: 4,
+  },
+  savingsTextActive: {
+    color: theme.colors.primaryForeground,
+  },
+
+  // Features - directly on background
+  featuresSection: {
+    marginBottom: 32,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    marginBottom: 16,
+  },
+  featureText: {
+    flex: 1,
+    fontSize: theme.fontSize.base,
+    color: theme.colors.foreground,
+    lineHeight: 24,
+  },
+
+  // Pricing Display
+  pricingDisplaySection: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  priceAmount: {
+    fontSize: 64,
+    fontWeight: '700',
     color: theme.colors.primary,
-    marginTop: 2,
+    lineHeight: 72,
+  },
+  priceInterval: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
+    marginBottom: 8,
+  },
+  monthlyBreakdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  strikethroughPrice: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.mutedForeground,
+    textDecorationLine: 'line-through',
+  },
+  billedText: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.primary,
   },
 
   // Buttons
@@ -554,6 +504,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     paddingVertical: 18,
     borderRadius: 12,
+    marginBottom: 16,
   },
   subscribeButtonDisabled: {
     opacity: 0.7,
@@ -573,18 +524,13 @@ const styles = StyleSheet.create({
 
   // Additional Info
   additionalInfo: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.lg,
-    alignItems: 'center',
-  },
-  infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing.xs,
+    justifyContent: 'center',
+    gap: 6,
   },
   infoText: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
-    textAlign: 'center',
   },
 });
