@@ -45,6 +45,7 @@ Do not make changes to the file `package-lock.json`.
   - **Bottom Navigation Bar**: Dark background matching main app theme, lime green active tab icons and labels, gray inactive tabs, subtle border separator. All colors use centralized theme references (no hardcoded values).
   - **Onboarding Selection States**: Dark card backgrounds maintained across all selection states. Selected options indicated by thicker lime green border (3px vs 2px) instead of background color change, ensuring white text remains readable and meets WCAG AA contrast standards.
   - **Subscription Screen Toggle**: Monthly/Annual toggle uses dark card background with lime green active state. Only the selected plan interval highlights in lime green with white text, while the inactive option remains dark with gray text. All styling uses centralized theme tokens.
+  - **Lesson Step 1 Word Review (Updated Nov 2025)**: Translation card and "When to use" note section now use dark surfaceContainer backgrounds with light foreground text for proper contrast. Pronunciation button updated to dark theme with white text and icon.
 - Minimal headers on main tab screens for edge-to-edge content.
 - Bottom tabs for primary navigation with active tab highlighting.
 - Platform-optimized spacing for navigation bars.
