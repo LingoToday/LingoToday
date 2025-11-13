@@ -38,6 +38,8 @@ Do not make changes to the file `package-lock.json`.
   - Lime green primary buttons and Pro badges
   - All colors centralized in `src/lib/theme.ts` with no hardcoded hex values in components
   - Accessible contrast ratios across all text and interactive elements
+  - **Learning Path Section**: Dark card background with white course titles, lime green progress indicators (1/17 format), distinct visual states for completed (olive green background), unlocked (gray), and locked (dark gray) courses, lime green "More" button, and dark course summary card with lime green stats
+  - **Landing Screen**: Dark background (#2B2D3A), white logo and tagline text, dark video container, lime green "Join" button, and dark "Log in" button with proper contrast
 - Minimal headers on main tab screens for edge-to-edge content.
 - Bottom tabs for primary navigation with active tab highlighting.
 - Platform-optimized spacing for navigation bars.
