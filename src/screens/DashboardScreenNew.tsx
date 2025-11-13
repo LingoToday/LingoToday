@@ -367,7 +367,7 @@ useEffect(() => {
   const stats = effectiveDashboardData.stats;
   const settings = effectiveDashboardData.settings;
   const allProgress = effectiveDashboardData.progress || [];
-  const recentProgress = allProgress.slice(0, 8);
+  const recentProgress = allProgress.slice(0, 4);
 
   console.log('🎨 Rendering Dashboard:', {
     userName: effectiveDashboardData.user.firstName,
@@ -568,7 +568,7 @@ useEffect(() => {
 
                         {/* Upcoming lessons - compact list */}
                         <View style={styles.upcomingList}>
-                          {upcomingLessons.slice(1, 4).map((lesson, index) => (
+                          {upcomingLessons.slice(1, 8).map((lesson, index) => (
                             <TouchableOpacity 
                               key={`${lesson.courseId}-${lesson.lessonId}-${index}`} 
                               style={[
