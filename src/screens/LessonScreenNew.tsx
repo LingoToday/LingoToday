@@ -2230,6 +2230,7 @@ const styles = StyleSheet.create({
   correctInput: {
     borderColor: theme.colors.checkmarkGreen,
     backgroundColor: theme.colors.success50,
+    color: theme.colors.primaryForeground,
   },
   incorrectInput: {
     borderColor: theme.colors.destructive,
