@@ -542,7 +542,7 @@ useEffect(() => {
                           <View style={styles.nextLessonInfo}>
                             <View style={styles.nextLessonHeader}>
                               {upcomingLessons[0]?.isReview && (
-                                <Ionicons name="trophy" size={20} color={theme.colors.warning50} />
+                                <Ionicons name="trophy" size={20} color={theme.colors.primaryForeground} />
                               )}
                               <Text style={styles.nextLessonTitle}>
                                 {upcomingLessons[0]?.title || 'Basic Greetings'}
@@ -1019,7 +1019,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   nextLessonDescription: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: theme.colors.primaryForeground,
   },
   nextLessonButton: {
     backgroundColor: theme.colors.surfaceDark,
@@ -1045,7 +1045,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     backgroundColor: theme.colors.cardHover,
   },
   upcomingItemReview: {
-    backgroundColor: theme.colors.warning50,
+    backgroundColor: theme.colors.cardHover,
     borderLeftWidth: 2,
     borderLeftColor: theme.colors.warning500,
   },
@@ -1058,14 +1058,14 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     color: theme.colors.foreground,
   },
   upcomingItemTitleReview: {
-    color: theme.colors.warning600,
+    color: theme.colors.foreground,
   },
   upcomingItemDescription: {
     fontSize: 12,
     color: theme.colors.mutedForeground,
   },
   upcomingItemDescriptionReview: {
-    color: theme.colors.warning600,
+    color: theme.colors.textSecondary,
   },
 
   // No Lessons (matching web exactly)
