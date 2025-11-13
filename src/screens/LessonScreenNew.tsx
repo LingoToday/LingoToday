@@ -1606,7 +1606,7 @@ export default function LessonScreen() {
                       onPress={() => speakText(stepData.word)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={20} color={theme.colors.inverseOnSurface} />
+                      <Ionicons name="volume-high" size={20} color={theme.colors.foreground} />
                       <Text style={styles.speakButtonText}>Pronunciation</Text>
                     </TouchableOpacity>
                   </View>
@@ -2110,13 +2110,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.md,
     padding: theme.spacing.xl,
-    backgroundColor: theme.colors.inverseSurface,
+    backgroundColor: theme.colors.surfaceContainer,
     borderRadius: theme.borderRadius.lg,
   },
   translationLabel: {
     fontSize: theme.fontSize.xs,
     fontWeight: '600' as any,
-    color: theme.colors.textTertiary,
+    color: theme.colors.onSurfaceVariant,
     textAlign: 'center',
     letterSpacing: 0.5,
     marginBottom: theme.spacing.xs,
@@ -2127,7 +2127,7 @@ const styles = StyleSheet.create({
   },
   translationText: {
     fontSize: theme.fontSize.base,
-    color: theme.colors.textTertiary,
+    color: theme.colors.onSurfaceVariant,
     textAlign: 'center',
     marginBottom: theme.spacing.xs,
   },
@@ -2142,7 +2142,7 @@ const styles = StyleSheet.create({
   speakButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.inverseSurface,
+    backgroundColor: theme.colors.surfaceContainer,
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
     borderRadius: theme.borderRadius.full,
@@ -2151,12 +2151,12 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.outline,
   },
   speakButtonText: {
-    color: theme.colors.inverseOnSurface,
+    color: theme.colors.foreground,
     fontSize: theme.fontSize.sm,
     fontWeight: '500' as any,
   },
   noteContainer: {
-    backgroundColor: theme.colors.inverseSurface,
+    backgroundColor: theme.colors.surfaceContainer,
     borderWidth: 1,
     borderColor: theme.colors.outline,
     borderRadius: theme.borderRadius.lg,
@@ -2172,11 +2172,11 @@ const styles = StyleSheet.create({
   noteTitle: {
     fontSize: theme.fontSize.sm,
     fontWeight: '600' as any,
-    color: theme.colors.inverseOnSurface,
+    color: theme.colors.foreground,
   },
   noteText: {
     fontSize: theme.fontSize.sm,
-    color: theme.colors.textTertiary,
+    color: theme.colors.onSurfaceVariant,
     lineHeight: theme.fontSize.sm * 1.5,
   },
 
