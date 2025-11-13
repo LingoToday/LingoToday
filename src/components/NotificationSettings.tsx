@@ -312,7 +312,7 @@ export default function NotificationSettings() {
         {/* Mobile Section */}
         <View style={styles.sectionBlock}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="phone-portrait-outline" size={20} color="#2563EB" />
+            <Ionicons name="phone-portrait-outline" size={20} color={theme.colors.primary} />
             <Text style={styles.sectionTitle}>Mobile</Text>
           </View>
 
@@ -326,7 +326,7 @@ export default function NotificationSettings() {
                   onPress={() => toggleDay('mobile', d)}
                   style={[
                     dayCircleStyle,
-                    { backgroundColor: '#E5E7EB', alignItems: 'center', justifyContent: 'center' },
+                    { backgroundColor: theme.colors.surfaceVariant, alignItems: 'center', justifyContent: 'center' },
                     selected && styles.dayCircleSelected
                   ]}
                   accessibilityRole="button"
@@ -417,12 +417,12 @@ export default function NotificationSettings() {
             >
               {isTesting ? (
                 <View style={styles.testNowContent}>
-                  <ActivityIndicator size="small" color="#92400E" />
+                  <ActivityIndicator size="small" color={theme.colors.warning600} />
                   <Text style={[styles.testNowText, { marginLeft: 8 }]}>Testing…</Text>
                 </View>
               ) : (
                 <View style={styles.testNowContent}>
-                  <Ionicons name="notifications" size={16} color="#92400E" />
+                  <Ionicons name="notifications" size={16} color={theme.colors.warning600} />
                   <Text style={styles.testNowText}>Test Now</Text>
                 </View>
               )}
@@ -437,13 +437,13 @@ export default function NotificationSettings() {
 const createStyles = (isTablet: boolean) => StyleSheet.create({
   // Card styles
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: theme.colors.shadow,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
@@ -459,7 +459,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  titleText: { fontSize: isTablet ? 20 : 18, fontWeight: '600', color: '#111827' },
+  titleText: { fontSize: isTablet ? 20 : 18, fontWeight: '600', color: theme.colors.foreground },
 
   // Content
   cardContent: { gap: isTablet ? 24 : 20, padding: isTablet ? 24 : 16 },
@@ -469,25 +469,25 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   loadingContainer: { gap: 16 },
   loadingSkeleton: {
     height: 40,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.muted,
     borderRadius: 8,
     width: '100%',
   },
 
   // Sections
   sectionBlock: { gap: isTablet ? 16 : 12 },
-  sectionDivider: { paddingTop: 12, borderTopWidth: 1, borderTopColor: '#E5E7EB' },
+  sectionDivider: { paddingTop: 12, borderTopWidth: 1, borderTopColor: theme.colors.border },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  sectionTitle: { fontSize: isTablet ? 17 : 16, fontWeight: '600', color: '#111827' },
+  sectionTitle: { fontSize: isTablet ? 17 : 16, fontWeight: '600', color: theme.colors.foreground },
 
   // Generic settings
   settingSection: { gap: isTablet ? 10 : 8 },
-  sectionLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: '#374151' },
+  sectionLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: theme.colors.mutedForeground },
   selectWrapper: { flex: 1 },
   select: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.muted,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: theme.colors.border,
     borderRadius: 6,
     paddingHorizontal: isTablet ? 14 : 12,
     paddingVertical: isTablet ? 12 : 10,
@@ -501,10 +501,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     flexWrap: 'nowrap',
   },
   dayCircleSelected: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.colors.primary,
   },
-  dayCircleText: { color: '#4B5563', fontWeight: '600', fontSize: isTablet ? 15 : 14 },
-  dayCircleTextSelected: { color: '#FFFFFF' },
+  dayCircleText: { color: theme.colors.mutedForeground, fontWeight: '600', fontSize: isTablet ? 15 : 14 },
+  dayCircleTextSelected: { color: theme.colors.primaryForeground },
 
   // Rows
   rowBetween: {
@@ -513,20 +513,20 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: isTablet ? 4 : 0,
   },
-  rowLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: '#374151' },
+  rowLabel: { fontSize: isTablet ? 15 : 14, fontWeight: '500', color: theme.colors.mutedForeground },
 
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: isTablet ? 16 : 12 },
 
   // Banner
   banner: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: theme.colors.warning50,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: theme.colors.warning500,
     borderRadius: 8,
     padding: isTablet ? 16 : 12,
     gap: isTablet ? 12 : 8,
   },
-  bannerText: { fontSize: isTablet ? 13 : 12, color: '#92400E', flex: 1 },
+  bannerText: { fontSize: isTablet ? 13 : 12, color: theme.colors.warning600, flex: 1 },
 
   // layout for banner: text left, inline action right (web-like)
   bannerRow: {
@@ -548,7 +548,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     gap: 6,
   },
   testNowText: {
-    color: '#92400E',
+    color: theme.colors.warning600,
     fontSize: isTablet ? 14 : 13,
     fontWeight: '600',
   },
