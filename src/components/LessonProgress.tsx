@@ -171,11 +171,11 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
                       : styles.progressIconLocked
                 ]}>
                   {category.completedLessons === category.totalLessons ? (
-                    <Ionicons name="checkmark" size={16} color="#10b981" />
+                    <Ionicons name="checkmark" size={16} color={theme.colors.primary} />
                   ) : category.isUnlocked ? (
                     <Text style={styles.progressEmoji}>{category.emoji}</Text>
                   ) : (
-                    <Ionicons name="lock-closed" size={12} color="#9ca3af" />
+                    <Ionicons name="lock-closed" size={12} color={theme.colors.textSecondary} />
                   )}
                 </View>
                 
@@ -201,8 +201,8 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
                     style={styles.progressBar}
                     progressColor={
                       category.completedLessons === category.totalLessons 
-                        ? '#10b981' // green-500
-                        : '#3b82f6'  // primary
+                        ? theme.colors.checkmarkGreen
+                        : theme.colors.primary
                     }
                   />
                 </View>
@@ -240,10 +240,10 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
 const createStyles = (isTablet: boolean) => StyleSheet.create({
   // Card
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.surfaceContainer,
     borderWidth: 1,
-    borderColor: '#e5e7eb', // border-gray-200
-    shadowColor: '#000',
+    borderColor: theme.colors.outline,
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -259,7 +259,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   loadingText: {
     fontSize: theme.fontSize.base,
-    color: theme.colors.mutedForeground,
+    color: theme.colors.textSecondary,
   },
 
   // Content
@@ -269,7 +269,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   cardTitle: {
     fontSize: isTablet ? 20 : theme.fontSize.lg,
     fontWeight: '700',
-    color: '#111827', // text-gray-900
+    color: theme.colors.onSurface,
     marginBottom: theme.spacing.lg,
   },
 
@@ -295,13 +295,13 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     justifyContent: 'center',
   },
   progressIconCompleted: {
-    backgroundColor: '#dcfce7', // green-100
+    backgroundColor: theme.colors.toggleActive,
   },
   progressIconUnlocked: {
-    backgroundColor: '#dbeafe', // primary-100
+    backgroundColor: theme.colors.surfaceVariant,
   },
   progressIconLocked: {
-    backgroundColor: '#f3f4f6', // gray-100
+    backgroundColor: theme.colors.surfaceDark,
   },
   progressEmoji: {
     fontSize: isTablet ? 18 : theme.fontSize.sm,
@@ -321,26 +321,26 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   progressName: {
     fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
-    color: '#111827', // text-gray-900
+    color: theme.colors.onSurface,
     flex: 1,
     flexWrap: 'wrap',
   },
   progressNameLocked: {
-    color: '#9ca3af', // text-gray-400
+    color: theme.colors.textSecondary,
   },
   progressCount: {
     fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
-    color: '#6b7280', // text-gray-500
+    color: theme.colors.textSecondary,
     marginLeft: theme.spacing.sm,
     minWidth: isTablet ? 45 : 40,
     textAlign: 'right',
   },
   progressCountCompleted: {
-    color: '#10b981', // text-green-600
+    color: theme.colors.primary,
   },
   progressCountActive: {
-    color: '#3b82f6', // text-primary-600
+    color: theme.colors.primary,
   },
 
   // Progress Bar
@@ -359,14 +359,14 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   moreButtonText: {
     fontSize: isTablet ? 14 : theme.fontSize.sm,
     fontWeight: '500',
-    color: '#3b82f6', // text-primary
+    color: theme.colors.primary,
   },
 
   // Course Summary
   courseSummary: {
     marginTop: theme.spacing.lg,
     padding: isTablet ? theme.spacing.lg : theme.spacing.md,
-    backgroundColor: '#dbeafe', // bg-blue-50
+    backgroundColor: theme.colors.surfaceDark,
     borderRadius: theme.borderRadius.lg,
   },
   courseSummaryContent: {
@@ -375,10 +375,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   courseSummaryTitle: {
     fontSize: isTablet ? 15 : theme.fontSize.sm,
     fontWeight: '500',
-    color: '#1e40af', // text-blue-800
+    color: theme.colors.onSurface,
   },
   courseSummarySubtitle: {
     fontSize: isTablet ? 14 : theme.fontSize.sm,
-    color: '#2563eb', // text-blue-600
+    color: theme.colors.primary,
   },
 });

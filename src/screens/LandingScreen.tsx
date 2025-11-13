@@ -127,7 +127,7 @@ export default function LandingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <StatusBar barStyle="light-content" backgroundColor={theme.colors.surface} />
       
       <ScrollView 
         contentContainerStyle={dynamicStyles.scrollContent}
@@ -190,7 +190,7 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
   },
   scrollContent: {
     flexGrow: 1,
@@ -213,13 +213,13 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 24,
     fontWeight: '700',
-    color: theme.colors.foreground,
+    color: theme.colors.onSurface,
   },
   videoContainer: {
     marginVertical: 16,
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.surfaceContainer,
   },
   portraitVideo: {
     width: '100%',
@@ -233,14 +233,14 @@ const styles = StyleSheet.create({
   tagline: {
     fontSize: 24,
     fontWeight: '700',
-    color: theme.colors.foreground,
+    color: theme.colors.onSurface,
     textAlign: 'center',
     marginBottom: 12,
   },
   description: {
     fontSize: 15,
     lineHeight: 22,
-    color: theme.colors.mutedForeground,
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     maxWidth: 360,
   },
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -267,22 +267,22 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   joinButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.onSecondary,
     fontSize: 18,
     fontWeight: '600',
   },
   loginButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surfaceContainer,
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 32,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: theme.colors.outline,
   },
   loginButtonText: {
-    color: '#374151',
+    color: theme.colors.onSurface,
     fontSize: 18,
     fontWeight: '600',
   },
