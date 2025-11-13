@@ -32,6 +32,7 @@ Do not make changes to the file `package-lock.json`.
 - **AI Chat (Coming Soon - Nov 2025)**: Teaser screen for upcoming AI language partner feature, showcasing 6 partner avatars in a responsive 3×2 grid layout (3 rows, 2 columns) within a card border. Accessible via center bottom tab with chatbubbles icon.
 
 ### UI/UX Decisions
+- **Step 4 Multiple Choice Reference (Updated Nov 2025)**: All pro_video lessons (step 4) now display step 2's multiple choice quiz options below the text input field. This provides learners with helpful reference answers from the quick_check step. The feature works across all lesson formats (steps array, steps object, and legacy quiz format) using the `getQuickCheckData()` helper function that extracts and normalizes quiz data without affecting step 2's validation flow.
 - **Dark Mode Theme (Updated Nov 2025)**: Complete dark mode implementation across the entire app with lime green (#A3E635) primary accent color.
   - Dark backgrounds (#2B2D3A for main, #3A3C4A for cards)
   - Colorful gradient stat cards (lime green, indigo, purple) with white text for >6:1 contrast (WCAG AA compliant)
