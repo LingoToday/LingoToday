@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DashboardScreenNew from '../screens/DashboardScreenNew';
 import AccountScreenNew from '../screens/AccountScreenNew';
 import AIChatScreen from '../screens/AIChatScreen';
+import { theme } from '../lib/theme';
 
 export type MainTabParamList = {
   Home: undefined;
@@ -23,18 +24,18 @@ export default function BottomTabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.mutedForeground,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.colors.background,
           borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
+          borderTopColor: theme.colors.border,
           paddingTop: Platform.OS === 'ios' ? 8 : 4,
           paddingBottom: Platform.OS === 'ios' ? 20 : Math.max(8, insets.bottom),
           height: Platform.OS === 'ios' ? 88 : 64 + insets.bottom,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: theme.fontSize.xs,
           fontWeight: '600',
           marginTop: Platform.OS === 'ios' ? -4 : 0,
         },
