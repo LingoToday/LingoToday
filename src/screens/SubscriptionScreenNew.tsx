@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform, ScrollView, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -57,6 +57,7 @@ export default function SubscriptionScreenNew() {
   const navigation = useNavigation();
   const { logout } = useAuth();
   const queryClient = useQueryClient();
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/auth/user'],
@@ -165,6 +166,7 @@ export default function SubscriptionScreenNew() {
                   text: 'Yes, Delete My Account',
                   style: 'destructive',
                   onPress: async () => {
+                    setIsDeletingAccount(true);
                     let deleteSuccess = false;
                     let errorMessage = '';
                     
@@ -177,6 +179,7 @@ export default function SubscriptionScreenNew() {
                       console.error('❌ Delete account error:', error);
                       errorMessage = error?.message || 'Unknown error';
                     } finally {
+                      setIsDeletingAccount(false);
                       console.log('🚪 Logging out and clearing cache...');
                       queryClient.clear();
                       await logout();
@@ -347,6 +350,20 @@ export default function SubscriptionScreenNew() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      {/* Loading Overlay for Account Deletion */}
+      <Modal
+        visible={isDeletingAccount}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={styles.modalText}>Deleting account...</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -537,5 +554,26 @@ const styles = StyleSheet.create({
   legalSeparator: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
+  },
+  
+  // Loading Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: 32,
+    alignItems: 'center',
+    gap: 16,
+    minWidth: 200,
+  },
+  modalText: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.foreground,
+    fontWeight: '600',
   },
 });
