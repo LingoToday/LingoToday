@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   joinButtonText: {
-    color: theme.colors.onSecondary,
+    color: theme.colors.primaryForeground,
     fontSize: 18,
     fontWeight: '600',
   },

@@ -488,7 +488,7 @@ const handlePaymentSuccess = async () => {
                   <Ionicons 
                     name="arrow-forward" 
                     size={20} 
-                    color={(!canContinueFromScreen(currentScreen) || isTransitioning) ? "#9CA3AF" : "#FFFFFF"} 
+                    color={(!canContinueFromScreen(currentScreen) || isTransitioning) ? "#9CA3AF" : theme.colors.primaryForeground} 
                     style={styles.continueButtonIcon}
                   />
                 </View>
