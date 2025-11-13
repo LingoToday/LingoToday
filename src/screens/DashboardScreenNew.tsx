@@ -478,24 +478,24 @@ useEffect(() => {
                         padding: isSmallHandset ? 12 : 16,
                         paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
                       }]}>
-                        <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.streak}</Text>
-                        <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Day Streak</Text>
+                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.streak}</Text>
+                        <Text style={styles.statLabel}>Day Streak</Text>
                       </View>
                       
                       <View style={[styles.statCard, styles.statCardGreen, { 
                         padding: isSmallHandset ? 12 : 16,
                         paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
                       }]}>
-                        <Text style={[styles.statValue, { color: theme.colors.success500, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.lessonsCompleted}</Text>
-                        <Text style={[styles.statLabel, { color: theme.colors.success600 }]}>Lessons Done</Text>
+                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.lessonsCompleted}</Text>
+                        <Text style={styles.statLabel}>Lessons Done</Text>
                       </View>
                       
                       <View style={[styles.statCard, styles.statCardPurple, { 
                         padding: isSmallHandset ? 12 : 16,
                         paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
                       }]}>
-                        <Text style={[styles.statValue, { color: theme.colors.primary, fontSize: isSmallHandset ? 20 : 24 }]}>{stats.wordsLearned}</Text>
-                        <Text style={[styles.statLabel, { color: theme.colors.primary }]}>Words Learned</Text>
+                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.wordsLearned}</Text>
+                        <Text style={styles.statLabel}>Words Learned</Text>
                       </View>
                     </View>
                   </CardContent>
@@ -653,7 +653,7 @@ useEffect(() => {
 const createStyles = (isTablet: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.background,
   },
   safeArea: {
     flex: 1,
@@ -776,10 +776,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
 
   // Loading Card
   loadingCard: {
-    backgroundColor: theme.colors.primary50,
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: theme.colors.primary100,
+    borderColor: theme.colors.border,
   },
   loadingContent: {
     flexDirection: 'row',
@@ -850,27 +850,29 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 0,
   },
   statCardBlue: {
-    backgroundColor: theme.colors.primary50,
-    borderColor: theme.colors.primary100,
+    backgroundColor: theme.colors.primary,
+    borderColor: 'transparent',
   },
   statCardGreen: {
-    backgroundColor: theme.colors.success50,
-    borderColor: theme.colors.success50,
+    backgroundColor: theme.colors.secondary500,
+    borderColor: 'transparent',
   },
   statCardPurple: {
-    backgroundColor: theme.colors.primary50,
-    borderColor: theme.colors.primary100,
+    backgroundColor: theme.colors.gradientPurple,
+    borderColor: 'transparent',
   },
   statValue: {
     fontWeight: '700',
     marginBottom: 4,
+    color: theme.colors.onSecondary,
   },
   statLabel: {
     fontSize: 10,
     fontWeight: '500',
+    color: theme.colors.onSecondary,
   },
 
   // Session Card (matching web exactly)
@@ -976,10 +978,12 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     color: theme.colors.foreground,
   },
   upcomingBadge: {
-    backgroundColor: theme.colors.primary50,
+    backgroundColor: 'transparent',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
   },
   upcomingBadgeText: {
     color: theme.colors.primary,
@@ -1018,7 +1022,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.9)',
   },
   nextLessonButton: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.surfaceDark,
     paddingHorizontal: Platform.OS === 'android' ? 14 : 16,
     paddingVertical: Platform.OS === 'android' ? 6 : 8,
     borderRadius: 6,
@@ -1038,7 +1042,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     alignItems: 'center',
     padding: Platform.OS === 'android' ? 10 : 12,
     borderRadius: 8,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.cardHover,
   },
   upcomingItemReview: {
     backgroundColor: theme.colors.warning50,
@@ -1104,12 +1108,12 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     gap: 12,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.cardHover,
   },
   recentIcon: {
     width: 32,
     height: 32,
-    backgroundColor: theme.colors.success50,
+    backgroundColor: 'transparent',
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1140,15 +1144,17 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   viewAllButton: {
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: theme.colors.primary,
     borderRadius: 6,
     paddingVertical: 12,
     alignItems: 'center',
     marginTop: 8,
+    backgroundColor: 'transparent',
   },
   viewAllButtonText: {
     fontSize: 14,
-    color: theme.colors.foreground,
+    color: theme.colors.primary,
+    fontWeight: '500',
   },
 
   // Add these new styles:
@@ -1163,9 +1169,9 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   
   disabledNotificationCard: {
     borderRadius: 8,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: theme.colors.warning500,
-    backgroundColor: theme.colors.warning50,
+    backgroundColor: theme.colors.card,
   },
   disabledNotificationContent: {
     flexDirection: 'row',
@@ -1176,7 +1182,7 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationIcon: {
     width: 32,
     height: 32,
-    backgroundColor: theme.colors.warning50,
+    backgroundColor: 'transparent',
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1187,10 +1193,10 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   disabledNotificationTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: theme.colors.warning600,
+    color: theme.colors.foreground,
   },
   disabledNotificationSubtitle: {
     fontSize: 12,
-    color: theme.colors.warning600,
+    color: theme.colors.mutedForeground,
   },
 });

@@ -1456,7 +1456,7 @@ export default function LessonScreen() {
                                 style={[
                                   shouldAnimate && {
                                     transform: [{ scale: correctAnswerScale }],
-                                    shadowColor: '#10b981',
+                                    shadowColor: theme.colors.checkmarkGreen,
                                     shadowOffset: { width: 0, height: 0 },
                                     shadowOpacity: correctAnswerBorder,
                                     shadowRadius: correctAnswerBorder.interpolate({
@@ -1525,7 +1525,7 @@ export default function LessonScreen() {
                       onPress={() => speakText(stepData.word)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={20} color="#000000" />
+                      <Ionicons name="volume-high" size={20} color={theme.colors.inverseOnSurface} />
                       <Text style={styles.speakButtonText}>Pronunciation</Text>
                     </TouchableOpacity>
                   </View>
@@ -1533,7 +1533,7 @@ export default function LessonScreen() {
                   {stepData.note && (
                     <View style={styles.noteContainer}>
                       <View style={styles.noteTitleRow}>
-                        <Ionicons name="information-circle-outline" size={20} color="#3B82F6" />
+                        <Ionicons name="information-circle-outline" size={20} color={theme.colors.gradientBlue} />
                         <Text style={styles.noteTitle}>When to use</Text>
                       </View>
                       <Text style={styles.noteText}>{stepData.note}</Text>
@@ -1562,7 +1562,7 @@ export default function LessonScreen() {
                           style={[
                             shouldAnimate && {
                               transform: [{ scale: correctAnswerScale }],
-                              shadowColor: '#10b981',
+                              shadowColor: theme.colors.checkmarkGreen,
                               shadowOffset: { width: 0, height: 0 },
                               shadowOpacity: correctAnswerBorder,
                               shadowRadius: correctAnswerBorder.interpolate({
@@ -1634,7 +1634,7 @@ export default function LessonScreen() {
                           style={[
                             shouldAnimate && {
                               transform: [{ scale: correctAnswerScale }],
-                              shadowColor: '#10b981',
+                              shadowColor: theme.colors.checkmarkGreen,
                               shadowOffset: { width: 0, height: 0 },
                               shadowOpacity: correctAnswerBorder,
                               shadowRadius: correctAnswerBorder.interpolate({
@@ -1685,7 +1685,7 @@ export default function LessonScreen() {
                       styles.inputContainer,
                       showResult && isCorrect && {
                         transform: [{ scale: correctAnswerScale }],
-                        shadowColor: '#10b981',
+                        shadowColor: theme.colors.checkmarkGreen,
                         shadowOffset: { width: 0, height: 0 },
                         shadowOpacity: correctAnswerBorder,
                         shadowRadius: correctAnswerBorder.interpolate({
@@ -1744,7 +1744,7 @@ export default function LessonScreen() {
                           style={[
                             shouldAnimate && {
                               transform: [{ scale: correctAnswerScale }],
-                              shadowColor: '#10b981',
+                              shadowColor: theme.colors.checkmarkGreen,
                               shadowOffset: { width: 0, height: 0 },
                               shadowOpacity: correctAnswerBorder,
                               shadowRadius: correctAnswerBorder.interpolate({
@@ -1856,7 +1856,7 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
 
-  // FIXED: Improved Header - Mobile responsive
+  // FIXED: Improved Header - Mobile responsive with dark theme
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1914,15 +1914,15 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
   
-  // Progress Bar
+  // Progress Bar - Dark theme with lime green
   progressBarContainer: {
     height: 6,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.progressBarBg,
     width: '100%',
   },
   progressBar: {
     height: '100%',
-    backgroundColor: '#60A5FA',
+    backgroundColor: theme.colors.primary,
   },
 
   // Content
@@ -1953,8 +1953,8 @@ const styles = StyleSheet.create({
 
   // Notification Banner
   notificationBanner: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#DBEAFE',
+    backgroundColor: theme.colors.secondary50,
+    borderColor: theme.colors.secondary100,
     borderWidth: 1,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
@@ -1971,11 +1971,11 @@ const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: theme.fontSize.base,
     fontWeight: '500' as any,
-    color: '#1E40AF',
+    color: theme.colors.secondary700,
   },
   notificationSubtitle: {
     fontSize: theme.fontSize.sm,
-    color: '#2563EB',
+    color: theme.colors.secondary600,
   },
 
   // Lesson Card
@@ -2029,13 +2029,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.md,
     padding: theme.spacing.xl,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.inverseSurface,
     borderRadius: theme.borderRadius.lg,
   },
   translationLabel: {
     fontSize: theme.fontSize.xs,
     fontWeight: '600' as any,
-    color: '#6B7280',
+    color: theme.colors.textTertiary,
     textAlign: 'center',
     letterSpacing: 0.5,
     marginBottom: theme.spacing.xs,
@@ -2046,14 +2046,14 @@ const styles = StyleSheet.create({
   },
   translationText: {
     fontSize: theme.fontSize.base,
-    color: '#6B7280',
+    color: theme.colors.textTertiary,
     textAlign: 'center',
     marginBottom: theme.spacing.xs,
   },
   wordText: {
     fontSize: theme.fontSize['3xl'],
     fontWeight: '700' as any,
-    color: '#3B82F6',
+    color: theme.colors.gradientBlue,
     textAlign: 'center',
     marginBottom: theme.spacing.lg,
   },
@@ -2061,23 +2061,23 @@ const styles = StyleSheet.create({
   speakButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.inverseSurface,
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
     borderRadius: theme.borderRadius.full,
     gap: theme.spacing.sm,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.outline,
   },
   speakButtonText: {
-    color: '#000000',
+    color: theme.colors.inverseOnSurface,
     fontSize: theme.fontSize.sm,
     fontWeight: '500' as any,
   },
   noteContainer: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.colors.inverseSurface,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.outline,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
     marginTop: theme.spacing.lg,
@@ -2091,15 +2091,15 @@ const styles = StyleSheet.create({
   noteTitle: {
     fontSize: theme.fontSize.sm,
     fontWeight: '600' as any,
-    color: '#111827',
+    color: theme.colors.inverseOnSurface,
   },
   noteText: {
     fontSize: theme.fontSize.sm,
-    color: '#6B7280',
+    color: theme.colors.textTertiary,
     lineHeight: theme.fontSize.sm * 1.5,
   },
 
-  // Quick Check Specific Styles
+  // Quick Check Specific Styles - Dark theme
   quickCheckHeader: {
     gap: theme.spacing.sm,
     marginBottom: theme.spacing.lg,
@@ -2107,7 +2107,7 @@ const styles = StyleSheet.create({
   quickCheckTitle: {
     fontSize: theme.fontSize.sm,
     fontWeight: '600' as any,
-    color: '#06B6D4',
+    color: theme.colors.secondary,
     textAlign: 'left',
     letterSpacing: 0.5,
   },
@@ -2136,10 +2136,10 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   optionButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.muted,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.colors.border,
     padding: theme.spacing.lg,
     flexDirection: 'row',
     alignItems: 'center',
@@ -2152,40 +2152,40 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.border,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: theme.colors.textTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selectedOptionLabel: {
-    backgroundColor: '#DBEAFE',
-    borderColor: '#3B82F6',
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
   optionLabelText: {
     fontSize: theme.fontSize.sm,
     fontWeight: '600' as any,
-    color: '#6B7280',
+    color: theme.colors.foreground,
   },
   selectedOptionLabelText: {
-    color: '#3B82F6',
+    color: theme.colors.primaryForeground,
   },
   checkmark: {
     fontSize: 18,
-    color: '#10b981',
+    color: theme.colors.checkmarkGreen,
     marginLeft: 'auto',
   },
   selectedOption: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary + '10',
+    backgroundColor: theme.colors.muted,
   },
   correctOption: {
-    borderColor: '#10b981',
-    backgroundColor: '#f0fdf4',
+    borderColor: theme.colors.checkmarkGreen,
+    backgroundColor: theme.colors.success50,
   },
   incorrectOption: {
-    borderColor: '#ef4444',
-    backgroundColor: '#fef2f2',
+    borderColor: theme.colors.destructive,
+    backgroundColor: theme.colors.errorContainer,
   },
   optionText: {
     fontSize: theme.fontSize.base,
@@ -2194,19 +2194,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   selectedOptionText: {
-    color: theme.colors.primary,
+    color: theme.colors.foreground,
     fontWeight: '600' as any,
   },
   correctOptionText: {
-    color: '#10b981',
+    color: theme.colors.checkmarkGreen,
     fontWeight: '600' as any,
   },
   incorrectOptionText: {
-    color: '#ef4444',
+    color: theme.colors.destructive,
     fontWeight: '600' as any,
   },
 
-  // Input
+  // Input - Dark theme for pro_video step
   inputContainer: {
     gap: theme.spacing.sm,
   },
@@ -2223,20 +2223,21 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
     fontSize: theme.fontSize.base,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.muted,
+    color: theme.colors.foreground,
     textAlign: 'center',
   },
   correctInput: {
-    borderColor: '#10b981',
-    backgroundColor: '#f0fdf4',
+    borderColor: theme.colors.checkmarkGreen,
+    backgroundColor: theme.colors.success50,
   },
   incorrectInput: {
-    borderColor: '#ef4444',
-    backgroundColor: '#fef2f2',
+    borderColor: theme.colors.destructive,
+    backgroundColor: theme.colors.errorContainer,
   },
   correctAnswerHint: {
     fontSize: theme.fontSize.sm,
-    color: '#ef4444',
+    color: theme.colors.destructive,
     textAlign: 'center',
     marginTop: theme.spacing.xs,
   },
@@ -2246,14 +2247,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing.xl,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: theme.colors.secondary50,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 2,
-    borderColor: '#8B5CF6',
+    borderColor: theme.colors.gradientPurple,
     borderStyle: 'dashed',
     gap: theme.spacing.md,
     marginVertical: theme.spacing.lg,
-    shadowColor: '#8B5CF6',
+    shadowColor: theme.colors.gradientPurple,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -2261,7 +2262,7 @@ const styles = StyleSheet.create({
   },
   listenText: {
     fontSize: theme.fontSize.base,
-    color: '#8B5CF6',
+    color: theme.colors.gradientPurple,
     fontWeight: '600' as any,
   },
 
@@ -2270,19 +2271,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.lg,
     padding: theme.spacing.xl,
-    backgroundColor: '#FFF7ED',
+    backgroundColor: theme.colors.warning50,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: '#FED7AA',
+    borderColor: theme.colors.warning500,
   },
   upgradeTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '700' as any,
-    color: '#9A3412',
+    color: theme.colors.warning600,
   },
   upgradeText: {
     fontSize: theme.fontSize.base,
-    color: '#9A3412',
+    color: theme.colors.warning600,
     textAlign: 'center',
     lineHeight: theme.fontSize.base * 1.4,
   },
@@ -2310,7 +2311,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.md,
     maxWidth: '90%',
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -2319,27 +2320,27 @@ const styles = StyleSheet.create({
   upgradeOverlayTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '700' as any,
-    color: '#1F2937',
+    color: theme.colors.primaryForeground,
     textAlign: 'center',
   },
   upgradeOverlaySubtitle: {
     fontSize: theme.fontSize.base,
-    color: '#1F2937',
+    color: theme.colors.primaryForeground,
     textAlign: 'center',
   },
   upgradePrice: {
     fontSize: theme.fontSize.lg,
     fontWeight: '700' as any,
-    color: '#1F2937',
+    color: theme.colors.primaryForeground,
     textAlign: 'center',
   },
   oldPrice: {
     textDecorationLine: 'line-through',
-    color: '#9CA3AF',
+    color: theme.colors.mutedForeground,
     marginRight: theme.spacing.xs,
   },
   upgradeButton: {
-    backgroundColor: '#8B5CF6',
+    backgroundColor: theme.colors.gradientPurple,
     width: '100%',
   },
   skipLinkButton: {
@@ -2347,7 +2348,7 @@ const styles = StyleSheet.create({
   },
   skipLinkText: {
     fontSize: theme.fontSize.sm,
-    color: '#6B7280',
+    color: theme.colors.textTertiary,
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
@@ -2358,17 +2359,17 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
 
-  // Buttons
+  // Buttons - Dark theme with lime green
   submitButton: {
     marginTop: theme.spacing.md,
-    backgroundColor: '#7DD3FC',
+    backgroundColor: theme.colors.primary,
   },
   nextButton: {
-    backgroundColor: '#10b981',
+    backgroundColor: theme.colors.checkmarkGreen,
     marginTop: theme.spacing.md,
   },
   continueButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.colors.secondary600,
     paddingHorizontal: theme.spacing.xl,
     paddingVertical: theme.spacing.lg,
   },
@@ -2398,10 +2399,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.lg,
     padding: theme.spacing.xl,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: theme.colors.onErrorContainer,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: theme.colors.error,
   },
 
   // Text Tip Styles
@@ -2409,10 +2410,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing.md,
     padding: theme.spacing.xl,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.colors.secondary50,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: theme.colors.secondary100,
   },
   tipIcon: {
     fontSize: 48,
@@ -2421,12 +2422,12 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '700' as any,
-    color: '#1E40AF',
+    color: theme.colors.secondary700,
     textAlign: 'center',
   },
   tipText: {
     fontSize: theme.fontSize.base,
-    color: '#1E40AF',
+    color: theme.colors.secondary700,
     textAlign: 'center',
     lineHeight: theme.fontSize.base * 1.5,
   },

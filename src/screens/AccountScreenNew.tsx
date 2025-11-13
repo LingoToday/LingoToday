@@ -313,14 +313,14 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
   },
   safeArea: {
     flex: 1,
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -363,18 +363,18 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#000000',
+    color: theme.colors.foreground,
     marginBottom: 4,
   },
   userName: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#666666',
+    color: theme.colors.mutedForeground,
     marginBottom: 24,
   },
   divider: {
     height: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: theme.colors.border,
     marginVertical: 24,
   },
   section: {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#000000',
+    color: theme.colors.foreground,
     marginBottom: 8,
   },
   infoItem: {
@@ -392,23 +392,23 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 13,
     fontWeight: '400',
-    color: '#666666',
+    color: theme.colors.mutedForeground,
   },
   infoValue: {
     fontSize: 15,
     fontWeight: '400',
-    color: '#000000',
+    color: theme.colors.foreground,
   },
   languageWithFlag: {
     fontSize: 15,
     fontWeight: '400',
-    color: '#000000',
+    color: theme.colors.foreground,
     marginBottom: 8,
   },
   motivationalText: {
     fontSize: 13,
     fontWeight: '400',
-    color: '#666666',
+    color: theme.colors.mutedForeground,
     fontStyle: 'italic',
     lineHeight: 18,
   },
@@ -420,34 +420,34 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: theme.colors.border,
     borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     marginTop: 8,
   },
   subscriptionButtonText: {
     fontSize: 15,
-    color: '#000000',
+    color: theme.colors.foreground,
     fontWeight: '400',
   },
   subscriptionBadge: {
     fontSize: 13,
-    color: '#666666',
-    fontWeight: '400',
+    color: theme.colors.primary,
+    fontWeight: '500',
   },
   notificationButton: {
     width: '100%',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: theme.colors.border,
     borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     marginTop: 8,
   },
   notificationButtonText: {
     fontSize: 15,
-    color: '#000000',
+    color: theme.colors.foreground,
     fontWeight: '400',
   },
   signOutButton: {
@@ -455,15 +455,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: theme.colors.border,
     borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.card,
     alignItems: 'center',
     marginTop: 16,
   },
   signOutButtonText: {
     fontSize: 15,
-    color: '#FF3B30',
+    color: theme.colors.destructive,
     fontWeight: '400',
   },
   cardSpacing: {

@@ -10,72 +10,111 @@ export const scaleFontSize = (size: number): number => {
 
 export const theme = {
   colors: {
-    // Brand colors from style guide
-    background: '#ffffff',
-    foreground: '#09090b',
-    muted: '#ECECF0',
-    mutedForeground: '#64748b',
-    popover: '#ffffff',
-    popoverForeground: '#09090b',
-    card: '#ffffff',
-    cardForeground: '#09090b',
-    border: '#e2e8f0',
-    input: '#e2e8f0',
-    primary: '#50B8FD',
-    primaryForeground: '#ffffff',
-    secondary: '#50B8FD',
+    // Dark mode color palette
+    background: '#2B2D3A',
+    foreground: '#ffffff',
+    muted: '#3A3C4A',
+    mutedForeground: '#9CA3AF',
+    popover: '#3A3C4A',
+    popoverForeground: '#ffffff',
+    card: '#3A3C4A',
+    cardForeground: '#ffffff',
+    border: '#4B5563',
+    input: '#4B5563',
+    
+    // Lime green primary color (from designs)
+    primary: '#A3E635',
+    primaryForeground: '#1F2937',
+    
+    // Secondary colors
+    secondary: '#6366F1',
     secondaryForeground: '#ffffff',
-    accent: '#E9EBEF',
-    accentForeground: '#09090b',
+    accent: '#4B5563',
+    accentForeground: '#ffffff',
     destructive: '#EF4444',
     destructiveForeground: '#ffffff',
-    ring: '#50B8FD',
+    ring: '#A3E635',
 
-    // Extended brand colors
-    primary50: '#e6f6ff',
-    primary100: '#b3e5ff',
-    primary500: '#50B8FD',
-    primary600: '#40a8ed',
-    primary700: '#3098dd',
+    // Extended brand colors with lime green
+    primary50: '#F7FEE7',
+    primary100: '#ECFCCB',
+    primary500: '#A3E635',
+    primary600: '#84CC16',
+    primary700: '#65A30D',
 
-    secondary50: '#e6f6ff',
-    secondary100: '#b3e5ff',
-    secondary500: '#50B8FD',
-    secondary600: '#40a8ed',
-    secondary700: '#3098dd',
+    // Indigo/Purple secondary
+    secondary50: '#EEF2FF',
+    secondary100: '#E0E7FF',
+    secondary500: '#6366F1',
+    secondary600: '#4F46E5',
+    secondary700: '#4338CA',
 
+    // Success (kept green)
     success50: '#d1fae5',
     success500: '#10B981',
     success600: '#059669',
 
+    // Warning/Orange
     warning50: '#fffbeb',
     warning500: '#f59e0b',
     warning600: '#d97706',
 
-    // Surface colors for clean cards
-    surface: '#ffffff',
-    surfaceContainer: '#ECECF0',
-    surfaceVariant: '#E9EBEF',
+    // Surface colors for dark mode
+    surface: '#2B2D3A',
+    surfaceContainer: '#3A3C4A',
+    surfaceVariant: '#4B5563',
+    surfaceDark: '#1F2937',
+    
+    // Colorful gradient colors
+    gradientPurple: '#A855F7',
+    gradientPink: '#EC4899',
+    gradientOrange: '#F97316',
+    gradientYellow: '#EAB308',
+    gradientGreen: '#A3E635',
+    gradientBlue: '#3B82F6',
+    gradientIndigo: '#6366F1',
 
-    // Text colors
-    onSurface: '#09090b',
-    onSurfaceVariant: '#64748b',
-    onPrimary: '#ffffff',
+    // Text colors for dark mode
+    onSurface: '#ffffff',
+    onSurfaceVariant: '#D1D5DB',
+    onPrimary: '#1F2937',
     onSecondary: '#ffffff',
+    textSecondary: '#9CA3AF',
+    textTertiary: '#6B7280',
 
     // Status colors
     error: '#EF4444',
-    errorContainer: '#fee2e2',
+    errorContainer: '#7f1d1d',
     onError: '#ffffff',
-    onErrorContainer: '#7f1d1d',
+    onErrorContainer: '#fee2e2',
 
     // Additional colors
-    outline: '#cbd5e1',
+    outline: '#4B5563',
     shadow: '#000000',
-    inverseSurface: '#18181b',
-    inverseOnSurface: '#fafafa',
-    inversePrimary: '#a5b4fc',
+    inverseSurface: '#F3F4F6',
+    inverseOnSurface: '#1F2937',
+    inversePrimary: '#65A30D',
     transparent: 'transparent',
+    
+    // Special colors from designs
+    proGreen: '#A3E635',
+    proTag: '#84CC16',
+    progressBarBg: '#4B5563',
+    checkmarkGreen: '#10B981',
+    
+    // Interactive states for dark mode
+    primaryHover: '#84CC16',
+    primaryPressed: '#65A30D',
+    cardHover: '#404252',
+    toggleActive: '#5B6B4A',
+    
+    // Stat card gradient backgrounds
+    statGradientGreen: '#A3E635',
+    statGradientPurple: '#A855F7',
+    statGradientPink: '#EC4899',
+    
+    // Feedback and comment backgrounds
+    feedbackOlive: '#5B6B4A',
   },
   
   spacing: {

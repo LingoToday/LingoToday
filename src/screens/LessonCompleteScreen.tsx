@@ -119,11 +119,12 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: theme.fontSize.xl,
-    color: theme.colors.foreground,
+    color: theme.colors.onSurfaceVariant,
     textAlign: 'center',
   },
   card: {
     marginBottom: theme.spacing.xl,
+    backgroundColor: theme.colors.card,
   },
   cardContent: {
     padding: theme.spacing.xl,
@@ -148,16 +149,17 @@ const styles = StyleSheet.create({
   scoreLabel: {
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
-    marginBottom: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
   },
   scoreValue: {
-    fontSize: 64,
+    fontSize: 80,
     fontWeight: '800' as any,
     color: theme.colors.primary,
+    letterSpacing: -2,
   },
   commentContainer: {
-    backgroundColor: '#F3E8FF',
-    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.feedbackOlive,
+    padding: theme.spacing.xl,
     borderRadius: theme.borderRadius.lg,
     marginBottom: theme.spacing.lg,
   },
