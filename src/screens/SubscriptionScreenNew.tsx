@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 
 import { theme } from '../lib/theme';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import { apiClient } from '../lib/apiClient';
 import { purchaseService } from '../services/purchaseService';
 import { useAuth } from '../hooks/useAuth';
@@ -21,20 +18,6 @@ interface User {
   firstName?: string;
   lastName?: string;
   priceTier?: string;
-}
-
-interface SubscriptionStatus {
-  isProUser: boolean;
-  status: string;
-  currentPeriodEnd?: number;
-  subscriptionId?: string;
-}
-
-function getLearningTier(priceTier?: string): string {
-  if (!priceTier || priceTier === 'n/a' || priceTier === 'free-trial') return 'Free';
-  if (priceTier.startsWith('pro-')) return 'Pro';
-  if (priceTier.startsWith('plus-')) return 'Plus';
-  return 'Free';
 }
 
 function getPlanType(priceTier?: string): string {
@@ -49,14 +32,19 @@ function getPlanType(priceTier?: string): string {
 function getPriceDisplay(priceTier?: string): string {
   if (!priceTier || priceTier === 'n/a' || priceTier === 'free-trial') return 'Free';
   if (priceTier === 'pro-monthly') return '£2.99/month';
-  if (priceTier === 'pro-yearly') return '£28.99/year';
+  if (priceTier === 'pro-yearly') return '£14.99/year';
   if (priceTier === 'plus-monthly') return '£16.99/month';
   if (priceTier === 'plus-yearly') return '£149.99/year';
   return 'Free';
 }
 
-const planFeatures = [
-  'Unlimited Pro video Lessons',
+const freeFeatures = [
+  'Access to basic courses',
+  'Limited lessons per day',
+];
+
+const proFeatures = [
+  'Unlimited premium video lessons',
   'Cultural and bonus tips',
   'Exclusive \'Explore\' content',
   'Early access to new features',
@@ -69,25 +57,11 @@ export default function SubscriptionScreenNew() {
   const navigation = useNavigation();
   const { logout } = useAuth();
   const queryClient = useQueryClient();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('annual');
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/auth/user'],
     queryFn: async () => {
       const res = await apiClient.getCurrentUser?.();
-      return (res as any)?.data || res;
-    },
-  });
-
-  const { data: subscriptionStatus, isLoading: subLoading } = useQuery<SubscriptionStatus>({
-    queryKey: ['/api/subscription-status'],
-    enabled: !!user,
-    queryFn: async () => {
-      if ((apiClient as any).getSubscriptionStatus) {
-        const res = await (apiClient as any).getSubscriptionStatus();
-        return (res as any)?.data || res;
-      }
-      const res = await (apiClient as any).request?.('GET', '/api/subscription-status');
       return (res as any)?.data || res;
     },
   });
@@ -105,20 +79,17 @@ export default function SubscriptionScreenNew() {
       const result = await purchaseService.restorePurchases();
       
       if (result.success) {
-        // Notify backend about restored purchase to sync entitlements
         try {
-          // Refresh user data to get updated subscription status
-          const updatedUser = await apiClient.getCurrentUser();
-          console.log('✅ User data refreshed after restore:', updatedUser);
+          await apiClient.getCurrentUser();
+          await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
         } catch (backendError) {
           console.warn('⚠️ Failed to refresh user after restore:', backendError);
-          // Continue anyway - RevenueCat webhook will eventually sync
         }
 
         Alert.alert(
           '✅ Purchase Restored',
           'Your subscription has been restored successfully!',
-          [{ text: 'OK', onPress: () => navigation.goBack() }]
+          [{ text: 'OK' }]
         );
       } else {
         Alert.alert(
@@ -141,12 +112,31 @@ export default function SubscriptionScreenNew() {
   };
 
   const handleManageSubscription = async () => {
-    // Open App Store subscription management on iOS
-    if (Platform.OS === 'ios') {
-      await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
-    } else {
-      // For Android, open Google Play subscriptions
-      await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        'Not Available on Web',
+        'Please manage your subscription through the App Store or Google Play Store on your mobile device.'
+      );
+      return;
+    }
+    
+    try {
+      if (Platform.OS === 'ios') {
+        await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
+      } else if (Platform.OS === 'android') {
+        await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+      } else {
+        Alert.alert(
+          'Not Supported',
+          'Subscription management is only available on iOS and Android devices.'
+        );
+      }
+    } catch (error) {
+      console.error('Error opening subscription management:', error);
+      Alert.alert(
+        'Unable to Open',
+        'Could not open subscription management. Please try again later.'
+      );
     }
   };
 
@@ -228,7 +218,7 @@ export default function SubscriptionScreenNew() {
     );
   };
 
-  if (userLoading || subLoading) {
+  if (userLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -245,90 +235,114 @@ export default function SubscriptionScreenNew() {
     );
   }
 
-  const currentPrice = selectedPlan === 'annual' ? '£28.99' : '£2.99';
-  const currentPeriod = selectedPlan === 'annual' ? 'annually' : 'monthly';
-  const strikethroughPrice = selectedPlan === 'annual' ? '£2.99' : null;
-  const perMonthPrice = selectedPlan === 'annual' ? '£2.41/month' : null;
+  const planType = getPlanType(user.priceTier);
+  const priceDisplay = getPriceDisplay(user.priceTier);
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={handleBack} testID="back-to-account">
               <Ionicons name="chevron-back" size={24} color={theme.colors.foreground} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Subscription Package</Text>
+            <Text style={styles.headerTitle}>Subscription</Text>
+            <View style={styles.backButton} />
           </View>
 
-          <View style={styles.content}>
-            <Text style={styles.mainTitle}>Upgrade to Pro</Text>
-            <Text style={styles.subtitle}>Unlock your full language learning potential</Text>
-
-            <View style={styles.toggleContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.toggleButton,
-                  selectedPlan === 'monthly' && styles.toggleButtonActive,
-                ]}
-                onPress={() => setSelectedPlan('monthly')}
-              >
-                <Text style={[
-                  styles.toggleButtonText,
-                  selectedPlan === 'monthly' && styles.toggleButtonTextActive,
-                ]}>
-                  Monthly
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.toggleButton,
-                  styles.toggleButtonAnnual,
-                  selectedPlan === 'annual' && styles.toggleButtonActive,
-                ]}
-                onPress={() => setSelectedPlan('annual')}
-              >
-                <View style={styles.popularBadge}>
-                  <Text style={styles.popularBadgeText}>Popular</Text>
-                </View>
-                <Text style={[
-                  styles.toggleButtonText,
-                  styles.toggleButtonAnnualText,
-                  selectedPlan === 'annual' && styles.toggleButtonTextActive,
-                ]}>
-                  Annual{'\n'}Save 19%
-                </Text>
-              </TouchableOpacity>
+          {/* Current Plan Card */}
+          <View style={styles.planCard}>
+            <View style={styles.planHeader}>
+              <Text style={styles.planHeaderText}>👑 Current Plan</Text>
             </View>
+            <View style={styles.planDetails}>
+              <View style={styles.planTypeContainer}>
+                <Text style={styles.planTypeLabel}>Plan Type</Text>
+                <View style={styles.planBadge}>
+                  <Text style={styles.planBadgeText}>{planType}</Text>
+                </View>
+              </View>
+              <View style={styles.priceContainer}>
+                <Text style={styles.priceLabel}>Price</Text>
+                <Text style={styles.priceValue}>{priceDisplay}</Text>
+              </View>
+            </View>
+          </View>
 
-            <View style={styles.featuresContainer}>
-              {planFeatures.map((feature, index) => (
-                <View key={index} style={styles.featureRow}>
-                  <Ionicons name="checkmark" size={20} color={theme.colors.primary} style={styles.checkmark} />
+          {/* What's Included Section */}
+          <View style={styles.featuresCard}>
+            <Text style={styles.featuresTitle}>What's Included</Text>
+            
+            {/* Free Tier */}
+            <View style={styles.tierContainer}>
+              <View style={styles.tierBadge}>
+                <Text style={styles.tierBadgeTextFree}>Free</Text>
+              </View>
+              {freeFeatures.map((feature, index) => (
+                <View key={`free-${index}`} style={styles.featureRow}>
+                  <Ionicons name="checkmark" size={18} color={theme.colors.mutedForeground} style={styles.checkmark} />
                   <Text style={styles.featureText}>{feature}</Text>
                 </View>
               ))}
             </View>
 
-            <View style={styles.pricingContainer}>
-              <Text style={styles.mainPrice}>{currentPrice}</Text>
-              <Text style={styles.period}>{currentPeriod}</Text>
-              {strikethroughPrice && (
-                <View style={styles.strikethroughContainer}>
-                  <Text style={styles.strikethroughPrice}>{strikethroughPrice}</Text>
-                  <Text style={styles.perMonthPrice}>{perMonthPrice}</Text>
+            {/* Pro Tier */}
+            <View style={styles.tierContainer}>
+              <View style={[styles.tierBadge, styles.tierBadgePro]}>
+                <Text style={styles.tierBadgeTextPro}>Pro</Text>
+              </View>
+              {proFeatures.map((feature, index) => (
+                <View key={`pro-${index}`} style={styles.featureRow}>
+                  <Ionicons name="checkmark" size={18} color={theme.colors.mutedForeground} style={styles.checkmark} />
+                  <Text style={styles.featureText}>{feature}</Text>
                 </View>
-              )}
+              ))}
             </View>
+          </View>
 
-            <TouchableOpacity style={styles.joinButton} onPress={handleChangePlan}>
-              <Text style={styles.joinButtonText}>Join Pro</Text>
+          {/* Action Buttons */}
+          <View style={styles.actionsContainer}>
+            <Button
+              title="💎 Change Plan"
+              onPress={handleChangePlan}
+              variant="default"
+              style={styles.changePlanButton}
+            />
+            
+            <Button
+              title="🔄 Restore Purchases"
+              onPress={handleRestorePurchases}
+              variant="outline"
+              style={styles.actionButton}
+            />
+            
+            <Button
+              title="⚙️ Manage Subscription"
+              onPress={handleManageSubscription}
+              variant="outline"
+              style={styles.actionButton}
+            />
+          </View>
+
+          {/* Footer Links */}
+          <View style={styles.footer}>
+            <TouchableOpacity onPress={handleDeleteAccount}>
+              <Text style={styles.deleteAccountText}>Delete Account</Text>
             </TouchableOpacity>
-
-            <View style={styles.trialNotice}>
-              <Ionicons name="checkmark-circle" size={16} color={theme.colors.primary} />
-              <Text style={styles.trialNoticeText}>3-day free trial, Cancel anytime</Text>
+            
+            <View style={styles.legalLinks}>
+              <TouchableOpacity onPress={handleOpenTerms}>
+                <Text style={styles.legalLinkText}>Terms of Service</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}> • </Text>
+              <TouchableOpacity onPress={handleOpenPrivacy}>
+                <Text style={styles.legalLinkText}>Privacy Policy</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -349,7 +363,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
+    paddingBottom: 40,
   },
   loadingContainer: {
     flex: 1,
@@ -360,157 +374,168 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     color: theme.colors.mutedForeground,
-    fontSize: 16,
+    fontSize: theme.fontSize.base,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 24,
   },
   backButton: {
-    marginRight: 16,
+    width: 40,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: theme.fontSize.lg,
     fontWeight: '600',
     color: theme.colors.foreground,
-    flex: 1,
-    textAlign: 'center',
-    marginRight: 40,
   },
-  content: {
-    paddingHorizontal: 20,
+  
+  // Current Plan Card
+  planCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    marginHorizontal: 20,
+    marginBottom: 16,
+    padding: 20,
   },
-  mainTitle: {
-    fontSize: 32,
-    fontWeight: '700',
+  planHeader: {
+    marginBottom: 16,
+  },
+  planHeaderText: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
     color: theme.colors.foreground,
-    textAlign: 'center',
+  },
+  planDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  planTypeContainer: {
+    flex: 1,
+  },
+  planTypeLabel: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
     marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    color: theme.colors.mutedForeground,
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.muted,
-    borderRadius: 12,
-    padding: 6,
-    marginBottom: 32,
-  },
-  toggleButton: {
-    flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.transparent,
-    position: 'relative',
-  },
-  toggleButtonAnnual: {
-    backgroundColor: theme.colors.toggleActive,
-  },
-  toggleButtonActive: {
-    backgroundColor: theme.colors.toggleActive,
-  },
-  toggleButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.foreground,
-    textAlign: 'center',
-  },
-  toggleButtonAnnualText: {
-    color: theme.colors.foreground,
-  },
-  toggleButtonTextActive: {
-    color: theme.colors.foreground,
-  },
-  popularBadge: {
-    position: 'absolute',
-    top: -8,
-    right: 8,
+  planBadge: {
     backgroundColor: theme.colors.primary,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: theme.borderRadius.full,
+    alignSelf: 'flex-start',
   },
-  popularBadgeText: {
-    fontSize: 10,
+  planBadgeText: {
+    fontSize: theme.fontSize.sm,
     fontWeight: '600',
     color: theme.colors.primaryForeground,
   },
-  featuresContainer: {
-    marginBottom: 32,
+  priceContainer: {
+    alignItems: 'flex-end',
+  },
+  priceLabel: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    marginBottom: 4,
+  },
+  priceValue: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: '700',
+    color: theme.colors.foreground,
+  },
+  
+  // What's Included Card
+  featuresCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    marginHorizontal: 20,
+    marginBottom: 24,
+    padding: 20,
+  },
+  featuresTitle: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
+    color: theme.colors.foreground,
+    marginBottom: 20,
+  },
+  tierContainer: {
+    marginBottom: 20,
+  },
+  tierBadge: {
+    backgroundColor: theme.colors.muted,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: theme.borderRadius.full,
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+  },
+  tierBadgePro: {
+    backgroundColor: theme.colors.primary,
+  },
+  tierBadgeTextFree: {
+    fontSize: theme.fontSize.xs,
+    fontWeight: '600',
+    color: theme.colors.mutedForeground,
+  },
+  tierBadgeTextPro: {
+    fontSize: theme.fontSize.xs,
+    fontWeight: '600',
+    color: theme.colors.primaryForeground,
   },
   featureRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    paddingLeft: 4,
   },
   checkmark: {
-    marginRight: 12,
+    marginRight: 8,
+    marginTop: 2,
   },
   featureText: {
-    fontSize: 16,
-    color: theme.colors.foreground,
     flex: 1,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    lineHeight: theme.fontSize.sm * 1.5,
   },
-  pricingContainer: {
-    alignItems: 'center',
+  
+  // Action Buttons
+  actionsContainer: {
+    paddingHorizontal: 20,
     marginBottom: 24,
   },
-  mainPrice: {
-    fontSize: 64,
-    fontWeight: '700',
-    color: theme.colors.primary,
-    lineHeight: 72,
+  changePlanButton: {
+    marginBottom: 12,
   },
-  period: {
-    fontSize: 16,
-    color: theme.colors.mutedForeground,
-    marginBottom: 8,
+  actionButton: {
+    marginBottom: 12,
   },
-  strikethroughContainer: {
-    flexDirection: 'row',
+  
+  // Footer
+  footer: {
     alignItems: 'center',
-    gap: 8,
+    paddingHorizontal: 20,
+    marginTop: 8,
   },
-  strikethroughPrice: {
-    fontSize: 14,
+  deleteAccountText: {
+    fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
-    textDecorationLine: 'line-through',
-  },
-  perMonthPrice: {
-    fontSize: 14,
-    color: theme.colors.mutedForeground,
-  },
-  joinButton: {
-    backgroundColor: theme.colors.primary,
-    paddingVertical: 18,
-    borderRadius: 12,
-    alignItems: 'center',
     marginBottom: 16,
   },
-  joinButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: theme.colors.primaryForeground,
-  },
-  trialNotice: {
+  legalLinks: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    marginBottom: 32,
   },
-  trialNoticeText: {
-    fontSize: 14,
+  legalLinkText: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+  },
+  legalSeparator: {
+    fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
   },
 });
