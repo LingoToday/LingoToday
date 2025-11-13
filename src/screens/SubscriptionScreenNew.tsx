@@ -258,7 +258,7 @@ export default function SubscriptionScreenNew() {
           {/* Current Plan Card */}
           <View style={styles.planCard}>
             <View style={styles.planHeader}>
-              <Text style={styles.planHeaderText}>👑 Current Plan</Text>
+              <Text style={styles.planHeaderText}>Current Plan</Text>
             </View>
             <View style={styles.planDetails}>
               <View style={styles.planTypeContainer}>
@@ -308,21 +308,21 @@ export default function SubscriptionScreenNew() {
           {/* Action Buttons */}
           <View style={styles.actionsContainer}>
             <Button
-              title="💎 Change Plan"
+              title="Change Plan"
               onPress={handleChangePlan}
               variant="default"
               style={styles.changePlanButton}
             />
             
             <Button
-              title="🔄 Restore Purchases"
+              title="Restore Purchases"
               onPress={handleRestorePurchases}
               variant="outline"
               style={styles.actionButton}
             />
             
             <Button
-              title="⚙️ Manage Subscription"
+              title="Manage Subscription"
               onPress={handleManageSubscription}
               variant="outline"
               style={styles.actionButton}
