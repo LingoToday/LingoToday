@@ -1946,7 +1946,6 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'type' && (
                 <>
                   <View style={styles.quickCheckHeader}>
-                    <Text style={styles.quickCheckTitle}>{currentStep}. Type Practice</Text>
                     <Text style={styles.quickCheckQuestion}>Complete the word:</Text>
                     
                     {/* Show word with selected letters inline in green */}
