@@ -743,13 +743,23 @@ export default function LessonScreen() {
           }
           
           if (stepData.stepType === 'typing') {
-            console.log('✏️ Typing Step Data:', stepData);
+            console.log('✏️ [OBJECT] Typing Step Data:', stepData);
             const expected = stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '';
-            const options = stepData.options || stepData.content?.options || null;
+            const prompt = stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '';
+            
+            // Generate options if not provided by database or if empty array
+            let options = stepData.options || stepData.content?.options || null;
+            if ((!options || options.length === 0) && expected) {
+              // Extract word context from prompt for better option generation
+              const wordContext = prompt.split('=')[0]?.trim() || '';
+              const cacheKey = `${lessonId}-${currentStep}-${expected}`;
+              options = generateTypeOptions(expected, wordContext, cacheKey);
+              console.log('✏️ [OBJECT] Generated options for typing step:', { expected, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
+            }
             
             return {
               type: 'type',
-              prompt: stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '',
+              prompt,
               expected: expected,
               options: options,
               alternatives: stepData.alternatives || stepData.alt_answers || stepData.content?.alternatives || stepData.content?.alt_answers || []
