@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -126,6 +126,9 @@ export default function LessonScreen() {
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
   
+  // Cache for Type Practice options to prevent reshuffling
+  const [typeOptionsCache, setTypeOptionsCache] = useState<{[key: string]: string[]}>({});
+  
   // Purchase flow states
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
@@ -172,6 +175,11 @@ export default function LessonScreen() {
       ]).start();
     }
   }, [showResult, isCorrect]);
+
+  // Clear type options cache when lesson changes
+  useEffect(() => {
+    setTypeOptionsCache({});
+  }, [lessonId]);
 
   // Check if user came from notification
   useEffect(() => {
@@ -665,10 +673,14 @@ export default function LessonScreen() {
           
           if (stepData.stepType === 'typing') {
             console.log('✏️ Typing Step Data:', stepData);
+            const expected = stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '';
+            const options = stepData.options || stepData.content?.options || null;
+            
             return {
               type: 'type',
               prompt: stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '',
-              expected: stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '',
+              expected: expected,
+              options: options,
               alternatives: stepData.alternatives || stepData.alt_answers || stepData.content?.alternatives || stepData.content?.alt_answers || []
             };
           }
@@ -814,10 +826,14 @@ export default function LessonScreen() {
           
           if (currentStepData.stepType === 'typing') {
             console.log('✏️ [ARRAY] Typing Step Data:', JSON.stringify(currentStepData, null, 2));
+            const expected = currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '';
+            const options = currentStepData.options || currentStepData.content?.options || null;
+            
             return {
               type: 'type',
               prompt: currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '',
-              expected: currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '',
+              expected: expected,
+              options: options,
               alternatives: currentStepData.alternatives || currentStepData.alt_answers || currentStepData.content?.alternatives || currentStepData.content?.alt_answers || []
             };
           }
@@ -945,6 +961,83 @@ export default function LessonScreen() {
           const fillInPrompt = generateFillInText(word);
           const missingLetters = getMissingLetters(word);
           
+          // Generate incorrect options for multiple choice
+          const generateIncorrectOptions = (correctAnswer: string, wordContext: string): string[] => {
+            const incorrect: string[] = [];
+            const vowels = ['a', 'e', 'i', 'o', 'u'];
+            const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'z'];
+            
+            // Strategy 1: Swap vowels
+            if (correctAnswer.length > 0) {
+              let swappedVowel = correctAnswer;
+              for (let i = 0; i < correctAnswer.length; i++) {
+                if (vowels.includes(correctAnswer[i].toLowerCase())) {
+                  const randomVowel = vowels[Math.floor(Math.random() * vowels.length)];
+                  swappedVowel = correctAnswer.substring(0, i) + randomVowel + correctAnswer.substring(i + 1);
+                  break;
+                }
+              }
+              if (swappedVowel !== correctAnswer) {
+                incorrect.push(swappedVowel);
+              }
+            }
+            
+            // Strategy 2: Replace consonant
+            if (correctAnswer.length > 0 && incorrect.length < 2) {
+              let swappedConsonant = correctAnswer;
+              for (let i = 0; i < correctAnswer.length; i++) {
+                if (consonants.includes(correctAnswer[i].toLowerCase())) {
+                  const randomConsonant = consonants[Math.floor(Math.random() * consonants.length)];
+                  swappedConsonant = correctAnswer.substring(0, i) + randomConsonant + correctAnswer.substring(i + 1);
+                  break;
+                }
+              }
+              if (swappedConsonant !== correctAnswer && !incorrect.includes(swappedConsonant)) {
+                incorrect.push(swappedConsonant);
+              }
+            }
+            
+            // Strategy 3: Reverse characters
+            if (incorrect.length < 2 && correctAnswer.length > 1) {
+              const reversed = correctAnswer.split('').reverse().join('');
+              if (reversed !== correctAnswer && !incorrect.includes(reversed)) {
+                incorrect.push(reversed);
+              }
+            }
+            
+            // Fallback: Add random letter combinations if we don't have 2 options yet
+            while (incorrect.length < 2) {
+              const randomOption = Array.from({ length: correctAnswer.length }, () => 
+                Math.random() > 0.5 
+                  ? vowels[Math.floor(Math.random() * vowels.length)]
+                  : consonants[Math.floor(Math.random() * consonants.length)]
+              ).join('');
+              
+              if (randomOption !== correctAnswer && !incorrect.includes(randomOption)) {
+                incorrect.push(randomOption);
+              }
+            }
+            
+            return incorrect.slice(0, 2);
+          };
+          
+          // Generate or retrieve cached options
+          const cacheKey = `${lessonId}-step3-${missingLetters}`;
+          let allOptions: string[];
+          
+          if (typeOptionsCache[cacheKey]) {
+            // Use cached options
+            allOptions = typeOptionsCache[cacheKey];
+          } else {
+            // Generate new options, shuffle, and cache
+            const incorrectOptions = generateIncorrectOptions(missingLetters, word);
+            allOptions = [missingLetters, ...incorrectOptions].sort(() => Math.random() - 0.5);
+            // Cache using setTimeout to avoid state update during render
+            setTimeout(() => {
+              setTypeOptionsCache(prev => ({ ...prev, [cacheKey]: allOptions }));
+            }, 0);
+          }
+          
           // Add debug logging to help identify issues
           console.log('Step 3 Debug:', {
             word,
@@ -952,13 +1045,16 @@ export default function LessonScreen() {
             wordLength: word.length,
             fillInPrompt,
             missingLetters,
-            missingLettersLength: missingLetters.length
+            missingLettersLength: missingLetters.length,
+            allOptions,
+            fromCache: !!typeOptionsCache[cacheKey]
           });
           
           return {
             type: 'type',
             prompt: `${fillInPrompt} = ${translation}`,
             expected: missingLetters,
+            options: allOptions,
             alternatives: [
               missingLetters.toLowerCase(), 
               missingLetters.toUpperCase(),
@@ -1004,7 +1100,11 @@ export default function LessonScreen() {
     }
   };
 
-  const stepData = getCurrentStepData();
+  // Memoize stepData to prevent regeneration of options on every render
+  // This is critical for Type Practice step where options are randomly generated
+  const stepData = useMemo(() => {
+    return getCurrentStepData();
+  }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
   // Complete lesson mutation - matching web exactly
   const completeLessonMutation = useMutation({
@@ -1761,39 +1861,102 @@ export default function LessonScreen() {
                     <Text style={styles.promptText}>{stepData.prompt}</Text>
                   </View>
 
-                  <Animated.View 
-                    style={[
-                      styles.inputContainer,
-                      showResult && isCorrect && {
-                        transform: [{ scale: correctAnswerScale }],
-                        shadowColor: theme.colors.checkmarkGreen,
-                        shadowOffset: { width: 0, height: 0 },
-                        shadowOpacity: correctAnswerBorder,
-                        shadowRadius: correctAnswerBorder.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0, 12]
-                        }),
-                        elevation: 8,
-                      }
-                    ]}
-                  >
-                    <TextInput
-                      style={[
-                        styles.textInput,
-                        showResult && isCorrect && styles.correctInput,
-                        showResult && !isCorrect && styles.incorrectInput,
-                      ]}
-                      value={selectedAnswer}
-                      onChangeText={setSelectedAnswer}
-                      placeholder="Type your answer..."
-                      editable={!showResult}
-                    />
-                    {showResult && !isCorrect && (
-                      <Text style={styles.correctAnswerHint}>
-                        Correct answer: {stepData.expected}
+                  {/* Show selected answer preview if an option is selected */}
+                  {selectedAnswer && stepData.options && stepData.options.length > 0 && (
+                    <View style={styles.previewContainer}>
+                      <Text style={styles.previewLabel}>Preview:</Text>
+                      <Text style={styles.previewText}>
+                        {stepData.prompt.split('=')[0].replace(/_/g, selectedAnswer)} = {stepData.prompt.split('=')[1]}
                       </Text>
-                    )}
-                  </Animated.View>
+                    </View>
+                  )}
+
+                  {/* Multiple choice options if available */}
+                  {stepData.options && stepData.options.length > 0 ? (
+                    <View style={styles.optionsContainer}>
+                      {stepData.options.map((option: string, index: number) => {
+                        const isCorrectAnswer = showResult && option === stepData.expected;
+                        const shouldAnimate = isCorrectAnswer && isCorrect;
+                        
+                        return (
+                          <Animated.View
+                            key={index}
+                            style={[
+                              shouldAnimate && {
+                                transform: [{ scale: correctAnswerScale }],
+                                shadowColor: theme.colors.checkmarkGreen,
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: correctAnswerBorder,
+                                shadowRadius: correctAnswerBorder.interpolate({
+                                  inputRange: [0, 1],
+                                  outputRange: [0, 12]
+                                }),
+                                elevation: 8,
+                              }
+                            ]}
+                          >
+                            <TouchableOpacity
+                              style={[
+                                styles.optionButton,
+                                selectedAnswer === option && styles.selectedOption,
+                                showResult && option === stepData.expected && styles.correctOption,
+                                showResult && selectedAnswer === option && option !== stepData.expected && styles.incorrectOption,
+                              ]}
+                              onPress={() => !showResult && setSelectedAnswer(option)}
+                              disabled={showResult}
+                            >
+                              <Text style={[
+                                styles.optionText,
+                                selectedAnswer === option && styles.selectedOptionText,
+                                showResult && option === stepData.expected && styles.correctOptionText,
+                                showResult && selectedAnswer === option && option !== stepData.expected && styles.incorrectOptionText,
+                              ]}>
+                                {option}
+                              </Text>
+                              {showResult && option === stepData.expected && (
+                                <Text style={styles.checkmark}>✓</Text>
+                              )}
+                            </TouchableOpacity>
+                          </Animated.View>
+                        );
+                      })}
+                    </View>
+                  ) : (
+                    // Fallback to text input if no options provided
+                    <Animated.View 
+                      style={[
+                        styles.inputContainer,
+                        showResult && isCorrect && {
+                          transform: [{ scale: correctAnswerScale }],
+                          shadowColor: theme.colors.checkmarkGreen,
+                          shadowOffset: { width: 0, height: 0 },
+                          shadowOpacity: correctAnswerBorder,
+                          shadowRadius: correctAnswerBorder.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0, 12]
+                          }),
+                          elevation: 8,
+                        }
+                      ]}
+                    >
+                      <TextInput
+                        style={[
+                          styles.textInput,
+                          showResult && isCorrect && styles.correctInput,
+                          showResult && !isCorrect && styles.incorrectInput,
+                        ]}
+                        value={selectedAnswer}
+                        onChangeText={setSelectedAnswer}
+                        placeholder="Type your answer..."
+                        editable={!showResult}
+                      />
+                      {showResult && !isCorrect && (
+                        <Text style={styles.correctAnswerHint}>
+                          Correct answer: {stepData.expected}
+                        </Text>
+                      )}
+                    </Animated.View>
+                  )}
                 </>
               )}
 
@@ -2512,5 +2675,27 @@ const styles = StyleSheet.create({
     color: theme.colors.secondary700,
     textAlign: 'center',
     lineHeight: theme.fontSize.base * 1.5,
+  },
+
+  // Preview Container for Type Practice
+  previewContainer: {
+    backgroundColor: theme.colors.muted,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    marginBottom: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  previewLabel: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    marginBottom: theme.spacing.xs,
+    fontWeight: '600' as any,
+  },
+  previewText: {
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.primary,
+    fontWeight: '700' as any,
+    textAlign: 'center',
   },
 });
