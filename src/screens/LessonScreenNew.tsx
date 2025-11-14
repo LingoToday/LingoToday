@@ -488,25 +488,38 @@ export default function LessonScreen() {
     // Extract the word part before the "=" (e.g., "Buon__orno" from "Buon__orno = Good morning")
     const wordWithGap = prompt.split('=')[0]?.trim() || '';
     
-    // Find the underscore pattern
-    const underscoreMatch = wordWithGap.match(/_+/);
-    if (!underscoreMatch) {
+    // Find all underscore patterns - if there are multiple gaps, trigger fallback
+    const allUnderscores = wordWithGap.match(/_+/g);
+    if (!allUnderscores || allUnderscores.length === 0) {
       // No underscores found, log warning and return empty string
       console.warn('extractMissingLetters: no underscores found in prompt', { prompt, wordWithGap });
       return '';
     }
     
-    const underscoreIndex = wordWithGap.indexOf(underscoreMatch[0]);
-    const underscoreLength = underscoreMatch[0].length;
+    if (allUnderscores.length > 1) {
+      // Multiple gaps detected - too complex for extraction, trigger fallback
+      console.warn('extractMissingLetters: multiple gaps detected, triggering fallback', { prompt, wordWithGap, gaps: allUnderscores.length });
+      return '';
+    }
+    
+    const underscoreMatch = allUnderscores[0];
+    const underscoreIndex = wordWithGap.indexOf(underscoreMatch);
+    const underscoreLength = underscoreMatch.length;
     
     // Validate that the fullWord is long enough
     if (fullWord.length < underscoreIndex + underscoreLength) {
-      console.warn('extractMissingLetters: fullWord too short', { fullWord, underscoreIndex, underscoreLength });
+      console.warn('extractMissingLetters: fullWord too short, triggering fallback', { fullWord, underscoreIndex, underscoreLength });
       return '';
     }
     
     // Extract the missing letters from the full word at the underscore position
     const missingLetters = fullWord.substring(underscoreIndex, underscoreIndex + underscoreLength);
+    
+    // Validate extraction looks reasonable (not empty, only letters)
+    if (!missingLetters || missingLetters.length === 0) {
+      console.warn('extractMissingLetters: extraction produced empty result, triggering fallback', { prompt, fullWord });
+      return '';
+    }
     
     console.log('extractMissingLetters:', { prompt, fullWord, wordWithGap, underscoreIndex, underscoreLength, missingLetters });
     
@@ -782,8 +795,14 @@ export default function LessonScreen() {
             const fullWord = stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '';
             const prompt = stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '';
             
-            // Extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
-            const missingLetters = extractMissingLetters(prompt, fullWord);
+            // Try to extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
+            let missingLetters = extractMissingLetters(prompt, fullWord);
+            
+            // FALLBACK: If extraction fails, use full word to ensure lesson remains solvable
+            if (!missingLetters && fullWord) {
+              console.warn('✏️ [OBJECT] Extraction failed, falling back to full word:', { prompt, fullWord });
+              missingLetters = fullWord;
+            }
             
             console.log('✏️ Extracted missing letters:', { prompt, fullWord, missingLetters });
             
@@ -951,8 +970,14 @@ export default function LessonScreen() {
             const fullWord = currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '';
             const prompt = currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '';
             
-            // Extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
-            const missingLetters = extractMissingLetters(prompt, fullWord);
+            // Try to extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
+            let missingLetters = extractMissingLetters(prompt, fullWord);
+            
+            // FALLBACK: If extraction fails, use full word to ensure lesson remains solvable
+            if (!missingLetters && fullWord) {
+              console.warn('✏️ [ARRAY] Extraction failed, falling back to full word:', { prompt, fullWord });
+              missingLetters = fullWord;
+            }
             
             console.log('✏️ [ARRAY] Extracted missing letters:', { prompt, fullWord, missingLetters });
             
