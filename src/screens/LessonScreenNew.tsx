@@ -425,8 +425,8 @@ export default function LessonScreen() {
       if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
         const quickCheckStep = currentLesson.lesson.steps.find((step: any) => step.stepType === 'quick_check');
         if (quickCheckStep) {
-          const options = quickCheckStep.options || quickCheckStep.content?.options || quickCheckStep.content?.mcq?.options || [];
-          let answer = quickCheckStep.answer || quickCheckStep.content?.answer || quickCheckStep.content?.mcq?.answer;
+          const options = (quickCheckStep as any).options || quickCheckStep.content?.options || quickCheckStep.content?.mcq?.options || [];
+          let answer = (quickCheckStep as any).answer || quickCheckStep.content?.answer || quickCheckStep.content?.mcq?.answer;
           
           // If answer is a number (index), map it to the corresponding option string
           if (typeof answer === 'number' && options[answer]) {
@@ -445,9 +445,9 @@ export default function LessonScreen() {
         
         for (const stepKey of stepKeys) {
           const stepData = currentLesson.lesson.steps[stepKey as keyof typeof currentLesson.lesson.steps];
-          if (stepData && stepData.stepType === 'quick_check') {
-            const options = stepData.options || stepData.content?.options || stepData.content?.mcq?.options || [];
-            let answer = stepData.answer || stepData.content?.answer || stepData.content?.mcq?.answer;
+          if (stepData && (stepData as any).stepType === 'quick_check') {
+            const options = (stepData as any).options || (stepData as any).content?.options || (stepData as any).content?.mcq?.options || [];
+            let answer = (stepData as any).answer || (stepData as any).content?.answer || (stepData as any).content?.mcq?.answer;
             
             // If answer is a number (index), map it to the corresponding option string
             if (typeof answer === 'number' && options[answer]) {
