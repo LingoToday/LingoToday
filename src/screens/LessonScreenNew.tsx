@@ -1121,7 +1121,29 @@ export default function LessonScreen() {
   // Memoize stepData to prevent regeneration of options on every render
   // This is critical for Type Practice step where options are randomly generated
   const stepData = useMemo(() => {
-    return getCurrentStepData();
+    const data = getCurrentStepData();
+    
+    // DEBUG: Show Type Practice step data on mobile for troubleshooting
+    if (data && data.type === 'type') {
+      console.log('🔍 TYPE PRACTICE DEBUG:', {
+        prompt: data.prompt,
+        expected: data.expected,
+        options: data.options,
+        optionsLength: data.options?.length,
+        hasOptions: !!data.options && data.options.length > 0
+      });
+      
+      // Show alert on mobile to verify options are present
+      setTimeout(() => {
+        Alert.alert(
+          'Type Practice Debug',
+          `Options: ${data.options ? JSON.stringify(data.options) : 'NULL'}\nLength: ${data.options?.length || 0}\nExpected: ${data.expected}`,
+          [{ text: 'OK' }]
+        );
+      }, 500);
+    }
+    
+    return data;
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
   // Complete lesson mutation - matching web exactly
