@@ -126,8 +126,8 @@ export default function LessonScreen() {
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
   const [fallbackLesson, setFallbackLesson] = useState<Lesson | null>(null);
   
-  // Cache for Type Practice options to prevent reshuffling
-  const [typeOptionsCache, setTypeOptionsCache] = useState<{[key: string]: string[]}>({});
+  // Cache for Type Practice options to prevent reshuffling - use ref for synchronous updates
+  const typeOptionsCache = useRef<{[key: string]: string[]}>({});
   
   // Purchase flow states
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -178,7 +178,7 @@ export default function LessonScreen() {
 
   // Clear type options cache when lesson changes
   useEffect(() => {
-    setTypeOptionsCache({});
+    typeOptionsCache.current = {};
   }, [lessonId]);
 
   // Check if user came from notification
@@ -476,6 +476,77 @@ export default function LessonScreen() {
       console.error('Error extracting quick check data:', error);
       return null;
     }
+  };
+
+  // Helper function to generate multiple choice options for Type Practice steps
+  const generateTypeOptions = (correctAnswer: string, wordContext: string, cacheKey: string): string[] => {
+    // Check cache first - return a copy to avoid mutation
+    if (typeOptionsCache.current[cacheKey]) {
+      return [...typeOptionsCache.current[cacheKey]];
+    }
+    
+    const incorrect: string[] = [];
+    const vowels = ['a', 'e', 'i', 'o', 'u'];
+    const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
+    
+    // Strategy 1: Swap vowels
+    if (correctAnswer.length > 0) {
+      let swappedVowel = correctAnswer;
+      for (let i = 0; i < correctAnswer.length; i++) {
+        if (vowels.includes(correctAnswer[i].toLowerCase())) {
+          const randomVowel = vowels[Math.floor(Math.random() * vowels.length)];
+          swappedVowel = correctAnswer.substring(0, i) + randomVowel + correctAnswer.substring(i + 1);
+          break;
+        }
+      }
+      if (swappedVowel !== correctAnswer) {
+        incorrect.push(swappedVowel);
+      }
+    }
+    
+    // Strategy 2: Replace consonant
+    if (correctAnswer.length > 0 && incorrect.length < 2) {
+      let swappedConsonant = correctAnswer;
+      for (let i = 0; i < correctAnswer.length; i++) {
+        if (consonants.includes(correctAnswer[i].toLowerCase())) {
+          const randomConsonant = consonants[Math.floor(Math.random() * consonants.length)];
+          swappedConsonant = correctAnswer.substring(0, i) + randomConsonant + correctAnswer.substring(i + 1);
+          break;
+        }
+      }
+      if (swappedConsonant !== correctAnswer && !incorrect.includes(swappedConsonant)) {
+        incorrect.push(swappedConsonant);
+      }
+    }
+    
+    // Strategy 3: Reverse characters
+    if (incorrect.length < 2 && correctAnswer.length > 1) {
+      const reversed = correctAnswer.split('').reverse().join('');
+      if (reversed !== correctAnswer && !incorrect.includes(reversed)) {
+        incorrect.push(reversed);
+      }
+    }
+    
+    // Fallback: Add random letter combinations if we don't have 2 options yet
+    while (incorrect.length < 2) {
+      const randomOption = Array.from({ length: correctAnswer.length }, () => 
+        Math.random() > 0.5 
+          ? vowels[Math.floor(Math.random() * vowels.length)]
+          : consonants[Math.floor(Math.random() * consonants.length)]
+      ).join('');
+      
+      if (randomOption !== correctAnswer && !incorrect.includes(randomOption)) {
+        incorrect.push(randomOption);
+      }
+    }
+    
+    // Shuffle all options
+    const allOptions = [correctAnswer, ...incorrect.slice(0, 2)].sort(() => Math.random() - 0.5);
+    
+    // Cache the result synchronously
+    typeOptionsCache.current[cacheKey] = allOptions;
+    
+    return allOptions;
   };
 
   // Get current step data - matching web logic exactly
@@ -827,11 +898,21 @@ export default function LessonScreen() {
           if (currentStepData.stepType === 'typing') {
             console.log('✏️ [ARRAY] Typing Step Data:', JSON.stringify(currentStepData, null, 2));
             const expected = currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '';
-            const options = currentStepData.options || currentStepData.content?.options || null;
+            const prompt = currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '';
+            
+            // Generate options if not provided by database or if empty array
+            let options = currentStepData.options || currentStepData.content?.options || null;
+            if ((!options || options.length === 0) && expected) {
+              // Extract word context from prompt for better option generation
+              const wordContext = prompt.split('=')[0]?.trim() || '';
+              const cacheKey = `${lessonId}-${currentStep}-${expected}`;
+              options = generateTypeOptions(expected, wordContext, cacheKey);
+              console.log('✏️ Generated options for typing step:', { expected, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
+            }
             
             return {
               type: 'type',
-              prompt: currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '',
+              prompt,
               expected: expected,
               options: options,
               alternatives: currentStepData.alternatives || currentStepData.alt_answers || currentStepData.content?.alternatives || currentStepData.content?.alt_answers || []
@@ -961,82 +1042,9 @@ export default function LessonScreen() {
           const fillInPrompt = generateFillInText(word);
           const missingLetters = getMissingLetters(word);
           
-          // Generate incorrect options for multiple choice
-          const generateIncorrectOptions = (correctAnswer: string, wordContext: string): string[] => {
-            const incorrect: string[] = [];
-            const vowels = ['a', 'e', 'i', 'o', 'u'];
-            const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'z'];
-            
-            // Strategy 1: Swap vowels
-            if (correctAnswer.length > 0) {
-              let swappedVowel = correctAnswer;
-              for (let i = 0; i < correctAnswer.length; i++) {
-                if (vowels.includes(correctAnswer[i].toLowerCase())) {
-                  const randomVowel = vowels[Math.floor(Math.random() * vowels.length)];
-                  swappedVowel = correctAnswer.substring(0, i) + randomVowel + correctAnswer.substring(i + 1);
-                  break;
-                }
-              }
-              if (swappedVowel !== correctAnswer) {
-                incorrect.push(swappedVowel);
-              }
-            }
-            
-            // Strategy 2: Replace consonant
-            if (correctAnswer.length > 0 && incorrect.length < 2) {
-              let swappedConsonant = correctAnswer;
-              for (let i = 0; i < correctAnswer.length; i++) {
-                if (consonants.includes(correctAnswer[i].toLowerCase())) {
-                  const randomConsonant = consonants[Math.floor(Math.random() * consonants.length)];
-                  swappedConsonant = correctAnswer.substring(0, i) + randomConsonant + correctAnswer.substring(i + 1);
-                  break;
-                }
-              }
-              if (swappedConsonant !== correctAnswer && !incorrect.includes(swappedConsonant)) {
-                incorrect.push(swappedConsonant);
-              }
-            }
-            
-            // Strategy 3: Reverse characters
-            if (incorrect.length < 2 && correctAnswer.length > 1) {
-              const reversed = correctAnswer.split('').reverse().join('');
-              if (reversed !== correctAnswer && !incorrect.includes(reversed)) {
-                incorrect.push(reversed);
-              }
-            }
-            
-            // Fallback: Add random letter combinations if we don't have 2 options yet
-            while (incorrect.length < 2) {
-              const randomOption = Array.from({ length: correctAnswer.length }, () => 
-                Math.random() > 0.5 
-                  ? vowels[Math.floor(Math.random() * vowels.length)]
-                  : consonants[Math.floor(Math.random() * consonants.length)]
-              ).join('');
-              
-              if (randomOption !== correctAnswer && !incorrect.includes(randomOption)) {
-                incorrect.push(randomOption);
-              }
-            }
-            
-            return incorrect.slice(0, 2);
-          };
-          
-          // Generate or retrieve cached options
+          // Generate options using the helper function
           const cacheKey = `${lessonId}-step3-${missingLetters}`;
-          let allOptions: string[];
-          
-          if (typeOptionsCache[cacheKey]) {
-            // Use cached options
-            allOptions = typeOptionsCache[cacheKey];
-          } else {
-            // Generate new options, shuffle, and cache
-            const incorrectOptions = generateIncorrectOptions(missingLetters, word);
-            allOptions = [missingLetters, ...incorrectOptions].sort(() => Math.random() - 0.5);
-            // Cache using setTimeout to avoid state update during render
-            setTimeout(() => {
-              setTypeOptionsCache(prev => ({ ...prev, [cacheKey]: allOptions }));
-            }, 0);
-          }
+          const allOptions = generateTypeOptions(missingLetters, word, cacheKey);
           
           // Add debug logging to help identify issues
           console.log('Step 3 Debug:', {
@@ -1047,7 +1055,7 @@ export default function LessonScreen() {
             missingLetters,
             missingLettersLength: missingLetters.length,
             allOptions,
-            fromCache: !!typeOptionsCache[cacheKey]
+            fromCache: !!typeOptionsCache.current[cacheKey]
           });
           
           return {
