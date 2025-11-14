@@ -478,6 +478,41 @@ export default function LessonScreen() {
     }
   };
 
+  // Helper function to extract missing letters from a prompt with underscores
+  const extractMissingLetters = (prompt: string, fullWord: string): string => {
+    if (!prompt || !fullWord) {
+      console.warn('extractMissingLetters: missing prompt or fullWord', { prompt, fullWord });
+      return '';
+    }
+    
+    // Extract the word part before the "=" (e.g., "Buon__orno" from "Buon__orno = Good morning")
+    const wordWithGap = prompt.split('=')[0]?.trim() || '';
+    
+    // Find the underscore pattern
+    const underscoreMatch = wordWithGap.match(/_+/);
+    if (!underscoreMatch) {
+      // No underscores found, log warning and return empty string
+      console.warn('extractMissingLetters: no underscores found in prompt', { prompt, wordWithGap });
+      return '';
+    }
+    
+    const underscoreIndex = wordWithGap.indexOf(underscoreMatch[0]);
+    const underscoreLength = underscoreMatch[0].length;
+    
+    // Validate that the fullWord is long enough
+    if (fullWord.length < underscoreIndex + underscoreLength) {
+      console.warn('extractMissingLetters: fullWord too short', { fullWord, underscoreIndex, underscoreLength });
+      return '';
+    }
+    
+    // Extract the missing letters from the full word at the underscore position
+    const missingLetters = fullWord.substring(underscoreIndex, underscoreIndex + underscoreLength);
+    
+    console.log('extractMissingLetters:', { prompt, fullWord, wordWithGap, underscoreIndex, underscoreLength, missingLetters });
+    
+    return missingLetters;
+  };
+
   // Helper function to generate multiple choice options for Type Practice steps
   const generateTypeOptions = (correctAnswer: string, wordContext: string, cacheKey: string): string[] => {
     // Check cache first - return a copy to avoid mutation
@@ -744,23 +779,29 @@ export default function LessonScreen() {
           
           if (stepData.stepType === 'typing') {
             console.log('✏️ [OBJECT] Typing Step Data:', stepData);
-            const expected = stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '';
+            const fullWord = stepData.expected || stepData.expectedAnswer || stepData.content?.expected || stepData.content?.expected_answer || '';
             const prompt = stepData.prompt || stepData.type_prompt || stepData.content?.prompt || stepData.content?.type_prompt || '';
+            
+            // Extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
+            const missingLetters = extractMissingLetters(prompt, fullWord);
+            
+            console.log('✏️ Extracted missing letters:', { prompt, fullWord, missingLetters });
             
             // Generate options if not provided by database or if empty array
             let options = stepData.options || stepData.content?.options || null;
-            if ((!options || options.length === 0) && expected) {
+            if ((!options || options.length === 0) && missingLetters) {
               // Extract word context from prompt for better option generation
               const wordContext = prompt.split('=')[0]?.trim() || '';
-              const cacheKey = `${lessonId}-${currentStep}-${expected}`;
-              options = generateTypeOptions(expected, wordContext, cacheKey);
-              console.log('✏️ [OBJECT] Generated options for typing step:', { expected, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
+              const cacheKey = `${lessonId}-${currentStep}-${missingLetters}`;
+              options = generateTypeOptions(missingLetters, wordContext, cacheKey);
+              console.log('✏️ [OBJECT] Generated options for typing step:', { missingLetters, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
             }
             
             return {
               type: 'type',
               prompt,
-              expected: expected,
+              expected: missingLetters,
+              fullWord: fullWord,
               options: options,
               alternatives: stepData.alternatives || stepData.alt_answers || stepData.content?.alternatives || stepData.content?.alt_answers || []
             };
@@ -907,23 +948,29 @@ export default function LessonScreen() {
           
           if (currentStepData.stepType === 'typing') {
             console.log('✏️ [ARRAY] Typing Step Data:', JSON.stringify(currentStepData, null, 2));
-            const expected = currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '';
+            const fullWord = currentStepData.expected || currentStepData.expectedAnswer || currentStepData.content?.expected || currentStepData.content?.expected_answer || '';
             const prompt = currentStepData.prompt || currentStepData.type_prompt || currentStepData.content?.prompt || currentStepData.content?.type_prompt || '';
+            
+            // Extract just the missing letters from the prompt (e.g., "gi" from "Buon__orno")
+            const missingLetters = extractMissingLetters(prompt, fullWord);
+            
+            console.log('✏️ [ARRAY] Extracted missing letters:', { prompt, fullWord, missingLetters });
             
             // Generate options if not provided by database or if empty array
             let options = currentStepData.options || currentStepData.content?.options || null;
-            if ((!options || options.length === 0) && expected) {
+            if ((!options || options.length === 0) && missingLetters) {
               // Extract word context from prompt for better option generation
               const wordContext = prompt.split('=')[0]?.trim() || '';
-              const cacheKey = `${lessonId}-${currentStep}-${expected}`;
-              options = generateTypeOptions(expected, wordContext, cacheKey);
-              console.log('✏️ Generated options for typing step:', { expected, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
+              const cacheKey = `${lessonId}-${currentStep}-${missingLetters}`;
+              options = generateTypeOptions(missingLetters, wordContext, cacheKey);
+              console.log('✏️ [ARRAY] Generated options for typing step:', { missingLetters, options, fromCache: typeOptionsCache.current[cacheKey] !== undefined });
             }
             
             return {
               type: 'type',
               prompt,
-              expected: expected,
+              expected: missingLetters,
+              fullWord: fullWord,
               options: options,
               alternatives: currentStepData.alternatives || currentStepData.alt_answers || currentStepData.content?.alternatives || currentStepData.content?.alt_answers || []
             };
@@ -1121,29 +1168,7 @@ export default function LessonScreen() {
   // Memoize stepData to prevent regeneration of options on every render
   // This is critical for Type Practice step where options are randomly generated
   const stepData = useMemo(() => {
-    const data = getCurrentStepData();
-    
-    // DEBUG: Show Type Practice step data on mobile for troubleshooting
-    if (data && data.type === 'type') {
-      console.log('🔍 TYPE PRACTICE DEBUG:', {
-        prompt: data.prompt,
-        expected: data.expected,
-        options: data.options,
-        optionsLength: data.options?.length,
-        hasOptions: !!data.options && data.options.length > 0
-      });
-      
-      // Show alert on mobile to verify options are present
-      setTimeout(() => {
-        Alert.alert(
-          'Type Practice Debug',
-          `Options: ${data.options ? JSON.stringify(data.options) : 'NULL'}\nLength: ${data.options?.length || 0}\nExpected: ${data.expected}`,
-          [{ text: 'OK' }]
-        );
-      }, 500);
-    }
-    
-    return data;
+    return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
   // Complete lesson mutation - matching web exactly
@@ -1898,18 +1923,36 @@ export default function LessonScreen() {
                   <View style={styles.quickCheckHeader}>
                     <Text style={styles.quickCheckTitle}>{currentStep}. Type Practice</Text>
                     <Text style={styles.quickCheckQuestion}>Complete the word:</Text>
-                    <Text style={styles.promptText}>{stepData.prompt}</Text>
-                  </View>
-
-                  {/* Show selected answer preview if an option is selected */}
-                  {selectedAnswer && stepData.options && stepData.options.length > 0 && (
-                    <View style={styles.previewContainer}>
-                      <Text style={styles.previewLabel}>Preview:</Text>
-                      <Text style={styles.previewText}>
-                        {stepData.prompt.split('=')[0].replace(/_/g, selectedAnswer)} = {stepData.prompt.split('=')[1]}
-                      </Text>
+                    
+                    {/* Show word with selected letters inline in green */}
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: theme.spacing.sm }}>
+                      {(() => {
+                        const wordPart = stepData.prompt.split('=')[0]?.trim() || '';
+                        const translation = stepData.prompt.split('=')[1]?.trim() || '';
+                        const underscoreMatch = wordPart.match(/_+/);
+                        
+                        if (!underscoreMatch) {
+                          return <Text style={styles.promptText}>{stepData.prompt}</Text>;
+                        }
+                        
+                        const underscoreIndex = wordPart.indexOf(underscoreMatch[0]);
+                        const beforeGap = wordPart.substring(0, underscoreIndex);
+                        const afterGap = wordPart.substring(underscoreIndex + underscoreMatch[0].length);
+                        
+                        return (
+                          <>
+                            <Text style={styles.promptText}>{beforeGap}</Text>
+                            {selectedAnswer ? (
+                              <Text style={[styles.promptText, { color: theme.colors.primary }]}>{selectedAnswer}</Text>
+                            ) : (
+                              <Text style={styles.promptText}>{underscoreMatch[0]}</Text>
+                            )}
+                            <Text style={styles.promptText}>{afterGap} = {translation}</Text>
+                          </>
+                        );
+                      })()}
                     </View>
-                  )}
+                  </View>
 
                   {/* Multiple choice options if available */}
                   {stepData.options && stepData.options.length > 0 ? (
