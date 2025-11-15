@@ -73,6 +73,16 @@ function SignInScreen() {
   return <LoginScreenNew />;
 }
 
+// Loading Screen component
+function LoadingScreen() {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color={theme.colors.primary} />
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
+  );
+}
+
 // Main App Navigator
 interface AppNavigatorProps {
   isAuthenticated: boolean;
@@ -189,12 +199,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen 
             name="Landing" 
-            component={() => (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
-                <Text style={styles.loadingText}>Loading...</Text>
-              </View>
-            )} 
+            component={LoadingScreen} 
           />
         </Stack.Navigator>
       </NavigationContainer>
