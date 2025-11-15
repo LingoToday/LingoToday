@@ -9,17 +9,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
 
 import { theme } from '../lib/theme';
 import NotificationSettings from '../components/NotificationSettings';
 
 export default function NotificationSettingsScreen() {
   const navigation = useNavigation();
-
-  const handleContactSupport = async () => {
-    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/contact');
-  };
 
   return (
     <View style={styles.container}>
@@ -44,20 +39,6 @@ export default function NotificationSettingsScreen() {
         >
           <View style={styles.mainContainer}>
             <NotificationSettings />
-
-            {/* Contact Support Section */}
-            <View style={styles.supportSection}>
-              <TouchableOpacity 
-                style={styles.supportButton}
-                onPress={handleContactSupport}
-              >
-                <View style={styles.supportButtonContent}>
-                  <Ionicons name="help-circle-outline" size={20} color={theme.colors.primary} />
-                  <Text style={styles.supportButtonText}>Contact Support</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.mutedForeground} />
-              </TouchableOpacity>
-            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -109,29 +90,5 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     paddingVertical: 24,
-  },
-  supportSection: {
-    marginTop: 24,
-    backgroundColor: theme.colors.card,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  supportButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  supportButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  supportButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: theme.colors.foreground,
   },
 });
