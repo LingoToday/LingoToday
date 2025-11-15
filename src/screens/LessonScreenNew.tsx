@@ -1313,6 +1313,36 @@ export default function LessonScreen() {
     return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
+  // Memoize video choice options from step 2's quick check data
+  const videoChoiceOptions = useMemo(() => {
+    if (stepData?.type === 'video_choice') {
+      const quizData = getQuickCheckData();
+      if (quizData?.options && quizData.options.length > 0) {
+        const normalizedOptions = quizData.options.map((opt: any) => {
+          if (typeof opt === 'string') return opt;
+          if (opt && typeof opt === 'object' && (opt.value || opt.label)) return opt.value || opt.label;
+          return String(opt);
+        });
+        const normalizedAnswer = typeof quizData.answer === 'string' 
+          ? quizData.answer 
+          : (quizData.answer && typeof quizData.answer === 'object' && (quizData.answer.value || quizData.answer.label))
+            ? (quizData.answer.value || quizData.answer.label)
+            : normalizedOptions[0];
+        
+        return { options: normalizedOptions, answer: normalizedAnswer };
+      }
+      const fallbackOptions = stepData.expectedAnswers 
+        ? [stepData.expectedAnswers[0], 'Buongiorno', 'Arrivederci', 'Grazie'].filter((opt, idx, arr) => arr.indexOf(opt) === idx).slice(0, 3)
+        : ['Ciao!', 'Buongiorno', 'Arrivederci'];
+      
+      return { 
+        options: fallbackOptions, 
+        answer: stepData.expectedAnswers?.[0] || fallbackOptions[0] 
+      };
+    }
+    return null;
+  }, [currentStep, currentLesson, stepData?.type, lessonId, courseId]);
+
   // Complete lesson mutation - matching web exactly
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -1409,14 +1439,21 @@ export default function LessonScreen() {
       });
     } else if (stepData.type === 'video_choice') {
       const userAnswer = normalizeText(selectedAnswer);
-      const expectedAnswers = stepData.expectedAnswers || [];
       
-      correct = expectedAnswers.some((expected: string) => {
-        const normalizedExpected = normalizeText(expected);
-        return userAnswer === normalizedExpected || 
-               normalizedExpected.includes(userAnswer) ||
-               userAnswer.includes(normalizedExpected.split(' ')[0]);
-      });
+      if (videoChoiceOptions?.answer) {
+        const normalizedExpected = normalizeText(videoChoiceOptions.answer);
+        correct = userAnswer === normalizedExpected || 
+                 normalizedExpected.includes(userAnswer) ||
+                 userAnswer.includes(normalizedExpected.split(' ')[0]);
+      } else {
+        const expectedAnswers = stepData.expectedAnswers || [];
+        correct = expectedAnswers.some((expected: string) => {
+          const normalizedExpected = normalizeText(expected);
+          return userAnswer === normalizedExpected || 
+                 normalizedExpected.includes(userAnswer) ||
+                 userAnswer.includes(normalizedExpected.split(' ')[0]);
+        });
+      }
     } else if (stepData.type === 'pro_video') {
       if (selectedAnswer === 'skip') {
         correct = true;
@@ -1783,82 +1820,68 @@ export default function LessonScreen() {
                     />
                   </View>
                   
-                  {stepData.expectedAnswers && stepData.expectedAnswers.length > 0 && (
+                  {videoChoiceOptions && videoChoiceOptions.options.length > 0 && (
                     <View style={styles.optionsContainer}>
-                      {(() => {
-                        const correctAnswer = stepData.expectedAnswers[0];
+                      {videoChoiceOptions.options.map((option: string, index: number) => {
+                        const letters = ['A', 'B', 'C', 'D'];
+                        const isCorrectAnswer = showResult && videoChoiceOptions.answer === option;
+                        const shouldAnimate = isCorrectAnswer && isCorrect;
                         
-                        const incorrectOptions = [
-                          'Buongiorno',
-                          'Arrivederci',
-                          'Grazie'
-                        ].filter(opt => opt !== correctAnswer);
-                        
-                        const allOptions = [correctAnswer, ...incorrectOptions.slice(0, 2)].sort(() => Math.random() - 0.5);
-                        const letters = ['A', 'B', 'C'];
-                        
-                        return allOptions.map((option: string, index: number) => {
-                          const isCorrectAnswer = showResult && stepData.expectedAnswers.some((ans: string) => 
-                            normalizeText(ans) === normalizeText(option)
-                          );
-                          const shouldAnimate = isCorrectAnswer && isCorrect;
-                          
-                          return (
-                            <Animated.View
-                              key={index}
+                        return (
+                          <Animated.View
+                            key={index}
+                            style={[
+                              shouldAnimate && {
+                                transform: [{ scale: correctAnswerScale }],
+                                shadowColor: theme.colors.checkmarkGreen,
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: correctAnswerBorder,
+                                shadowRadius: correctAnswerBorder.interpolate({
+                                  inputRange: [0, 1],
+                                  outputRange: [0, 12]
+                                }),
+                                elevation: 8,
+                              }
+                            ]}
+                          >
+                            <TouchableOpacity
                               style={[
-                                shouldAnimate && {
-                                  transform: [{ scale: correctAnswerScale }],
-                                  shadowColor: theme.colors.checkmarkGreen,
-                                  shadowOffset: { width: 0, height: 0 },
-                                  shadowOpacity: correctAnswerBorder,
-                                  shadowRadius: correctAnswerBorder.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [0, 12]
-                                  }),
-                                  elevation: 8,
-                                }
+                                styles.optionButton,
+                                selectedAnswer === option && styles.selectedOption,
+                                showResult && isCorrectAnswer && styles.correctOption,
+                                showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOption,
                               ]}
+                              onPress={() => !showResult && setSelectedAnswer(option)}
+                              disabled={showResult}
                             >
-                              <TouchableOpacity
-                                style={[
-                                  styles.optionButton,
-                                  selectedAnswer === option && styles.selectedOption,
-                                  showResult && isCorrectAnswer && styles.correctOption,
-                                  showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOption,
-                                ]}
-                                onPress={() => !showResult && setSelectedAnswer(option)}
-                                disabled={showResult}
-                              >
-                                <View style={styles.optionLabelContainer}>
-                                  <View style={[
-                                    styles.optionLabel,
-                                    selectedAnswer === option && styles.selectedOptionLabel
-                                  ]}>
-                                    <Text style={[
-                                      styles.optionLabelText,
-                                      selectedAnswer === option && styles.selectedOptionLabelText
-                                    ]}>
-                                      {letters[index]}
-                                    </Text>
-                                  </View>
-                                </View>
-                                <Text style={[
-                                  styles.optionText,
-                                  selectedAnswer === option && styles.selectedOptionText,
-                                  showResult && isCorrectAnswer && styles.correctOptionText,
-                                  showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOptionText,
+                              <View style={styles.optionLabelContainer}>
+                                <View style={[
+                                  styles.optionLabel,
+                                  selectedAnswer === option && styles.selectedOptionLabel
                                 ]}>
-                                  {option}
-                                </Text>
-                                {showResult && isCorrectAnswer && (
-                                  <Text style={styles.checkmark}>✓</Text>
-                                )}
-                              </TouchableOpacity>
-                            </Animated.View>
-                          );
-                        });
-                      })()}
+                                  <Text style={[
+                                    styles.optionLabelText,
+                                    selectedAnswer === option && styles.selectedOptionLabelText
+                                  ]}>
+                                    {letters[index]}
+                                  </Text>
+                                </View>
+                              </View>
+                              <Text style={[
+                                styles.optionText,
+                                selectedAnswer === option && styles.selectedOptionText,
+                                showResult && isCorrectAnswer && styles.correctOptionText,
+                                showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOptionText,
+                              ]}>
+                                {option}
+                              </Text>
+                              {showResult && isCorrectAnswer && (
+                                <Text style={styles.checkmark}>✓</Text>
+                              )}
+                            </TouchableOpacity>
+                          </Animated.View>
+                        );
+                      })}
                     </View>
                   )}
                 </>
