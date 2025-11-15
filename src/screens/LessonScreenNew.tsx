@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Animated,
+  Platform,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -132,6 +133,9 @@ export default function LessonScreen() {
   // Purchase flow states
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  
+  // Auth token for authenticated video requests
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   // Animation for correct answer
   const correctAnswerScale = useRef(new Animated.Value(1)).current;
@@ -204,6 +208,32 @@ export default function LessonScreen() {
       );
     }
   }, [user, navigation]);
+
+  // Fetch auth token for authenticated video requests
+  useEffect(() => {
+    const getAuthToken = async () => {
+      try {
+        let token: string | null = null;
+        
+        if (Platform.OS === 'web') {
+          token = localStorage.getItem('authToken');
+        } else {
+          token = await SecureStore.getItemAsync('authToken');
+        }
+        
+        if (token) {
+          setAuthToken(token);
+          console.log('✅ Auth token loaded for video streaming');
+        }
+      } catch (error) {
+        console.error('⚠️ Error fetching auth token:', error);
+      }
+    };
+    
+    if (user) {
+      getAuthToken();
+    }
+  }, [user]);
 
   // Convert language code to full name for API
   const getFullLanguageName = (lang: string) => {
@@ -712,10 +742,15 @@ export default function LessonScreen() {
             const options = stepData.content?.options || stepData.options || [];
             
             // Normalize all video URLs in options to use the streaming endpoint
-            const normalizedOptions = options.map((opt: any) => ({
-              ...opt,
-              video_url: normalizeAssetUrl(opt.video_url || '')
-            }));
+            // Extract from new API structure (video.url) or legacy formats (video_url, videoUrl)
+            const normalizedOptions = options.map((opt: any) => {
+              const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
+              console.log('🎥 [OBJECT video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
+              return {
+                ...opt,
+                video_url: normalizeAssetUrl(videoUrl)
+              };
+            });
             
             // Select default video based on user gender preference or fallback to female
             let selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'female');
@@ -742,7 +777,9 @@ export default function LessonScreen() {
             // If requiredTier is empty array, content is free - grant access to everyone
             const hasAccess = requiredTier.length === 0 || userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
             
-            const videoUrl = stepData.content?.video_url || stepData.video_url || '';
+            // Extract video URL from new API structure (content.video.url) or legacy formats
+            const videoUrl = stepData.content?.video?.url || stepData.content?.video_url || stepData.video_url || stepData.content?.videoUrl || '';
+            console.log('🎥 [OBJECT pro_video] Extracted video URL:', videoUrl);
             const fallbackVideoUrl = videoUrl.includes('lesson2.mp4') ? '/attached_assets/videos/lesson1_hi_neutral.mp4' : videoUrl;
             
             const quizData = getQuickCheckData();
@@ -867,10 +904,15 @@ export default function LessonScreen() {
             const options = currentStepData.content.options || [];
             
             // Normalize all video URLs in options to use the streaming endpoint
-            const normalizedOptions = options.map((opt: any) => ({
-              ...opt,
-              video_url: normalizeAssetUrl(opt.video_url || '')
-            }));
+            // Extract from new API structure (video.url) or legacy formats (video_url, videoUrl)
+            const normalizedOptions = options.map((opt: any) => {
+              const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
+              console.log('🎥 [ARRAY video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
+              return {
+                ...opt,
+                video_url: normalizeAssetUrl(videoUrl)
+              };
+            });
             
             // Select default video based on user gender preference or fallback to female
             let selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'female');
@@ -899,7 +941,9 @@ export default function LessonScreen() {
             // If requiredTier is empty array, content is free - grant access to everyone
             const hasAccess = requiredTier.length === 0 || userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
             
-            const videoUrl = currentStepData.content?.video_url || currentStepData.video_url || '';
+            // Extract video URL from new API structure (content.video.url) or legacy formats
+            const videoUrl = currentStepData.content?.video?.url || currentStepData.content?.video_url || currentStepData.video_url || currentStepData.content?.videoUrl || '';
+            console.log('🎥 [ARRAY pro_video] Extracted video URL:', videoUrl);
             const prompt = currentStepData.content?.prompt || currentStepData.prompt || '';
             const answerPrompt = currentStepData.content?.answer_prompt || currentStepData.answer_prompt || '';
             const expectedAnswers = currentStepData.content?.expected_answers || currentStepData.expected_answers || [];
@@ -1599,7 +1643,12 @@ export default function LessonScreen() {
                   <View style={styles.videoContainer}>
                     <Video
                       style={styles.video}
-                      source={{ uri: stepData.videoUrl }}
+                      source={{
+                        uri: stepData.videoUrl,
+                        headers: authToken ? {
+                          'Authorization': `Bearer ${authToken}`
+                        } : undefined
+                      }}
                       useNativeControls
                       resizeMode={ResizeMode.CONTAIN}
                       shouldPlay={false}
@@ -1628,7 +1677,12 @@ export default function LessonScreen() {
                   <View style={styles.videoContainer}>
                     <Video
                       style={styles.video}
-                      source={{ uri: stepData.videoUrl }}
+                      source={{
+                        uri: stepData.videoUrl,
+                        headers: authToken ? {
+                          'Authorization': `Bearer ${authToken}`
+                        } : undefined
+                      }}
                       useNativeControls
                       resizeMode={ResizeMode.CONTAIN}
                       shouldPlay={false}
@@ -1657,7 +1711,12 @@ export default function LessonScreen() {
                   <View style={styles.videoContainer}>
                     <Video
                       style={styles.video}
-                      source={{ uri: stepData.videoUrl }}
+                      source={{
+                        uri: stepData.videoUrl,
+                        headers: authToken ? {
+                          'Authorization': `Bearer ${authToken}`
+                        } : undefined
+                      }}
                       useNativeControls={stepData.hasAccess}
                       resizeMode={ResizeMode.CONTAIN}
                       shouldPlay={!stepData.hasAccess}
