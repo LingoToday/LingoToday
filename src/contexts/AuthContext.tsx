@@ -118,7 +118,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
       const response = await apiClient.login(email, password);
 
       // Handle different response formats
@@ -146,8 +145,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error('Login error:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -162,7 +159,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     notificationsEnabled?: boolean
   ) => {
     try {
-      setIsLoading(true);
       const response = await apiClient.register({
         email,
         password,
@@ -199,8 +195,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
