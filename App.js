@@ -1,62 +1,27 @@
-import React, { useEffect, useCallback } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as SplashScreen from 'expo-splash-screen';
 import AppNavigator from './src/navigation/AppNavigator';
-import { AuthProvider } from './src/contexts/AuthContext';
-import { useAuth } from './src/hooks/useAuth';
+import { AuthProvider } from './src/contexts/AuthContext'; // Import from AuthContext
+import { useAuth } from './src/hooks/useAuth'; // Import from useAuth hook
 import { SheetManagerProvider } from './src/contexts/SheetManagerContext';
 
-let splashPrevented;
-if (!splashPrevented) {
-  splashPrevented = SplashScreen.preventAutoHideAsync().catch((error) => {
-    console.warn('SplashScreen.preventAutoHideAsync error:', error);
-  });
-}
-
+// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 2,
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },
 });
 
 function AppContent() {
-  const { isAuthenticated, user, isLoading } = useAuth();
-
-  useEffect(() => {
-    async function hideSplash() {
-      if (!isLoading) {
-        try {
-          await SplashScreen.hideAsync();
-        } catch (error) {
-          console.warn('SplashScreen.hideAsync error:', error);
-        }
-      }
-    }
-    hideSplash();
-  }, [isLoading]);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (!isLoading) {
-      try {
-        await SplashScreen.hideAsync();
-      } catch (error) {
-        console.warn('SplashScreen.hideAsync error:', error);
-      }
-    }
-  }, [isLoading]);
-
-  return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      {!isLoading && <AppNavigator isAuthenticated={isAuthenticated} user={user} />}
-    </View>
-  );
+  const { isAuthenticated, user } = useAuth();
+  
+  return <AppNavigator isAuthenticated={isAuthenticated} user={user} />;
 }
 
 export default function App() {
