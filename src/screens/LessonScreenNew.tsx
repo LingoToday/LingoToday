@@ -325,6 +325,14 @@ export default function LessonScreen() {
       return url;
     }
     
+    // Handle object storage URLs - route through video streaming endpoint
+    if (url.startsWith('/replit-objstore-') || url.startsWith('replit-objstore-')) {
+      const normalizedPath = url.startsWith('/') ? url : '/' + url;
+      const fullUrl = apiBaseUrl + '/api/videos' + normalizedPath;
+      console.log('🎥 Routing object storage video through streaming endpoint:', fullUrl);
+      return fullUrl;
+    }
+    
     // Path starting with /attached_assets - prepend API base URL for backend-hosted files
     if (url.startsWith('/attached_assets/')) {
       const fullUrl = apiBaseUrl + url;
@@ -602,43 +610,6 @@ export default function LessonScreen() {
     try {
       if (!currentLesson?.lesson) return null;
       
-      // OVERRIDE: Force Italian course 1, lesson 1, step 4 to display video
-      if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson1' && currentStep === 4) {
-        console.log('🎬 OVERRIDE: Forcing video step for Italian course 1, lesson 1, step 4');
-        return {
-          type: 'pro_video',
-          videoUrl: normalizeAssetUrl('/attached_assets/videos/lesson1_hi_female.mp4'),
-          prompt: "Watch and listen to the video, then reply!",
-          answerPrompt: "Reply: 'Hi!'",
-          expectedAnswers: ["Ciao!", "Ciao"],
-          options: ["Ciao!", "Salve!", "Buongiorno!", "Arrivederci!"],
-          answer: "Ciao!",
-          hasAccess: true,
-          requiredTier: []
-        };
-      }
-      
-      // OVERRIDE: Force Italian course 1, lesson 2, step 4 to display video with paywall
-      if (language === 'italian' && courseId === 'course1' && lessonId === 'lesson2' && currentStep === 4) {
-        console.log('🎬 OVERRIDE: Forcing pro video step for Italian course 1, lesson 2, step 4');
-        const userTier = userData?.priceTier || 'free';
-        const hasAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
-        
-        const quizData = getQuickCheckData();
-        
-        return {
-          type: 'pro_video',
-          videoUrl: normalizeAssetUrl('/attached_assets/videos/lesson1_hi_female.mp4'),
-          prompt: "You meet a new friend on the street.",
-          answerPrompt: "Reply: 'Hello!'",
-          expectedAnswers: ["Salve!", "Salve", "Ciao!", "Ciao"],
-          options: quizData?.options,
-          answer: quizData?.answer,
-          hasAccess,
-          requiredTier: ['pro']
-        };
-      }
-      
       // Handle IRL video lessons
       const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
       if (firstStep?.stepType === 'irl_video' || firstStep?.content?.isIRLLesson) {
@@ -677,19 +648,12 @@ export default function LessonScreen() {
             
             if (stepData.type) {
               if (stepData.type === 'video_choice') {
-                // Convert video_choice to pro_video using the female option
-                stepType = 'pro_video';
-                const options = stepData.options || [];
-                let selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
-                if (!selectedOption) {
-                  selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
-                }
+                // Preserve video_choice type and pass all options to the renderer
+                stepType = 'video_choice';
                 content = {
-                  video_url: selectedOption?.video_url || '',
                   prompt: stepData.prompt || '',
-                  answer_prompt: selectedOption?.answer_prompt || '',
-                  expected_answers: selectedOption?.expected_answers || [],
-                  requiredTier: []  // Lesson 1 is free
+                  options: stepData.options || [],
+                  requiredTier: stepData.requiredTier || []
                 };
               } else if (stepData.type === 'video') {
                 stepType = 'pro_video';
@@ -743,6 +707,33 @@ export default function LessonScreen() {
           const stepData = currentLesson.lesson.steps[stepKey as keyof typeof currentLesson.lesson.steps];
           
           console.log('📦 Step data:', { stepKey, stepData });
+          
+          if (stepData.stepType === 'video_choice' || stepData.type === 'video_choice') {
+            const options = stepData.content?.options || stepData.options || [];
+            
+            // Normalize all video URLs in options to use the streaming endpoint
+            const normalizedOptions = options.map((opt: any) => ({
+              ...opt,
+              video_url: normalizeAssetUrl(opt.video_url || '')
+            }));
+            
+            // Select default video based on user gender preference or fallback to female
+            let selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'female');
+            
+            // Fallback to neutral or first option if female not found
+            if (!selectedOption) {
+              selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || normalizedOptions[0];
+            }
+            
+            return {
+              type: 'video_choice',
+              videoUrl: selectedOption?.video_url || '',
+              prompt: stepData.content?.prompt || stepData.prompt || '',
+              answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
+              expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
+              options: normalizedOptions
+            };
+          }
           
           if (stepData.stepType === 'pro_video' || stepData.type === 'pro_video') {
             const requiredTier = stepData.content?.requiredTier || stepData.requiredTier || ['pro'];
@@ -871,33 +862,31 @@ export default function LessonScreen() {
         const currentStepData: any = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
         
         if (currentStepData) {
-          // Handle video_choice step type (use female video option)
+          // Handle video_choice step type - preserve all options for the renderer
           if (currentStepData.stepType === 'video_choice') {
             const options = currentStepData.content.options || [];
             
-            // Always use the female video option
-            let selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'female');
+            // Normalize all video URLs in options to use the streaming endpoint
+            const normalizedOptions = options.map((opt: any) => ({
+              ...opt,
+              video_url: normalizeAssetUrl(opt.video_url || '')
+            }));
+            
+            // Select default video based on user gender preference or fallback to female
+            let selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'female');
             
             // Fallback to neutral or first option if female not found
             if (!selectedOption) {
-              selectedOption = options.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || options[0];
+              selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || normalizedOptions[0];
             }
             
-            const videoUrl = normalizeAssetUrl(selectedOption?.video_url || '');
-            
-            const quizData = getQuickCheckData();
-            
-            // Return as pro_video type to use existing video rendering logic
             return {
-              type: 'pro_video',
-              videoUrl: videoUrl,
+              type: 'video_choice',
+              videoUrl: selectedOption?.video_url || '',
               prompt: currentStepData.content.prompt || '',
               answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
               expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
-              options: quizData?.options,
-              answer: quizData?.answer,
-              hasAccess: true,  // Lesson 1 is free content
-              requiredTier: []
+              options: normalizedOptions
             };
           }
           
