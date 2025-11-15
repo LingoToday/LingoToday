@@ -1782,6 +1782,85 @@ export default function LessonScreen() {
                       placeholder="Type your response..."
                     />
                   </View>
+                  
+                  {stepData.expectedAnswers && stepData.expectedAnswers.length > 0 && (
+                    <View style={styles.optionsContainer}>
+                      {(() => {
+                        const correctAnswer = stepData.expectedAnswers[0];
+                        
+                        const incorrectOptions = [
+                          'Buongiorno',
+                          'Arrivederci',
+                          'Grazie'
+                        ].filter(opt => opt !== correctAnswer);
+                        
+                        const allOptions = [correctAnswer, ...incorrectOptions.slice(0, 2)].sort(() => Math.random() - 0.5);
+                        const letters = ['A', 'B', 'C'];
+                        
+                        return allOptions.map((option: string, index: number) => {
+                          const isCorrectAnswer = showResult && stepData.expectedAnswers.some((ans: string) => 
+                            normalizeText(ans) === normalizeText(option)
+                          );
+                          const shouldAnimate = isCorrectAnswer && isCorrect;
+                          
+                          return (
+                            <Animated.View
+                              key={index}
+                              style={[
+                                shouldAnimate && {
+                                  transform: [{ scale: correctAnswerScale }],
+                                  shadowColor: theme.colors.checkmarkGreen,
+                                  shadowOffset: { width: 0, height: 0 },
+                                  shadowOpacity: correctAnswerBorder,
+                                  shadowRadius: correctAnswerBorder.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0, 12]
+                                  }),
+                                  elevation: 8,
+                                }
+                              ]}
+                            >
+                              <TouchableOpacity
+                                style={[
+                                  styles.optionButton,
+                                  selectedAnswer === option && styles.selectedOption,
+                                  showResult && isCorrectAnswer && styles.correctOption,
+                                  showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOption,
+                                ]}
+                                onPress={() => !showResult && setSelectedAnswer(option)}
+                                disabled={showResult}
+                              >
+                                <View style={styles.optionLabelContainer}>
+                                  <View style={[
+                                    styles.optionLabel,
+                                    selectedAnswer === option && styles.selectedOptionLabel
+                                  ]}>
+                                    <Text style={[
+                                      styles.optionLabelText,
+                                      selectedAnswer === option && styles.selectedOptionLabelText
+                                    ]}>
+                                      {letters[index]}
+                                    </Text>
+                                  </View>
+                                </View>
+                                <Text style={[
+                                  styles.optionText,
+                                  selectedAnswer === option && styles.selectedOptionText,
+                                  showResult && isCorrectAnswer && styles.correctOptionText,
+                                  showResult && selectedAnswer === option && !isCorrectAnswer && styles.incorrectOptionText,
+                                ]}>
+                                  {option}
+                                </Text>
+                                {showResult && isCorrectAnswer && (
+                                  <Text style={styles.checkmark}>✓</Text>
+                                )}
+                              </TouchableOpacity>
+                            </Animated.View>
+                          );
+                        });
+                      })()}
+                    </View>
+                  )}
                 </>
               )}
 
