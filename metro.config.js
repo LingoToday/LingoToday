@@ -24,4 +24,21 @@ config.resolver.alias = {
   '@assets': path.resolve(__dirname, 'src/attached_assets'),
 };
 
+// FIXED: Exclude .cache directory to prevent ENOSPC file watcher errors
+config.resolver.blockList = [
+  /\.cache\/.*/,
+  /node_modules\/.*\/\.cache\/.*/,
+];
+
+// Configure watcher to ignore cache directories
+config.watcher = {
+  ...config.watcher,
+  watchman: {
+    deferStates: ['hg.update'],
+  },
+  healthCheck: {
+    enabled: true,
+  },
+};
+
 module.exports = config;
