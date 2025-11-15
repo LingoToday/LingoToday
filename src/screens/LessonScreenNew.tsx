@@ -760,9 +760,23 @@ export default function LessonScreen() {
               selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || normalizedOptions[0];
             }
             
+            // Determine final video URL: use option video if available, otherwise fallback to step-level video
+            let finalVideoUrl = selectedOption?.video_url || '';
+            
+            // If selected option has no video URL, fallback to step-level video (special case like lesson 1)
+            if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
+              const stepLevelVideoUrl = stepData.video_url || stepData.content?.video?.url || stepData.content?.video_url || '';
+              if (stepLevelVideoUrl) {
+                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
+                console.log('✅ [OBJECT video_choice] Using step-level video URL (special case):', stepLevelVideoUrl);
+              }
+            } else {
+              console.log('✅ [OBJECT video_choice] Using option-level video URL (normal case):', selectedOption?.video_url);
+            }
+            
             return {
               type: 'video_choice',
-              videoUrl: selectedOption?.video_url || '',
+              videoUrl: finalVideoUrl,
               prompt: stepData.content?.prompt || stepData.prompt || '',
               answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
               expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
@@ -922,9 +936,23 @@ export default function LessonScreen() {
               selectedOption = normalizedOptions.find((opt: any) => opt.label?.toLowerCase() === 'neutral') || normalizedOptions[0];
             }
             
+            // Determine final video URL: use option video if available, otherwise fallback to step-level video
+            let finalVideoUrl = selectedOption?.video_url || '';
+            
+            // If selected option has no video URL, fallback to step-level video (special case like lesson 1)
+            if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
+              const stepLevelVideoUrl = currentStepData.video_url || currentStepData.content?.video?.url || currentStepData.content?.video_url || '';
+              if (stepLevelVideoUrl) {
+                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
+                console.log('✅ [ARRAY video_choice] Using step-level video URL (special case):', stepLevelVideoUrl);
+              }
+            } else {
+              console.log('✅ [ARRAY video_choice] Using option-level video URL (normal case):', selectedOption?.video_url);
+            }
+            
             return {
               type: 'video_choice',
-              videoUrl: selectedOption?.video_url || '',
+              videoUrl: finalVideoUrl,
               prompt: currentStepData.content.prompt || '',
               answerPrompt: selectedOption?.answer_prompt || "Reply: 'Hi!'",
               expectedAnswers: selectedOption?.expected_answers || ["Ciao!", "Ciao"],
