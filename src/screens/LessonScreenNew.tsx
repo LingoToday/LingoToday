@@ -741,8 +741,37 @@ export default function LessonScreen() {
           if (stepData.stepType === 'video_choice' || stepData.type === 'video_choice') {
             const options = stepData.content?.options || stepData.options || [];
             
-            // Normalize all video URLs in options to use the streaming endpoint
-            // Extract from new API structure (video.url) or legacy formats (video_url, videoUrl)
+            // Check if step-level video is from object storage (always prefer object storage)
+            const stepLevelVideoUrl = stepData.video_url || stepData.content?.video?.url || stepData.content?.video_url || '';
+            const isObjectStorage = stepLevelVideoUrl.startsWith('/replit-objstore-') || stepLevelVideoUrl.startsWith('replit-objstore-');
+            
+            // If step has object storage video, use it (special case like lesson 1)
+            if (isObjectStorage && stepLevelVideoUrl) {
+              console.log('🎯 [OBJECT video_choice] Object storage video detected at step level, using it:', stepLevelVideoUrl);
+              
+              // Still normalize options for potential future use
+              const normalizedOptions = options.map((opt: any) => {
+                const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
+                return {
+                  ...opt,
+                  video_url: normalizeAssetUrl(videoUrl)
+                };
+              });
+              
+              // Get answer data from first option for backward compatibility
+              const firstOption = normalizedOptions[0] || {};
+              
+              return {
+                type: 'video_choice',
+                videoUrl: normalizeAssetUrl(stepLevelVideoUrl),
+                prompt: stepData.content?.prompt || stepData.prompt || '',
+                answerPrompt: firstOption?.answer_prompt || "Reply: 'Hi!'",
+                expectedAnswers: firstOption?.expected_answers || ["Ciao!", "Ciao"],
+                options: normalizedOptions
+              };
+            }
+            
+            // Normal case: use option-level videos
             const normalizedOptions = options.map((opt: any) => {
               const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
               console.log('🎥 [OBJECT video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
@@ -763,12 +792,11 @@ export default function LessonScreen() {
             // Determine final video URL: use option video if available, otherwise fallback to step-level video
             let finalVideoUrl = selectedOption?.video_url || '';
             
-            // If selected option has no video URL, fallback to step-level video (special case like lesson 1)
+            // If selected option has no video URL, fallback to step-level video
             if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
-              const stepLevelVideoUrl = stepData.video_url || stepData.content?.video?.url || stepData.content?.video_url || '';
               if (stepLevelVideoUrl) {
                 finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
-                console.log('✅ [OBJECT video_choice] Using step-level video URL (special case):', stepLevelVideoUrl);
+                console.log('✅ [OBJECT video_choice] Using step-level video URL (fallback):', stepLevelVideoUrl);
               }
             } else {
               console.log('✅ [OBJECT video_choice] Using option-level video URL (normal case):', selectedOption?.video_url);
@@ -917,8 +945,37 @@ export default function LessonScreen() {
           if (currentStepData.stepType === 'video_choice') {
             const options = currentStepData.content.options || [];
             
-            // Normalize all video URLs in options to use the streaming endpoint
-            // Extract from new API structure (video.url) or legacy formats (video_url, videoUrl)
+            // Check if step-level video is from object storage (always prefer object storage)
+            const stepLevelVideoUrl = currentStepData.video_url || currentStepData.content?.video?.url || currentStepData.content?.video_url || '';
+            const isObjectStorage = stepLevelVideoUrl.startsWith('/replit-objstore-') || stepLevelVideoUrl.startsWith('replit-objstore-');
+            
+            // If step has object storage video, use it (special case like lesson 1)
+            if (isObjectStorage && stepLevelVideoUrl) {
+              console.log('🎯 [ARRAY video_choice] Object storage video detected at step level, using it:', stepLevelVideoUrl);
+              
+              // Still normalize options for potential future use
+              const normalizedOptions = options.map((opt: any) => {
+                const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
+                return {
+                  ...opt,
+                  video_url: normalizeAssetUrl(videoUrl)
+                };
+              });
+              
+              // Get answer data from first option for backward compatibility
+              const firstOption = normalizedOptions[0] || {};
+              
+              return {
+                type: 'video_choice',
+                videoUrl: normalizeAssetUrl(stepLevelVideoUrl),
+                prompt: currentStepData.content.prompt || '',
+                answerPrompt: firstOption?.answer_prompt || "Reply: 'Hi!'",
+                expectedAnswers: firstOption?.expected_answers || ["Ciao!", "Ciao"],
+                options: normalizedOptions
+              };
+            }
+            
+            // Normal case: use option-level videos
             const normalizedOptions = options.map((opt: any) => {
               const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
               console.log('🎥 [ARRAY video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
@@ -939,12 +996,11 @@ export default function LessonScreen() {
             // Determine final video URL: use option video if available, otherwise fallback to step-level video
             let finalVideoUrl = selectedOption?.video_url || '';
             
-            // If selected option has no video URL, fallback to step-level video (special case like lesson 1)
+            // If selected option has no video URL, fallback to step-level video
             if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
-              const stepLevelVideoUrl = currentStepData.video_url || currentStepData.content?.video?.url || currentStepData.content?.video_url || '';
               if (stepLevelVideoUrl) {
                 finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
-                console.log('✅ [ARRAY video_choice] Using step-level video URL (special case):', stepLevelVideoUrl);
+                console.log('✅ [ARRAY video_choice] Using step-level video URL (fallback):', stepLevelVideoUrl);
               }
             } else {
               console.log('✅ [ARRAY video_choice] Using option-level video URL (normal case):', selectedOption?.video_url);
