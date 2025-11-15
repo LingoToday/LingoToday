@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import * as SplashScreen from 'expo-splash-screen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -8,8 +7,6 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { useAuth } from './src/hooks/useAuth';
 import { SheetManagerProvider } from './src/contexts/SheetManagerContext';
-
-SplashScreen.preventAutoHideAsync().catch(() => {});
 
 // Create a client
 const queryClient = new QueryClient({
@@ -23,19 +20,6 @@ const queryClient = new QueryClient({
 
 function AppContent() {
   const { isAuthenticated, user } = useAuth();
-  
-  useEffect(() => {
-    async function hideSplash() {
-      try {
-        await SplashScreen.hideAsync();
-      } catch (error) {
-        console.warn('Error hiding splash screen:', error);
-      }
-    }
-    
-    hideSplash();
-  }, []);
-  
   return <AppNavigator isAuthenticated={isAuthenticated} user={user} />;
 }
 
