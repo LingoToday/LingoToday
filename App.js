@@ -19,8 +19,8 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { isAuthenticated, user } = useAuth();
-  return <AppNavigator isAuthenticated={isAuthenticated} user={user} />;
+  const { isAuthenticated, user, isLoading } = useAuth();
+  return <AppNavigator isAuthenticated={isAuthenticated} isLoading={isLoading} user={user} />;
 }
 
 export default function App() {
