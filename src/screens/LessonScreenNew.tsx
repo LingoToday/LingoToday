@@ -2757,15 +2757,15 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.error,
   },
 
-  // Text Tip Styles
+  // Text Tip Styles - Dark background with green and white text
   tipContainer: {
     alignItems: 'center',
     gap: theme.spacing.md,
     padding: theme.spacing.xl,
-    backgroundColor: theme.colors.secondary50,
+    backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: theme.colors.secondary100,
+    borderColor: theme.colors.border,
   },
   tipIcon: {
     fontSize: 48,
@@ -2774,12 +2774,12 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: '700' as any,
-    color: theme.colors.secondary700,
+    color: theme.colors.primary,
     textAlign: 'center',
   },
   tipText: {
     fontSize: theme.fontSize.base,
-    color: theme.colors.secondary700,
+    color: theme.colors.foreground,
     textAlign: 'center',
     lineHeight: theme.fontSize.base * 1.5,
   },
