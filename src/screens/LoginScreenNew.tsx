@@ -33,9 +33,14 @@ export default function LoginScreen() {
 
   const handleInputChange = (field: string, value: string) => {
     setLoginData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (loginErrors[field]) {
-      setLoginErrors(prev => ({ ...prev, [field]: '' }));
+    // Clear field-specific error and general error when user starts typing
+    if (loginErrors[field] || loginErrors.general) {
+      setLoginErrors(prev => {
+        const newErrors = { ...prev };
+        if (newErrors[field]) delete newErrors[field];
+        if (newErrors.general) delete newErrors.general;
+        return newErrors;
+      });
     }
   };
 
@@ -68,17 +73,29 @@ export default function LoginScreen() {
     } catch (error: any) {
       console.error('Login error:', error);
       
-      // Check if this is a network connectivity error
-      if (error.message && (
-        error.message.includes('Network connection failed') ||
-        error.message.includes('Network request failed') ||
-        error.message.includes('fetch')
-      )) {
-        setLoginErrors({ general: 'Network error. Please check your connection and try again.' });
+      // Extract and normalize error message from various error formats
+      let errorMessage: string;
+      
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message && typeof error.message === 'string') {
+        errorMessage = error.message;
+      } else if (error?.error && typeof error.error === 'string') {
+        errorMessage = error.error;
       } else {
-        // This is an API error with a specific message - display it directly
-        setLoginErrors({ general: error.message || 'Login failed. Please check your credentials and try again.' });
+        errorMessage = 'Login failed. Please check your credentials and try again.';
       }
+      
+      // Check if this is a network connectivity error
+      if (errorMessage.includes('Network connection failed') ||
+          errorMessage.includes('Network request failed') ||
+          errorMessage.includes('fetch')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+      
+      // Set the error message to display to user
+      console.log('Setting login error message:', errorMessage);
+      setLoginErrors({ general: errorMessage });
     } finally {
       setIsLoggingIn(false);
     }
