@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import * as WebBrowser from 'expo-web-browser';
 
 import { theme } from '../lib/theme';
 import { useAuth } from '../hooks/useAuth';
@@ -166,6 +167,10 @@ export default function AccountScreen() {
     navigation.navigate('NotificationSettings' as never);
   };
 
+  const handleContactSupport = async () => {
+    await WebBrowser.openBrowserAsync('https://www.lingotoday.co/contact');
+  };
+
   if (userLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -294,6 +299,14 @@ export default function AccountScreen() {
               testID="notification-settings"
             >
               <Text style={styles.notificationButtonText}>Notification Settings</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.contactSupportButton}
+              onPress={handleContactSupport}
+              testID="contact-support"
+            >
+              <Text style={styles.contactSupportButtonText}>Contact Support</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -446,6 +459,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   notificationButtonText: {
+    fontSize: 15,
+    color: theme.colors.foreground,
+    fontWeight: '400',
+  },
+  contactSupportButton: {
+    width: '100%',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: 8,
+    backgroundColor: theme.colors.card,
+    marginTop: 8,
+  },
+  contactSupportButtonText: {
     fontSize: 15,
     color: theme.colors.foreground,
     fontWeight: '400',
