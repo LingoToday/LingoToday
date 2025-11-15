@@ -35,7 +35,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 import { theme } from '../lib/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSheetManager } from '../contexts/SheetManagerContext';
-import { Platform } from 'react-native';
+import { Platform, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -190,26 +190,10 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
           <Stack.Screen 
             name="Landing" 
             component={() => (
-              <div style={{ 
-                minHeight: '100vh', 
-                backgroundColor: 'white', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ 
-                    width: '48px', 
-                    height: '48px', 
-                    border: '4px solid #3b82f6', 
-                    borderTop: '4px solid transparent', 
-                    borderRadius: '50%', 
-                    animation: 'spin 1s linear infinite',
-                    margin: '0 auto 16px'
-                  }} />
-                  <p style={{ color: '#6b7280' }}>Loading...</p>
-                </div>
-              </div>
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <Text style={styles.loadingText}>Loading...</Text>
+              </View>
             )} 
           />
         </Stack.Navigator>
@@ -300,3 +284,17 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    color: theme.colors.textSecondary,
+    fontSize: 16,
+  },
+});
