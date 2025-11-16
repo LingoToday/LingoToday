@@ -1,0 +1,337 @@
+~/workspace$ eas update --branch production --message "Fix purchase success detection"
+An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+✔ Email or username … marcustezcan@gmail.com
+✔ Password … **************
+> npx expo install expo-updates
+[expo-cli] › Installing 1 SDK 54.0.0 compatible native module using npm
+[expo-cli] > npm install
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/assets-registry@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/babel-plugin-codegen@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/babel-preset@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/codegen@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/community-cli-plugin@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/debugger-frontend@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/dev-middleware@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/gradle-plugin@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/js-polyfills@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: '@react-native/virtualized-lists@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-babel-transformer@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-cache@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-cache-key@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-config@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-core@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-file-map@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-minify-terser@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-resolver@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-runtime@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-source-map@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-symbolicate@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-transform-plugins@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'metro-transform-worker@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'ob1@0.83.1',
+[expo-cli] npm warn EBADENGINE   required: { node: '>=20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] npm warn EBADENGINE Unsupported engine {
+[expo-cli] npm warn EBADENGINE   package: 'react-native@0.81.4',
+[expo-cli] npm warn EBADENGINE   required: { node: '>= 20.19.4' },
+[expo-cli] npm warn EBADENGINE   current: { node: 'v20.19.3', npm: '10.8.2' }
+[expo-cli] npm warn EBADENGINE }
+[expo-cli] added 7 packages, and audited 823 packages in 20s
+[expo-cli] 106 packages are looking for funding
+[expo-cli]   run `npm fund` for details
+[expo-cli] 15 moderate severity vulnerabilities
+[expo-cli] 
+[expo-cli] To address issues that do not require attention, run:
+[expo-cli]   npm audit fix
+[expo-cli] 
+[expo-cli] To address all issues (including breaking changes), run:
+[expo-cli]   npm audit fix --force
+[expo-cli] 
+[expo-cli] Run `npm audit` for details.
+✔ Installed expo-updates
+✔ Configured updates.url to "https://u.expo.dev/b5c4ecbe-0f0f-4f0f-8f8e-b155460d2f03"
+✔ Configured runtimeVersion for Android and iOS with "{"policy":"appVersion"}"
+
+All builds of your app going forward will be eligible to receive updates published with EAS Update.
+
+[expo-cli] --non-interactive is not supported, use $CI=1 instead
+[expo-cli] Starting Metro Bundler
+[expo-cli] Web ./index.js ▓░░░░░░░░░░░░░░░  6.8% ( 24/119)
+[expo-cli] iOS ./index.js ▓░░░░░░░░░░░░░░░  9.0% ( 7/44)
+[expo-cli] Android ./index.js ░░░░░░░░░░░░░░░░  1.7% ( 3/23)
+[expo-cli] Web ./index.js ▓▓▓░░░░░░░░░░░░░ 20.9% (130/333)
+[expo-cli] iOS ./index.js ▓░░░░░░░░░░░░░░░  9.0% ( 38/235)
+[expo-cli] Android ./index.js ░░░░░░░░░░░░░░░░  4.5% ( 27/232)
+[expo-cli] Web ./index.js ▓▓▓░░░░░░░░░░░░░ 20.9% (153/354)
+[expo-cli] iOS ./index.js ▓░░░░░░░░░░░░░░░ 10.5% (118/364)
+[expo-cli] Android ./index.js ░░░░░░░░░░░░░░░░  4.5% ( 50/247)
+[expo-cli] Web ./index.js ▓▓▓░░░░░░░░░░░░░ 20.9% (153/354)
+[expo-cli] iOS ./index.js ▓▓▓░░░░░░░░░░░░░ 19.0% (213/489)
+[expo-cli] Android ./index.js ▓▓▓░░░░░░░░░░░░░ 23.1% (218/485)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 41.2% (343/535)
+[expo-cli] iOS ./index.js ▓▓▓░░░░░░░░░░░░░ 21.9% (245/524)
+[expo-cli] Android ./index.js ▓▓▓░░░░░░░░░░░░░ 23.1% (226/493)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 41.3% (353/554)
+[expo-cli] iOS ./index.js ▓▓▓▓░░░░░░░░░░░░ 31.1% ( 498/1035)
+[expo-cli] Android ./index.js ▓▓▓▓░░░░░░░░░░░░ 30.9% (350/630)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 41.3% (529/998)
+[expo-cli] iOS ./index.js ▓▓▓▓░░░░░░░░░░░░ 31.1% ( 519/1041)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 42.8% ( 502/1037)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 57.3% ( 773/1021)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 65.7% (1034/1276)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 42.8% ( 523/1046)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 64.1% ( 895/1151)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 66.3% (1043/1281)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 65.9% (1038/1279)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 73.5% (1022/1208)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 81.7% (1261/1422)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 65.9% (1038/1279)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 74.9% (1104/1283)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 81.7% (1268/1427)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 81.8% (1272/1426)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 80.1% (1201/1342)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.6% (1398/1501)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 81.8% (1272/1426)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 81.1% (1279/1429)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.6% (1428/1542)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 85.2% (1423/1542)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 86.8% (1390/1492)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.6% (1528/1633)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.4% (1540/1638)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 91.8% (1465/1543)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 90.5% (1636/1726)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 91.0% (1594/1671)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 97.4% (1593/1614)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95.4% (1787/1830)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 94.4% (1779/1838)
+[expo-cli] Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 97.6% (1662/1682)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 98.5% (1893/1907)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1916/1916)
+[expo-cli] Web Bundled 58479ms index.js (1682 modules)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 98.5% (1893/1907)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1916/1916)
+[expo-cli] iOS Bundled 66022ms index.js (1907 modules)
+[expo-cli] iOS ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 98.5% (1893/1907)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1916/1916)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1916/1916)
+[expo-cli] Android Bundled 73120ms index.js (1916 modules)
+[expo-cli] Android ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1916/1916)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (99):
+[expo-cli] assets/ai-partner-1.f5ee3e65021eedccbec97baa7e280cd9.jpg (629 kB)
+[expo-cli] assets/ai-partner-1.jpg (629 kB)
+[expo-cli] assets/ai-partner-2.d3963aaa2799f2ac84874a4629986f90.jpg (544 kB)
+[expo-cli] assets/ai-partner-2.jpg (544 kB)
+[expo-cli] assets/ai-partner-3.f8469380b962abc91ff95548e4515be2.png (866 kB)
+[expo-cli] assets/ai-partner-3.png (866 kB)
+[expo-cli] assets/ai-partner-4.2b5178f574a2bb12c4b96858f790f2c2.png (788 kB)
+[expo-cli] assets/ai-partner-4.png (788 kB)
+[expo-cli] assets/ai-partner-5.8148daf42ced54b9a7b2c79634437777.png (887 kB)
+[expo-cli] assets/ai-partner-5.png (887 kB)
+[expo-cli] assets/ai-partner-6.b42f4ee620f44f4243b712c9fcb83f4e.png (1.07 MB)
+[expo-cli] assets/ai-partner-6.png (1.07 MB)
+[expo-cli] attached_assets/copy_10F92020-BB3D-4CA0-947B-2634A0946F72_1761142720055.dc97bcd77b71b9c13fc38d0092af9298.MOV (9.01 MB)
+[expo-cli] attached_assets/copy_10F92020-BB3D-4CA0-947B-2634A0946F72_1761142720055.MOV (9.01 MB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.3f78af31cca60105799838a1a7a59fbd.ttf (130 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf (130 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.31b5ffea3daddc69dd01a1f3d6cf63c5.ttf (66.2 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf (66.2 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/EvilIcons.140c53a7643ea949007aa9a282153849.ttf (13.5 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/EvilIcons.ttf (13.5 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ca4b48e04dc1ce10bfbddb262c8b835f.ttf (55.6 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf (55.6 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.b06871f281fee6b241d60582ae9369b9.ttf (166 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf (166 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.3b89dd103490708d19a95adcae52210e.ttf (134 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf (134 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.1f77739ca9ff2188b539c36f30ffa2be.ttf (33.7 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf (33.7 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.605ed7926cf39a2ad5ec2d1f9d391d3d.ttf (203 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf (203 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Brands.56c8d80832e37783f12c05db7c8849e2.ttf (209 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Brands.ttf (209 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Regular.370dd5af19f8364907b6e2c41f45dbbf.ttf (68 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Regular.ttf (68 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Solid.adec7d6f310bc577f05e8fe06a5daccf.ttf (424 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf (424 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Fontisto.b49ae8ab2dbccb02c4d11caaacf09eab.ttf (314 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Fontisto.ttf (314 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Foundation.e20945d7c929279ef7a6f1db184a4470.ttf (57 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Foundation.ttf (57 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.b4eb097d35f44ed943676fd56f6bdc51.ttf (390 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf (390 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf (1.31 MB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf (1.31 MB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.4e85bc9ebe07e0340c9c4fc2f6c38908.ttf (357 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf (357 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.871378c6eab492a3e689a9385dc45a12.ttf (69.4 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.ttf (69.4 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.d2285965fe34b05465047401b8595dd0.ttf (54.1 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.ttf (54.1 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.1681f34aaca71b8dfb70756bca331eb2.ttf (25.8 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.ttf (25.8 kB)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.0a328cd9c1afd0afe8e3b1ec5165b1b4.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.35ba0eaec5a4f5ed12ca16fabeae451d.png (207 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.c94f6478e7ae0cdd9f15de1fcb9e5e55.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.808e1b1b9b53114ec2838071a7e6daa7.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.286d67d3f74808a60a78d3ebf1a5fb57.png (928 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] src/attached_assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59_1755601704305.ca757109d2b814de4c5f95decdc9168b.mov (909 kB)
+[expo-cli] src/attached_assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59_1755601704305.mov (909 kB)
+[expo-cli] src/attached_assets/Group 77_1755208831106.4c6c3c2b46dff84edad3be463bc827d8.png (222 kB)
+[expo-cli] src/attached_assets/Group 77_1755208831106.png (222 kB)
+[expo-cli] src/attached_assets/Italian beginners cours 2 introduction video_1757602127178.233306bfcee828b732028f6f74f4a728.MOV (5.12 MB)
+[expo-cli] src/attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV (5.12 MB)
+[expo-cli] src/attached_assets/Italian beginners cours 3 introduction video_1757602127174.22aa5964607d536d04ed28a864bd57a6.MOV (5.42 MB)
+[expo-cli] src/attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV (5.42 MB)
+[expo-cli] src/attached_assets/Italian_beginner_course1_intro_1762365232232.3ce29d6783fbe9797a772b058f084d0f.MOV (21.9 MB)
+[expo-cli] src/attached_assets/Italian_beginner_course1_intro_1762365232232.MOV (21.9 MB)
+[expo-cli] src/attached_assets/speaking-practice-image.c29763b9b70587cab952ff9f235ed8ec.png (241 kB)
+[expo-cli] src/attached_assets/speaking-practice-image.png (241 kB)
+[expo-cli] 
+[expo-cli] › web bundles (2):
+[expo-cli] _expo/static/js/web/index-020b207e68dffcdfa4bfa01055bc6a28.js (3.92 MB)
+[expo-cli] _expo/static/js/web/index-020b207e68dffcdfa4bfa01055bc6a28.js.map (10.8 MB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/index-f96fbaa3756bdcdd801f72a339997213.hbc (4.03 MB)
+[expo-cli] _expo/static/js/ios/index-f96fbaa3756bdcdd801f72a339997213.hbc.map (11.1 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/index-7c13399f520e34f7fbc6e5a0a5d7ab57.hbc (4.04 MB)
+[expo-cli] _expo/static/js/android/index-7c13399f520e34f7fbc6e5a0a5d7ab57.hbc.map (11.2 MB)
+[expo-cli] 
+[expo-cli] › Files (4):
+[expo-cli] assetmap.json (22.7 kB)
+[expo-cli] favicon.ico (14.5 kB)
+[expo-cli] index.html (1.22 kB)
+[expo-cli] metadata.json (6.67 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Exported bundle(s)
+✔ Uploaded assetmap.json 
+✔ Uploaded 2 app bundles
+✔ Uploaded 10 assets (reused 48 assets)
+ℹ 52 iOS assets, 52 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+⌛️ Computing the project fingerprints is taking longer than expected...
+⏩ To skip this step, set the environment variable: EAS_SKIP_AUTO_FINGERPRINT=1
+✔ Computed project fingerprints
+✔ Published!
+
+Branch             production
+Runtime version    1.0.1
+Platform           android, ios
+Update group ID    d5dec8e5-bb33-4e62-b2d8-82a46724d3e1
+Android update ID  26edf906-9b87-4cff-a66b-696155f479d0
+iOS update ID      7b512eab-8114-4832-9b3d-3b4575f2fe94
+Message            Fix purchase success detection
+Commit             5b3fac9d9b627e286f8fe943c274d58fea56ab5b*
+EAS Dashboard      https://expo.dev/accounts/lingotoday/projects/lingotoday-mobile/updates/d5dec8e5-bb33-4e62-b2d8-82a46724d3e1
+
+~/workspace$ 
