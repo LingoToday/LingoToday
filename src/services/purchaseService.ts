@@ -124,37 +124,22 @@ class PurchaseService {
     error?: string;
   }> {
     try {
-      await Purchases.restorePurchases();
+      const customerInfo = await Purchases.restorePurchases();
       
-      console.log('✅ Restore completed, invalidating cache and refetching customer info...');
+      console.log('✅ Restore completed successfully');
+      console.log('ℹ️ Checking for active entitlements after restore...');
       
-      await Purchases.invalidateCustomerInfoCache();
+      const hasProAccess = typeof customerInfo.entitlements.active['pro'] !== 'undefined';
       
-      const freshCustomerInfo = await Purchases.getCustomerInfo();
-      
-      const hasProAccess = typeof freshCustomerInfo.entitlements.active['pro'] !== 'undefined';
-      
-      console.log(`Entitlement check after restore: ${hasProAccess ? '✅ Active' : '❌ Not active'}`);
-      
-      if (!hasProAccess) {
-        console.warn('⚠️ Entitlement not immediately active after restore, waiting 2 seconds and retrying...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        await Purchases.invalidateCustomerInfoCache();
-        const retryCustomerInfo = await Purchases.getCustomerInfo();
-        const retryHasProAccess = typeof retryCustomerInfo.entitlements.active['pro'] !== 'undefined';
-        
-        console.log(`Retry entitlement check after restore: ${retryHasProAccess ? '✅ Active' : '❌ Not active'}`);
-        
-        return {
-          success: retryHasProAccess,
-          customerInfo: retryCustomerInfo,
-        };
+      if (hasProAccess) {
+        console.log('✅ Pro entitlement found after restore');
+      } else {
+        console.log('ℹ️ No pro entitlement found - user may not have previous purchases');
       }
       
       return {
-        success: hasProAccess,
-        customerInfo: freshCustomerInfo,
+        success: true,
+        customerInfo,
       };
     } catch (error: any) {
       console.error('Restore error:', error);
