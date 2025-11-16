@@ -93,37 +93,14 @@ class PurchaseService {
     error?: string;
   }> {
     try {
-      await Purchases.purchasePackage(packageToPurchase);
+      const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
       
-      console.log('✅ Purchase completed, invalidating cache and refetching customer info...');
-      
-      await Purchases.invalidateCustomerInfoCache();
-      
-      const freshCustomerInfo = await Purchases.getCustomerInfo();
-      
-      const hasProAccess = typeof freshCustomerInfo.entitlements.active['pro'] !== 'undefined';
-      
-      console.log(`Entitlement check after cache invalidation: ${hasProAccess ? '✅ Active' : '❌ Not active'}`);
-      
-      if (!hasProAccess) {
-        console.warn('⚠️ Entitlement not immediately active, waiting 2 seconds and retrying...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        await Purchases.invalidateCustomerInfoCache();
-        const retryCustomerInfo = await Purchases.getCustomerInfo();
-        const retryHasProAccess = typeof retryCustomerInfo.entitlements.active['pro'] !== 'undefined';
-        
-        console.log(`Retry entitlement check: ${retryHasProAccess ? '✅ Active' : '❌ Not active'}`);
-        
-        return {
-          success: retryHasProAccess,
-          customerInfo: retryCustomerInfo,
-        };
-      }
+      console.log('✅ Purchase completed successfully on App Store/Play Store');
+      console.log('ℹ️ Entitlement activation will be handled by webhook - returning success immediately');
       
       return {
-        success: hasProAccess,
-        customerInfo: freshCustomerInfo,
+        success: true,
+        customerInfo,
       };
     } catch (error: any) {
       if (error.userCancelled) {
