@@ -2697,7 +2697,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   quickCheckQuestion: {
-    fontSize: theme.fontSize.lg,
+    fontSize: theme.fontSize.xl,
     fontWeight: '500' as any,
     color: theme.colors.foreground,
     textAlign: 'left',
