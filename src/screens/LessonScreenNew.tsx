@@ -1777,7 +1777,7 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.checkmarkGreen }]}>{stepData.answerPrompt}</Text>
+                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
                     <TextInput
                       style={styles.textInput}
                       value={selectedAnswer}
@@ -1811,7 +1811,7 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.checkmarkGreen }]}>{stepData.answerPrompt}</Text>
+                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
                     <TextInput
                       style={styles.textInput}
                       value={selectedAnswer}
@@ -1939,7 +1939,7 @@ export default function LessonScreen() {
                   {stepData.hasAccess && (
                     <>
                       <View style={styles.inputContainer}>
-                        <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.checkmarkGreen }]}>{stepData.answerPrompt}</Text>
+                        <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
                         <TextInput
                           style={styles.textInput}
                           value={selectedAnswer}
