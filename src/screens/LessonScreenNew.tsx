@@ -1669,19 +1669,13 @@ export default function LessonScreen() {
               <View style={styles.videoContainer}>
                 <Video
                   style={styles.video}
-                  source={{
-                    uri: normalizeAssetUrl('/attached_assets/italian beginners course 1 introduction_1763386750161.mp4'),
-                    headers: authToken ? {
-                      'Authorization': `Bearer ${authToken}`
-                    } : undefined
-                  }}
+                  source={require('../../attached_assets/italian_beginners_course_1_introduction_1763386750161.mp4')}
                   useNativeControls
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay={true}
                   isMuted={false}
                   onError={(error) => {
                     console.error('🎥 Video playback error:', error);
-                    console.error('🎥 Video URI:', normalizeAssetUrl('/attached_assets/italian beginners course 1 introduction_1763386750161.mp4'));
                   }}
                   onLoad={() => {
                     console.log('✅ Video loaded successfully');
