@@ -39,7 +39,7 @@ Do not make changes to the file `package-lock.json`.
 ### Technical Implementations
 - **Splash Screen Management**: Synchronized splash screen handling using `SplashScreen.preventAutoHideAsync()` and `hideAsync()` to prevent issues on iOS/Android, with web platform bypassing this logic.
 - **API Configuration**: Uses `Constants.expoConfig.extra.apiBaseUrl` for consistent API endpoints, with a production URL of `https://lingotoday.replit.app`.
-- **Runtime Version Management**: Explicit runtime versions in `app.json` (e.g., `"1.0.2"`) are used, requiring manual incrementation for native code changes to ensure correct EAS Updates.
+- **EAS Updates**: The `expo-updates` package was removed (Nov 17, 2025) to resolve iOS build compilation errors related to SDK 54 native code incompatibilities. The app currently does not support over-the-air updates and requires full App Store submissions for all updates. OTA update capability can be restored later by regenerating the `ios/` directory with `expo prebuild --clean` and reinstalling `expo-updates`.
 - **Video Content & Backend Integration**: All lesson video content is fetched from the backend API, with `normalizeAssetUrl()` handling asset transformation and routing via a `/api/videos/*` streaming endpoint for authenticated access.
 - **RevenueCat Integration**: Full integration for in-app purchases and subscription management. Dynamically fetches subscription packages, handles native IAP, and links purchases to authenticated users via `purchaseService`. Backend webhooks update user `priceTier` (e.g., 'pro-monthly', 'free-trial').
 - **Metro Bundler Configuration**: Custom Metro configuration excludes `.cache` directories from file watching (`resolver.blockList`) to prevent ENOSPC errors.
