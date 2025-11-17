@@ -1679,12 +1679,20 @@ export default function LessonScreen() {
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay={true}
                   isMuted={false}
+                  onError={(error) => {
+                    console.error('🎥 Video playback error:', error);
+                    console.error('🎥 Video URI:', normalizeAssetUrl('/attached_assets/italian beginners course 1 introduction_1763386750161.mp4'));
+                  }}
+                  onLoad={() => {
+                    console.log('✅ Video loaded successfully');
+                  }}
                 />
               </View>
               
               <Button 
                 title="Continue to Lesson"
                 onPress={handleContinueFromIntro}
+                variant="default"
                 style={styles.continueButton}
               />
             </CardContent>
