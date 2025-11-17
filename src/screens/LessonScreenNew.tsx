@@ -1669,12 +1669,12 @@ export default function LessonScreen() {
               <View style={styles.videoContainer}>
                 <Video
                   style={styles.video}
-                  source={
-                    courseId === 'course1' ? require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4') :
-                    courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
-                    courseId === 'course3' ? require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV') :
-                    require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4')
-                  }
+                  source={{
+                    uri: normalizeAssetUrl('/attached_assets/italian beginners course 1 introduction_1763386750161.mp4'),
+                    headers: authToken ? {
+                      'Authorization': `Bearer ${authToken}`
+                    } : undefined
+                  }}
                   useNativeControls
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay={true}
