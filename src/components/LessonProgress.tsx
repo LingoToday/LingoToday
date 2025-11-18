@@ -16,6 +16,8 @@ import { apiClient } from '../lib/apiClient';
 
 interface LessonProgressProps {
   completedLessonIds: string[];
+  language?: string;
+  languageCode?: string;
 }
 
 interface CategoryProgress {
@@ -28,7 +30,7 @@ interface CategoryProgress {
   order: number;
 }
 
-export default function LessonProgress({ completedLessonIds }: LessonProgressProps) {
+export default function LessonProgress({ completedLessonIds, language = 'italian', languageCode = 'it' }: LessonProgressProps) {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
@@ -42,11 +44,11 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
         setIsLoading(true);
         
         // Fetch dynamic course mapping with correct lesson counts - matching web API calls
-        const courseMappingResponse = await apiClient.getCourseMapping('it');
+        const courseMappingResponse = await apiClient.getCourseMapping(languageCode);
         const courseMapping = courseMappingResponse;
         
         // Fetch user progress data - matching web API calls
-        const progressResponse = await apiClient.getUserProgress('italian');
+        const progressResponse = await apiClient.getUserProgress(language);
         const progressData = progressResponse;
         
         // Calculate progress for each course based on actual database progress - matching web logic exactly
@@ -132,7 +134,7 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
     };
 
     getProgressFromAPI();
-  }, [completedLessonIds]);
+  }, [completedLessonIds, language, languageCode]);
 
   const styles = useMemo(() => createStyles(isTablet), [isTablet]);
 
@@ -226,7 +228,9 @@ export default function LessonProgress({ completedLessonIds }: LessonProgressPro
         {/* Course Summary - matching web exactly */}
         <View style={styles.courseSummary}>
           <View style={styles.courseSummaryContent}>
-            <Text style={styles.courseSummaryTitle}>Complete Italian Course</Text>
+            <Text style={styles.courseSummaryTitle}>
+              Complete {language.charAt(0).toUpperCase() + language.slice(1)} Course
+            </Text>
             <Text style={styles.courseSummarySubtitle}>
               {categoryProgress.reduce((sum, cat) => sum + cat.totalLessons, 0)} lessons • {categoryProgress.length} courses
             </Text>

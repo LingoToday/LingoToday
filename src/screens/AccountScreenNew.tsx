@@ -138,6 +138,17 @@ export default function AccountScreen() {
       .map((p: any) => p.lessonId);
   }, [dashboardData?.progress]);
 
+  // Helper to convert language name to language code
+  const getLanguageCode = (language: string): string => {
+    const langCodeMap: { [key: string]: string } = {
+      'italian': 'it',
+      'spanish': 'es',
+      'german': 'de',
+      'french': 'fr'
+    };
+    return langCodeMap[language?.toLowerCase()] || 'it';
+  };
+
   const handleLogout = () => {
     Alert.alert(
       'Are you sure you want to log out?',
@@ -279,7 +290,11 @@ export default function AccountScreen() {
 
             {/* Learning Path - moved from dashboard */}
             <View style={styles.learningPathContainer}>
-              <LessonProgress completedLessonIds={completedLessonIds} />
+              <LessonProgress 
+                completedLessonIds={completedLessonIds}
+                language={user?.selectedLanguage || dashboardData?.settings?.selectedLanguage || 'italian'}
+                languageCode={getLanguageCode(user?.selectedLanguage || dashboardData?.settings?.selectedLanguage || 'italian')}
+              />
             </View>
 
             <TouchableOpacity 

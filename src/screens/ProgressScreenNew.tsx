@@ -102,6 +102,17 @@ export default function ProgressScreenNew() {
       .map((p: any) => p.lessonId);
   }, [dashboardData?.progress]);
 
+  // Helper to convert language name to language code
+  const getLanguageCode = (language: string): string => {
+    const langCodeMap: { [key: string]: string } = {
+      'italian': 'it',
+      'spanish': 'es',
+      'german': 'de',
+      'french': 'fr'
+    };
+    return langCodeMap[language?.toLowerCase()] || 'it';
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -174,7 +185,11 @@ export default function ProgressScreenNew() {
 
           {/* Right Column - Learning Path */}
           <View style={styles.rightColumn}>
-            <LessonProgress completedLessonIds={completedLessonIds} />
+            <LessonProgress 
+              completedLessonIds={completedLessonIds}
+              language={user?.selectedLanguage || dashboardData?.settings?.selectedLanguage || 'italian'}
+              languageCode={getLanguageCode(user?.selectedLanguage || dashboardData?.settings?.selectedLanguage || 'italian')}
+            />
           </View>
         </View>
       </ScrollView>

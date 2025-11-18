@@ -288,15 +288,15 @@ export default function LessonScreen() {
     staleTime: 30000,
   });
 
-  // Check if this is Italian course lesson1 and if intro video should be shown
+  // Check if this is course lesson1 and if intro video should be shown (works for all languages)
   useEffect(() => {
-    if (language === 'italian' && lessonId === 'lesson1' && 
+    if (lessonId === 'lesson1' && 
         (courseId === 'course1' || courseId === 'course2' || courseId === 'course3') && 
-        userProgress !== undefined) {
+        userProgress !== undefined && language) {
       
-      const storageKey = `italian_${courseId}_intro_shown`;
+      const storageKey = `${language}_${courseId}_intro_shown`;
       
-      // Check if user has completed any Italian lessons for this specific course
+      // Check if user has completed any lessons for this specific course
       const hasCompletedCourseProgress = userProgress.some(p => p.courseId === courseId && p.completed);
       
       SecureStore.getItemAsync(storageKey).then(hasSeenIntroVideo => {
@@ -304,23 +304,23 @@ export default function LessonScreen() {
           // For new learners to this course, always show the video
           if (hasSeenIntroVideo) {
             SecureStore.deleteItemAsync(storageKey);
-            console.log(`🎬 Clearing storage for new ${courseId} learner - video will show`);
+            console.log(`🎬 Clearing storage for new ${language} ${courseId} learner - video will show`);
           }
           setShowIntroVideo(true);
-          console.log(`🎬 Showing intro video for new Italian ${courseId} learner`);
+          console.log(`🎬 Showing intro video for new ${language} ${courseId} learner`);
         } else if (!hasSeenIntroVideo) {
           // For returning learners who somehow don't have the storage flag
           setShowIntroVideo(true);
-          console.log(`🎬 Showing intro video for Italian ${courseId}`);
+          console.log(`🎬 Showing intro video for ${language} ${courseId}`);
         } else {
-          console.log(`🎬 Video already seen by experienced ${courseId} learner, skipping`);
+          console.log(`🎬 Video already seen by experienced ${language} ${courseId} learner, skipping`);
         }
       });
     }
   }, [language, courseId, lessonId, userProgress]);
 
   const handleContinueFromIntro = () => {
-    const storageKey = `italian_${courseId}_intro_shown`;
+    const storageKey = `${language}_${courseId}_intro_shown`;
     SecureStore.setItemAsync(storageKey, 'true');
     setShowIntroVideo(false);
   };
