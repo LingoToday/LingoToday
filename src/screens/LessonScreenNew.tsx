@@ -1669,24 +1669,22 @@ export default function LessonScreen() {
               <View style={styles.videoContainer}>
                 <Video
                   style={styles.video}
-                  source={require('../../attached_assets/italian_beginners_course_1_introduction_1763386750161.mp4')}
+                  source={
+                    courseId === 'course1' ? require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4') :
+                    courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
+                    courseId === 'course3' ? require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV') :
+                    require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4')
+                  }
                   useNativeControls
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay={true}
                   isMuted={false}
-                  onError={(error) => {
-                    console.error('🎥 Video playback error:', error);
-                  }}
-                  onLoad={() => {
-                    console.log('✅ Video loaded successfully');
-                  }}
                 />
               </View>
               
               <Button 
                 title="Continue to Lesson"
                 onPress={handleContinueFromIntro}
-                variant="default"
                 style={styles.continueButton}
               />
             </CardContent>
@@ -1779,7 +1777,7 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
+                    <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
                     <TextInput
                       style={styles.textInput}
                       value={selectedAnswer}
@@ -1813,7 +1811,7 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
+                    <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
                     <TextInput
                       style={styles.textInput}
                       value={selectedAnswer}
@@ -1941,7 +1939,7 @@ export default function LessonScreen() {
                   {stepData.hasAccess && (
                     <>
                       <View style={styles.inputContainer}>
-                        <Text style={[styles.inputLabel, currentStep === 4 && { color: theme.colors.primary }]}>{stepData.answerPrompt}</Text>
+                        <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
                         <TextInput
                           style={styles.textInput}
                           value={selectedAnswer}
@@ -2699,7 +2697,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   quickCheckQuestion: {
-    fontSize: theme.fontSize.xl,
+    fontSize: theme.fontSize.lg,
     fontWeight: '500' as any,
     color: theme.colors.foreground,
     textAlign: 'left',
@@ -2957,6 +2955,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
   },
   continueButton: {
+    backgroundColor: theme.colors.secondary600,
     paddingHorizontal: theme.spacing.xl,
     paddingVertical: theme.spacing.lg,
   },
