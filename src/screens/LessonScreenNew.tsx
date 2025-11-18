@@ -250,8 +250,26 @@ export default function LessonScreen() {
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
     queryKey: ["/api/courses", getFullLanguageName(language || ''), courseId, lessonId],
     queryFn: async () => {
-      const response = await apiClient.getLesson(getFullLanguageName(language || ''), courseId!, lessonId!);
-      return (response as any).data || response;
+      const fullLanguageName = getFullLanguageName(language || '');
+      console.log(`🌍 Fetching lesson data for: ${fullLanguageName}/${courseId}/${lessonId}`);
+      const response = await apiClient.getLesson(fullLanguageName, courseId!, lessonId!);
+      const lessonData = (response as any).data || response;
+      
+      // Enhanced logging for debugging Spanish courses
+      console.log(`📚 Lesson data received for ${fullLanguageName}:`, JSON.stringify({
+        lessonId: lessonData?.id || lessonData?.lessonId,
+        title: lessonData?.lesson?.title || lessonData?.title,
+        hasStepsArray: Array.isArray(lessonData?.lesson?.steps),
+        stepsCount: Array.isArray(lessonData?.lesson?.steps) ? lessonData?.lesson?.steps?.length : 0,
+        hasStep1: !!lessonData?.lesson?.step1,
+        hasStep4: !!lessonData?.lesson?.step4,
+        hasStep5: !!lessonData?.lesson?.step5,
+        stepTypes: Array.isArray(lessonData?.lesson?.steps) 
+          ? lessonData?.lesson?.steps.map((s: any) => s.stepType) 
+          : 'legacy format'
+      }, null, 2));
+      
+      return lessonData;
     },
     enabled: !!user && !!language && !!courseId && !!lessonId,
     retry: 2,
@@ -638,7 +656,28 @@ export default function LessonScreen() {
   // Get current step data - matching web logic exactly
   const getCurrentStepData = () => {
     try {
-      if (!currentLesson?.lesson) return null;
+      if (!currentLesson?.lesson) {
+        console.log(`⚠️ No lesson data available for step ${currentStep}`);
+        return null;
+      }
+      
+      // Enhanced debugging for Spanish courses
+      if (language === 'spanish') {
+        console.log(`🔍 [SPANISH DEBUG] Processing step ${currentStep} for ${language}/${courseId}/${lessonId}`);
+        console.log(`🔍 [SPANISH DEBUG] Lesson structure:`, {
+          hasStepsArray: Array.isArray(currentLesson.lesson?.steps),
+          stepsCount: Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson.steps.length : 0,
+          hasStep1: !!currentLesson.lesson?.step1,
+          hasStep4: !!currentLesson.lesson?.step4,
+          hasStep5: !!currentLesson.lesson?.step5,
+          currentStepIndex: currentStep - 1
+        });
+        
+        if (Array.isArray(currentLesson.lesson?.steps) && currentLesson.lesson.steps.length > 0) {
+          const currentStepData = currentLesson.lesson.steps[currentStep - 1];
+          console.log(`🔍 [SPANISH DEBUG] Step ${currentStep} raw data:`, JSON.stringify(currentStepData, null, 2));
+        }
+      }
       
       // Handle IRL video lessons
       const firstStep = Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson?.steps?.[0] : null;
