@@ -142,6 +142,7 @@ export default function LessonScreen() {
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
   const proVideoRef = useRef<Video>(null);
+  const irlVideoRef = useRef<Video>(null);
 
   // Animation for correct answer
   const correctAnswerScale = useRef(new Animated.Value(1)).current;
@@ -1520,6 +1521,9 @@ export default function LessonScreen() {
       if (proVideoRef.current) {
         await proVideoRef.current.replayAsync();
       }
+      if (irlVideoRef.current) {
+        await irlVideoRef.current.replayAsync();
+      }
     }
   };
 
@@ -1892,6 +1896,7 @@ export default function LessonScreen() {
 
                   <View style={styles.videoContainer}>
                     <Video
+                      ref={irlVideoRef}
                       style={styles.video}
                       source={{
                         uri: stepData.videoUrl,
@@ -1901,7 +1906,8 @@ export default function LessonScreen() {
                       }}
                       useNativeControls
                       resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={false}
+                      shouldPlay={true}
+                      onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
                     />
                   </View>
 
@@ -2027,6 +2033,7 @@ export default function LessonScreen() {
 
                   <View style={styles.videoContainer}>
                     <Video
+                      ref={proVideoRef}
                       style={styles.video}
                       source={{
                         uri: stepData.videoUrl,
@@ -2036,9 +2043,10 @@ export default function LessonScreen() {
                       }}
                       useNativeControls={stepData.hasAccess}
                       resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={!stepData.hasAccess}
+                      shouldPlay={true}
                       isLooping={!stepData.hasAccess}
                       isMuted={!stepData.hasAccess}
+                      onPlaybackStatusUpdate={stepData.hasAccess ? handleVideoPlaybackStatusUpdate : undefined}
                     />
                     
                     {!stepData.hasAccess && (
