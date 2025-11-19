@@ -1883,11 +1883,11 @@ export default function LessonScreen() {
                     <Text style={styles.loadingText}>Loading intro video...</Text>
                   </View>
                 ) : (
-                  <Video
+                  <VideoPlayer
                     style={styles.video}
                     source={
                       introVideoUrl 
-                        ? { uri: normalizeAssetUrl(introVideoUrl) }
+                        ? { uri: getVideoSource(normalizeAssetUrl(introVideoUrl)) }
                         : getFallbackVideoSource(courseId || 'course1', language || 'italian')
                     }
                     useNativeControls
