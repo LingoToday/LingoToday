@@ -307,6 +307,35 @@ export default function LessonScreen() {
     staleTime: 30000,
   });
 
+  // Function to fetch course intro data from API
+  const fetchCourseIntro = async (languageCode: string, courseNumber: number) => {
+    try {
+      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 
+                         (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
+                         '';
+      
+      if (!apiBaseUrl) {
+        console.error('⚠️ API base URL is missing, cannot fetch intro video');
+        return null;
+      }
+
+      const response = await fetch(
+        `${apiBaseUrl}/api/external/courses/${languageCode}/beginner/${courseNumber}`
+      );
+
+      if (!response.ok) {
+        console.error(`Failed to fetch course intro: ${response.status}`);
+        return null;
+      }
+
+      const courseData = await response.json();
+      return courseData;
+    } catch (error) {
+      console.error('Error fetching course intro:', error);
+      return null;
+    }
+  };
+
   // Check if this is course lesson1 and if intro video should be shown (works for all languages)
   useEffect(() => {
     if (lessonId === 'lesson1' && 
@@ -318,21 +347,40 @@ export default function LessonScreen() {
       // Check if user has completed any lessons for this specific course
       const hasCompletedCourseProgress = userProgress.some(p => p.courseId === courseId && p.completed);
       
-      SecureStore.getItemAsync(storageKey).then(hasSeenIntroVideo => {
+      SecureStore.getItemAsync(storageKey).then(async hasSeenIntroVideo => {
+        let shouldShowVideo = false;
+        
         if (!hasCompletedCourseProgress) {
           // For new learners to this course, always show the video
           if (hasSeenIntroVideo) {
             SecureStore.deleteItemAsync(storageKey);
             console.log(`🎬 Clearing storage for new ${language} ${courseId} learner - video will show`);
           }
-          setShowIntroVideo(true);
+          shouldShowVideo = true;
           console.log(`🎬 Showing intro video for new ${language} ${courseId} learner`);
         } else if (!hasSeenIntroVideo) {
           // For returning learners who somehow don't have the storage flag
-          setShowIntroVideo(true);
+          shouldShowVideo = true;
           console.log(`🎬 Showing intro video for ${language} ${courseId}`);
         } else {
           console.log(`🎬 Video already seen by experienced ${language} ${courseId} learner, skipping`);
+        }
+
+        if (shouldShowVideo) {
+          // Extract course number from courseId (e.g., 'course1' -> 1)
+          const courseNumber = parseInt(courseId.replace('course', ''), 10);
+          
+          // Fetch intro video URL from API
+          const courseData = await fetchCourseIntro(language, courseNumber);
+          
+          if (courseData && courseData.introVideoUrl) {
+            setIntroVideoUrl(courseData.introVideoUrl);
+            console.log(`🎬 Fetched intro video URL: ${courseData.introVideoUrl}`);
+          } else {
+            console.log('⚠️ No intro video URL found in API response');
+          }
+          
+          setShowIntroVideo(true);
         }
       });
     }
