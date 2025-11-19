@@ -315,7 +315,13 @@ export default function LessonScreen() {
   });
 
   // Fallback video sources (used if API call fails)
-  const getFallbackVideoSource = (courseId: string) => {
+  const getFallbackVideoSource = (courseId: string, languageCode: string) => {
+    // Only return fallback videos for Italian - other languages should not show intro until proper videos are added
+    if (languageCode !== 'italian') {
+      console.warn(`⚠️ No fallback intro video available for ${languageCode}. Intro video will be skipped.`);
+      return null;
+    }
+    
     switch (courseId) {
       case 'course1':
         return require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
@@ -388,9 +394,6 @@ export default function LessonScreen() {
         }
 
         if (shouldShowVideo) {
-          setShowIntroVideo(true);
-          setIsLoadingIntroVideo(true);
-          
           // Extract course number from courseId (e.g., 'course1' -> 1)
           const courseNumber = parseInt(courseId.replace('course', ''), 10);
           
@@ -399,13 +402,26 @@ export default function LessonScreen() {
           
           if (courseData && courseData.introVideoUrl) {
             setIntroVideoUrl(courseData.introVideoUrl);
+            setShowIntroVideo(true);
+            setIsLoadingIntroVideo(false);
             console.log(`🎬 Fetched intro video URL from API: ${courseData.introVideoUrl}`);
           } else {
-            console.log('⚠️ No intro video URL from API, will use fallback local video');
-            setIntroVideoUrl(null);
+            // Check if fallback video exists for this language
+            const fallbackVideo = getFallbackVideoSource(courseId, language);
+            
+            if (fallbackVideo) {
+              console.log('⚠️ No intro video URL from API, will use fallback local video');
+              setIntroVideoUrl(null);
+              setShowIntroVideo(true);
+              setIsLoadingIntroVideo(false);
+            } else {
+              console.log(`⚠️ No intro video available for ${language}/${courseId}. Skipping intro and starting lesson.`);
+              setShowIntroVideo(false);
+              setIsLoadingIntroVideo(false);
+              // Mark as seen so we don't keep trying to show it
+              SecureStore.setItemAsync(storageKey, 'true');
+            }
           }
-          
-          setIsLoadingIntroVideo(false);
         }
       });
     }
@@ -1803,15 +1819,15 @@ export default function LessonScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Italian Course Intro Video */}
+      {/* Course Intro Video */}
       {showIntroVideo && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Card style={styles.introVideoCard}>
             <CardContent style={styles.introVideoContent}>
               <Text style={styles.introVideoTitle}>
-                {courseId === 'course1' ? 'Welcome to Italian Beginners Course!' :
-                 courseId === 'course2' ? 'Welcome to Italian Beginners Course 2!' :
-                 courseId === 'course3' ? 'Welcome to Italian Beginners Course 3!' : 'Welcome to Italian Beginners Course!'}
+                {courseId === 'course1' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course!` :
+                 courseId === 'course2' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course 2!` :
+                 courseId === 'course3' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course 3!` : `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course!`}
               </Text>
               
               <View style={styles.videoContainer}>
@@ -1826,7 +1842,7 @@ export default function LessonScreen() {
                     source={
                       introVideoUrl 
                         ? { uri: normalizeAssetUrl(introVideoUrl) }
-                        : getFallbackVideoSource(courseId || 'course1')
+                        : getFallbackVideoSource(courseId || 'course1', language || 'italian')
                     }
                     useNativeControls
                     resizeMode={ResizeMode.CONTAIN}
