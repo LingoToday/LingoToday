@@ -2825,7 +2825,6 @@ const styles = StyleSheet.create({
   },
   video: {
     width: '100%',
-    aspectRatio: 16 / 9,
     maxHeight: 500,
     borderRadius: theme.borderRadius.lg,
   },
