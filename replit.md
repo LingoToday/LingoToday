@@ -11,11 +11,13 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that faci
 - Added intelligent video source selection that prioritizes cached videos over remote URLs
 - Implemented web-specific prefetch strategy with deduplication and 60-second cleanup timeout
 
-**Video Container Fixes (Mobile)**: Fixed videos breaking out of card containers on Android and iOS:
-- Changed video styling from fixed pixel width (280px max) to responsive width (100% of container)
+**Video Display Fixes**: Fixed videos to display in their natural portrait aspect ratio across all platforms:
+- Updated `VideoPlayer` component to default to portrait aspect ratio (9/16 instead of 16/9)
+- Added optional `aspectRatio` prop to VideoPlayer for future customization if needed
+- All lesson videos (intro, IRL, video choice, pro video) now display in portrait format without letterboxing
+- Videos properly fill their container height while maintaining natural portrait dimensions
+- Changed video styling from fixed pixel width to responsive width (100% of container)
 - Added `overflow: 'hidden'` to videoContainer to prevent content spillover
-- Removed hardcoded aspect ratio to respect natural video dimensions (portrait or landscape)
-- Videos now properly stay within card boundaries on all mobile devices and maintain their original aspect ratio
 
 ## User Preferences
 I prefer detailed explanations.
