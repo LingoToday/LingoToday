@@ -1926,6 +1926,7 @@ export default function LessonScreen() {
 
                   <View style={styles.videoContainer}>
                     <Video
+                      ref={videoChoiceRef}
                       style={styles.video}
                       source={{
                         uri: stepData.videoUrl,
@@ -1935,7 +1936,8 @@ export default function LessonScreen() {
                       }}
                       useNativeControls
                       resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={false}
+                      shouldPlay={true}
+                      onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
                     />
                   </View>
 
