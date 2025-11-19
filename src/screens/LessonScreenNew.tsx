@@ -123,6 +123,7 @@ export default function LessonScreen() {
   const [stepResults, setStepResults] = useState<{[key: number]: boolean}>({});
   const [showIntroVideo, setShowIntroVideo] = useState(false);
   const [introVideoUrl, setIntroVideoUrl] = useState<string | null>(null);
+  const [isLoadingIntroVideo, setIsLoadingIntroVideo] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideoControls, setShowVideoControls] = useState(true);
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
@@ -307,6 +308,20 @@ export default function LessonScreen() {
     staleTime: 30000,
   });
 
+  // Fallback video sources (used if API call fails)
+  const getFallbackVideoSource = (courseId: string) => {
+    switch (courseId) {
+      case 'course1':
+        return require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
+      case 'course2':
+        return require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV');
+      case 'course3':
+        return require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV');
+      default:
+        return require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
+    }
+  };
+
   // Function to fetch course intro data from API
   const fetchCourseIntro = async (languageCode: string, courseNumber: number) => {
     try {
@@ -315,7 +330,7 @@ export default function LessonScreen() {
                          '';
       
       if (!apiBaseUrl) {
-        console.error('⚠️ API base URL is missing, cannot fetch intro video');
+        console.error('⚠️ API base URL is missing, using fallback video');
         return null;
       }
 
@@ -324,14 +339,14 @@ export default function LessonScreen() {
       );
 
       if (!response.ok) {
-        console.error(`Failed to fetch course intro: ${response.status}`);
+        console.warn(`Failed to fetch course intro (${response.status}), will use fallback`);
         return null;
       }
 
       const courseData = await response.json();
       return courseData;
     } catch (error) {
-      console.error('Error fetching course intro:', error);
+      console.warn('Error fetching course intro, will use fallback:', error);
       return null;
     }
   };
@@ -367,6 +382,9 @@ export default function LessonScreen() {
         }
 
         if (shouldShowVideo) {
+          setShowIntroVideo(true);
+          setIsLoadingIntroVideo(true);
+          
           // Extract course number from courseId (e.g., 'course1' -> 1)
           const courseNumber = parseInt(courseId.replace('course', ''), 10);
           
@@ -375,12 +393,13 @@ export default function LessonScreen() {
           
           if (courseData && courseData.introVideoUrl) {
             setIntroVideoUrl(courseData.introVideoUrl);
-            console.log(`🎬 Fetched intro video URL: ${courseData.introVideoUrl}`);
+            console.log(`🎬 Fetched intro video URL from API: ${courseData.introVideoUrl}`);
           } else {
-            console.log('⚠️ No intro video URL found in API response');
+            console.log('⚠️ No intro video URL from API, will use fallback local video');
+            setIntroVideoUrl(null);
           }
           
-          setShowIntroVideo(true);
+          setIsLoadingIntroVideo(false);
         }
       });
     }
@@ -1755,19 +1774,25 @@ export default function LessonScreen() {
               </Text>
               
               <View style={styles.videoContainer}>
-                <Video
-                  style={styles.video}
-                  source={
-                    courseId === 'course1' ? require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4') :
-                    courseId === 'course2' ? require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV') :
-                    courseId === 'course3' ? require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV') :
-                    require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4')
-                  }
-                  useNativeControls
-                  resizeMode={ResizeMode.CONTAIN}
-                  shouldPlay={true}
-                  isMuted={false}
-                />
+                {isLoadingIntroVideo ? (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text style={styles.loadingText}>Loading intro video...</Text>
+                  </View>
+                ) : (
+                  <Video
+                    style={styles.video}
+                    source={
+                      introVideoUrl 
+                        ? { uri: normalizeAssetUrl(introVideoUrl) }
+                        : getFallbackVideoSource(courseId || 'course1')
+                    }
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={true}
+                    isMuted={false}
+                  />
+                )}
               </View>
               
               <Button 
