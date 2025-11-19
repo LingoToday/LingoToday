@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system/legacy';
+import { Platform } from 'react-native';
 import { apiClient } from '../lib/apiClient';
 import type { ProgressData } from '../lib/apiClient';
 
@@ -31,6 +32,11 @@ class VideoPreloadService {
   }
 
   async preloadVideosOnAppLaunch(userId: string): Promise<void> {
+    if (Platform.OS === 'web') {
+      console.log('📹 Video preload skipped: Web platform does not support file system caching');
+      return;
+    }
+
     if (this.isPreloading) {
       console.log('📹 Video preload already in progress, skipping...');
       return;
@@ -38,7 +44,7 @@ class VideoPreloadService {
 
     try {
       this.isPreloading = true;
-      console.log('📹 Starting video preload for user:', userId);
+      console.log('📹 Starting video preload for user:', userId, 'on platform:', Platform.OS);
 
       const dashboardData = await apiClient.getDashboardData();
       

@@ -70,7 +70,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const userObj = (userData as any).data || userData;
         setUser(userObj as User);
         
-        // Initialize RevenueCat and register push token on native platforms
+        // Initialize RevenueCat, register push token, and preload videos on native platforms
         if (Platform.OS !== 'web' && userObj?.id) {
           try {
             await Promise.all([
@@ -81,14 +81,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
           } catch (error) {
             console.error('⚠️ Initialization failed during auth restore:', error);
           }
-        }
 
-        // Trigger video preloading in the background (don't wait for it)
-        if (userObj?.id) {
-          videoPreloadService.setAuthToken(token);
-          videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
-            console.error('⚠️ Video preload failed (non-blocking):', err);
-          });
+          // Trigger video preloading after ensuring token is available
+          if (token) {
+            try {
+              videoPreloadService.setAuthToken(token);
+              videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
+                console.error('⚠️ Video preload failed during auth restore (non-blocking):', err);
+              });
+            } catch (preloadError) {
+              console.error('⚠️ Video preload setup error during auth restore:', preloadError);
+            }
+          }
         }
       } else {
         // Token is invalid, remove it
@@ -132,6 +136,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Handle different response formats
       const responseData = (response as any).data || response;
       const userObj = responseData?.user || responseData;
+      const authToken = (response as any).token || responseData?.token;
 
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
@@ -149,17 +154,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         }
 
-        // Trigger video preloading in the background (don't wait for it)
-        if (userObj?.id) {
-          const token = Platform.OS === 'web' 
-            ? localStorage.getItem('authToken') 
-            : await SecureStore.getItemAsync('authToken');
-          
-          if (token) {
-            videoPreloadService.setAuthToken(token);
+        // Trigger video preloading in the background on native platforms only
+        if (Platform.OS !== 'web' && userObj?.id && authToken) {
+          try {
+            videoPreloadService.setAuthToken(authToken);
             videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
-              console.error('⚠️ Video preload failed (non-blocking):', err);
+              console.error('⚠️ Video preload failed during login (non-blocking):', err);
             });
+          } catch (preloadError) {
+            console.error('⚠️ Video preload setup error during login:', preloadError);
           }
         }
       } else {
@@ -196,6 +199,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Handle different response formats
       const responseData = (response as any).data || response;
       const userObj = responseData?.user || responseData;
+      const authToken = (response as any).token || responseData?.token;
 
       if (userObj && !(response as any).error) {
         setUser(userObj as User);
@@ -213,17 +217,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         }
 
-        // Trigger video preloading in the background (don't wait for it)
-        if (userObj?.id) {
-          const token = Platform.OS === 'web' 
-            ? localStorage.getItem('authToken') 
-            : await SecureStore.getItemAsync('authToken');
-          
-          if (token) {
-            videoPreloadService.setAuthToken(token);
+        // Trigger video preloading in the background on native platforms only
+        if (Platform.OS !== 'web' && userObj?.id && authToken) {
+          try {
+            videoPreloadService.setAuthToken(authToken);
             videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
-              console.error('⚠️ Video preload failed (non-blocking):', err);
+              console.error('⚠️ Video preload failed during registration (non-blocking):', err);
             });
+          } catch (preloadError) {
+            console.error('⚠️ Video preload setup error during registration:', preloadError);
           }
         }
       } else {
