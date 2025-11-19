@@ -122,6 +122,7 @@ export default function LessonScreen() {
   const [fromNotification, setFromNotification] = useState(false);
   const [stepResults, setStepResults] = useState<{[key: number]: boolean}>({});
   const [showIntroVideo, setShowIntroVideo] = useState(false);
+  const [introVideoUrl, setIntroVideoUrl] = useState<string | null>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideoControls, setShowVideoControls] = useState(true);
   const [notificationLessonId, setNotificationLessonId] = useState<string | null>(null);
