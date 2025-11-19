@@ -1,0 +1,85 @@
+iOS Bundled 136ms index.js (1 module)
+ WARN  expo-notifications: Android Push notifications (remote notifications) functionality provided by expo-notifications was removed from Expo Go with the release of SDK 53. Use a development build instead of Expo Go. Read more at https://docs.expo.dev/develop/development-builds/introduction/.
+ WARN  `expo-notifications` functionality is not fully supported in Expo Go:
+We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
+ LOG  Expo Go app detected. Using RevenueCat in Browser Mode.
+ WARN  Require cycle: src/contexts/AuthContext.tsx -> src/lib/notifications.ts -> src/screens/DashboardScreenNew.tsx -> src/hooks/useAuth.tsx -> src/contexts/AuthContext.tsx
+
+Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.
+ WARN  [expo-av]: Expo AV has been deprecated and will be removed in SDK 54. Use the `expo-audio` and `expo-video` packages to replace the required functionality.
+ LOG  📱 iOS notification categories configured
+ LOG  ✅ Found revenuecatIosKey in expoConfig.extra
+ ERROR  Error configuring Purchases: [Error: Invalid API key. The native store is not available when running inside Expo Go, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.]
+ ERROR  ❌ Error initializing RevenueCat: [Error: Invalid API key. The native store is not available when running inside Expo Go, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.]
+ ERROR  ⚠️ Initialization failed during auth restore: [Error: Invalid API key. The native store is not available when running inside Expo Go, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.]
+ LOG  📹 Starting video preload for user: local_1763553412944_nnqpb8zf8 on platform: ios
+ LOG  📱 [2025-11-19T11:57:27.802Z] iOS Notification Permissions {"allowsAlert": true, "allowsBadge": true, "allowsSound": true, "status": 2}
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"lessonsCompleted": 12, "streak": 7, "totalLessons": 78, "wordsLearned": 45}, "upcomingCount": 2, "userName": "Test6"}
+ WARN  SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/th3rdwave/react-native-safe-area-context
+ LOG  🔄 Dashboard screen focused - refetching data
+ LOG  📊 Fetching dashboard data...
+ LOG  ✅ [2025-11-19T11:57:28.043Z] Push token obtained successfully
+ LOG  🚀 [2025-11-19T11:57:28.043Z] Registering push token with backend... {"platform": "ios"}
+ LOG  📹 User has no progress yet, starting with first lesson
+ LOG  ✅ [2025-11-19T11:57:28.429Z] Push token successfully registered with backend
+ LOG  ✅ Dashboard data fetched successfully: {"progress": [], "settings": {"createdAt": "2025-11-19T11:56:54.356Z", "desktopNotificationDays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], "desktopNotificationEndTime": "18:00", "desktopNotificationFrequency": 15, "desktopNotificationStartTime": "09:00", "desktopNotificationsEnabled": true, "difficultyLevel": "beginner", "language": "spanish", "mobileNotificationDays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], "mobileNotificationEndTime": "18:00", "mobileNotificationFrequency": 15, "mobileNotificationStartTime": "09:00", "mobileNotificationsEnabled": true, "notificationEndTime": "18:00", "notificationFrequency": 15, "notificationStartTime": "09:00", "notificationsEnabled": false, "skillLevelId": 1, "soundEnabled": true, "theme": "light", "updatedAt": "2025-11-19T11:56:54.333Z", "userId": "local_1763553412944_nnqpb8zf8"}, "stats": {"createdAt": "2025-11-19T11:57:28.156Z", "id": 1257, "language": "spanish", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-19T11:57:28.134Z", "userId": "local_1763553412944_nnqpb8zf8", "wordsLearned": 0}, "user": {"authProvider": "local", "avatarUrl": null, "completedOnboarding": true, "createdAt": "2025-11-19T11:56:52.969Z", "currentCourse": "course1", "currentLesson": "lesson1", "email": "test6@test.com", "firstName": "Test6", "hasSeenNotificationSetup": false, "id": "local_1763553412944_nnqpb8zf8", "lastName": "", "lastWebhookReceivedAt": null, "password": "$2b$12$ZB/09xd3aDIHVvpG65p4beMidH4UP4GG1AIBr1oZG67fZzeSbHzEi", "priceTier": "n/a", "revenuecatCustomerId": null, "selectedLanguage": "spanish", "selectedLevel": "beginner", "stripeCustomerId": null, "stripeSubscriptionId": null, "subscriptionExpiresAt": null, "subscriptionPlatform": null, "subscriptionStatus": null, "updatedAt": "2025-11-19T11:56:52.969Z"}}
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"createdAt": "2025-11-19T11:57:28.156Z", "id": 1257, "language": "spanish", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-19T11:57:28.134Z", "userId": "local_1763553412944_nnqpb8zf8", "wordsLearned": 0}, "upcomingCount": 2, "userName": "Test6"}
+ ERROR  📹 Error getting videos from course1/lesson1: [Error: Course structure not found in database]
+ LOG  📹 No videos found to preload
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"createdAt": "2025-11-19T11:57:28.156Z", "id": 1257, "language": "spanish", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-19T11:57:28.134Z", "userId": "local_1763553412944_nnqpb8zf8", "wordsLearned": 0}, "upcomingCount": 5, "userName": "Test6"}
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"createdAt": "2025-11-19T11:57:28.156Z", "id": 1257, "language": "spanish", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-19T11:57:28.134Z", "userId": "local_1763553412944_nnqpb8zf8", "wordsLearned": 0}, "upcomingCount": 5, "userName": "Test6"}
+ LOG  ⚠️ No lesson data available for step 1
+ LOG  🌍 Fetching lesson data for: spanish/course1/lesson1
+ LOG  ✅ Auth token loaded for video streaming
+ LOG  🎬 Showing intro video for new spanish course1 learner
+ LOG  🎬 Showing intro video for new spanish course1 learner
+ LOG  🎬 Showing intro video for new spanish course1 learner
+ LOG  🎬 Showing intro video for new spanish course1 learner
+ LOG  ⚠️ No lesson data available for step 1
+ WARN  Failed to fetch course intro (404), will use fallback
+ LOG  ⚠️ No intro video URL from API, will use fallback local video
+ WARN  Failed to fetch course intro (404), will use fallback
+ LOG  ⚠️ No intro video URL from API, will use fallback local video
+ WARN  Failed to fetch course intro (404), will use fallback
+ LOG  ⚠️ No intro video URL from API, will use fallback local video
+ WARN  Failed to fetch course intro (404), will use fallback
+ LOG  ⚠️ No intro video URL from API, will use fallback local video
+ LOG  📚 Lesson data received for spanish: {
+  "lessonId": "lesson1",
+  "title": "Hi / Hello",
+  "hasStepsArray": false,
+  "stepsCount": 0,
+  "hasStep1": false,
+  "hasStep4": false,
+  "hasStep5": false,
+  "stepTypes": "legacy format"
+}
+ LOG  🔍 [SPANISH DEBUG] Processing step 1 for spanish/course1/lesson1
+ LOG  🔍 [SPANISH DEBUG] Lesson structure: {"currentStepIndex": 0, "hasStep1": false, "hasStep4": false, "hasStepsArray": false, "stepsCount": 0}
+ LOG  📋 Steps object detected: {"currentStep": 1, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 1, found key: word_review
+ LOG  📦 Step data: {"stepData": {"audio": "Hola", "note": "\"OH-la\". Universal and friendly—use any time with anyone, in cafés, shops, or on the street.", "stepType": "word_review", "translation": "Hi / Hello", "type": "word_review", "word": "Hola"}, "stepKey": "word_review"}
+ LOG  🔍 Word Review Step Data: {"audio": "Hola", "note": "\"OH-la\". Universal and friendly—use any time with anyone, in cafés, shops, or on the street.", "stepType": "word_review", "translation": "Hi / Hello", "type": "word_review", "word": "Hola"}
+ LOG  ⚠️ [expo-av]: Video component from `expo-av` is deprecated in favor of `expo-video`. See the documentation at https://docs.expo.dev/versions/latest/sdk/video/ for the new API reference.
+ LOG  🔍 [SPANISH DEBUG] Processing step 2 for spanish/course1/lesson1
+ LOG  🔍 [SPANISH DEBUG] Lesson structure: {"currentStepIndex": 1, "hasStep1": false, "hasStep4": false, "hasStepsArray": false, "stepsCount": 0}
+ LOG  📋 Steps object detected: {"currentStep": 2, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 2, found key: quick_check
+ LOG  📦 Step data: {"stepData": {"answer": "Hola", "options": ["Adiós", "Hola", "Buenas noches", "Hasta luego"], "question": "At a Madrid café, the barista looks up — how do you greet them?", "stepType": "quick_check", "type": "quick_check"}, "stepKey": "quick_check"}
+ LOG  🔍 [SPANISH DEBUG] Processing step 3 for spanish/course1/lesson1
+ LOG  🔍 [SPANISH DEBUG] Lesson structure: {"currentStepIndex": 2, "hasStep1": false, "hasStep4": false, "hasStepsArray": false, "stepsCount": 0}
+ LOG  📋 Steps object detected: {"currentStep": 3, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 3, found key: typing
+ LOG  📦 Step data: {"stepData": {"alternatives": ["hola"], "expected": "Hola", "prompt": "Ho__ = Hi / Hello", "stepType": "typing", "type": "type"}, "stepKey": "typing"}
+ LOG  ✏️ [OBJECT] Typing Step Data: {"alternatives": ["hola"], "expected": "Hola", "prompt": "Ho__ = Hi / Hello", "stepType": "typing", "type": "type"}
+ LOG  extractMissingLetters: {"fullWord": "Hola", "missingLetters": "la", "prompt": "Ho__ = Hi / Hello", "underscoreIndex": 2, "underscoreLength": 2, "wordWithGap": "Ho__"}
+ LOG  ✏️ Extracted missing letters: {"fullWord": "Hola", "missingLetters": "la", "prompt": "Ho__ = Hi / Hello"}
+ LOG  ✏️ [OBJECT] Generated options for typing step: {"fromCache": true, "missingLetters": "la", "options": ["na", "lu", "la"]}
+ LOG  🔍 [SPANISH DEBUG] Processing step 4 for spanish/course1/lesson1
+ LOG  🔍 [SPANISH DEBUG] Lesson structure: {"currentStepIndex": 3, "hasStep1": false, "hasStep4": false, "hasStepsArray": false, "stepsCount": 0}
+ LOG  📋 Steps object detected: {"currentStep": 4, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 4, found key: pro_video
+ LOG  📦 Step data: {"stepData": {"answer_prompt": "Reply: 'Hi' in Spanish.", "expected_answers": ["Hola", "hola"], "isRestricted": true, "prompt": "At a quiet café in Madrid, the barista greets you with a smile and says: ‘Hola, ¿qué te pongo?’ (Hi, what can I get you?)", "requiredTier": ["pro"], "stepType": "pro_video", "type": "pro_video", "video_url": "/replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/a33d8d94-406d-4041-96b0-0edc8fd69f7f.mp4"}, "stepKey": "pro_video"}
+ LOG  🎥 [OBJECT pro_video] Extracted video URL: /replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/a33d8d94-406d-4041-96b0-0edc8fd69f7f.mp4
+ LOG  ✅ Using API base URL: https://lingotoday.replit.app
+ LOG  🎥 Routing object storage video through streaming endpoint: https://lingotoday.replit.app/api/videos/replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/a33d8d94-406d-4041-96b0-0edc8fd69f7f.mp4
