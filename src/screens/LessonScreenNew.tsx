@@ -2817,19 +2817,18 @@ const styles = StyleSheet.create({
 
   // Video Container
   videoContainer: {
+    width: '100%',
     alignItems: 'center',
     marginVertical: theme.spacing.sm,
     backgroundColor: 'transparent',
+    overflow: 'hidden',
   },
-  video: (() => {
-    const videoWidth = Math.min(screenWidth - (theme.spacing.md * 4), 280);
-    const videoHeight = Math.min((videoWidth * 16) / 9, 500);
-    return {
-      width: videoWidth,
-      height: videoHeight,
-      borderRadius: theme.borderRadius.lg,
-    };
-  })(),
+  video: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    maxHeight: 500,
+    borderRadius: theme.borderRadius.lg,
+  },
 
   // Word Review - Updated styling to match screenshot
   wordReviewContainer: {
