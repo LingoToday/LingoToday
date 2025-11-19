@@ -18,6 +18,7 @@ interface VideoPlayerProps {
   onPlaybackStatusUpdate?: (status: AVPlaybackStatus) => void;
   videoRef?: React.RefObject<Video | null>;
   placeholderColor?: string;
+  aspectRatio?: number;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -31,6 +32,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   onPlaybackStatusUpdate,
   videoRef,
   placeholderColor = theme.colors.card,
+  aspectRatio = 9 / 16,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -67,7 +69,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, { aspectRatio }, style]}>
       {isLoading && (
         <View style={[styles.loadingContainer, { backgroundColor: placeholderColor }]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -95,7 +97,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     width: '100%',
-    aspectRatio: 16 / 9,
     backgroundColor: theme.colors.card,
     borderRadius: 12,
     overflow: 'hidden',
