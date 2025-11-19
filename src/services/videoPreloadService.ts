@@ -26,14 +26,77 @@ class VideoPreloadService {
   private preloadedVideos: Map<string, PreloadedVideo> = new Map();
   private isPreloading: boolean = false;
   private authToken: string | null = null;
+  private prefetchedUrls: Set<string> = new Set();
 
   setAuthToken(token: string | null) {
     this.authToken = token;
   }
 
+  async eagerPreloadCurrentVideo(
+    language: string,
+    courseId: string,
+    lessonId: string,
+    stepNumber: number,
+    videoUrl: string
+  ): Promise<void> {
+    if (!videoUrl) return;
+
+    const normalizedUrl = this.normalizeAssetUrl(videoUrl);
+    
+    if (Platform.OS === 'web') {
+      this.prefetchVideoForWeb(normalizedUrl);
+      return;
+    }
+
+    const videoToPreload: VideoToPreload = {
+      url: normalizedUrl,
+      language,
+      courseId,
+      lessonId,
+      stepNumber,
+      stepType: 'eager'
+    };
+
+    console.log('🚀 Eager preloading current video:', this.getCacheKey(videoToPreload));
+    await this.preloadVideos([videoToPreload]);
+  }
+
+  private prefetchVideoForWeb(url: string): void {
+    if (typeof document === 'undefined') return;
+
+    if (this.prefetchedUrls.has(url)) {
+      console.log('📹 Video already prefetched for web:', url);
+      return;
+    }
+
+    const existingLink = document.querySelector(`link[href="${url}"][rel="prefetch"]`);
+    if (existingLink) {
+      console.log('📹 Video prefetch link already exists:', url);
+      this.prefetchedUrls.add(url);
+      return;
+    }
+
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.as = 'video';
+    link.href = url;
+    document.head.appendChild(link);
+    
+    this.prefetchedUrls.add(url);
+    console.log('📹 Prefetching video for web:', url);
+
+    setTimeout(() => {
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+      this.prefetchedUrls.delete(url);
+      console.log('📹 Cleaned up prefetch link for:', url);
+    }, 60000);
+  }
+
   async preloadVideosOnAppLaunch(userId: string): Promise<void> {
     if (Platform.OS === 'web') {
-      console.log('📹 Video preload skipped: Web platform does not support file system caching');
+      console.log('📹 Video preload skipped on app launch: Web platform uses link prefetch');
       return;
     }
 

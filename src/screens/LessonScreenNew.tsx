@@ -32,6 +32,7 @@ import { Progress } from '../components/ui/Progress';
 import { Badge } from '../components/ui/Badge';
 import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
+import { VideoPlayer } from '../components/VideoPlayer';
 import { purchaseService } from '../services/purchaseService';
 import { videoPreloadService } from '../services/videoPreloadService';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -1504,6 +1505,39 @@ export default function LessonScreen() {
     return null;
   }, [currentStep, currentLesson, stepData?.type, lessonId, courseId]);
 
+  // Get preloaded video URI or fallback to remote URL
+  const getVideoSource = (videoUrl: string) => {
+    if (!language || !courseId || !lessonId || !videoUrl) {
+      return videoUrl;
+    }
+
+    const preloadedUri = videoPreloadService.getPreloadedVideo(
+      language,
+      courseId,
+      lessonId,
+      currentStep
+    );
+
+    if (preloadedUri) {
+      console.log(`✅ Using preloaded video for step ${currentStep}:`, preloadedUri);
+      return preloadedUri;
+    }
+
+    console.log(`📡 Using remote video for step ${currentStep}:`, videoUrl);
+    
+    if (Platform.OS === 'web') {
+      videoPreloadService.eagerPreloadCurrentVideo(
+        language,
+        courseId,
+        lessonId,
+        currentStep,
+        videoUrl
+      );
+    }
+    
+    return videoUrl;
+  };
+
   // Complete lesson mutation - matching web exactly
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -1944,11 +1978,11 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <Video
-                      ref={irlVideoRef}
+                    <VideoPlayer
+                      videoRef={irlVideoRef}
                       style={styles.video}
                       source={{
-                        uri: stepData.videoUrl,
+                        uri: getVideoSource(stepData.videoUrl),
                         headers: authToken ? {
                           'Authorization': `Bearer ${authToken}`
                         } : undefined
@@ -1980,11 +2014,11 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <Video
-                      ref={videoChoiceRef}
+                    <VideoPlayer
+                      videoRef={videoChoiceRef}
                       style={styles.video}
                       source={{
-                        uri: stepData.videoUrl,
+                        uri: getVideoSource(stepData.videoUrl),
                         headers: authToken ? {
                           'Authorization': `Bearer ${authToken}`
                         } : undefined
@@ -2081,11 +2115,11 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <Video
-                      ref={proVideoRef}
+                    <VideoPlayer
+                      videoRef={proVideoRef}
                       style={styles.video}
                       source={{
-                        uri: stepData.videoUrl,
+                        uri: getVideoSource(stepData.videoUrl),
                         headers: authToken ? {
                           'Authorization': `Bearer ${authToken}`
                         } : undefined

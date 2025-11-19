@@ -3,6 +3,14 @@
 ## Overview
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
+## Recent Changes (Nov 19, 2025)
+**Video Loading Improvements**: Implemented comprehensive video loading enhancements to eliminate the blank screen issue when videos load:
+- Created `VideoPlayer` component with loading states, spinners, and smooth fade-in transitions
+- Enhanced `VideoPreloadService` to support web platform using link prefetch with automatic cleanup
+- Integrated preloaded video consumption so users benefit from background caching
+- Added intelligent video source selection that prioritizes cached videos over remote URLs
+- Implemented web-specific prefetch strategy with deduplication and 60-second cleanup timeout
+
 ## User Preferences
 I prefer detailed explanations.
 Do not make changes to the folder `node_modules`.
