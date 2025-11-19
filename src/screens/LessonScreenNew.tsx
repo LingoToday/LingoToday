@@ -139,6 +139,10 @@ export default function LessonScreen() {
   // Auth token for authenticated video requests
   const [authToken, setAuthToken] = useState<string | null>(null);
 
+  // Video refs for controlling playback
+  const videoChoiceRef = useRef<Video>(null);
+  const proVideoRef = useRef<Video>(null);
+
   // Animation for correct answer
   const correctAnswerScale = useRef(new Animated.Value(1)).current;
   const correctAnswerBorder = useRef(new Animated.Value(0)).current;
@@ -1505,6 +1509,18 @@ export default function LessonScreen() {
       .replace(/\s+/g, ' ')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
+  };
+
+  // Handle video playback status updates - auto-restart when video ends
+  const handleVideoPlaybackStatusUpdate = async (status: any) => {
+    if (status.didJustFinish && !status.isLooping) {
+      if (videoChoiceRef.current) {
+        await videoChoiceRef.current.replayAsync();
+      }
+      if (proVideoRef.current) {
+        await proVideoRef.current.replayAsync();
+      }
+    }
   };
 
   // Handle step submission - matching web logic exactly
