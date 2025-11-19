@@ -5,6 +5,7 @@ import { apiClient } from '../lib/apiClient';
 import { User } from '../types';
 import { purchaseService } from '../services/purchaseService';
 import { registerPushTokenWithBackend, unregisterPushToken } from '../lib/notifications';
+import { videoPreloadService } from '../services/videoPreloadService';
 
 export interface AuthContextType {
   user: User | null;
@@ -81,6 +82,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
             console.error('⚠️ Initialization failed during auth restore:', error);
           }
         }
+
+        // Trigger video preloading in the background (don't wait for it)
+        if (userObj?.id) {
+          videoPreloadService.setAuthToken(token);
+          videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
+            console.error('⚠️ Video preload failed (non-blocking):', err);
+          });
+        }
       } else {
         // Token is invalid, remove it
         if (Platform.OS === 'web') {
@@ -139,6 +148,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
             console.error('⚠️ Initialization failed after login:', error);
           }
         }
+
+        // Trigger video preloading in the background (don't wait for it)
+        if (userObj?.id) {
+          const token = Platform.OS === 'web' 
+            ? localStorage.getItem('authToken') 
+            : await SecureStore.getItemAsync('authToken');
+          
+          if (token) {
+            videoPreloadService.setAuthToken(token);
+            videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
+              console.error('⚠️ Video preload failed (non-blocking):', err);
+            });
+          }
+        }
       } else {
         throw new Error((response as any).error || 'Login failed');
       }
@@ -189,6 +212,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
             console.error('⚠️ Initialization failed after registration:', error);
           }
         }
+
+        // Trigger video preloading in the background (don't wait for it)
+        if (userObj?.id) {
+          const token = Platform.OS === 'web' 
+            ? localStorage.getItem('authToken') 
+            : await SecureStore.getItemAsync('authToken');
+          
+          if (token) {
+            videoPreloadService.setAuthToken(token);
+            videoPreloadService.preloadVideosOnAppLaunch(userObj.id).catch(err => {
+              console.error('⚠️ Video preload failed (non-blocking):', err);
+            });
+          }
+        }
       } else {
         throw new Error((response as any).error || 'Registration failed');
       }
@@ -212,6 +249,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           console.error('⚠️ Cleanup error during logout (continuing):', cleanupError);
         }
       }
+      
+      // Clear video preload cache
+      await videoPreloadService.clearCache();
+      videoPreloadService.setAuthToken(null);
       
       // Try to logout from server
       await apiClient.logout();

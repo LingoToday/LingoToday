@@ -33,6 +33,7 @@ import { Badge } from '../components/ui/Badge';
 import { RadioGroup, RadioGroupItem } from '../components/ui/RadioGroup';
 import { Input } from '../components/ui/Input';
 import { purchaseService } from '../services/purchaseService';
+import { videoPreloadService } from '../services/videoPreloadService';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { PRO_PRICING } from '../constants/pricing';
 
@@ -420,8 +421,23 @@ export default function LessonScreen() {
   const currentLesson = lesson || fallbackLesson;
 
   // Helper to normalize asset URLs consistently
-  const normalizeAssetUrl = (url: string): string => {
+  const normalizeAssetUrl = (url: string, stepNumber?: number): string => {
     if (!url) return '';
+    
+    // Check if this video was preloaded (optimization for faster loading)
+    if (stepNumber && language && courseId && lessonId) {
+      const preloadedUrl = videoPreloadService.getPreloadedVideo(
+        language,
+        courseId,
+        lessonId,
+        stepNumber
+      );
+      
+      if (preloadedUrl) {
+        console.log(`⚡ Using preloaded video for ${language}/${courseId}/${lessonId}/step${stepNumber}`);
+        return preloadedUrl;
+      }
+    }
     
     // Get API base URL from config in order of priority (Expo SDK 54):
     // 1. Expo Go / development: Constants.expoConfig.extra.apiBaseUrl
@@ -742,7 +758,6 @@ export default function LessonScreen() {
           stepsCount: Array.isArray(currentLesson.lesson?.steps) ? currentLesson.lesson.steps.length : 0,
           hasStep1: !!currentLesson.lesson?.step1,
           hasStep4: !!currentLesson.lesson?.step4,
-          hasStep5: !!currentLesson.lesson?.step5,
           currentStepIndex: currentStep - 1
         });
         
@@ -866,7 +881,7 @@ export default function LessonScreen() {
                 const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
                 return {
                   ...opt,
-                  video_url: normalizeAssetUrl(videoUrl)
+                  video_url: normalizeAssetUrl(videoUrl, currentStep)
                 };
               });
               
@@ -875,7 +890,7 @@ export default function LessonScreen() {
               
               return {
                 type: 'video_choice',
-                videoUrl: normalizeAssetUrl(stepLevelVideoUrl),
+                videoUrl: normalizeAssetUrl(stepLevelVideoUrl, currentStep),
                 prompt: stepData.content?.prompt || stepData.prompt || '',
                 answerPrompt: firstOption?.answer_prompt || "Reply: 'Hi!'",
                 expectedAnswers: firstOption?.expected_answers || ["Ciao!", "Ciao"],
@@ -889,7 +904,7 @@ export default function LessonScreen() {
               console.log('🎥 [OBJECT video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
               return {
                 ...opt,
-                video_url: normalizeAssetUrl(videoUrl)
+                video_url: normalizeAssetUrl(videoUrl, currentStep)
               };
             });
             
@@ -907,7 +922,7 @@ export default function LessonScreen() {
             // If selected option has no video URL, fallback to step-level video
             if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
               if (stepLevelVideoUrl) {
-                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
+                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl, currentStep);
                 console.log('✅ [OBJECT video_choice] Using step-level video URL (fallback):', stepLevelVideoUrl);
               }
             } else {
@@ -1070,7 +1085,7 @@ export default function LessonScreen() {
                 const videoUrl = opt.video?.url || opt.videoUrl || opt.video_url || '';
                 return {
                   ...opt,
-                  video_url: normalizeAssetUrl(videoUrl)
+                  video_url: normalizeAssetUrl(videoUrl, currentStep)
                 };
               });
               
@@ -1079,7 +1094,7 @@ export default function LessonScreen() {
               
               return {
                 type: 'video_choice',
-                videoUrl: normalizeAssetUrl(stepLevelVideoUrl),
+                videoUrl: normalizeAssetUrl(stepLevelVideoUrl, currentStep),
                 prompt: currentStepData.content.prompt || '',
                 answerPrompt: firstOption?.answer_prompt || "Reply: 'Hi!'",
                 expectedAnswers: firstOption?.expected_answers || ["Ciao!", "Ciao"],
@@ -1093,7 +1108,7 @@ export default function LessonScreen() {
               console.log('🎥 [ARRAY video_choice] Extracting option video URL:', { label: opt.label, videoUrl });
               return {
                 ...opt,
-                video_url: normalizeAssetUrl(videoUrl)
+                video_url: normalizeAssetUrl(videoUrl, currentStep)
               };
             });
             
@@ -1111,7 +1126,7 @@ export default function LessonScreen() {
             // If selected option has no video URL, fallback to step-level video
             if (!finalVideoUrl || finalVideoUrl === normalizeAssetUrl('')) {
               if (stepLevelVideoUrl) {
-                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl);
+                finalVideoUrl = normalizeAssetUrl(stepLevelVideoUrl, currentStep);
                 console.log('✅ [ARRAY video_choice] Using step-level video URL (fallback):', stepLevelVideoUrl);
               }
             } else {
@@ -1161,7 +1176,7 @@ export default function LessonScreen() {
             
             return {
               type: 'pro_video',
-              videoUrl: normalizeAssetUrl(videoUrl),
+              videoUrl: normalizeAssetUrl(videoUrl, currentStep),
               prompt,
               answerPrompt,
               expectedAnswers,
@@ -1432,14 +1447,20 @@ export default function LessonScreen() {
       if (quizData?.options && quizData.options.length > 0) {
         const normalizedOptions = quizData.options.map((opt: any) => {
           if (typeof opt === 'string') return opt;
-          if (opt && typeof opt === 'object' && (opt.value || opt.label)) return opt.value || opt.label;
+          if (opt && typeof opt === 'object' && ('value' in opt || 'label' in opt)) {
+            return (opt as any).value || (opt as any).label;
+          }
           return String(opt);
         });
-        const normalizedAnswer = typeof quizData.answer === 'string' 
-          ? quizData.answer 
-          : (quizData.answer && typeof quizData.answer === 'object' && (quizData.answer.value || quizData.answer.label))
-            ? (quizData.answer.value || quizData.answer.label)
-            : normalizedOptions[0];
+        
+        let normalizedAnswer: string;
+        if (typeof quizData.answer === 'string') {
+          normalizedAnswer = quizData.answer;
+        } else if (quizData.answer && typeof quizData.answer === 'object' && ('value' in quizData.answer || 'label' in quizData.answer)) {
+          normalizedAnswer = (quizData.answer as any).value || (quizData.answer as any).label;
+        } else {
+          normalizedAnswer = normalizedOptions[0];
+        }
         
         return { options: normalizedOptions, answer: normalizedAnswer };
       }
