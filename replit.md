@@ -11,6 +11,12 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that faci
 - Added intelligent video source selection that prioritizes cached videos over remote URLs
 - Implemented web-specific prefetch strategy with deduplication and 60-second cleanup timeout
 
+**Video Container Fixes (Mobile)**: Fixed videos breaking out of card containers on Android and iOS:
+- Changed video styling from fixed pixel width (280px max) to responsive width (100% of container)
+- Added `overflow: 'hidden'` to videoContainer to prevent content spillover
+- Implemented `aspectRatio: 16/9` for proper video dimensions that adapt to screen size
+- Videos now properly stay within card boundaries on all mobile devices without extra horizontal spacing
+
 ## User Preferences
 I prefer detailed explanations.
 Do not make changes to the folder `node_modules`.
