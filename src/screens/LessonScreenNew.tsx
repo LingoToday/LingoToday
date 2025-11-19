@@ -3068,7 +3068,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
   },
   continueButton: {
-    backgroundColor: theme.colors.secondary600,
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: theme.spacing.xl,
     paddingVertical: theme.spacing.lg,
   },
