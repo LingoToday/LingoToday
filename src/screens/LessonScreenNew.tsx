@@ -243,15 +243,24 @@ export default function LessonScreen() {
     }
   }, [user]);
 
+  // Shared language code mapping - single source of truth
+  const LANGUAGE_CODES: { [key: string]: string } = {
+    'it': 'italian',
+    'es': 'spanish', 
+    'de': 'german',
+    'fr': 'french'
+  };
+
   // Convert language code to full name for API
   const getFullLanguageName = (lang: string) => {
-    const langMap: { [key: string]: string } = {
-      'it': 'italian',
-      'es': 'spanish', 
-      'de': 'german',
-      'fr': 'french'
-    };
-    return langMap[lang] || lang;
+    return LANGUAGE_CODES[lang] || lang;
+  };
+
+  // Convert full language name to two-letter code for external API
+  const getLanguageCode = (languageName: string): string => {
+    const normalized = languageName?.toLowerCase();
+    const entry = Object.entries(LANGUAGE_CODES).find(([_, name]) => name === normalized);
+    return entry ? entry[0] : 'it';
   };
 
   // Fetch lesson data - with proper queryFn
@@ -397,8 +406,11 @@ export default function LessonScreen() {
           // Extract course number from courseId (e.g., 'course1' -> 1)
           const courseNumber = parseInt(courseId.replace('course', ''), 10);
           
+          // Convert language name to two-letter code for external API (spanish -> es, italian -> it, etc.)
+          const languageCode = getLanguageCode(language);
+          
           // Fetch intro video URL from API
-          const courseData = await fetchCourseIntro(language, courseNumber);
+          const courseData = await fetchCourseIntro(languageCode, courseNumber);
           
           if (courseData && courseData.introVideoUrl) {
             setIntroVideoUrl(courseData.introVideoUrl);
