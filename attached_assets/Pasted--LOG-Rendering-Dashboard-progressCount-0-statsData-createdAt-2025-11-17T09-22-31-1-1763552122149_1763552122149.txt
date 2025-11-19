@@ -1,0 +1,41 @@
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"createdAt": "2025-11-17T09:22:31.112Z", "id": 1243, "language": "italian", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-17T09:22:31.091Z", "userId": "local_1763371315513_b8hh9zafr", "wordsLearned": 0}, "upcomingCount": 5, "userName": "Test2"}
+ LOG  ⚠️ No lesson data available for step 1
+ LOG  🌍 Fetching lesson data for: italian/course1/lesson2
+ LOG  ✅ Auth token loaded for video streaming
+ LOG  📚 Lesson data received for italian: {
+  "lessonId": "lesson2",
+  "title": "Pleased to meet you",
+  "hasStepsArray": false,
+  "stepsCount": 0,
+  "hasStep1": false,
+  "hasStep4": false,
+  "hasStep5": false,
+  "stepTypes": "legacy format"
+}
+ LOG  📋 Steps object detected: {"currentStep": 1, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 1, found key: word_review
+ LOG  📦 Step data: {"stepData": {"audio": "Piacere!", "note": "'Piacere!' works on its own. Add 'di conoscerti' (informal) or 'di conoscerla' (formal) later for more detail.", "stepType": "word_review", "translation": "Pleased to meet you!", "type": "word_review", "word": "Piacere!"}, "stepKey": "word_review"}
+ LOG  🔍 Word Review Step Data: {"audio": "Piacere!", "note": "'Piacere!' works on its own. Add 'di conoscerti' (informal) or 'di conoscerla' (formal) later for more detail.", "stepType": "word_review", "translation": "Pleased to meet you!", "type": "word_review", "word": "Piacere!"}
+ LOG  📋 Steps object detected: {"currentStep": 2, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 2, found key: quick_check
+ LOG  📦 Step data: {"stepData": {"answer": "Piacere!", "options": ["Arrivederci", "Piacere!", "Buonasera", "Ciao"], "question": "You’ve arrived at someone’s house. How do you say 'pleased to meet you'?", "stepType": "quick_check", "type": "quick_check"}, "stepKey": "quick_check"}
+ LOG  📋 Steps object detected: {"currentStep": 3, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 3, found key: typing
+ LOG  📦 Step data: {"stepData": {"alternatives": ["piacere!"], "expected": "Piacere!", "prompt": "Pia__re!  = Pleased to meet you!", "stepType": "typing", "type": "type"}, "stepKey": "typing"}
+ LOG  ✏️ [OBJECT] Typing Step Data: {"alternatives": ["piacere!"], "expected": "Piacere!", "prompt": "Pia__re!  = Pleased to meet you!", "stepType": "typing", "type": "type"}
+ LOG  extractMissingLetters: {"fullWord": "Piacere!", "missingLetters": "ce", "prompt": "Pia__re!  = Pleased to meet you!", "underscoreIndex": 3, "underscoreLength": 2, "wordWithGap": "Pia__re!"}
+ LOG  ✏️ Extracted missing letters: {"fullWord": "Piacere!", "missingLetters": "ce", "prompt": "Pia__re!  = Pleased to meet you!"}
+ LOG  ✏️ [OBJECT] Generated options for typing step: {"fromCache": true, "missingLetters": "ce", "options": ["ce", "be", "ci"]}
+ LOG  📋 Steps object detected: {"currentStep": 4, "stepKeys": ["word_review", "quick_check", "typing", "pro_video", "text_tip"], "totalSteps": 5}
+ LOG  🔍 Looking for step 4, found key: pro_video
+ LOG  📦 Step data: {"stepData": {"answer_prompt": "Reply: 'Pleased to meet you!' in Italian.", "expected_answers": ["Piacere!", "Piacere"], "isRestricted": true, "prompt": "You’ve arrived at someone’s house. They greet you and say their name — reply with 'Pleased to meet you' in Italian.", "requiredTier": ["pro"], "stepType": "pro_video", "type": "pro_video", "video_url": "/replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/d88e98f2-76e0-4444-9b0a-a7e63a50ee3f.mp4"}, "stepKey": "pro_video"}
+ LOG  🎥 [OBJECT pro_video] Extracted video URL: /replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/d88e98f2-76e0-4444-9b0a-a7e63a50ee3f.mp4
+ LOG  ✅ Using API base URL: https://lingotoday.replit.app
+ LOG  🎥 Routing object storage video through streaming endpoint: https://lingotoday.replit.app/api/videos/replit-objstore-191596c5-947d-4098-aa66-87fae46d2ed9/.private/videos/d88e98f2-76e0-4444-9b0a-a7e63a50ee3f.mp4
+ LOG  🔄 Dashboard screen focused - refetching data
+ LOG  📊 Fetching dashboard data...
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"createdAt": "2025-11-17T09:22:31.112Z", "id": 1243, "language": "italian", "lastLessonDate": null, "lessonsCompleted": 0, "streak": 0, "totalTimeSpent": 0, "updatedAt": "2025-11-17T09:22:31.091Z", "userId": "local_1763371315513_b8hh9zafr", "wordsLearned": 0}, "upcomingCount": 5, "userName": "Test2"}
+ WARN  ⚠️ Dashboard API failed, using fallback: [Error: Network connection failed. Please check your internet connection.]
+ WARN  ⚠️ Course stats API failed, using fallback: [Error: Network connection failed. Please check your internet connection.]
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"lessonsCompleted": 12, "streak": 7, "totalLessons": 78, "wordsLearned": 45}, "upcomingCount": 5, "userName": "Test2"}
+ LOG  🎨 Rendering Dashboard: {"progressCount": 0, "statsData": {"lessonsCompleted": 12, "streak": 7, "totalLessons": 78, "wordsLearned": 45}, "upcomingCount": 5, "userName": "Test2"}
