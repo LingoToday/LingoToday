@@ -14,8 +14,8 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that faci
 **Video Container Fixes (Mobile)**: Fixed videos breaking out of card containers on Android and iOS:
 - Changed video styling from fixed pixel width (280px max) to responsive width (100% of container)
 - Added `overflow: 'hidden'` to videoContainer to prevent content spillover
-- Implemented `aspectRatio: 16/9` for proper video dimensions that adapt to screen size
-- Videos now properly stay within card boundaries on all mobile devices without extra horizontal spacing
+- Removed hardcoded aspect ratio to respect natural video dimensions (portrait or landscape)
+- Videos now properly stay within card boundaries on all mobile devices and maintain their original aspect ratio
 
 ## User Preferences
 I prefer detailed explanations.
