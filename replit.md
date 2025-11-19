@@ -1,7 +1,7 @@
 # LingoToday Mobile App
 
 ## Overview
-LingoToday is a React Native mobile application built with Expo SDK 54 that helps users learn languages through micro-lessons. The app provides multi-language learning (Italian, Spanish, German, French), adaptive learning levels, user onboarding, course management, progress tracking, and subscription management. It aims to offer a cross-platform learning experience on iOS, Android, and Web.
+LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## User Preferences
 I prefer detailed explanations.
@@ -10,73 +10,23 @@ Do not make changes to the file `package-lock.json`.
 
 ## System Architecture
 
-### Tech Stack
-- **Framework**: React Native 0.81.4 with Expo SDK 54
-- **UI Library**: React Native Web for web compatibility, shadcn-style UI components
-- **Navigation**: React Navigation (Native Stack, Bottom Tabs)
-- **State Management**: React Query (@tanstack/react-query)
-- **Authentication**: Context API with AsyncStorage
-- **Payments**: RevenueCat (Apple IAP & Google Play Billing)
-- **Language**: TypeScript + JavaScript
-
-### Key Features
-- Multi-language learning
-- Adaptive learning levels
-- User onboarding flow
-- Course management
-- Progress tracking
-- Push notifications (native only)
-- Subscription management
-- Cross-platform support (iOS, Android, Web)
-- Automatic push notification scheduling based on user preferences (days, frequency, time window)
-- **AI Chat (Coming Soon - Nov 2025)**: Teaser screen for upcoming AI language partner feature, showcasing 6 partner avatars in a responsive 3×2 grid layout (3 rows, 2 columns) within a card border. Accessible via center bottom tab with chatbubbles icon.
-
 ### UI/UX Decisions
-- **Video Choice Multiple Choice Reference (Updated Nov 15, 2025)**: The video_choice step type now displays the exact same multiple choice options from step 2's quick_check quiz below the text input field to help learners. The implementation uses the `getQuickCheckData()` helper function to extract step 2's quiz data and memoizes the options with proper normalization of both string and object-based quiz data. For legacy lessons lacking quick_check data, it falls back to expectedAnswers plus contextually relevant Italian greeting distractors. All options are displayed with letter badges (A, B, C) using the same dark theme styling as other step types. The memoization ensures stable ordering - options don't re-shuffle when users make selections. Users can either type their answer or select from the options.
-- **Step 4 Multiple Choice Reference (Updated Nov 2025)**: All pro_video lessons (step 4) now display step 2's multiple choice quiz options below the text input field. This provides learners with helpful reference answers from the quick_check step. The feature works across all lesson formats (steps array, steps object, and legacy quiz format) using the `getQuickCheckData()` helper function that extracts and normalizes quiz data without affecting step 2's validation flow.
-- **Dark Mode Theme (Updated Nov 2025)**: Complete dark mode implementation across the entire app with lime green (#A3E635) primary accent color.
-  - Dark backgrounds (#2B2D3A for main, #3A3C4A for cards)
-  - Colorful gradient stat cards (lime green, indigo, purple) with white text for >6:1 contrast (WCAG AA compliant)
-  - Lime green primary buttons and Pro badges
-  - All colors centralized in `src/lib/theme.ts` with zero hardcoded hex values in components
-  - Accessible contrast ratios across all text and interactive elements
-  - **Comprehensive Screen Coverage**: All screens and components updated to use centralized theme references including LoginScreenNew, AIChatScreen, ProgressScreenNew, CoursesScreenNew, MissionScreen, NotificationSettings, and LessonScreenNew. No light theme artifacts remain - all backgrounds, text colors, borders, and icon colors reference theme tokens.
-  - **Learning Path Section**: Dark card background with white course titles, lime green progress indicators (1/17 format), distinct visual states for completed (olive green background), unlocked (gray), and locked (dark gray) courses, lime green "More" button, and dark course summary card with lime green stats
-  - **Landing Screen**: Dark background (#2B2D3A), white logo and tagline text, dark video container, lime green "Join" button, and dark "Log in" button with proper contrast
-  - **Bottom Navigation Bar**: Dark background matching main app theme, lime green active tab icons and labels, gray inactive tabs, subtle border separator. All colors use centralized theme references (no hardcoded values).
-  - **Onboarding Selection States**: Dark card backgrounds maintained across all selection states. Selected options indicated by thicker lime green border (3px vs 2px) instead of background color change, ensuring white text remains readable and meets WCAG AA contrast standards.
-  - **Subscription Screen Toggle**: Monthly/Annual toggle uses dark card background with lime green active state. Only the selected plan interval highlights in lime green with white text, while the inactive option remains dark with gray text. All styling uses centralized theme tokens.
-  - **Lesson Step 1 Word Review (Updated Nov 2025)**: Translation card and "When to use" note section now use dark surfaceContainer backgrounds with light foreground text for proper contrast. Pronunciation button updated to dark theme with white text and icon.
-- Minimal headers on main tab screens for edge-to-edge content.
-- Bottom tabs for primary navigation with active tab highlighting.
-- Platform-optimized spacing for navigation bars.
-- Legal links consistently styled and opened in native webview.
-- **Lesson Step Headers (Updated Nov 2025)**: Consistent header styling across lesson steps with dynamic step numbers and clean question formatting. Pro Video steps display only the prompt text without a numbered title. Progress bar displays under header with lime green fill for all lesson types.
-- **Quick Check Styling (Updated Nov 2025)**: Multiple choice options feature circular letter badges (A, B, C, D), dark cards (#3A3C4A), and lime green submit button for improved visual clarity.
+The application features a comprehensive dark mode theme with a lime green (#A3E635) accent color, ensuring WCAG AA compliant contrast ratios across all elements. Key UI/UX decisions include:
+- **Consistent Theming**: Centralized color management in `src/lib/theme.ts` with no hardcoded hex values, covering all screens and components from login to lessons.
+- **Dynamic Content Display**: Video choice and pro_video lesson steps now display relevant multiple-choice options from earlier quick_check quizzes for learner assistance, using `getQuickCheckData()` for data extraction and normalization.
+- **Intuitive Navigation**: Minimal headers on main tab screens for immersive content, bottom tabs for primary navigation with active state highlighting, and platform-optimized spacing.
+- **Accessible Interactions**: Selected onboarding options are indicated by a thicker lime green border, and subscription toggles use lime green for active states, maintaining readability and contrast.
+- **Enhanced Lesson Experience**: Consistent lesson step headers with dynamic numbering, a prominent lime green progress bar, and styled quick check options with circular letter badges.
 
 ### Technical Implementations
-- **Splash Screen Management (Updated Nov 2025)**: Synchronized splash screen handling to prevent stuck splash screen on iOS/Android. `SplashScreen.preventAutoHideAsync()` is called at module scope in `App.js` to prevent auto-hide, with the promise reference stored for synchronization. `AppContent` awaits both the splash promise and auth loading (`isLoading`) before rendering, ensuring `hideAsync()` only runs after the prevent lock is established. The splash is dismissed via `onLayout` callback with a one-time guard (`splashHiddenRef`) to prevent repeated calls. Web platform bypasses all splash screen logic and renders the loading UI immediately. This architecture eliminates timing races between prevent/hide calls.
-- **API Configuration**: Both `apiClient.ts` and `queryClient.ts` use `Constants.expoConfig.extra.apiBaseUrl` for consistent API endpoints. Production URL is `https://lingotoday.replit.app`. For EAS builds, set `PRODUCTION_API_URL` environment variable to override.
-- **Video Content & Backend Integration (Updated Nov 2025)**: All lesson video content is now fetched from the backend API with no hardcoded data in the mobile app. The `normalizeAssetUrl()` helper function in `LessonScreenNew.tsx` transforms all video URLs before rendering:
-  - Object storage URLs (starting with `/replit-objstore-` or `replit-objstore-`) are routed through the backend's `/api/videos/*` streaming endpoint for authenticated access
-  - Regular asset URLs (`/attached_assets/`, `/videos/`) are prepended with the API base URL
-  - All video_choice step types preserve their full options array (with normalized video URLs for each option) instead of being converted to pro_video, allowing the renderer to display all voice options to users
-  - Hardcoded step overrides for specific lessons have been removed - all step data comes directly from the database
-- **RevenueCat Integration (Updated Nov 2025)**: Full RevenueCat integration for in-app purchases and subscription management on iOS and Android. The `SubscribeScreen` and onboarding flow dynamically fetch all available subscription packages (monthly, annual, etc.) from RevenueCat's `Purchases.getOfferings()` API with real-time pricing, trial periods, and product metadata. No hardcoded prices - all pricing is pulled directly from App Store/Play Store via RevenueCat. The purchase flow uses native IAP (Apple In-App Purchase for iOS, Google Play Billing for Android) and properly attributes purchases to authenticated users. User authentication with RevenueCat is handled automatically by `AuthContext` - it calls `purchaseService.initialize(userId)` after login, registration, and token restoration, ensuring all purchases are linked to the correct user account. When users log out, `purchaseService.logOut()` is called to clear the RevenueCat session. After successful purchase, the app polls the backend subscription status endpoint to detect when RevenueCat webhooks have upgraded the user to Pro. The backend webhook at `https://lingotoday.replit.app/api/webhooks/revenuecat` receives purchase events from RevenueCat and updates the user's `priceTier` field in the database. **priceTier Values**: The app uses 'pro-monthly' and 'pro-yearly' for Pro subscriptions, 'plus-monthly' and 'plus-yearly' for Plus subscriptions (future), 'free-trial' for trial users, and 'n/a' or null for free users. The app checks `priceTier.startsWith('pro-')` to determine if a user has Pro access and should see premium video content.
-- **Metro Bundler Configuration (Updated Nov 2025)**: Custom Metro configuration for video file extensions, asset aliases, and file watcher optimization. The `metro.config.js` excludes `.cache` directories from file watching using `resolver.blockList` to prevent ENOSPC (file watcher limit exceeded) errors. This resolves issues where Metro attempts to watch TypeScript cache files and React Native source files in `node_modules/.cache`, which can exhaust the system's file watcher resources. The configuration maintains all app functionality while significantly reducing file watcher pressure.
-- API client in `src/lib/apiClient.ts` handles authentication, HTTP requests, and token management with AsyncStorage.
-- Dynamic lesson step counting to support various lesson formats and report accurate progress.
-- `SheetManagerProvider` to enforce a single-sheet policy for modals/sheets.
-- Lessons use push navigation instead of modal presentation.
-- **Notification System (Backend-Driven Architecture - Nov 2025)**: **MIGRATED from local scheduling to backend push notifications** to solve iOS notification batching and reliability issues:
-  - **Architecture**: Backend-orchestrated remote push notifications using Expo Push Notification Service. Backend cron job reads user preferences from `user_settings` table and sends push notifications at appropriate times. This is the industry-standard approach for reliable background notification delivery.
-  - **Push Token Management**: Mobile app registers Expo push tokens with backend on login/registration/token restoration and unregisters on logout. Token registration uses 24-hour caching to avoid redundant API calls. Registration happens in parallel with RevenueCat initialization.
-  - **API Integration**: `apiClient.ts` provides `registerPushToken()` and `unregisterPushToken()` endpoints. `notifications.ts` provides `registerPushTokenWithBackend()` and `unregisterPushToken()` helper functions with caching and error handling.
-  - **Notification Flow**: User enables notifications → preferences saved to backend → backend scheduler sends push notifications via Expo Push Service → user receives notification → tapping opens lesson.
-  - **Notification Tap Handling**: `AppNavigator.tsx` handles notification taps using expo-notifications listeners. When notification is tapped, app navigates to the lesson specified in notification data payload (lessonId, language, courseId).
-  - **Onboarding Integration**: Notification permission requests integrated into onboarding flow (step 4) using `Notifications.requestPermissionsAsync()`. Permissions requested after user registration for explicit opt-in.
-  - **Settings Management**: `NotificationSettings.tsx` syncs user preferences to backend. Backend handles all scheduling logic - mobile app no longer schedules local notifications.
-  - **Deprecated Functions**: Old local scheduling functions (`scheduleLanguageLearningReminders`, `stopLanguageLearningReminders`, `checkAndRescheduleIfNeeded`, iOS weekly repeating, Android horizon scheduling) marked as deprecated but kept temporarily for backward compatibility. These will be removed once confirmed unused.
+- **Tech Stack**: React Native 0.81.4 with Expo SDK 54, React Native Web, React Navigation, React Query for state management, Context API with AsyncStorage for authentication, and TypeScript.
+- **Splash Screen Management**: Robust synchronized splash screen handling prevents auto-hide issues on native platforms, ensuring a smooth loading experience.
+- **API Configuration**: Utilizes `Constants.expoConfig.extra.apiBaseUrl` for consistent API endpoints, with production API being `https://lingotoday.replit.app`.
+- **Course Intro Videos**: Language-aware intro video logic that dynamically fetches or skips intro videos based on the selected language and backend availability, preventing display of incorrect language content.
+- **Video Content & Backend Integration**: All lesson video content is fetched from the backend API, with `normalizeAssetUrl()` handling asset routing and authentication for object storage URLs.
+- **RevenueCat Integration**: Full integration for in-app purchases and subscription management, dynamically fetching package details and linking purchases to authenticated users. Backend webhooks update user `priceTier` upon successful transactions.
+- **Metro Bundler Configuration**: Custom Metro configuration optimizes file watching by excluding `.cache` directories, resolving ENOSPC errors.
+- **Backend-Driven Push Notification System**: Migrated from local to backend-orchestrated remote push notifications via Expo Push Notification Service for improved reliability. The mobile app registers/unregisters push tokens with the backend, which then schedules and sends notifications based on user preferences. Notification taps navigate directly to the specified lesson.
 
 ### Project Structure
 - `src/components/`: Reusable UI components.
@@ -90,13 +40,12 @@ Do not make changes to the file `package-lock.json`.
 - `src/types/`: TypeScript type definitions.
 
 ## External Dependencies
-- **Expo SDK 54**: Core framework for React Native development.
-- **React Native Web**: For web platform compatibility.
-- **React Navigation**: For app navigation.
-- **React Query**: For state management.
-- **RevenueCat**: For in-app purchases (Apple In-App Purchase, Google Play Billing) and subscription management.
-- **AsyncStorage**: For local data persistence and authentication token management.
-- **expo-notifications**: For local scheduled push notifications (native only).
-- **expo-task-manager**: For background notification task handling.
-- **expo-web-browser**: For opening web links in a native webview.
-- **expo-video**: For modern video playback.
+- **Expo SDK 54**: Core framework.
+- **React Native Web**: Web platform compatibility.
+- **React Navigation**: App navigation.
+- **React Query**: State management.
+- **RevenueCat**: In-app purchases and subscription management.
+- **AsyncStorage**: Local data persistence and authentication token management.
+- **expo-notifications**: Push notifications.
+- **expo-web-browser**: In-app webview.
+- **expo-video**: Modern video playback.
