@@ -15,6 +15,12 @@ import { Button } from '../components/ui/Button';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import funnyItalianComments from '../data/funny_italian_comments.json';
 import italianResultMessages from '../data/italian_result_messages.json';
+import funnyGermanComments from '../data/funny_german_comments.json';
+import germanResultMessages from '../data/german_result_messages.json';
+import funnyFrenchComments from '../data/funny_french_comments.json';
+import frenchResultMessages from '../data/french_result_messages.json';
+import funnySpanishComments from '../data/funny_spanish_comments.json';
+import spanishResultMessages from '../data/spanish_result_messages.json';
 
 type LessonCompleteRouteProp = RouteProp<RootStackParamList, 'LessonComplete'>;
 type LessonCompleteNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LessonComplete'>;
@@ -25,60 +31,77 @@ export default function LessonCompleteScreen() {
   
   const { lessonTitle, lessonId, courseId, score, language } = route.params;
 
+  // Select message sets based on language
+  const { funnyComments, resultMessages } = useMemo(() => {
+    const lang = language?.toLowerCase();
+    
+    switch (lang) {
+      case 'german':
+        return { funnyComments: funnyGermanComments, resultMessages: germanResultMessages };
+      case 'french':
+        return { funnyComments: funnyFrenchComments, resultMessages: frenchResultMessages };
+      case 'spanish':
+        return { funnyComments: funnySpanishComments, resultMessages: spanishResultMessages };
+      case 'italian':
+      default:
+        return { funnyComments: funnyItalianComments, resultMessages: italianResultMessages };
+    }
+  }, [language]);
+
   // Get random comment based on score range
   const scoreComment = useMemo(() => {
     let commentArray: string[];
     
     if (score >= 76) {
-      commentArray = funnyItalianComments["76-100%"];
+      commentArray = funnyComments["76-100%"];
     } else if (score >= 51) {
-      commentArray = funnyItalianComments["51-75%"];
+      commentArray = funnyComments["51-75%"];
     } else if (score >= 26) {
-      commentArray = funnyItalianComments["26-50%"];
+      commentArray = funnyComments["26-50%"];
     } else {
-      commentArray = funnyItalianComments["0-25%"];
+      commentArray = funnyComments["0-25%"];
     }
     
     // Return a random comment from the appropriate array
     const randomIndex = Math.floor(Math.random() * commentArray.length);
     return commentArray[randomIndex];
-  }, [score]);
+  }, [score, funnyComments]);
 
   // Get random header based on score range
   const headerMessage = useMemo(() => {
     let headerArray: string[];
     
     if (score >= 76) {
-      headerArray = italianResultMessages["76-100%"].header;
+      headerArray = resultMessages["76-100%"].header;
     } else if (score >= 51) {
-      headerArray = italianResultMessages["51-75%"].header;
+      headerArray = resultMessages["51-75%"].header;
     } else if (score >= 26) {
-      headerArray = italianResultMessages["26-50%"].header;
+      headerArray = resultMessages["26-50%"].header;
     } else {
-      headerArray = italianResultMessages["0-25%"].header;
+      headerArray = resultMessages["0-25%"].header;
     }
     
     const randomIndex = Math.floor(Math.random() * headerArray.length);
     return headerArray[randomIndex];
-  }, [score]);
+  }, [score, resultMessages]);
 
   // Get random subtext based on score range
   const subtextMessage = useMemo(() => {
     let subtextArray: string[];
     
     if (score >= 76) {
-      subtextArray = italianResultMessages["76-100%"].subtext;
+      subtextArray = resultMessages["76-100%"].subtext;
     } else if (score >= 51) {
-      subtextArray = italianResultMessages["51-75%"].subtext;
+      subtextArray = resultMessages["51-75%"].subtext;
     } else if (score >= 26) {
-      subtextArray = italianResultMessages["26-50%"].subtext;
+      subtextArray = resultMessages["26-50%"].subtext;
     } else {
-      subtextArray = italianResultMessages["0-25%"].subtext;
+      subtextArray = resultMessages["0-25%"].subtext;
     }
     
     const randomIndex = Math.floor(Math.random() * subtextArray.length);
     return subtextArray[randomIndex];
-  }, [score]);
+  }, [score, resultMessages]);
 
   const handleContinue = () => {
     navigation.navigate('MainTabs' as never);
