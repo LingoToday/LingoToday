@@ -397,26 +397,7 @@ useEffect(() => {
         status: progress.completedAt ? 'completed' : 'in_progress',
         type: 'lesson' as const
       }))
-    : [
-        {
-          id: 'demo-1',
-          title: 'Ciao! Come stai?',
-          subtitle: 'Hello! How are you?',
-          date: new Date().toLocaleDateString('en-GB'),
-          score: '95%',
-          status: 'completed',
-          type: 'lesson' as const
-        },
-        {
-          id: 'demo-2',
-          title: 'Buongiorno',
-          subtitle: 'Good morning',
-          date: new Date().toLocaleDateString('en-GB'),
-          score: '100%',
-          status: 'completed',
-          type: 'lesson' as const
-        }
-      ];
+    : [];
 
   return (
     <View style={styles.container}>
@@ -615,29 +596,39 @@ useEffect(() => {
                     <Text style={styles.recentTitle}>Recent Lessons</Text>
                   </CardHeader>
                   <CardContent style={styles.recentContent}>
-                    {recentLessons.map((item) => (
-                      <View key={item.id} style={styles.recentItem}>
-                        <View style={styles.recentIcon}>
-                          <Ionicons 
-                            name="checkmark-circle" 
-                            size={20} 
-                            color={theme.colors.success500} 
-                          />
-                        </View>
-                        <View style={styles.recentInfo}>
-                          <Text style={styles.recentItemTitle}>{item.title}</Text>
-                          <Text style={styles.recentItemSubtitle}>{item.subtitle}</Text>
-                        </View>
-                        <View style={styles.recentScore}>
-                          <Text style={styles.recentScoreText}>{item.score}</Text>
-                          <Text style={styles.recentDate}>{item.date}</Text>
-                        </View>
+                    {recentLessons.length > 0 ? (
+                      <>
+                        {recentLessons.map((item) => (
+                          <View key={item.id} style={styles.recentItem}>
+                            <View style={styles.recentIcon}>
+                              <Ionicons 
+                                name="checkmark-circle" 
+                                size={20} 
+                                color={theme.colors.success500} 
+                              />
+                            </View>
+                            <View style={styles.recentInfo}>
+                              <Text style={styles.recentItemTitle}>{item.title}</Text>
+                              <Text style={styles.recentItemSubtitle}>{item.subtitle}</Text>
+                            </View>
+                            <View style={styles.recentScore}>
+                              <Text style={styles.recentScoreText}>{item.score}</Text>
+                              <Text style={styles.recentDate}>{item.date}</Text>
+                            </View>
+                          </View>
+                        ))}
+                        
+                        <TouchableOpacity style={styles.viewAllButton}>
+                          <Text style={styles.viewAllButtonText}>View all lessons</Text>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <View style={styles.noRecentLessonsContainer}>
+                        <Ionicons name="book-outline" size={48} color={theme.colors.mutedForeground} />
+                        <Text style={styles.noRecentLessonsTitle}>No lessons completed yet</Text>
+                        <Text style={styles.noRecentLessonsSubtitle}>Start your first lesson to see your progress here!</Text>
                       </View>
-                    ))}
-                    
-                    <TouchableOpacity style={styles.viewAllButton}>
-                      <Text style={styles.viewAllButtonText}>View all lessons</Text>
-                    </TouchableOpacity>
+                    )}
                   </CardContent>
                 </Card>
               </View>
@@ -1082,6 +1073,23 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   noLessonsSubtitle: {
     fontSize: 14,
     color: theme.colors.mutedForeground,
+  },
+
+  // No Recent Lessons (matching web exactly)
+  noRecentLessonsContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    gap: 12,
+  },
+  noRecentLessonsTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: theme.colors.foreground,
+  },
+  noRecentLessonsSubtitle: {
+    fontSize: 14,
+    color: theme.colors.mutedForeground,
+    textAlign: 'center',
   },
 
   // Recent Card (matching web exactly)
