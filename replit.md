@@ -11,7 +11,7 @@ LingoToday is a React Native mobile application built with Expo SDK 54 that faci
   - State 2: tokenStatus === 'resolved' && needsAuth && !authToken → Show authentication error with user guidance
   - State 3: tokenStatus === 'resolved' && (!needsAuth || authToken) → Render VideoPlayer with proper headers
 - **Immediate Token Loading**: Auth token loads from AsyncStorage/SecureStore immediately on LessonScreenNew mount, not waiting for user object
-- **Enhanced Detection**: `isAuthenticatedVideo()` helper checks both original and preloaded URLs to catch all object storage videos
+- **Same-Origin Authentication Detection**: `isAuthenticatedVideo()` uses origin-based detection comparing video URL hostname with API base URL, ensuring ALL same-origin videos (including `/attached_assets/`, `/api/videos/`, and object storage) receive Authorization headers. Checks both original and preloaded URLs with graceful fallback handling.
 - **Authorization Headers**: `getVideoSourceWithAuth()` attaches Bearer token to all authenticated video sources
 - **Video Preload Service Fix**: Handles undefined language gracefully by checking both `user.selectedLanguage` and `settings.selectedLanguage`
 - **Enhanced Error Handling**: VideoPlayer component provides detailed error logging and user-friendly error UI
