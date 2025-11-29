@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet, Animated, Platform } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Animated, Platform, Text } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import type { AVPlaybackStatus } from 'expo-av';
 import { theme } from '../lib/theme';
@@ -60,7 +60,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     } else if ('error' in status && status.error) {
       setIsLoading(false);
       setHasError(true);
-      console.error('Video playback error:', status.error);
+      console.error('Video playback error:', status.error, {
+        uri: source.uri?.substring(0, 100),
+        hasHeaders: !!source.headers,
+        hasAuthHeader: !!source.headers?.Authorization,
+        platform: Platform.OS
+      });
     }
 
     if (onPlaybackStatusUpdate) {
@@ -70,9 +75,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   return (
     <View style={[styles.container, { aspectRatio }, style]}>
-      {isLoading && (
+      {isLoading && !hasError && (
         <View style={[styles.loadingContainer, { backgroundColor: placeholderColor }]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      )}
+      
+      {hasError && (
+        <View style={[styles.errorContainer, { backgroundColor: placeholderColor }]}>
+          <Text style={styles.errorText}>⚠️</Text>
+          <Text style={styles.errorMessage}>Unable to load video</Text>
+          <Text style={styles.errorHint}>Please check your connection and try again</Text>
         </View>
       )}
       
@@ -110,6 +123,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 10,
+  },
+  errorContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 48,
+    marginBottom: 12,
+  },
+  errorMessage: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.foreground,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorHint: {
+    fontSize: 14,
+    color: theme.colors.mutedForeground,
+    textAlign: 'center',
   },
   videoWrapper: {
     width: '100%',

@@ -140,6 +140,7 @@ export default function LessonScreen() {
   
   // Auth token for authenticated video requests
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [tokenStatus, setTokenStatus] = useState<'pending' | 'resolved'>('pending');
 
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
@@ -218,7 +219,7 @@ export default function LessonScreen() {
     }
   }, [user, navigation]);
 
-  // Fetch auth token for authenticated video requests
+  // Fetch auth token for authenticated video requests - IMMEDIATELY on mount
   useEffect(() => {
     const getAuthToken = async () => {
       try {
@@ -233,16 +234,21 @@ export default function LessonScreen() {
         if (token) {
           setAuthToken(token);
           console.log('✅ Auth token loaded for video streaming');
+        } else {
+          console.log('⚠️ No auth token found in storage');
         }
       } catch (error) {
         console.error('⚠️ Error fetching auth token:', error);
+      } finally {
+        // Always mark token as resolved, whether found or not
+        setTokenStatus('resolved');
+        console.log('✅ Auth token status: resolved');
       }
     };
     
-    if (user) {
-      getAuthToken();
-    }
-  }, [user]);
+    // Load auth token immediately on mount, don't wait for user object
+    getAuthToken();
+  }, []);
 
   // Shared language code mapping - single source of truth
   const LANGUAGE_CODES: { [key: string]: string } = {
@@ -1940,12 +1946,17 @@ export default function LessonScreen() {
               </Text>
               
               <View style={styles.videoContainer}>
-                {isLoadingIntroVideo || (introVideoUrl && isAuthenticatedVideo(normalizeAssetUrl(introVideoUrl)) && !authToken) ? (
+                {isLoadingIntroVideo || tokenStatus === 'pending' ? (
                   <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                     <Text style={styles.loadingText}>
                       {isLoadingIntroVideo ? 'Loading intro video...' : 'Preparing video...'}
                     </Text>
+                  </View>
+                ) : tokenStatus === 'resolved' && introVideoUrl && isAuthenticatedVideo(normalizeAssetUrl(introVideoUrl)) && !authToken ? (
+                  <View style={styles.loadingContainer}>
+                    <Text style={styles.errorMessage}>⚠️ Authentication required</Text>
+                    <Text style={styles.errorHint}>Please log in again to view this video</Text>
                   </View>
                 ) : (
                   <VideoPlayer
@@ -2044,10 +2055,15 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                    {tokenStatus === 'pending' ? (
                       <View style={styles.loadingContainer}>
                         <ActivityIndicator size="large" color={theme.colors.primary} />
                         <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : tokenStatus === 'resolved' && isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <Text style={styles.errorMessage}>⚠️ Authentication required</Text>
+                        <Text style={styles.errorHint}>Please log in again to view this video</Text>
                       </View>
                     ) : (
                       <VideoPlayer
@@ -2083,10 +2099,15 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                    {tokenStatus === 'pending' ? (
                       <View style={styles.loadingContainer}>
                         <ActivityIndicator size="large" color={theme.colors.primary} />
                         <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : tokenStatus === 'resolved' && isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <Text style={styles.errorMessage}>⚠️ Authentication required</Text>
+                        <Text style={styles.errorHint}>Please log in again to view this video</Text>
                       </View>
                     ) : (
                       <VideoPlayer
@@ -2187,10 +2208,15 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                    {tokenStatus === 'pending' ? (
                       <View style={styles.loadingContainer}>
                         <ActivityIndicator size="large" color={theme.colors.primary} />
                         <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : tokenStatus === 'resolved' && isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <Text style={styles.errorMessage}>⚠️ Authentication required</Text>
+                        <Text style={styles.errorHint}>Please log in again to view this video</Text>
                       </View>
                     ) : (
                       <VideoPlayer
@@ -2736,6 +2762,18 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
+  },
+  errorMessage: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600' as const,
+    color: theme.colors.foreground,
+    marginBottom: theme.spacing.sm,
+    textAlign: 'center' as const,
+  },
+  errorHint: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
+    textAlign: 'center' as const,
   },
 
   // FIXED: Improved Header - Mobile responsive with dark theme

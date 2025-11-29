@@ -116,9 +116,20 @@ class VideoPreloadService {
         return;
       }
 
+      // Get selected language from dashboard (check both user and settings)
+      const selectedLanguage = dashboardData.user?.selectedLanguage || 
+                               dashboardData.settings?.selectedLanguage;
+      
+      if (!selectedLanguage) {
+        console.log('📹 No language selected, skipping video preload');
+        return;
+      }
+
+      console.log('📹 User selected language:', selectedLanguage);
+
       const nextVideos = await this.findNext3Videos(
         dashboardData.progress,
-        dashboardData.settings.selectedLanguage
+        selectedLanguage
       );
 
       if (nextVideos.length === 0) {
