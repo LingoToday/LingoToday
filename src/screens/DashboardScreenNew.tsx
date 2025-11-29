@@ -506,11 +506,6 @@ useEffect(() => {
                 <Card style={styles.upcomingCard}>
                   <CardHeader style={styles.upcomingHeader}>
                     <Text style={styles.upcomingTitle}>Coming Up Next</Text>
-                    <Badge style={styles.upcomingBadge}>
-                      <Text style={styles.upcomingBadgeText}>
-                        {upcomingLessons[0]?.category || 'Greetings'}
-                      </Text>
-                    </Badge>
                   </CardHeader>
                   <CardContent style={styles.upcomingContent}>
                     {upcomingLessons.length > 0 ? (
