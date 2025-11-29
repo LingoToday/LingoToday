@@ -2383,8 +2383,8 @@ export default function LessonScreen() {
                 <>
                   <View style={styles.wordReviewContainer}>
                     <Text style={styles.translationLabel}>TRANSLATION</Text>
-                    <Text style={styles.translationText}>{stepData.translation}</Text>
                     <Text style={styles.wordText}>{stepData.word}</Text>
+                    <Text style={styles.translationText}>{stepData.translation}</Text>
                     
                     <TouchableOpacity 
                       style={styles.speakButton}
