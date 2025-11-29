@@ -345,7 +345,7 @@ export default function LessonScreen() {
   };
 
   // Function to fetch course intro data from API
-  const fetchCourseIntro = async (languageCode: string, courseNumber: number) => {
+  const fetchCourseIntro = async (languageCode: string, courseNumber: number, userLevel: string = 'beginner') => {
     try {
       const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 
                          (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
@@ -357,7 +357,7 @@ export default function LessonScreen() {
       }
 
       const response = await fetch(
-        `${apiBaseUrl}/api/external/courses/${languageCode}/beginner/${courseNumber}`
+        `${apiBaseUrl}/api/external/courses/${languageCode}/${userLevel}/${courseNumber}`
       );
 
       if (!response.ok) {
@@ -375,9 +375,10 @@ export default function LessonScreen() {
 
   // Check if this is course lesson1 and if intro video should be shown (works for all languages)
   useEffect(() => {
+    // Wait for userData to load before showing intro to ensure we have the correct level
     if (lessonId === 'lesson1' && 
         (courseId === 'course1' || courseId === 'course2' || courseId === 'course3') && 
-        userProgress !== undefined && language) {
+        userProgress !== undefined && language && userData !== undefined) {
       
       const storageKey = `${language}_${courseId}_intro_shown`;
       
@@ -410,8 +411,13 @@ export default function LessonScreen() {
           // Convert language name to two-letter code for external API (spanish -> es, italian -> it, etc.)
           const languageCode = getLanguageCode(language);
           
-          // Fetch intro video URL from API
-          const courseData = await fetchCourseIntro(languageCode, courseNumber);
+          // Get user's selected level - userData is guaranteed to be loaded at this point
+          const userLevel = (userData?.selectedLevel || 'beginner').toLowerCase();
+          
+          console.log(`🎯 Fetching intro for ${languageCode}/${userLevel}/course${courseNumber}`);
+          
+          // Fetch intro video URL from API with user's level
+          const courseData = await fetchCourseIntro(languageCode, courseNumber, userLevel);
           
           if (courseData && courseData.introVideoUrl) {
             setIntroVideoUrl(courseData.introVideoUrl);
@@ -438,7 +444,7 @@ export default function LessonScreen() {
         }
       });
     }
-  }, [language, courseId, lessonId, userProgress]);
+  }, [language, courseId, lessonId, userProgress, userData]);
 
   const handleContinueFromIntro = () => {
     const storageKey = `${language}_${courseId}_intro_shown`;
