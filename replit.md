@@ -4,13 +4,23 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## Recent Changes (Nov 29, 2025)
+**Authenticated Video Playback Fix**: Fixed critical AVPlayer -11829 error for expert/intermediate level videos that require authentication:
+- Implemented `getVideoSourceWithAuth()` function to attach Authorization headers to object storage video sources
+- Created `isAuthenticatedVideo()` helper to detect videos requiring authentication (checks both original and preloaded URLs)
+- Updated all VideoPlayer instances (intro, IRL, video_choice, pro_video) to defer rendering until auth token is available
+- Added loading indicators ("Preparing video...") while waiting for authentication
+- Implemented VideoPlayer remount via `key` prop when authToken loads to ensure headers are included on first request
+- Enhanced `videoPreloadService` to support authenticated videos with proper header management
+- Object storage videos now stream correctly through `/api/videos` endpoint with authentication
+
 **Level-Appropriate Lesson Content Fix**: Implemented explicit skill level parameter passing to ensure users receive content matching their registered skill level:
-- Updated `apiClient.getLesson()` to accept optional `skillLevel` query parameter
+- Backend added authentication middleware to `/api/courses/` endpoint to read user's skill level from session
+- Updated `apiClient.getLesson()` to accept optional `skillLevel` query parameter as mobile workaround
 - Modified `LessonScreenNew` to pass user's `selectedLevel` when fetching lessons
 - Added query dependency on `userData` to ensure user level loads before lesson fetch
 - Enhanced logging to track requested skillLevel and returned content for debugging
-- Workaround for backend endpoint issue where auth token skill level wasn't being respected
 - Expert users now correctly receive expert content ("Ayer hice...") instead of beginner content ("Hola")
+- All skill levels (beginner, intermediate, expert) now receive appropriate video content
 
 ## Previous Changes (Nov 19, 2025)
 **Video Loading Improvements**: Implemented comprehensive video loading enhancements to eliminate the blank screen issue when videos load:
