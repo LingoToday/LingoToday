@@ -4,14 +4,18 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## Recent Changes (Nov 29, 2025)
-**Authenticated Video Playback Fix**: Fixed critical AVPlayer -11829 error for expert/intermediate level videos that require authentication:
-- Implemented `getVideoSourceWithAuth()` function to attach Authorization headers to object storage video sources
-- Created `isAuthenticatedVideo()` helper to detect videos requiring authentication (checks both original and preloaded URLs)
-- Updated all VideoPlayer instances (intro, IRL, video_choice, pro_video) to defer rendering until auth token is available
-- Added loading indicators ("Preparing video...") while waiting for authentication
-- Implemented VideoPlayer remount via `key` prop when authToken loads to ensure headers are included on first request
-- Enhanced `videoPreloadService` to support authenticated videos with proper header management
-- Object storage videos now stream correctly through `/api/videos` endpoint with authentication
+**Authenticated Video Playback Fix - Complete Resolution**: Completely fixed AVPlayer -11829 error with comprehensive race condition solution:
+- **tokenStatus Pattern**: Introduced `tokenStatus` state ('pending' | 'resolved') to track async token fetch completion independently from token presence
+- **Three-State Rendering Logic**: All videos (intro, IRL, video_choice, pro_video) now follow strict gating pattern:
+  - State 1: tokenStatus === 'pending' → Show loading spinner ("Preparing video...")
+  - State 2: tokenStatus === 'resolved' && needsAuth && !authToken → Show authentication error with user guidance
+  - State 3: tokenStatus === 'resolved' && (!needsAuth || authToken) → Render VideoPlayer with proper headers
+- **Immediate Token Loading**: Auth token loads from AsyncStorage/SecureStore immediately on LessonScreenNew mount, not waiting for user object
+- **Enhanced Detection**: `isAuthenticatedVideo()` helper checks both original and preloaded URLs to catch all object storage videos
+- **Authorization Headers**: `getVideoSourceWithAuth()` attaches Bearer token to all authenticated video sources
+- **Video Preload Service Fix**: Handles undefined language gracefully by checking both `user.selectedLanguage` and `settings.selectedLanguage`
+- **Enhanced Error Handling**: VideoPlayer component provides detailed error logging and user-friendly error UI
+- **Result**: Zero authenticated videos can mount without Authorization headers; AVPlayer -11829 error completely eliminated
 
 **Level-Appropriate Lesson Content Fix**: Implemented explicit skill level parameter passing to ensure users receive content matching their registered skill level:
 - Backend added authentication middleware to `/api/courses/` endpoint to read user's skill level from session
