@@ -285,11 +285,16 @@ export default function LessonScreen() {
       const response = await apiClient.getLesson(fullLanguageName, courseId!, lessonId!, userLevel);
       const lessonData = (response as any).data || response;
       
-      // Enhanced logging for debugging Spanish courses
+      // Enhanced logging for debugging courses and video URLs
+      const step1VideoUrl = lessonData?.lesson?.steps?.[0]?.content?.video?.url || 
+                           lessonData?.lesson?.steps?.[0]?.video_url || 
+                           lessonData?.lesson?.step1?.content?.videoUrl || '';
+      
       console.log(`📚 Lesson data received for ${fullLanguageName}:`, JSON.stringify({
         lessonId: lessonData?.id || lessonData?.lessonId,
         title: lessonData?.lesson?.title || lessonData?.title,
         requestedSkillLevel: userLevel,
+        step1VideoUrl: step1VideoUrl,
         hasStepsArray: Array.isArray(lessonData?.lesson?.steps),
         stepsCount: Array.isArray(lessonData?.lesson?.steps) ? lessonData?.lesson?.steps?.length : 0,
         hasStep1: !!lessonData?.lesson?.step1,
@@ -299,6 +304,8 @@ export default function LessonScreen() {
           ? lessonData?.lesson?.steps.map((s: any) => s.stepType) 
           : 'legacy format'
       }, null, 2));
+      
+      console.log(`🎥 Step 1 raw video URL from backend: "${step1VideoUrl}"`);
       
       return lessonData;
     },
@@ -423,10 +430,14 @@ export default function LessonScreen() {
           const courseData = await fetchCourseIntro(languageCode, courseNumber, userLevel);
           
           if (courseData && courseData.introVideoUrl) {
+            console.log(`🎬 ===== INTRO VIDEO DEBUG =====`);
+            console.log(`🎬 Raw intro video URL from backend: "${courseData.introVideoUrl}"`);
+            console.log(`🎬 User level: ${userLevel}`);
+            console.log(`🎬 Language: ${languageCode}`);
+            console.log(`🎬 Course: ${courseNumber}`);
             setIntroVideoUrl(courseData.introVideoUrl);
             setShowIntroVideo(true);
             setIsLoadingIntroVideo(false);
-            console.log(`🎬 Fetched intro video URL from API: ${courseData.introVideoUrl}`);
           } else {
             // Check if fallback video exists for this language
             const fallbackVideo = getFallbackVideoSource(courseId, language);
@@ -460,7 +471,12 @@ export default function LessonScreen() {
 
   // Helper to normalize asset URLs consistently
   const normalizeAssetUrl = (url: string, stepNumber?: number): string => {
-    if (!url) return '';
+    console.log(`🔍 normalizeAssetUrl called with: "${url}" (step ${stepNumber || 'N/A'})`);
+    
+    if (!url) {
+      console.log(`⚠️ normalizeAssetUrl: Empty URL provided`);
+      return '';
+    }
     
     // Check if this video was preloaded (optimization for faster loading)
     if (stepNumber && language && courseId && lessonId) {
@@ -493,10 +509,9 @@ export default function LessonScreen() {
       return url;
     }
     
-    console.log('✅ Using API base URL:', apiBaseUrl);
-    
     // Already a full HTTP/HTTPS URL - return as-is
     if (url.startsWith('http://') || url.startsWith('https://')) {
+      console.log(`✅ URL already absolute: ${url}`);
       return url;
     }
     
@@ -504,7 +519,10 @@ export default function LessonScreen() {
     if (url.startsWith('/replit-objstore-') || url.startsWith('replit-objstore-')) {
       const normalizedPath = url.startsWith('/') ? url : '/' + url;
       const fullUrl = apiBaseUrl + '/api/videos' + normalizedPath;
-      console.log('🎥 Routing object storage video through streaming endpoint:', fullUrl);
+      console.log(`🎥 ===== OBJECT STORAGE VIDEO =====`);
+      console.log(`🎥 Input: "${url}"`);
+      console.log(`🎥 Output: "${fullUrl}"`);
+      console.log(`🎥 Note: This URL requires authentication!`);
       return fullUrl;
     }
     
@@ -1547,6 +1565,42 @@ export default function LessonScreen() {
     return videoUrl;
   };
 
+  // Check if a video URL requires authentication (object storage videos)
+  // This checks the FINAL URL after preloading to catch all authenticated videos
+  const isAuthenticatedVideo = (videoUrl: string): boolean => {
+    if (!videoUrl) return false;
+    
+    // First check the original URL for object storage patterns
+    const isObjectStorage = videoUrl.includes('replit-objstore-') || videoUrl.includes('replit_objstore_');
+    if (isObjectStorage) return true;
+    
+    // Then check the final URL after getVideoSource (which may return preloaded URL)
+    const finalUri = getVideoSource(videoUrl);
+    return finalUri.includes('/api/videos/replit-objstore-') || finalUri.includes('/api/videos/replit_objstore_');
+  };
+
+  // Get video source with authentication headers for object storage videos
+  const getVideoSourceWithAuth = (videoUrl: string): { uri: string; headers?: { [key: string]: string } } => {
+    const uri = getVideoSource(videoUrl);
+    
+    // Check if this is an object storage video that needs authentication
+    const needsAuth = isAuthenticatedVideo(videoUrl);
+    
+    if (needsAuth && authToken) {
+      console.log(`🔐 Adding auth header to object storage video: ${uri.substring(0, 80)}...`);
+      return {
+        uri,
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      };
+    } else if (needsAuth && !authToken) {
+      console.warn(`⚠️ Object storage video requires auth but no token available yet: ${uri}`);
+    }
+    
+    return { uri };
+  };
+
   // Complete lesson mutation - matching web exactly
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -1886,17 +1940,20 @@ export default function LessonScreen() {
               </Text>
               
               <View style={styles.videoContainer}>
-                {isLoadingIntroVideo ? (
+                {isLoadingIntroVideo || (introVideoUrl && isAuthenticatedVideo(normalizeAssetUrl(introVideoUrl)) && !authToken) ? (
                   <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />
-                    <Text style={styles.loadingText}>Loading intro video...</Text>
+                    <Text style={styles.loadingText}>
+                      {isLoadingIntroVideo ? 'Loading intro video...' : 'Preparing video...'}
+                    </Text>
                   </View>
                 ) : (
                   <VideoPlayer
+                    key={authToken ? 'authenticated' : 'public'}
                     style={styles.video}
                     source={
                       introVideoUrl 
-                        ? { uri: getVideoSource(normalizeAssetUrl(introVideoUrl)) }
+                        ? getVideoSourceWithAuth(normalizeAssetUrl(introVideoUrl))
                         : getFallbackVideoSource(courseId || 'course1', language || 'italian')
                     }
                     useNativeControls
@@ -1987,20 +2044,23 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <VideoPlayer
-                      videoRef={irlVideoRef}
-                      style={styles.video}
-                      source={{
-                        uri: getVideoSource(stepData.videoUrl),
-                        headers: authToken ? {
-                          'Authorization': `Bearer ${authToken}`
-                        } : undefined
-                      }}
-                      useNativeControls
-                      resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={true}
-                      onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
-                    />
+                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
+                        <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : (
+                      <VideoPlayer
+                        key={authToken ? 'authenticated' : 'public'}
+                        videoRef={irlVideoRef}
+                        style={styles.video}
+                        source={getVideoSourceWithAuth(stepData.videoUrl)}
+                        useNativeControls
+                        resizeMode={ResizeMode.CONTAIN}
+                        shouldPlay={true}
+                        onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
+                      />
+                    )}
                   </View>
 
                   <View style={styles.inputContainer}>
@@ -2023,20 +2083,23 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <VideoPlayer
-                      videoRef={videoChoiceRef}
-                      style={styles.video}
-                      source={{
-                        uri: getVideoSource(stepData.videoUrl),
-                        headers: authToken ? {
-                          'Authorization': `Bearer ${authToken}`
-                        } : undefined
-                      }}
-                      useNativeControls
-                      resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={true}
-                      onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
-                    />
+                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
+                        <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : (
+                      <VideoPlayer
+                        key={authToken ? 'authenticated' : 'public'}
+                        videoRef={videoChoiceRef}
+                        style={styles.video}
+                        source={getVideoSourceWithAuth(stepData.videoUrl)}
+                        useNativeControls
+                        resizeMode={ResizeMode.CONTAIN}
+                        shouldPlay={true}
+                        onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
+                      />
+                    )}
                   </View>
 
                   <View style={styles.inputContainer}>
@@ -2124,22 +2187,25 @@ export default function LessonScreen() {
                   </View>
 
                   <View style={styles.videoContainer}>
-                    <VideoPlayer
-                      videoRef={proVideoRef}
-                      style={styles.video}
-                      source={{
-                        uri: getVideoSource(stepData.videoUrl),
-                        headers: authToken ? {
-                          'Authorization': `Bearer ${authToken}`
-                        } : undefined
-                      }}
-                      useNativeControls={stepData.hasAccess}
-                      resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={true}
-                      isLooping={!stepData.hasAccess}
-                      isMuted={!stepData.hasAccess}
-                      onPlaybackStatusUpdate={stepData.hasAccess ? handleVideoPlaybackStatusUpdate : undefined}
-                    />
+                    {isAuthenticatedVideo(stepData.videoUrl) && !authToken ? (
+                      <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
+                        <Text style={styles.loadingText}>Preparing video...</Text>
+                      </View>
+                    ) : (
+                      <VideoPlayer
+                        key={authToken ? 'authenticated' : 'public'}
+                        videoRef={proVideoRef}
+                        style={styles.video}
+                        source={getVideoSourceWithAuth(stepData.videoUrl)}
+                        useNativeControls={stepData.hasAccess}
+                        resizeMode={ResizeMode.CONTAIN}
+                        shouldPlay={true}
+                        isLooping={!stepData.hasAccess}
+                        isMuted={!stepData.hasAccess}
+                        onPlaybackStatusUpdate={stepData.hasAccess ? handleVideoPlaybackStatusUpdate : undefined}
+                      />
+                    )}
                     
                     {!stepData.hasAccess && (
                       <View style={styles.videoOverlay}>
