@@ -1571,29 +1571,69 @@ export default function LessonScreen() {
     return videoUrl;
   };
 
-  // Check if a video URL requires authentication (object storage videos)
-  // This checks the FINAL URL after preloading to catch all authenticated videos
+  // Check if a video URL requires authentication
+  // All videos from the same origin as our API require authentication
   const isAuthenticatedVideo = (videoUrl: string): boolean => {
     if (!videoUrl) return false;
     
-    // First check the original URL for object storage patterns
-    const isObjectStorage = videoUrl.includes('replit-objstore-') || videoUrl.includes('replit_objstore_');
-    if (isObjectStorage) return true;
-    
-    // Then check the final URL after getVideoSource (which may return preloaded URL)
-    const finalUri = getVideoSource(videoUrl);
-    return finalUri.includes('/api/videos/replit-objstore-') || finalUri.includes('/api/videos/replit_objstore_');
+    try {
+      // Get the API base URL
+      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || '';
+      if (!apiBaseUrl) {
+        // Fallback to old pattern-based detection if no API URL
+        return videoUrl.includes('replit-objstore-') || 
+               videoUrl.includes('replit_objstore_') ||
+               videoUrl.includes('/api/videos/');
+      }
+      
+      // Extract the origin from API base URL (e.g., "https://lingotoday.replit.app")
+      const apiOrigin = new URL(apiBaseUrl).origin;
+      
+      // Check the original URL
+      if (videoUrl.startsWith('http://') || videoUrl.startsWith('https://')) {
+        const videoOrigin = new URL(videoUrl).origin;
+        if (videoOrigin === apiOrigin) {
+          console.log(`🔐 Video from same origin as API, requires auth: ${videoUrl.substring(0, 80)}...`);
+          return true;
+        }
+      }
+      
+      // Check if it's a relative URL (starts with /) - these are same-origin by definition
+      if (videoUrl.startsWith('/')) {
+        console.log(`🔐 Relative URL video, requires auth: ${videoUrl.substring(0, 80)}...`);
+        return true;
+      }
+      
+      // Check the final URL after getVideoSource (which may return preloaded URL)
+      const finalUri = getVideoSource(videoUrl);
+      if (finalUri.startsWith('http://') || finalUri.startsWith('https://')) {
+        const finalOrigin = new URL(finalUri).origin;
+        if (finalOrigin === apiOrigin) {
+          console.log(`🔐 Preloaded video from same origin, requires auth: ${finalUri.substring(0, 80)}...`);
+          return true;
+        }
+      }
+      
+      // Not from our API origin, public video
+      return false;
+    } catch (error) {
+      console.error('Error checking video authentication:', error);
+      // On error, fall back to conservative approach: require auth for any backend-looking URL
+      return videoUrl.includes('replit') || 
+             videoUrl.includes('/api/') || 
+             videoUrl.includes('/attached_assets/');
+    }
   };
 
-  // Get video source with authentication headers for object storage videos
+  // Get video source with authentication headers for same-origin videos
   const getVideoSourceWithAuth = (videoUrl: string): { uri: string; headers?: { [key: string]: string } } => {
     const uri = getVideoSource(videoUrl);
     
-    // Check if this is an object storage video that needs authentication
+    // Check if this video needs authentication
     const needsAuth = isAuthenticatedVideo(videoUrl);
     
     if (needsAuth && authToken) {
-      console.log(`🔐 Adding auth header to object storage video: ${uri.substring(0, 80)}...`);
+      console.log(`🔐 Adding auth header to video: ${uri.substring(0, 80)}...`);
       return {
         uri,
         headers: {
@@ -1601,7 +1641,7 @@ export default function LessonScreen() {
         }
       };
     } else if (needsAuth && !authToken) {
-      console.warn(`⚠️ Object storage video requires auth but no token available yet: ${uri}`);
+      console.warn(`⚠️ Video requires auth but no token available yet: ${uri}`);
     }
     
     return { uri };
