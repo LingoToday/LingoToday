@@ -351,8 +351,13 @@ export class ApiClient {
     return this.makeRequest(`/api/courses/${language}`);
   }
 
-  async getLesson(language: string, courseId: string, lessonId: string) {
-    return this.makeRequest(`/api/courses/${language}/${courseId}/${lessonId}`);
+  async getLesson(language: string, courseId: string, lessonId: string, skillLevel?: string) {
+    const params = new URLSearchParams();
+    if (skillLevel) {
+      params.append('skillLevel', skillLevel);
+    }
+    const queryString = params.toString();
+    return this.makeRequest(`/api/courses/${language}/${courseId}/${lessonId}${queryString ? `?${queryString}` : ''}`);
   }
 
   // NEW: Get lesson data with proper API format - matching web route

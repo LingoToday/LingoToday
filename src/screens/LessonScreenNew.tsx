@@ -264,19 +264,32 @@ export default function LessonScreen() {
     return entry ? entry[0] : 'it';
   };
 
+  // Fetch user data for gender detection and tier access (must be before lesson query)
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/user'],
+    queryFn: async () => {
+      const response = await apiClient.getCurrentUser();
+      return (response as any).data || response;
+    },
+    enabled: !!user,
+  });
+
   // Fetch lesson data - with proper queryFn
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery<Lesson>({
-    queryKey: ["/api/courses", getFullLanguageName(language || ''), courseId, lessonId],
+    queryKey: ["/api/courses", getFullLanguageName(language || ''), courseId, lessonId, userData?.selectedLevel],
     queryFn: async () => {
       const fullLanguageName = getFullLanguageName(language || '');
-      console.log(`🌍 Fetching lesson data for: ${fullLanguageName}/${courseId}/${lessonId}`);
-      const response = await apiClient.getLesson(fullLanguageName, courseId!, lessonId!);
+      const userLevel = userData?.selectedLevel || 'beginner';
+      
+      console.log(`🌍 Fetching lesson data for: ${fullLanguageName}/${courseId}/${lessonId} with skillLevel: ${userLevel}`);
+      const response = await apiClient.getLesson(fullLanguageName, courseId!, lessonId!, userLevel);
       const lessonData = (response as any).data || response;
       
       // Enhanced logging for debugging Spanish courses
       console.log(`📚 Lesson data received for ${fullLanguageName}:`, JSON.stringify({
         lessonId: lessonData?.id || lessonData?.lessonId,
         title: lessonData?.lesson?.title || lessonData?.title,
+        requestedSkillLevel: userLevel,
         hasStepsArray: Array.isArray(lessonData?.lesson?.steps),
         stepsCount: Array.isArray(lessonData?.lesson?.steps) ? lessonData?.lesson?.steps?.length : 0,
         hasStep1: !!lessonData?.lesson?.step1,
@@ -289,7 +302,7 @@ export default function LessonScreen() {
       
       return lessonData;
     },
-    enabled: !!user && !!language && !!courseId && !!lessonId,
+    enabled: !!user && !!language && !!courseId && !!lessonId && !!userData,
     retry: 2,
   });
 
@@ -301,16 +314,6 @@ export default function LessonScreen() {
       return (response as any).data || response || [];
     },
     enabled: !!user && !!language,
-  });
-
-  // Fetch user data for gender detection and tier access
-  const { data: userData } = useQuery({
-    queryKey: ['/api/auth/user'],
-    queryFn: async () => {
-      const response = await apiClient.getCurrentUser();
-      return (response as any).data || response;
-    },
-    enabled: !!user,
   });
 
   // Fetch subscription status
