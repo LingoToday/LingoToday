@@ -2382,8 +2382,8 @@ export default function LessonScreen() {
               {stepData && stepData.type === 'word_review' && (
                 <>
                   <View style={styles.wordReviewContainer}>
-                    <Text style={styles.translationLabel}>TRANSLATION</Text>
                     <Text style={styles.wordText}>{stepData.word}</Text>
+                    <Text style={styles.translationLabel}>TRANSLATION</Text>
                     <Text style={styles.translationText}>{stepData.translation}</Text>
                     
                     <TouchableOpacity 
