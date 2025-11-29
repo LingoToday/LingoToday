@@ -1980,9 +1980,7 @@ export default function LessonScreen() {
           <Card style={styles.introVideoCard}>
             <CardContent style={styles.introVideoContent}>
               <Text style={styles.introVideoTitle}>
-                {courseId === 'course1' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course!` :
-                 courseId === 'course2' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course 2!` :
-                 courseId === 'course3' ? `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course 3!` : `Welcome to ${language?.charAt(0).toUpperCase()}${language?.slice(1)} Beginners Course!`}
+                {`Welcome to Course ${courseId?.replace('course', '') || '1'}`}
               </Text>
               
               <View style={styles.videoContainer}>
