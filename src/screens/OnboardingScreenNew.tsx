@@ -13,6 +13,7 @@ import {
   Platform, // ADD THIS
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
@@ -385,6 +386,7 @@ export default function OnboardingScreen() {
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
+          onSkip={handlePaymentSuccess}
         />;
       case 7:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
@@ -954,14 +956,41 @@ const LearningPlanScreen = ({
   selectedLanguage, 
   selectedLevel, 
   selectedStyle,
-  onStartTrial
+  onStartTrial,
+  onSkip
 }: {
   selectedLanguage?: { name: string; flag: string; };
   selectedLevel?: { title: string; };
   selectedStyle?: { title: string; icon: string; };
   onStartTrial: () => void;
-}) => (
+  onSkip?: () => void;
+}) => {
+  const insets = useSafeAreaInsets();
+  
+  return (
   <View style={styles.screenContent}>
+    {Platform.OS === 'android' && onSkip && (
+      <TouchableOpacity
+        onPress={onSkip}
+        style={{
+          position: 'absolute',
+          top: Math.max(insets.top, 8),
+          right: 8,
+          zIndex: 10,
+          width: 36,
+          height: 36,
+          borderRadius: 18,
+          backgroundColor: theme.colors.muted,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        accessibilityLabel="Skip subscription"
+        accessibilityRole="button"
+      >
+        <Ionicons name="close" size={20} color={theme.colors.mutedForeground} />
+      </TouchableOpacity>
+    )}
     <Text style={styles.screenTitle}>
       Your Learning Plan is Ready
     </Text>
@@ -1023,14 +1052,17 @@ const LearningPlanScreen = ({
           <Text style={styles.startTrialButtonText}>Start Free Trial</Text>
         </Button>
         
-        {/* Small text underneath */}
-        <View style={styles.trialPriceContainer}>
-          <Text style={styles.trialPriceText}>3 days free trial then {PRO_PRICING.GBP.monthly}/month</Text>
-        </View>
+        {/* Small text underneath - hidden on Android */}
+        {Platform.OS !== 'android' && (
+          <View style={styles.trialPriceContainer}>
+            <Text style={styles.trialPriceText}>3 days free trial then {PRO_PRICING.GBP.monthly}/month</Text>
+          </View>
+        )}
       </View>
     </View>
   </View>
-);
+  );
+};
 
 // IAP Purchase Component
 const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
