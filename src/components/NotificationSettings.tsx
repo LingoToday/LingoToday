@@ -276,6 +276,9 @@ export default function NotificationSettings() {
     { label: '15 min', value: '15' },
     { label: '30 min', value: '30' },
     { label: '60 min', value: '60' },
+    { label: '1.5 hours', value: '90' },
+    { label: '2 hours', value: '120' },
+    { label: '0.5 days', value: '720' },
   ];
   const timeOptions = hourOptions();
 
