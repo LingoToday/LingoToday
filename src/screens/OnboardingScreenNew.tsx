@@ -90,6 +90,7 @@ const learningStyles = [
 export default function OnboardingScreen() {
   const navigation = useNavigation();
   const authContext = useContext(AuthContext);
+  const insets = useSafeAreaInsets();
   
   const [currentScreen, setCurrentScreen] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -386,7 +387,6 @@ export default function OnboardingScreen() {
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
-          onSkip={handlePaymentSuccess}
         />;
       case 7:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
@@ -450,6 +450,30 @@ const handlePaymentSuccess = async () => {
               Step {currentScreen + 1} of {totalScreens}
             </Text>
           </View>
+
+          {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
+          {Platform.OS === 'android' && currentScreen === 6 && (
+            <TouchableOpacity
+              onPress={handlePaymentSuccess}
+              style={{
+                position: 'absolute',
+                top: Math.max(insets.top, 8),
+                right: 12,
+                zIndex: 100,
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                backgroundColor: theme.colors.muted,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              accessibilityLabel="Skip subscription"
+              accessibilityRole="button"
+            >
+              <Ionicons name="close" size={18} color={theme.colors.mutedForeground} />
+            </TouchableOpacity>
+          )}
 
           {/* FIXED: Handle payment screen separately */}
           {currentScreen === 7 ? (
@@ -956,41 +980,14 @@ const LearningPlanScreen = ({
   selectedLanguage, 
   selectedLevel, 
   selectedStyle,
-  onStartTrial,
-  onSkip
+  onStartTrial
 }: {
   selectedLanguage?: { name: string; flag: string; };
   selectedLevel?: { title: string; };
   selectedStyle?: { title: string; icon: string; };
   onStartTrial: () => void;
-  onSkip?: () => void;
-}) => {
-  const insets = useSafeAreaInsets();
-  
-  return (
+}) => (
   <View style={styles.screenContent}>
-    {Platform.OS === 'android' && onSkip && (
-      <TouchableOpacity
-        onPress={onSkip}
-        style={{
-          position: 'absolute',
-          top: Math.max(insets.top, 8),
-          right: 8,
-          zIndex: 10,
-          width: 36,
-          height: 36,
-          borderRadius: 18,
-          backgroundColor: theme.colors.muted,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        accessibilityLabel="Skip subscription"
-        accessibilityRole="button"
-      >
-        <Ionicons name="close" size={20} color={theme.colors.mutedForeground} />
-      </TouchableOpacity>
-    )}
     <Text style={styles.screenTitle}>
       Your Learning Plan is Ready
     </Text>
