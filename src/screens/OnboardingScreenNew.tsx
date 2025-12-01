@@ -1058,8 +1058,7 @@ const LearningPlanScreen = ({
       </View>
     </View>
   </View>
-  );
-};
+);
 
 // IAP Purchase Component
 const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
