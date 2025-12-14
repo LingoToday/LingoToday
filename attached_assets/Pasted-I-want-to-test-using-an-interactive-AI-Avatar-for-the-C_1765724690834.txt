@@ -1,0 +1,51 @@
+I want to test using an interactive AI Avatar for the Course Reviews in the Json so that a user of the app can talk using their device microphone and interact with a live AI avatar.
+
+When the AI avatar is engaged is should:
+Be based on the context of the user, language, course and review they are on:
+* The avatar session is always tied to:
+    * language (e.g. Italian)
+    * level (beginners, intermediate, expert)
+    * course
+    * lesson
+    * review (or review type)
+* You pass this context into HeyGen as part of the Knowledge Base prompt.
+
+
+Duration limit = 1–2 minutes:
+* Target ~90 seconds; hard stop at 120 seconds.
+Topic discipline:
+* If user drifts off topic (e.g. “What’s your favourite movie?”), the avatar:
+    * Briefly acknowledges.
+    * Redirects: “Let’s get back to practicing the phrases from this lesson.”
+
+Avatar:
+1. Greets the learner and restates the focus: AI: “Ciao! Let’s practise your last lessons. Repeat after me…”
+* AI: “How would you say ‘I feel happy’ in Italian?”
+* AI: “Great! Next question.”
+1. Asks targeted questions based on what is in the json review
+2. Main language is in English, but asks question in the user’s learning language e.g italian
+3. Gives micro-feedback during the session when the learner gets clearly stuck.
+
+UX:
+Need to ask for access to the microphone
+Visual indicator that it’s live (mic waveform / “Listening…”).
+A “Leave session” button that gracefully disconnects.
+
+
+We will be using HeyGen for this:
+React Native Integration: https://docs.liveavatar.com/docs/getting-started
+
+HeyGen provides Avatar Contex via API (best for dynamic lesson-based prompts)
+HeyGen added Context management endpoints 
+This is ideal for your use case because you can:
+* Keep a base Context (persona + safety rules)
+* Then dynamically create/update a session Context with:
+    * language + level + current review phrases
+
+Avatar ID: bf00036b-558a-44b5-b2ff-1e3cec0f4ceb
+Live avatar API Key: 785e5d3e-d8eb-11f0-a99e-066a7fa2e369
+Context ID: c32cf18d-d920-4d35-8eb4-39c4b1fd90ce
+
+Can you do this all from the react native mobile app front-end or are there changes required for the back-end project?
+
+To implement this as a test, can you add this to the app in a secret way so only I can test? E.g as a user I go to AI chat tab, and tap on the top right image 5 times to activate the AI avatar
