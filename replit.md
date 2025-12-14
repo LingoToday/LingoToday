@@ -4,6 +4,8 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## Recent Changes (Dec 14, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (4) Fixes**: Re-added `registerGlobals()` call with try-catch wrapper to fix LiveKit connection failures. The function is required for WebRTC initialization on native platforms but was previously removed due to SIGABRT crash. Now wrapped safely to prevent crashes while enabling proper WebRTC setup.
+
 **HeyGen AI Avatar Integration - v1.0.10 (3) Fixes**: Added missing `voice_id` parameter to LiveAvatar API request per docs.liveavatar.com FULL mode requirements.
 
 **HeyGen AI Avatar Integration - v1.0.10 Fixes**: Fixed SIGABRT crash by removing registerGlobals() call and adding defensive error handling for LiveKit module imports.

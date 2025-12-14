@@ -66,6 +66,16 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
       return null;
     }
     
+    // Register WebRTC globals - required for LiveKit to work on native platforms
+    try {
+      if (livekit.registerGlobals) {
+        livekit.registerGlobals();
+        console.log('[AIAvatar] registerGlobals() called successfully');
+      }
+    } catch (registerErr) {
+      console.log('[AIAvatar] registerGlobals() failed (non-fatal):', registerErr);
+    }
+    
     if (!livekit?.LiveKitRoom || !livekit?.useTracks || !livekitClient?.Track) {
       console.log('[AIAvatar] LiveKit modules missing required exports');
       return null;
