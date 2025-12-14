@@ -4,8 +4,18 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## Recent Changes (Dec 14, 2025)
-**HeyGen AI Avatar Integration**: Implemented interactive AI Avatar for Course Reviews using HeyGen's Streaming API with LiveKit for React Native:
-- **AIAvatarScreen.tsx**: New full-screen modal with HeyGen session management (token creation, session creation, streaming start/stop)
+**HeyGen AI Avatar Integration - v1.0.8 Fixes**: Enhanced API error handling and response parsing for LiveAvatar API:
+- **API Key Validation**: Added pre-request validation for null, empty, and malformed API keys with user-friendly error messages
+- **Robust Error Handling**: New `parseApiError()` function handles JSON error responses (message/error/detail fields) and HTTP status codes with clear, actionable user messages
+- **Multi-Format Response Parsing**: `extractSessionData()` and `extractLiveKitData()` now handle multiple API response formats including:
+  - Direct top-level fields (`session_id`, `session_token`)
+  - Data-wrapped responses (`data.session_id`, `data.session_token`)
+  - Legacy HeyGen streaming.new format (`session_id`, `access_token`, `url`)
+- **Comprehensive Logging**: All API requests/responses logged with `[AIAvatar]` prefix for TestFlight debugging
+- **User-Friendly Errors**: Specific messages for invalid API key, access denied, rate limiting, and server errors
+
+**Previous HeyGen AI Avatar Integration**: Implemented interactive AI Avatar for Course Reviews using HeyGen's Streaming API with LiveKit for React Native:
+- **AIAvatarScreen.tsx**: Full-screen modal with HeyGen session management (token creation, session creation, streaming start/stop)
 - **LiveKit Integration**: Full two-way audio/video with remote avatar track rendering (VideoTrack + AudioTrack) and local microphone control
 - **Session Timer**: 90-second soft warning and 120-second hard limit with auto-disconnect
 - **Context-Aware Prompts**: Dynamic knowledge base prompt built from language, level, course title, lesson title, and review phrases
