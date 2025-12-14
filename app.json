@@ -2,7 +2,7 @@
   "expo": {
     "name": "LingoToday",
     "slug": "lingotoday-mobile",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -32,7 +32,7 @@
         "backgroundColor": "#6366f1"
       },
       "package": "com.lingotoday.mobile",
-      "versionCode": 42,
+      "versionCode": 43,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
