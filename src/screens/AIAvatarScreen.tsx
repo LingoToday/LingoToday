@@ -271,10 +271,27 @@ export default function AIAvatarScreen() {
     return codes[lang] || 'en';
   };
 
+  const validateApiKey = (key: string | null): { valid: boolean; error?: string } => {
+    if (!key) {
+      return { valid: false, error: 'HeyGen API key not configured. Please set up your API key first.' };
+    }
+    
+    const trimmedKey = key.trim();
+    if (trimmedKey.length === 0) {
+      return { valid: false, error: 'API key is empty. Please enter a valid HeyGen API key.' };
+    }
+    
+    if (trimmedKey.length < 20) {
+      return { valid: false, error: 'API key appears to be invalid (too short). Please check your HeyGen API key.' };
+    }
+    
+    return { valid: true };
+  };
+
   const getStoredApiKey = async (): Promise<string | null> => {
     try {
       const key = await SecureStore.getItemAsync(HEYGEN_API_KEY_STORAGE_KEY);
-      console.log('[AIAvatar] API key retrieved:', key ? 'exists' : 'not found');
+      console.log('[AIAvatar] API key retrieved:', key ? `exists (length: ${key.length})` : 'not found');
       return key;
     } catch (err) {
       console.error('[AIAvatar] Error retrieving API key:', err);
@@ -282,8 +299,110 @@ export default function AIAvatarScreen() {
     }
   };
 
+  const parseApiError = (status: number, errorBody: string): string => {
+    console.log('[AIAvatar] Parsing error - status:', status, 'body:', errorBody);
+    
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (parsed.message) return parsed.message;
+      if (parsed.error) return typeof parsed.error === 'string' ? parsed.error : JSON.stringify(parsed.error);
+      if (parsed.detail) return typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail);
+    } catch {
+    }
+    
+    switch (status) {
+      case 401:
+        return 'Invalid API key. Please check your HeyGen API key and try again.';
+      case 403:
+        return 'Access denied. Your API key may not have permission for this feature.';
+      case 404:
+        return 'Avatar or service not found. Please contact support.';
+      case 429:
+        return 'Too many requests. Please wait a moment and try again.';
+      case 500:
+      case 502:
+      case 503:
+        return 'HeyGen service is temporarily unavailable. Please try again later.';
+      default:
+        return `Server error (${status}). Please try again.`;
+    }
+  };
+
+  const extractSessionData = (data: any): { sessionId: string; sessionToken: string } | null => {
+    console.log('[AIAvatar] Extracting session data from:', JSON.stringify(data, null, 2));
+    
+    if (data.session_id && data.session_token) {
+      console.log('[AIAvatar] Found session data at top level');
+      return { sessionId: data.session_id, sessionToken: data.session_token };
+    }
+    
+    if (data.data && data.data.session_id && data.data.session_token) {
+      console.log('[AIAvatar] Found session data in data wrapper');
+      return { sessionId: data.data.session_id, sessionToken: data.data.session_token };
+    }
+    
+    if (data.session_id && data.access_token) {
+      console.log('[AIAvatar] Found session_id with access_token (old format)');
+      return { sessionId: data.session_id, sessionToken: data.access_token };
+    }
+    
+    if (data.data && data.data.session_id && data.data.access_token) {
+      console.log('[AIAvatar] Found session data in data wrapper (old format)');
+      return { sessionId: data.data.session_id, sessionToken: data.data.access_token };
+    }
+    
+    console.log('[AIAvatar] Could not extract session data. Available keys:', Object.keys(data));
+    if (data.data) {
+      console.log('[AIAvatar] data.data keys:', Object.keys(data.data));
+    }
+    
+    return null;
+  };
+
+  const extractLiveKitData = (data: any): { liveKitUrl: string; liveKitToken: string } | null => {
+    console.log('[AIAvatar] Extracting LiveKit data from:', JSON.stringify(data, null, 2));
+    
+    if (data.livekit_url && data.livekit_client_token) {
+      return { liveKitUrl: data.livekit_url, liveKitToken: data.livekit_client_token };
+    }
+    
+    if (data.data && data.data.livekit_url && data.data.livekit_client_token) {
+      return { liveKitUrl: data.data.livekit_url, liveKitToken: data.data.livekit_client_token };
+    }
+    
+    if (data.url && data.access_token) {
+      console.log('[AIAvatar] Found url with access_token (old streaming.new format)');
+      return { liveKitUrl: data.url, liveKitToken: data.access_token };
+    }
+    
+    if (data.data && data.data.url && data.data.access_token) {
+      return { liveKitUrl: data.data.url, liveKitToken: data.data.access_token };
+    }
+    
+    console.log('[AIAvatar] Could not extract LiveKit data. Available keys:', Object.keys(data));
+    if (data.data) {
+      console.log('[AIAvatar] data.data keys:', Object.keys(data.data));
+    }
+    
+    return null;
+  };
+
   const createSessionWithToken = async (apiKey: string) => {
     console.log('[AIAvatar] Creating session with token...');
+    console.log('[AIAvatar] Using API base URL:', API_BASE_URL);
+    console.log('[AIAvatar] Avatar ID:', HEYGEN_AVATAR_ID);
+    console.log('[AIAvatar] Context ID:', HEYGEN_CONTEXT_ID);
+    
+    const requestBody = {
+      mode: 'FULL',
+      avatar_id: HEYGEN_AVATAR_ID,
+      avatar_persona: {
+        context_id: HEYGEN_CONTEXT_ID,
+        language: getLanguageCode(language),
+      },
+    };
+    console.log('[AIAvatar] Request body:', JSON.stringify(requestBody, null, 2));
+    
     try {
       const response = await fetch(`${API_BASE_URL}/v1/sessions/token`, {
         method: 'POST',
@@ -292,43 +411,47 @@ export default function AIAvatarScreen() {
           'X-API-KEY': apiKey,
           'accept': 'application/json',
         },
-        body: JSON.stringify({
-          mode: 'FULL',
-          avatar_id: HEYGEN_AVATAR_ID,
-          avatar_persona: {
-            context_id: HEYGEN_CONTEXT_ID,
-            language: getLanguageCode(language),
-          },
-        }),
+        body: JSON.stringify(requestBody),
       });
       
       console.log('[AIAvatar] Session token response status:', response.status);
+      console.log('[AIAvatar] Response headers:', JSON.stringify(Object.fromEntries(response.headers.entries())));
+      
+      const responseText = await response.text();
+      console.log('[AIAvatar] Raw response body:', responseText);
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[AIAvatar] Session token error:', errorText);
-        throw new Error(`API error: ${response.status} - ${errorText}`);
+        const errorMessage = parseApiError(response.status, responseText);
+        throw new Error(errorMessage);
       }
       
-      const data = await response.json();
-      console.log('[AIAvatar] Session token response:', JSON.stringify(data));
-      
-      if (data.session_id && data.session_token) {
-        return {
-          sessionId: data.session_id,
-          sessionToken: data.session_token,
-        };
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        console.error('[AIAvatar] Failed to parse JSON response:', parseErr);
+        throw new Error('Invalid response from server. Please try again.');
       }
       
-      throw new Error('Invalid response: missing session_id or session_token');
-    } catch (err) {
+      const sessionData = extractSessionData(data);
+      if (sessionData) {
+        console.log('[AIAvatar] Successfully extracted session data');
+        return sessionData;
+      }
+      
+      throw new Error('Unexpected response format from HeyGen. Please try again or contact support.');
+    } catch (err: any) {
       console.error('[AIAvatar] Error creating session token:', err);
-      throw err;
+      if (err.message && !err.message.includes('fetch')) {
+        throw err;
+      }
+      throw new Error('Network error. Please check your internet connection and try again.');
     }
   };
 
   const startSession = async (token: string) => {
-    console.log('[AIAvatar] Starting session...');
+    console.log('[AIAvatar] Starting session with token length:', token.length);
+    
     try {
       const response = await fetch(`${API_BASE_URL}/v1/sessions/start`, {
         method: 'POST',
@@ -340,26 +463,35 @@ export default function AIAvatarScreen() {
       
       console.log('[AIAvatar] Start session response status:', response.status);
       
+      const responseText = await response.text();
+      console.log('[AIAvatar] Raw start session response:', responseText);
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[AIAvatar] Start session error:', errorText);
-        throw new Error(`API error: ${response.status} - ${errorText}`);
+        const errorMessage = parseApiError(response.status, responseText);
+        throw new Error(errorMessage);
       }
       
-      const data = await response.json();
-      console.log('[AIAvatar] Start session response:', JSON.stringify(data));
-      
-      if (data.livekit_url && data.livekit_client_token) {
-        return {
-          liveKitUrl: data.livekit_url,
-          liveKitToken: data.livekit_client_token,
-        };
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        console.error('[AIAvatar] Failed to parse start session JSON:', parseErr);
+        throw new Error('Invalid response from server. Please try again.');
       }
       
-      throw new Error('Invalid response: missing livekit_url or livekit_client_token');
-    } catch (err) {
+      const liveKitData = extractLiveKitData(data);
+      if (liveKitData) {
+        console.log('[AIAvatar] Successfully extracted LiveKit data');
+        return liveKitData;
+      }
+      
+      throw new Error('Unexpected response format when starting stream. Please try again.');
+    } catch (err: any) {
       console.error('[AIAvatar] Error starting session:', err);
-      throw err;
+      if (err.message && !err.message.includes('fetch')) {
+        throw err;
+      }
+      throw new Error('Network error. Please check your internet connection and try again.');
     }
   };
 
@@ -429,8 +561,9 @@ export default function AIAvatarScreen() {
       
       setStatusMessage('Checking API credentials...');
       const storedKey = await getStoredApiKey();
-      if (!storedKey) {
-        setError('HeyGen API key not configured. Please set up your API key first.');
+      const keyValidation = validateApiKey(storedKey);
+      if (!keyValidation.valid) {
+        setError(keyValidation.error || 'Invalid API key');
         setIsConnecting(false);
         return;
       }
@@ -440,7 +573,7 @@ export default function AIAvatarScreen() {
       }
       
       setStatusMessage('Creating session...');
-      const { sessionId: sid, sessionToken: sToken } = await createSessionWithToken(storedKey);
+      const { sessionId: sid, sessionToken: sToken } = await createSessionWithToken(storedKey!);
       setSessionId(sid);
       setSessionToken(sToken);
       sessionDataRef.current = { sessionId: sid, sessionToken: sToken };
