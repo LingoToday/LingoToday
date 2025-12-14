@@ -15,44 +15,9 @@ import * as SecureStore from 'expo-secure-store';
 import { Audio } from 'expo-av';
 import { theme } from '../lib/theme';
 
-let LiveKitRoom: any = null;
-let VideoTrack: any = null;
-let AudioTrack: any = null;
-let useTracks: any = null;
-let useLocalParticipant: any = null;
-let useRoomContext: any = null;
-let AudioSession: any = null;
-let registerGlobals: any = null;
-let Track: any = null;
-let RoomState: any = null;
-let isLiveKitAvailable = false;
-
-try {
-  const livekit = require('@livekit/react-native');
-  LiveKitRoom = livekit.LiveKitRoom;
-  VideoTrack = livekit.VideoTrack;
-  AudioTrack = livekit.AudioTrack;
-  useTracks = livekit.useTracks;
-  useLocalParticipant = livekit.useLocalParticipant;
-  useRoomContext = livekit.useRoomContext;
-  AudioSession = livekit.AudioSession;
-  registerGlobals = livekit.registerGlobals;
-  
-  const livekitClient = require('livekit-client');
-  Track = livekitClient.Track;
-  RoomState = livekitClient.RoomState;
-  
-  if (registerGlobals) {
-    registerGlobals();
-  }
-  isLiveKitAvailable = true;
-} catch (e) {
-  console.log('LiveKit not available - requires development build');
-}
-
 const HEYGEN_AVATAR_ID = 'bf00036b-558a-44b5-b2ff-1e3cec0f4ceb';
 const HEYGEN_CONTEXT_ID = 'c32cf18d-d920-4d35-8eb4-39c4b1fd90ce';
-const API_BASE_URL = 'https://api.heygen.com';
+const API_BASE_URL = 'https://api.liveavatar.com';
 const HEYGEN_API_KEY_STORAGE_KEY = 'heygen_api_key';
 
 const SESSION_SOFT_LIMIT = 90;
@@ -68,9 +33,48 @@ type AIAvatarRouteParams = {
 
 type RouteType = RouteProp<{ AIAvatar: AIAvatarRouteParams }, 'AIAvatar'>;
 
-function AvatarMediaRenderer() {
-  if (!useTracks || !Track || !VideoTrack) return null;
+type LiveKitModules = {
+  LiveKitRoom: any;
+  VideoTrack: any;
+  AudioTrack: any;
+  useTracks: any;
+  useLocalParticipant: any;
+  useRoomContext: any;
+  AudioSession: any;
+  Track: any;
+} | null;
+
+async function loadLiveKitModules(): Promise<LiveKitModules> {
+  try {
+    console.log('[AIAvatar] Attempting to load LiveKit modules...');
+    const livekit = await import('@livekit/react-native');
+    const livekitClient = await import('livekit-client');
+    
+    if (livekit.registerGlobals) {
+      livekit.registerGlobals();
+    }
+    
+    console.log('[AIAvatar] LiveKit modules loaded successfully');
+    return {
+      LiveKitRoom: livekit.LiveKitRoom,
+      VideoTrack: livekit.VideoTrack,
+      AudioTrack: (livekit as any).AudioTrack || null,
+      useTracks: livekit.useTracks,
+      useLocalParticipant: livekit.useLocalParticipant,
+      useRoomContext: livekit.useRoomContext,
+      AudioSession: livekit.AudioSession,
+      Track: livekitClient.Track,
+    };
+  } catch (e) {
+    console.log('[AIAvatar] LiveKit not available:', e);
+    return null;
+  }
+}
+
+function AvatarMediaRenderer({ modules }: { modules: LiveKitModules }) {
+  if (!modules) return null;
   
+  const { useTracks, Track, VideoTrack, AudioTrack } = modules;
   const tracks = useTracks([Track.Source.Camera, Track.Source.Microphone]);
   const videoTrack = tracks.find((t: any) => t.source === Track.Source.Camera);
   const audioTrack = tracks.find((t: any) => t.source === Track.Source.Microphone);
@@ -90,15 +94,15 @@ function AvatarMediaRenderer() {
         trackRef={videoTrack}
         style={styles.videoTrack}
       />
-      {audioTrack && AudioTrack && (
+      {audioTrack && (
         <AudioTrack trackRef={audioTrack} />
       )}
     </View>
   );
 }
 
-function MuteOnConnect({ onReady }: { onReady: () => void }) {
-  const room = useRoomContext ? useRoomContext() : null;
+function MuteOnConnect({ modules, onReady }: { modules: LiveKitModules; onReady: () => void }) {
+  const room = modules?.useRoomContext ? modules.useRoomContext() : null;
   const hasInitialized = useRef(false);
   
   useEffect(() => {
@@ -107,8 +111,9 @@ function MuteOnConnect({ onReady }: { onReady: () => void }) {
         hasInitialized.current = true;
         try {
           await room.localParticipant.setMicrophoneEnabled(false);
+          console.log('[AIAvatar] Microphone muted on connect');
         } catch (err) {
-          console.error('Error muting on connect:', err);
+          console.error('[AIAvatar] Error muting on connect:', err);
         }
         onReady();
       }
@@ -119,31 +124,33 @@ function MuteOnConnect({ onReady }: { onReady: () => void }) {
   return null;
 }
 
-function MicController({ isListening, onToggle }: { isListening: boolean; onToggle: (enabled: boolean) => void }) {
-  const localParticipant = useLocalParticipant ? useLocalParticipant() : null;
-  const room = useRoomContext ? useRoomContext() : null;
+function MicController({ modules, isListening, onToggle, disabled }: { 
+  modules: LiveKitModules; 
+  isListening: boolean; 
+  onToggle: (enabled: boolean) => void;
+  disabled: boolean;
+}) {
+  const room = modules?.useRoomContext ? modules.useRoomContext() : null;
   
   const toggleMic = useCallback(async () => {
     const newState = !isListening;
     onToggle(newState);
     
-    if (room && localParticipant?.localParticipant) {
+    if (room) {
       try {
-        if (newState) {
-          await room.localParticipant.setMicrophoneEnabled(true);
-        } else {
-          await room.localParticipant.setMicrophoneEnabled(false);
-        }
+        await room.localParticipant.setMicrophoneEnabled(newState);
+        console.log('[AIAvatar] Microphone', newState ? 'enabled' : 'disabled');
       } catch (err) {
-        console.error('Error toggling microphone:', err);
+        console.error('[AIAvatar] Error toggling microphone:', err);
       }
     }
-  }, [isListening, onToggle, room, localParticipant]);
+  }, [isListening, onToggle, room]);
   
   return (
     <TouchableOpacity
-      style={[styles.micButton, isListening && styles.micButtonActive]}
+      style={[styles.micButton, isListening && styles.micButtonActive, disabled && styles.micButtonDisabled]}
       onPress={toggleMic}
+      disabled={disabled}
     >
       <Ionicons
         name={isListening ? 'mic' : 'mic-outline'}
@@ -155,6 +162,7 @@ function MicController({ isListening, onToggle }: { isListening: boolean; onTogg
 }
 
 function LiveKitContent({ 
+  modules,
   isConnecting, 
   statusMessage, 
   isListening, 
@@ -163,6 +171,7 @@ function LiveKitContent({
   isConnected,
   onMicReady
 }: { 
+  modules: LiveKitModules;
   isConnecting: boolean; 
   statusMessage: string; 
   isListening: boolean;
@@ -173,7 +182,7 @@ function LiveKitContent({
 }) {
   return (
     <>
-      <MuteOnConnect onReady={onMicReady} />
+      <MuteOnConnect modules={modules} onReady={onMicReady} />
       <View style={styles.videoContainer}>
         {isConnecting ? (
           <View style={styles.loadingContainer}>
@@ -181,7 +190,7 @@ function LiveKitContent({
             <Text style={styles.loadingText}>{statusMessage}</Text>
           </View>
         ) : (
-          <AvatarMediaRenderer />
+          <AvatarMediaRenderer modules={modules} />
         )}
       </View>
 
@@ -205,8 +214,10 @@ function LiveKitContent({
         </View>
 
         <MicController 
+          modules={modules}
           isListening={isListening} 
           onToggle={setIsListening}
+          disabled={!isConnected || isSpeaking}
         />
       </View>
     </>
@@ -224,20 +235,19 @@ export default function AIAvatarScreen() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [sessionTime, setSessionTime] = useState(0);
-  const [statusMessage, setStatusMessage] = useState('Connecting to AI Avatar...');
+  const [statusMessage, setStatusMessage] = useState('Initializing...');
   const [error, setError] = useState<string | null>(null);
   
   const [sessionId, setSessionId] = useState<string>('');
   const [sessionToken, setSessionToken] = useState<string>('');
-  const [wsUrl, setWsUrl] = useState<string>('');
-  const [accessToken, setAccessToken] = useState<string>('');
-  const [apiKey, setApiKey] = useState<string>('');
-  const [roomConnected, setRoomConnected] = useState(false);
+  const [liveKitUrl, setLiveKitUrl] = useState<string>('');
+  const [liveKitToken, setLiveKitToken] = useState<string>('');
+  const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
+  const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
   const softWarningShownRef = useRef(false);
-  const roomRef = useRef<any>(null);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -245,188 +255,146 @@ export default function AIAvatarScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const buildKnowledgePrompt = useCallback(() => {
-    let prompt = `You are a friendly language learning tutor helping a student practice ${language} at the ${level} level.`;
-    
-    if (courseTitle) {
-      prompt += ` The current course is "${courseTitle}".`;
-    }
-    if (lessonTitle) {
-      prompt += ` The current lesson is "${lessonTitle}".`;
-    }
-    if (reviewPhrases && reviewPhrases.length > 0) {
-      prompt += ` Focus on practicing these phrases: ${reviewPhrases.join(', ')}.`;
-    }
-    
-    prompt += `
-
-Your role:
-1. Greet the learner warmly in English, then introduce the practice focus.
-2. Ask questions in ${language} and help the learner respond correctly.
-3. Provide gentle corrections and encouragement.
-4. If the learner goes off-topic, briefly acknowledge and redirect: "That's interesting! Let's get back to practicing our ${language} phrases."
-5. Keep responses concise and focused on language practice.
-6. Use a mix of English for explanations and ${language} for practice.
-
-Session rules:
-- Maximum 2 minutes per session
-- Stay focused on the lesson content
-- Be encouraging and patient`;
-
-    return prompt;
-  }, [language, level, courseTitle, lessonTitle, reviewPhrases]);
+  const getLanguageCode = (lang: string): string => {
+    const codes: { [key: string]: string } = {
+      'Italian': 'it',
+      'italian': 'it',
+      'Spanish': 'es',
+      'spanish': 'es',
+      'German': 'de',
+      'german': 'de',
+      'French': 'fr',
+      'french': 'fr',
+      'English': 'en',
+      'english': 'en',
+    };
+    return codes[lang] || 'en';
+  };
 
   const getStoredApiKey = async (): Promise<string | null> => {
     try {
-      return await SecureStore.getItemAsync(HEYGEN_API_KEY_STORAGE_KEY);
+      const key = await SecureStore.getItemAsync(HEYGEN_API_KEY_STORAGE_KEY);
+      console.log('[AIAvatar] API key retrieved:', key ? 'exists' : 'not found');
+      return key;
     } catch (err) {
-      console.error('Error retrieving API key:', err);
+      console.error('[AIAvatar] Error retrieving API key:', err);
       return null;
     }
   };
 
-  const getSessionToken = async (key: string) => {
+  const createSessionWithToken = async (apiKey: string) => {
+    console.log('[AIAvatar] Creating session with token...');
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/streaming.create_token`, {
+      const response = await fetch(`${API_BASE_URL}/v1/sessions/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Api-Key': key,
+          'X-API-KEY': apiKey,
+          'accept': 'application/json',
         },
+        body: JSON.stringify({
+          mode: 'FULL',
+          avatar_id: HEYGEN_AVATAR_ID,
+          avatar_persona: {
+            context_id: HEYGEN_CONTEXT_ID,
+            language: getLanguageCode(language),
+          },
+        }),
       });
       
-      const data = await response.json();
-      if (data.data?.token) {
-        return data.data.token;
+      console.log('[AIAvatar] Session token response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[AIAvatar] Session token error:', errorText);
+        throw new Error(`API error: ${response.status} - ${errorText}`);
       }
-      throw new Error('Failed to get session token');
-    } catch (err) {
-      console.error('Error getting session token:', err);
-      throw err;
-    }
-  };
-
-  const createSession = async (token: string) => {
-    try {
-      const knowledgePrompt = buildKnowledgePrompt();
-      
-      const response = await fetch(`${API_BASE_URL}/v1/streaming.new`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          quality: 'high',
-          avatar_name: HEYGEN_AVATAR_ID,
-          version: 'v2',
-          video_encoding: 'H264',
-          knowledge_base: knowledgePrompt,
-          knowledge_base_id: HEYGEN_CONTEXT_ID,
-        }),
-      });
       
       const data = await response.json();
-      if (data.data) {
-        return data.data;
+      console.log('[AIAvatar] Session token response:', JSON.stringify(data));
+      
+      if (data.session_id && data.session_token) {
+        return {
+          sessionId: data.session_id,
+          sessionToken: data.session_token,
+        };
       }
-      throw new Error('Failed to create session');
+      
+      throw new Error('Invalid response: missing session_id or session_token');
     } catch (err) {
-      console.error('Error creating session:', err);
+      console.error('[AIAvatar] Error creating session token:', err);
       throw err;
     }
   };
 
-  const startStreaming = async (sid: string, token: string) => {
+  const startSession = async (token: string) => {
+    console.log('[AIAvatar] Starting session...');
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/streaming.start`, {
+      const response = await fetch(`${API_BASE_URL}/v1/sessions/start`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'accept': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          session_id: sid,
-        }),
       });
       
+      console.log('[AIAvatar] Start session response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[AIAvatar] Start session error:', errorText);
+        throw new Error(`API error: ${response.status} - ${errorText}`);
+      }
+      
       const data = await response.json();
-      return data;
+      console.log('[AIAvatar] Start session response:', JSON.stringify(data));
+      
+      if (data.livekit_url && data.livekit_client_token) {
+        return {
+          liveKitUrl: data.livekit_url,
+          liveKitToken: data.livekit_client_token,
+        };
+      }
+      
+      throw new Error('Invalid response: missing livekit_url or livekit_client_token');
     } catch (err) {
-      console.error('Error starting streaming:', err);
+      console.error('[AIAvatar] Error starting session:', err);
       throw err;
-    }
-  };
-
-  const sendTextToAvatar = async (text: string, useRef = false) => {
-    const sid = useRef ? sessionDataRef.current.sessionId : sessionId;
-    const token = useRef ? sessionDataRef.current.sessionToken : sessionToken;
-    
-    if (!sid || !token) return;
-    
-    try {
-      setIsSpeaking(true);
-      const response = await fetch(`${API_BASE_URL}/v1/streaming.task`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          session_id: sid,
-          text: text,
-          task_type: 'talk',
-        }),
-      });
-      
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.error('Error sending text:', err);
-    } finally {
-      setIsSpeaking(false);
     }
   };
 
   const closeSession = async () => {
-    const sid = sessionDataRef.current.sessionId || sessionId;
     const token = sessionDataRef.current.sessionToken || sessionToken;
+    if (!token) return;
     
-    if (!sid || !token) return;
-    
+    console.log('[AIAvatar] Closing session...');
     try {
-      if (roomRef.current) {
-        await roomRef.current.disconnect();
-        roomRef.current = null;
-      }
-      
-      await fetch(`${API_BASE_URL}/v1/streaming.stop`, {
+      await fetch(`${API_BASE_URL}/v1/sessions/stop`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'accept': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          session_id: sid,
-        }),
       });
+      console.log('[AIAvatar] Session closed');
     } catch (err) {
-      console.error('Error closing session:', err);
+      console.error('[AIAvatar] Error closing session:', err);
     }
   };
 
   const initializeAudioSession = async () => {
-    if (AudioSession) {
+    if (liveKitModules?.AudioSession) {
       try {
-        await AudioSession.startAudioSession();
+        await liveKitModules.AudioSession.startAudioSession();
+        console.log('[AIAvatar] Audio session started');
       } catch (err) {
-        console.error('Error starting audio session:', err);
+        console.error('[AIAvatar] Error starting audio session:', err);
       }
     }
   };
 
   const handleRoomConnected = useCallback(() => {
-    setRoomConnected(true);
+    console.log('[AIAvatar] Room connected');
     setIsConnected(true);
     setIsConnecting(false);
     setStatusMessage('Connected! Say something to practice.');
@@ -439,84 +407,74 @@ Session rules:
           handleLeaveSession();
         } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
           softWarningShownRef.current = true;
-          sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
         }
         
         return newTime;
       });
     }, 1000);
-    
-    setTimeout(() => {
-      const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
-      sendTextToAvatar(greeting, true);
-    }, 2000);
-  }, [language]);
+  }, []);
 
   const initializeSession = async () => {
     try {
       setIsConnecting(true);
-      setStatusMessage('Checking API credentials...');
+      setStatusMessage('Loading modules...');
       
+      const modules = await loadLiveKitModules();
+      setLiveKitModules(modules);
+      setLiveKitLoaded(true);
+      
+      if (!modules) {
+        console.log('[AIAvatar] LiveKit not available, showing fallback UI');
+      }
+      
+      setStatusMessage('Checking API credentials...');
       const storedKey = await getStoredApiKey();
       if (!storedKey) {
         setError('HeyGen API key not configured. Please set up your API key first.');
         setIsConnecting(false);
         return;
       }
-      setApiKey(storedKey);
       
-      await initializeAudioSession();
+      if (modules) {
+        await initializeAudioSession();
+      }
       
-      setStatusMessage('Getting session token...');
-      const token = await getSessionToken(storedKey);
-      setSessionToken(token);
-      
-      setStatusMessage('Creating avatar session...');
-      const sessionData = await createSession(token);
-      
-      setSessionId(sessionData.session_id);
-      setWsUrl(sessionData.url);
-      setAccessToken(sessionData.access_token);
-      
-      sessionDataRef.current = { sessionId: sessionData.session_id, sessionToken: token };
+      setStatusMessage('Creating session...');
+      const { sessionId: sid, sessionToken: sToken } = await createSessionWithToken(storedKey);
+      setSessionId(sid);
+      setSessionToken(sToken);
+      sessionDataRef.current = { sessionId: sid, sessionToken: sToken };
       
       setStatusMessage('Starting stream...');
-      await startStreaming(sessionData.session_id, token);
+      const { liveKitUrl: url, liveKitToken: token } = await startSession(sToken);
+      setLiveKitUrl(url);
+      setLiveKitToken(token);
       
-      if (!isLiveKitAvailable) {
+      if (!modules) {
         setIsConnected(true);
         setIsConnecting(false);
-        setStatusMessage('Connected (LiveKit requires dev build for video/audio)');
+        setStatusMessage('Connected (video requires development build)');
         
         timerRef.current = setInterval(() => {
           setSessionTime(prev => {
             const newTime = prev + 1;
-            
             if (newTime >= SESSION_HARD_LIMIT) {
               handleLeaveSession();
-            } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
-              softWarningShownRef.current = true;
-              sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
             }
-            
             return newTime;
           });
         }, 1000);
-        
-        setTimeout(() => {
-          const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
-          sendTextToAvatar(greeting, true);
-        }, 2000);
       }
       
-    } catch (err) {
-      console.error('Session initialization error:', err);
-      setError('Failed to connect to AI Avatar. Please try again.');
+    } catch (err: any) {
+      console.error('[AIAvatar] Session initialization error:', err);
+      setError(`Failed to connect: ${err.message || 'Unknown error'}`);
       setIsConnecting(false);
     }
   };
 
   const handleLeaveSession = async () => {
+    console.log('[AIAvatar] Leaving session');
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
@@ -540,13 +498,14 @@ Session rules:
     const requestMicPermission = async () => {
       try {
         const { status } = await Audio.requestPermissionsAsync();
+        console.log('[AIAvatar] Mic permission status:', status);
         if (status !== 'granted') {
           setError('Microphone permission is required for voice practice.');
           return false;
         }
         return true;
       } catch (err) {
-        console.error('Error requesting mic permission:', err);
+        console.error('[AIAvatar] Error requesting mic permission:', err);
         return false;
       }
     };
@@ -561,14 +520,19 @@ Session rules:
     setup();
     
     return () => {
+      console.log('[AIAvatar] Cleanup');
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
-      if (AudioSession) {
-        AudioSession.stopAudioSession().catch(console.error);
+      if (liveKitModules?.AudioSession) {
+        liveKitModules.AudioSession.stopAudioSession().catch(console.error);
       }
       closeSession();
     };
+  }, []);
+
+  const handleMicReady = useCallback(() => {
+    console.log('[AIAvatar] Microphone initialized');
   }, []);
 
   if (error) {
@@ -585,30 +549,28 @@ Session rules:
     );
   }
 
-  const handleMicReady = useCallback(() => {
-    console.log('Microphone initialized and muted');
-  }, []);
-
   const renderContent = () => {
-    if (isLiveKitAvailable && wsUrl && accessToken) {
+    if (liveKitModules && liveKitUrl && liveKitToken) {
+      const { LiveKitRoom } = liveKitModules;
       return (
         <LiveKitRoom
-          serverUrl={wsUrl}
-          token={accessToken}
+          serverUrl={liveKitUrl}
+          token={liveKitToken}
           connect={true}
           audio={false}
           video={false}
           onConnected={handleRoomConnected}
           onDisconnected={() => {
-            setRoomConnected(false);
+            console.log('[AIAvatar] Room disconnected');
             setIsConnected(false);
           }}
           onError={(err: any) => {
-            console.error('LiveKit room error:', err);
+            console.error('[AIAvatar] LiveKit room error:', err);
             setError('Connection error. Please try again.');
           }}
         >
           <LiveKitContent
+            modules={liveKitModules}
             isConnecting={isConnecting}
             statusMessage={statusMessage}
             isListening={isListening}
@@ -632,11 +594,11 @@ Session rules:
           ) : (
             <View style={styles.avatarPlaceholder}>
               <Ionicons name="person-circle" size={120} color={theme.colors.mutedForeground} />
-              <Text style={styles.placeholderText}>AI Avatar Video Stream</Text>
+              <Text style={styles.placeholderText}>AI Avatar</Text>
               <Text style={styles.placeholderSubtext}>
-                {isLiveKitAvailable 
-                  ? 'Waiting for connection...'
-                  : '(Requires development build with native modules)'}
+                {liveKitLoaded && !liveKitModules
+                  ? 'Video requires development build'
+                  : 'Waiting for connection...'}
               </Text>
             </View>
           )}
@@ -644,33 +606,16 @@ Session rules:
 
         <View style={styles.controls}>
           <View style={styles.statusContainer}>
-            {isListening && (
-              <View style={styles.listeningIndicator}>
-                <Ionicons name="mic" size={24} color={theme.colors.primary} />
-                <Text style={styles.listeningText}>Listening...</Text>
-              </View>
-            )}
-            {isSpeaking && (
-              <View style={styles.speakingIndicator}>
-                <Ionicons name="volume-high" size={24} color={theme.colors.primary} />
-                <Text style={styles.speakingText}>Avatar speaking...</Text>
-              </View>
-            )}
-            {!isListening && !isSpeaking && isConnected && (
-              <Text style={styles.readyText}>Tap the mic to speak</Text>
+            {isConnected && (
+              <Text style={styles.readyText}>Session active (audio-only mode)</Text>
             )}
           </View>
 
           <TouchableOpacity
-            style={[styles.micButton, isListening && styles.micButtonActive]}
-            onPress={() => setIsListening(!isListening)}
-            disabled={!isConnected || isSpeaking}
+            style={[styles.micButton, styles.micButtonDisabled]}
+            disabled={true}
           >
-            <Ionicons
-              name={isListening ? 'mic' : 'mic-outline'}
-              size={36}
-              color="#fff"
-            />
+            <Ionicons name="mic-outline" size={36} color="#fff" />
           </TouchableOpacity>
         </View>
       </>
@@ -867,6 +812,9 @@ const styles = StyleSheet.create({
   },
   micButtonActive: {
     backgroundColor: '#22c55e',
+  },
+  micButtonDisabled: {
+    opacity: 0.5,
   },
   warningBanner: {
     flexDirection: 'row',
