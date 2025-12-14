@@ -415,7 +415,6 @@ export default function AIAvatarScreen() {
       });
       
       console.log('[AIAvatar] Session token response status:', response.status);
-      console.log('[AIAvatar] Response headers:', JSON.stringify(Object.fromEntries(response.headers.entries())));
       
       const responseText = await response.text();
       console.log('[AIAvatar] Raw response body:', responseText);
