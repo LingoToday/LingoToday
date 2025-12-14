@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
-      "buildNumber": "4",
+      "buildNumber": "6",
       "bitcode": false,
       "infoPlist": {
         "NSUserNotificationUsageDescription": "LingoToday sends you reminders to help you stay consistent with your language learning practice.",

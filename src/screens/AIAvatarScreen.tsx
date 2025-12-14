@@ -66,15 +66,9 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
       return null;
     }
     
-    // Register WebRTC globals - required for LiveKit to work on native platforms
-    try {
-      if (livekit.registerGlobals) {
-        livekit.registerGlobals();
-        console.log('[AIAvatar] registerGlobals() called successfully');
-      }
-    } catch (registerErr) {
-      console.log('[AIAvatar] registerGlobals() failed (non-fatal):', registerErr);
-    }
+    // Note: registerGlobals() removed - causes SIGABRT crash at native ObjC level
+    // that cannot be caught by JavaScript try-catch. WebRTC should be initialized
+    // by the native react-native-webrtc module instead.
     
     if (!livekit?.LiveKitRoom || !livekit?.useTracks || !livekitClient?.Track) {
       console.log('[AIAvatar] LiveKit modules missing required exports');
@@ -726,7 +720,12 @@ export default function AIAvatarScreen() {
           }}
           onError={(err: any) => {
             console.error('[AIAvatar] LiveKit room error:', err);
-            setError('Connection error. Please try again.');
+            console.error('[AIAvatar] Error name:', err?.name);
+            console.error('[AIAvatar] Error message:', err?.message);
+            console.error('[AIAvatar] Error stack:', err?.stack);
+            console.error('[AIAvatar] Error stringified:', JSON.stringify(err, Object.getOwnPropertyNames(err || {})));
+            const errorMessage = err?.message || 'Unknown connection error';
+            setError(`Connection error: ${errorMessage}`);
           }}
         >
           <LiveKitContent
