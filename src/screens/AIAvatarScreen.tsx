@@ -17,27 +17,35 @@ import { theme } from '../lib/theme';
 
 let LiveKitRoom: any = null;
 let VideoTrack: any = null;
+let AudioTrack: any = null;
 let useTracks: any = null;
-let isTrackReference: any = null;
+let useLocalParticipant: any = null;
+let useRoomContext: any = null;
 let AudioSession: any = null;
 let registerGlobals: any = null;
 let Track: any = null;
+let RoomState: any = null;
+let isLiveKitAvailable = false;
 
 try {
   const livekit = require('@livekit/react-native');
   LiveKitRoom = livekit.LiveKitRoom;
   VideoTrack = livekit.VideoTrack;
+  AudioTrack = livekit.AudioTrack;
   useTracks = livekit.useTracks;
-  isTrackReference = livekit.isTrackReference;
+  useLocalParticipant = livekit.useLocalParticipant;
+  useRoomContext = livekit.useRoomContext;
   AudioSession = livekit.AudioSession;
   registerGlobals = livekit.registerGlobals;
   
   const livekitClient = require('livekit-client');
   Track = livekitClient.Track;
+  RoomState = livekitClient.RoomState;
   
   if (registerGlobals) {
     registerGlobals();
   }
+  isLiveKitAvailable = true;
 } catch (e) {
   console.log('LiveKit not available - requires development build');
 }
@@ -60,6 +68,151 @@ type AIAvatarRouteParams = {
 
 type RouteType = RouteProp<{ AIAvatar: AIAvatarRouteParams }, 'AIAvatar'>;
 
+function AvatarMediaRenderer() {
+  if (!useTracks || !Track || !VideoTrack) return null;
+  
+  const tracks = useTracks([Track.Source.Camera, Track.Source.Microphone]);
+  const videoTrack = tracks.find((t: any) => t.source === Track.Source.Camera);
+  const audioTrack = tracks.find((t: any) => t.source === Track.Source.Microphone);
+  
+  if (!videoTrack) {
+    return (
+      <View style={styles.avatarPlaceholder}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={styles.placeholderText}>Loading avatar video...</Text>
+      </View>
+    );
+  }
+  
+  return (
+    <View style={styles.mediaContainer}>
+      <VideoTrack
+        trackRef={videoTrack}
+        style={styles.videoTrack}
+      />
+      {audioTrack && AudioTrack && (
+        <AudioTrack trackRef={audioTrack} />
+      )}
+    </View>
+  );
+}
+
+function MuteOnConnect({ onReady }: { onReady: () => void }) {
+  const room = useRoomContext ? useRoomContext() : null;
+  const hasInitialized = useRef(false);
+  
+  useEffect(() => {
+    const initMic = async () => {
+      if (room && !hasInitialized.current) {
+        hasInitialized.current = true;
+        try {
+          await room.localParticipant.setMicrophoneEnabled(false);
+        } catch (err) {
+          console.error('Error muting on connect:', err);
+        }
+        onReady();
+      }
+    };
+    initMic();
+  }, [room, onReady]);
+  
+  return null;
+}
+
+function MicController({ isListening, onToggle }: { isListening: boolean; onToggle: (enabled: boolean) => void }) {
+  const localParticipant = useLocalParticipant ? useLocalParticipant() : null;
+  const room = useRoomContext ? useRoomContext() : null;
+  
+  const toggleMic = useCallback(async () => {
+    const newState = !isListening;
+    onToggle(newState);
+    
+    if (room && localParticipant?.localParticipant) {
+      try {
+        if (newState) {
+          await room.localParticipant.setMicrophoneEnabled(true);
+        } else {
+          await room.localParticipant.setMicrophoneEnabled(false);
+        }
+      } catch (err) {
+        console.error('Error toggling microphone:', err);
+      }
+    }
+  }, [isListening, onToggle, room, localParticipant]);
+  
+  return (
+    <TouchableOpacity
+      style={[styles.micButton, isListening && styles.micButtonActive]}
+      onPress={toggleMic}
+    >
+      <Ionicons
+        name={isListening ? 'mic' : 'mic-outline'}
+        size={36}
+        color="#fff"
+      />
+    </TouchableOpacity>
+  );
+}
+
+function LiveKitContent({ 
+  isConnecting, 
+  statusMessage, 
+  isListening, 
+  setIsListening,
+  isSpeaking,
+  isConnected,
+  onMicReady
+}: { 
+  isConnecting: boolean; 
+  statusMessage: string; 
+  isListening: boolean;
+  setIsListening: (val: boolean) => void;
+  isSpeaking: boolean;
+  isConnected: boolean;
+  onMicReady: () => void;
+}) {
+  return (
+    <>
+      <MuteOnConnect onReady={onMicReady} />
+      <View style={styles.videoContainer}>
+        {isConnecting ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={styles.loadingText}>{statusMessage}</Text>
+          </View>
+        ) : (
+          <AvatarMediaRenderer />
+        )}
+      </View>
+
+      <View style={styles.controls}>
+        <View style={styles.statusContainer}>
+          {isListening && (
+            <View style={styles.listeningIndicator}>
+              <Ionicons name="mic" size={24} color={theme.colors.primary} />
+              <Text style={styles.listeningText}>Listening...</Text>
+            </View>
+          )}
+          {isSpeaking && (
+            <View style={styles.speakingIndicator}>
+              <Ionicons name="volume-high" size={24} color={theme.colors.primary} />
+              <Text style={styles.speakingText}>Avatar speaking...</Text>
+            </View>
+          )}
+          {!isListening && !isSpeaking && isConnected && (
+            <Text style={styles.readyText}>Tap the mic to speak</Text>
+          )}
+        </View>
+
+        <MicController 
+          isListening={isListening} 
+          onToggle={setIsListening}
+        />
+      </View>
+    </>
+  );
+}
+
 export default function AIAvatarScreen() {
   const navigation = useNavigation();
   const route = useRoute<RouteType>();
@@ -79,12 +232,12 @@ export default function AIAvatarScreen() {
   const [wsUrl, setWsUrl] = useState<string>('');
   const [accessToken, setAccessToken] = useState<string>('');
   const [apiKey, setApiKey] = useState<string>('');
+  const [roomConnected, setRoomConnected] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const sessionTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const webSocketRef = useRef<WebSocket | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
   const softWarningShownRef = useRef(false);
+  const roomRef = useRef<any>(null);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -236,23 +389,68 @@ Session rules:
   };
 
   const closeSession = async () => {
-    if (!sessionId || !sessionToken) return;
+    const sid = sessionDataRef.current.sessionId || sessionId;
+    const token = sessionDataRef.current.sessionToken || sessionToken;
+    
+    if (!sid || !token) return;
     
     try {
+      if (roomRef.current) {
+        await roomRef.current.disconnect();
+        roomRef.current = null;
+      }
+      
       await fetch(`${API_BASE_URL}/v1/streaming.stop`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          session_id: sessionId,
+          session_id: sid,
         }),
       });
     } catch (err) {
       console.error('Error closing session:', err);
     }
   };
+
+  const initializeAudioSession = async () => {
+    if (AudioSession) {
+      try {
+        await AudioSession.startAudioSession();
+      } catch (err) {
+        console.error('Error starting audio session:', err);
+      }
+    }
+  };
+
+  const handleRoomConnected = useCallback(() => {
+    setRoomConnected(true);
+    setIsConnected(true);
+    setIsConnecting(false);
+    setStatusMessage('Connected! Say something to practice.');
+    
+    timerRef.current = setInterval(() => {
+      setSessionTime(prev => {
+        const newTime = prev + 1;
+        
+        if (newTime >= SESSION_HARD_LIMIT) {
+          handleLeaveSession();
+        } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
+          softWarningShownRef.current = true;
+          sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
+        }
+        
+        return newTime;
+      });
+    }, 1000);
+    
+    setTimeout(() => {
+      const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
+      sendTextToAvatar(greeting, true);
+    }, 2000);
+  }, [language]);
 
   const initializeSession = async () => {
     try {
@@ -266,6 +464,8 @@ Session rules:
         return;
       }
       setApiKey(storedKey);
+      
+      await initializeAudioSession();
       
       setStatusMessage('Getting session token...');
       const token = await getSessionToken(storedKey);
@@ -283,29 +483,31 @@ Session rules:
       setStatusMessage('Starting stream...');
       await startStreaming(sessionData.session_id, token);
       
-      setIsConnected(true);
-      setIsConnecting(false);
-      setStatusMessage('Connected! Say something to practice.');
-      
-      timerRef.current = setInterval(() => {
-        setSessionTime(prev => {
-          const newTime = prev + 1;
-          
-          if (newTime >= SESSION_HARD_LIMIT) {
-            handleLeaveSession();
-          } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
-            softWarningShownRef.current = true;
-            sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
-          }
-          
-          return newTime;
-        });
-      }, 1000);
-      
-      setTimeout(() => {
-        const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
-        sendTextToAvatar(greeting, true);
-      }, 2000);
+      if (!isLiveKitAvailable) {
+        setIsConnected(true);
+        setIsConnecting(false);
+        setStatusMessage('Connected (LiveKit requires dev build for video/audio)');
+        
+        timerRef.current = setInterval(() => {
+          setSessionTime(prev => {
+            const newTime = prev + 1;
+            
+            if (newTime >= SESSION_HARD_LIMIT) {
+              handleLeaveSession();
+            } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
+              softWarningShownRef.current = true;
+              sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
+            }
+            
+            return newTime;
+          });
+        }, 1000);
+        
+        setTimeout(() => {
+          const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
+          sendTextToAvatar(greeting, true);
+        }, 2000);
+      }
       
     } catch (err) {
       console.error('Session initialization error:', err);
@@ -362,6 +564,9 @@ Session rules:
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
+      if (AudioSession) {
+        AudioSession.stopAudioSession().catch(console.error);
+      }
       closeSession();
     };
   }, []);
@@ -380,6 +585,98 @@ Session rules:
     );
   }
 
+  const handleMicReady = useCallback(() => {
+    console.log('Microphone initialized and muted');
+  }, []);
+
+  const renderContent = () => {
+    if (isLiveKitAvailable && wsUrl && accessToken) {
+      return (
+        <LiveKitRoom
+          serverUrl={wsUrl}
+          token={accessToken}
+          connect={true}
+          audio={false}
+          video={false}
+          onConnected={handleRoomConnected}
+          onDisconnected={() => {
+            setRoomConnected(false);
+            setIsConnected(false);
+          }}
+          onError={(err: any) => {
+            console.error('LiveKit room error:', err);
+            setError('Connection error. Please try again.');
+          }}
+        >
+          <LiveKitContent
+            isConnecting={isConnecting}
+            statusMessage={statusMessage}
+            isListening={isListening}
+            setIsListening={setIsListening}
+            isSpeaking={isSpeaking}
+            isConnected={isConnected}
+            onMicReady={handleMicReady}
+          />
+        </LiveKitRoom>
+      );
+    }
+    
+    return (
+      <>
+        <View style={styles.videoContainer}>
+          {isConnecting ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={theme.colors.primary} />
+              <Text style={styles.loadingText}>{statusMessage}</Text>
+            </View>
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <Ionicons name="person-circle" size={120} color={theme.colors.mutedForeground} />
+              <Text style={styles.placeholderText}>AI Avatar Video Stream</Text>
+              <Text style={styles.placeholderSubtext}>
+                {isLiveKitAvailable 
+                  ? 'Waiting for connection...'
+                  : '(Requires development build with native modules)'}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.controls}>
+          <View style={styles.statusContainer}>
+            {isListening && (
+              <View style={styles.listeningIndicator}>
+                <Ionicons name="mic" size={24} color={theme.colors.primary} />
+                <Text style={styles.listeningText}>Listening...</Text>
+              </View>
+            )}
+            {isSpeaking && (
+              <View style={styles.speakingIndicator}>
+                <Ionicons name="volume-high" size={24} color={theme.colors.primary} />
+                <Text style={styles.speakingText}>Avatar speaking...</Text>
+              </View>
+            )}
+            {!isListening && !isSpeaking && isConnected && (
+              <Text style={styles.readyText}>Tap the mic to speak</Text>
+            )}
+          </View>
+
+          <TouchableOpacity
+            style={[styles.micButton, isListening && styles.micButtonActive]}
+            onPress={() => setIsListening(!isListening)}
+            disabled={!isConnected || isSpeaking}
+          >
+            <Ionicons
+              name={isListening ? 'mic' : 'mic-outline'}
+              size={36}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -396,22 +693,7 @@ Session rules:
         </TouchableOpacity>
       </View>
 
-      <View style={styles.videoContainer}>
-        {isConnecting ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={theme.colors.primary} />
-            <Text style={styles.loadingText}>{statusMessage}</Text>
-          </View>
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Ionicons name="person-circle" size={120} color={theme.colors.mutedForeground} />
-            <Text style={styles.placeholderText}>AI Avatar Video Stream</Text>
-            <Text style={styles.placeholderSubtext}>
-              (Requires development build with native modules)
-            </Text>
-          </View>
-        )}
-      </View>
+      {renderContent()}
 
       <View style={styles.contextInfo}>
         <Text style={styles.contextTitle}>Practice Session</Text>
@@ -419,38 +701,6 @@ Session rules:
           {language} - {level}
           {courseTitle ? ` - ${courseTitle}` : ''}
         </Text>
-      </View>
-
-      <View style={styles.controls}>
-        <View style={styles.statusContainer}>
-          {isListening && (
-            <View style={styles.listeningIndicator}>
-              <Ionicons name="mic" size={24} color={theme.colors.primary} />
-              <Text style={styles.listeningText}>Listening...</Text>
-            </View>
-          )}
-          {isSpeaking && (
-            <View style={styles.speakingIndicator}>
-              <Ionicons name="volume-high" size={24} color={theme.colors.primary} />
-              <Text style={styles.speakingText}>Avatar speaking...</Text>
-            </View>
-          )}
-          {!isListening && !isSpeaking && isConnected && (
-            <Text style={styles.readyText}>Tap the mic to speak</Text>
-          )}
-        </View>
-
-        <TouchableOpacity
-          style={[styles.micButton, isListening && styles.micButtonActive]}
-          onPress={() => setIsListening(!isListening)}
-          disabled={!isConnected || isSpeaking}
-        >
-          <Ionicons
-            name={isListening ? 'mic' : 'mic-outline'}
-            size={36}
-            color="#fff"
-          />
-        </TouchableOpacity>
       </View>
 
       {sessionTime >= SESSION_SOFT_LIMIT && (
@@ -521,6 +771,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  videoTrack: {
+    width: '100%',
+    height: '100%',
+  },
+  mediaContainer: {
+    width: '100%',
+    height: '100%',
   },
   loadingContainer: {
     alignItems: 'center',
