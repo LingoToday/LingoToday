@@ -47,22 +47,38 @@ type LiveKitModules = {
 async function loadLiveKitModules(): Promise<LiveKitModules> {
   try {
     console.log('[AIAvatar] Attempting to load LiveKit modules...');
-    const livekit = await import('@livekit/react-native');
-    const livekitClient = await import('livekit-client');
     
-    if (livekit.registerGlobals) {
-      livekit.registerGlobals();
+    let livekit: any;
+    let livekitClient: any;
+    
+    try {
+      livekit = await import('@livekit/react-native');
+    } catch (importErr) {
+      console.log('[AIAvatar] Failed to import @livekit/react-native:', importErr);
+      return null;
+    }
+    
+    try {
+      livekitClient = await import('livekit-client');
+    } catch (importErr) {
+      console.log('[AIAvatar] Failed to import livekit-client:', importErr);
+      return null;
+    }
+    
+    if (!livekit?.LiveKitRoom || !livekit?.useTracks || !livekitClient?.Track) {
+      console.log('[AIAvatar] LiveKit modules missing required exports');
+      return null;
     }
     
     console.log('[AIAvatar] LiveKit modules loaded successfully');
     return {
       LiveKitRoom: livekit.LiveKitRoom,
-      VideoTrack: livekit.VideoTrack,
-      AudioTrack: (livekit as any).AudioTrack || null,
+      VideoTrack: livekit.VideoTrack || null,
+      AudioTrack: livekit.AudioTrack || null,
       useTracks: livekit.useTracks,
-      useLocalParticipant: livekit.useLocalParticipant,
-      useRoomContext: livekit.useRoomContext,
-      AudioSession: livekit.AudioSession,
+      useLocalParticipant: livekit.useLocalParticipant || null,
+      useRoomContext: livekit.useRoomContext || null,
+      AudioSession: livekit.AudioSession || null,
       Track: livekitClient.Track,
     };
   } catch (e) {
