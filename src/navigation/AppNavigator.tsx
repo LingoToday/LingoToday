@@ -30,6 +30,7 @@ import CourseTestScreen from '../screens/CourseTestScreen';
 import LessonExampleScreen from '../screens/LessonExampleScreen';
 import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
+import AIAvatarScreen from '../screens/AIAvatarScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 
 import { theme } from '../lib/theme';
@@ -42,7 +43,7 @@ export type RootStackParamList = {
   Login: undefined;
   Onboarding: undefined;
   MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
-  Courses: { language?: string } | undefined; // Fixed: Made language optional and allowed undefined
+  Courses: { language?: string } | undefined;
   Progress: undefined;
   Lesson: { lessonId: string; language?: string; courseId?: string; from?: string; id?: string };
   LessonComplete: { lessonTitle: string; lessonId: string; courseId: string; score: number; language: string };
@@ -63,6 +64,7 @@ export type RootStackParamList = {
   LessonExample: undefined;
   Subscription: undefined;
   NotificationSettings: undefined;
+  AIAvatar: { language?: string; level?: string; courseTitle?: string; lessonTitle?: string; reviewPhrases?: string[] };
 };
 
 // Create navigators
@@ -250,6 +252,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
             <Stack.Screen name="Subscription" component={SubscriptionScreenNew} />
             <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
+            <Stack.Screen name="AIAvatar" component={AIAvatarScreen} options={{ presentation: 'fullScreenModal' }} />
             <Stack.Screen name="Progress" component={ProgressScreenNew} />
             
             {/* Course screens - available for authenticated users too */}

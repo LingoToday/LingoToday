@@ -15,10 +15,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
+      "bitcode": false,
       "infoPlist": {
         "NSUserNotificationUsageDescription": "LingoToday sends you reminders to help you stay consistent with your language learning practice.",
         "NSLocationWhenInUseUsageDescription": "We use your location to provide a better experience and to improve our services.",
-        "NSCameraUsageDescription": "We use your camera to take photos of your progress."
+        "NSCameraUsageDescription": "We use your camera to take photos of your progress.",
+        "NSMicrophoneUsageDescription": "LingoToday uses your microphone to practice conversations with the AI avatar."
       },
       "config": {
         "usesNonExemptEncryption": false
@@ -36,10 +38,8 @@
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",
         "com.android.vending.BILLING",
-        "android.permission.RECEIVE_BOOT_COMPLETED",
-        "android.permission.POST_NOTIFICATIONS",
-        "android.permission.VIBRATE",
-        "com.android.vending.BILLING"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
       ],
       "useNextNotificationsApi": true
     },
@@ -52,6 +52,15 @@
         {
           "color": "#6366f1",
           "enableBackgroundRemoteNotifications": true
+        }
+      ],
+      "@config-plugins/react-native-webrtc",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],
