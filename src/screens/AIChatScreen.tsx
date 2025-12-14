@@ -21,7 +21,6 @@ import { Card, CardContent } from '../components/ui/Card';
 const SECRET_TAP_COUNT = 5;
 const SECRET_TAP_TIMEOUT = 3000;
 const HEYGEN_API_KEY_STORAGE_KEY = 'heygen_api_key';
-const DEFAULT_API_KEY = '785e5d3e-d8eb-11f0-a99e-066a7fa2e369';
 
 type NavigationProp = NativeStackNavigationProp<any>;
 
@@ -100,7 +99,12 @@ export default function AIChatScreen() {
   };
 
   const saveApiKey = async () => {
-    const keyToSave = apiKeyInput.trim() || DEFAULT_API_KEY;
+    const keyToSave = apiKeyInput.trim();
+    
+    if (!keyToSave) {
+      Alert.alert('Error', 'Please enter a valid HeyGen API key.');
+      return;
+    }
     
     try {
       await SecureStore.setItemAsync(HEYGEN_API_KEY_STORAGE_KEY, keyToSave);
@@ -186,7 +190,7 @@ export default function AIChatScreen() {
               <View style={styles.imageGrid}>
                 <View style={styles.imageRow}>
                   {aiPartners.slice(0, 2).map((partner, index) => 
-                    renderPartnerImage(partner, index === 0)
+                    renderPartnerImage(partner, index === 1)
                   )}
                 </View>
 
@@ -218,12 +222,12 @@ export default function AIChatScreen() {
             <Text style={styles.modalTitle}>AI Avatar Setup</Text>
             <Text style={styles.modalSubtitle}>
               Enter your HeyGen API key to enable the AI Avatar feature.
-              Leave blank to use the default test key.
+              You can find your API key at app.heygen.com/settings.
             </Text>
             
             <TextInput
               style={styles.apiKeyInput}
-              placeholder="HeyGen API Key (optional)"
+              placeholder="HeyGen API Key (required)"
               placeholderTextColor={theme.colors.mutedForeground}
               value={apiKeyInput}
               onChangeText={setApiKeyInput}

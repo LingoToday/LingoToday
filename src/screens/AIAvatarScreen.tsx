@@ -15,6 +15,33 @@ import * as SecureStore from 'expo-secure-store';
 import { Audio } from 'expo-av';
 import { theme } from '../lib/theme';
 
+let LiveKitRoom: any = null;
+let VideoTrack: any = null;
+let useTracks: any = null;
+let isTrackReference: any = null;
+let AudioSession: any = null;
+let registerGlobals: any = null;
+let Track: any = null;
+
+try {
+  const livekit = require('@livekit/react-native');
+  LiveKitRoom = livekit.LiveKitRoom;
+  VideoTrack = livekit.VideoTrack;
+  useTracks = livekit.useTracks;
+  isTrackReference = livekit.isTrackReference;
+  AudioSession = livekit.AudioSession;
+  registerGlobals = livekit.registerGlobals;
+  
+  const livekitClient = require('livekit-client');
+  Track = livekitClient.Track;
+  
+  if (registerGlobals) {
+    registerGlobals();
+  }
+} catch (e) {
+  console.log('LiveKit not available - requires development build');
+}
+
 const HEYGEN_AVATAR_ID = 'bf00036b-558a-44b5-b2ff-1e3cec0f4ceb';
 const HEYGEN_CONTEXT_ID = 'c32cf18d-d920-4d35-8eb4-39c4b1fd90ce';
 const API_BASE_URL = 'https://api.heygen.com';
@@ -56,6 +83,8 @@ export default function AIAvatarScreen() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const webSocketRef = useRef<WebSocket | null>(null);
+  const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
+  const softWarningShownRef = useRef(false);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -176,8 +205,11 @@ Session rules:
     }
   };
 
-  const sendTextToAvatar = async (text: string) => {
-    if (!sessionId || !sessionToken) return;
+  const sendTextToAvatar = async (text: string, useRef = false) => {
+    const sid = useRef ? sessionDataRef.current.sessionId : sessionId;
+    const token = useRef ? sessionDataRef.current.sessionToken : sessionToken;
+    
+    if (!sid || !token) return;
     
     try {
       setIsSpeaking(true);
@@ -185,10 +217,10 @@ Session rules:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          session_id: sessionId,
+          session_id: sid,
           text: text,
           task_type: 'talk',
         }),
@@ -246,6 +278,8 @@ Session rules:
       setWsUrl(sessionData.url);
       setAccessToken(sessionData.access_token);
       
+      sessionDataRef.current = { sessionId: sessionData.session_id, sessionToken: token };
+      
       setStatusMessage('Starting stream...');
       await startStreaming(sessionData.session_id, token);
       
@@ -259,8 +293,9 @@ Session rules:
           
           if (newTime >= SESSION_HARD_LIMIT) {
             handleLeaveSession();
-          } else if (newTime === SESSION_SOFT_LIMIT) {
-            sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!");
+          } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
+            softWarningShownRef.current = true;
+            sendTextToAvatar("We have about 30 seconds left. Let's wrap up our practice!", true);
           }
           
           return newTime;
@@ -269,7 +304,7 @@ Session rules:
       
       setTimeout(() => {
         const greeting = `Ciao! Welcome to your ${language} practice session. Let's review what you've learned. Are you ready to begin?`;
-        sendTextToAvatar(greeting);
+        sendTextToAvatar(greeting, true);
       }, 2000);
       
     } catch (err) {
