@@ -3,7 +3,18 @@
 ## Overview
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
-## Recent Changes (Nov 29, 2025)
+## Recent Changes (Dec 14, 2025)
+**HeyGen AI Avatar Integration**: Implemented interactive AI Avatar for Course Reviews using HeyGen's Streaming API with LiveKit for React Native:
+- **AIAvatarScreen.tsx**: New full-screen modal with HeyGen session management (token creation, session creation, streaming start/stop)
+- **LiveKit Integration**: Full two-way audio/video with remote avatar track rendering (VideoTrack + AudioTrack) and local microphone control
+- **Session Timer**: 90-second soft warning and 120-second hard limit with auto-disconnect
+- **Context-Aware Prompts**: Dynamic knowledge base prompt built from language, level, course title, lesson title, and review phrases
+- **5-Tap Secret Gesture**: Hidden activation on top-right AI partner image in AIChatScreen to unlock feature for testing
+- **Secure API Key Storage**: HeyGen API key stored securely via Expo SecureStore (no hardcoded keys)
+- **Fallback UI**: Graceful degradation when LiveKit native modules aren't available (Expo Go)
+- **Requirements**: Full functionality requires development build with native modules (`expo prebuild && expo run:ios/android`)
+
+## Previous Changes (Nov 29, 2025)
 **Authenticated Video Playback Fix - Complete Resolution**: Completely fixed AVPlayer -11829 error with comprehensive race condition solution:
 - **tokenStatus Pattern**: Introduced `tokenStatus` state ('pending' | 'resolved') to track async token fetch completion independently from token presence
 - **Three-State Rendering Logic**: All videos (intro, IRL, video_choice, pro_video) now follow strict gating pattern:
@@ -88,3 +99,5 @@ The application features a comprehensive dark mode theme with a lime green (#A3E
 - **expo-notifications**: Push notifications.
 - **expo-web-browser**: In-app webview.
 - **expo-video**: Modern video playback.
+- **@livekit/react-native**: WebRTC streaming for AI Avatar (requires development build).
+- **expo-secure-store**: Secure credential storage.
