@@ -17,6 +17,7 @@ import { theme } from '../lib/theme';
 
 const HEYGEN_AVATAR_ID = 'bf00036b-558a-44b5-b2ff-1e3cec0f4ceb';
 const HEYGEN_CONTEXT_ID = 'c32cf18d-d920-4d35-8eb4-39c4b1fd90ce';
+const HEYGEN_VOICE_ID = 'b2bd6569-a537-4342-aeca-a1f15d2a2c97';
 const API_BASE_URL = 'https://api.liveavatar.com';
 const HEYGEN_API_KEY_STORAGE_KEY = 'heygen_api_key';
 
@@ -413,6 +414,7 @@ export default function AIAvatarScreen() {
       mode: 'FULL',
       avatar_id: HEYGEN_AVATAR_ID,
       avatar_persona: {
+        voice_id: HEYGEN_VOICE_ID,
         context_id: HEYGEN_CONTEXT_ID,
         language: getLanguageCode(language),
       },
