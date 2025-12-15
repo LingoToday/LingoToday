@@ -66,9 +66,8 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
       return null;
     }
     
-    // Note: registerGlobals() removed - causes SIGABRT crash at native ObjC level
-    // that cannot be caught by JavaScript try-catch. WebRTC should be initialized
-    // by the native react-native-webrtc module instead.
+    // Note: registerGlobals() is now called in index.js at app startup (before React renders)
+    // This is required for LiveKit to detect WebRTC and must run with New Architecture disabled.
     
     if (!livekit?.LiveKitRoom || !livekit?.useTracks || !livekitClient?.Track) {
       console.log('[AIAvatar] LiveKit modules missing required exports');

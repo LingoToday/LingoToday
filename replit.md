@@ -3,7 +3,16 @@
 ## Overview
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
-## Recent Changes (Dec 14, 2025)
+## Recent Changes (Dec 15, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (7) Architecture Fix**: Disabled New Architecture and properly configured LiveKit for Expo:
+- **Root Cause**: LiveKit's RN SDK + WebRTC is flagged as "Unsupported on New Architecture" (Expo 54 / RN 0.81). TurboModule ObjC exceptions cause uncatchable SIGABRT crashes.
+- **Disabled New Architecture**: Set `newArchEnabled: false` in expo-build-properties for both iOS and Android
+- **Installed LiveKit Expo Plugin**: Added `@livekit/react-native-expo-plugin` and `@livekit/react-native-webrtc` (LiveKit's WebRTC fork)
+- **Moved registerGlobals() to Entry Point**: Now called in `index.js` before React renders, per LiveKit's official Expo quickstart guide
+- **Plugin Order**: `@livekit/react-native-expo-plugin`, `@config-plugins/react-native-webrtc`, then `expo-build-properties`
+- **References**: [LiveKit GitHub Issue #255](https://github.com/livekit/client-sdk-react-native/issues/255), [React Native New Arch Discussion #276](https://github.com/reactwg/react-native-new-architecture/discussions/276)
+
+## Previous Changes (Dec 14, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (6) Fixes**: Permanently removed `registerGlobals()` call - JavaScript try-catch cannot catch native Objective-C exceptions (SIGABRT). Enhanced LiveKitRoom onError callback with comprehensive error logging (name, message, stack, full JSON) to diagnose connection issues.
 
 **HeyGen AI Avatar Integration - v1.0.10 (4-5) Fixes**: Attempted to re-add `registerGlobals()` with try-catch wrapper but it still caused SIGABRT crash at native ObjC level.

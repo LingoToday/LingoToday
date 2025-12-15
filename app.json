@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
-      "buildNumber": "6",
+      "buildNumber": "7",
       "bitcode": false,
       "infoPlist": {
         "NSUserNotificationUsageDescription": "LingoToday sends you reminders to help you stay consistent with your language learning practice.",
@@ -33,7 +33,7 @@
         "backgroundColor": "#6366f1"
       },
       "package": "com.lingotoday.mobile",
-      "versionCode": 47,
+      "versionCode": 48,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
@@ -55,12 +55,17 @@
           "enableBackgroundRemoteNotifications": true
         }
       ],
+      "@livekit/react-native-expo-plugin",
       "@config-plugins/react-native-webrtc",
       [
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "newArchEnabled": false
+          },
+          "android": {
+            "newArchEnabled": false
           }
         }
       ]
