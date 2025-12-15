@@ -39,6 +39,12 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 15, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:
+- **Root Cause**: Build 11 still crashed because Expo SDK 54 uses precompiled React Native XCFrameworks that have New Architecture symbols baked in, ignoring `newArchEnabled: false`
+- **Fix**: Added `buildReactNativeFromSource: true` to expo-build-properties to force React Native to compile from source instead of using precompiled binaries
+- **Why This Works**: Source builds respect `RCT_NEW_ARCH_ENABLED=0` flag properly, ensuring TurboModules are actually disabled
+- **Build 12 Configuration**: Source build + legacy arch env var + root-level newArchEnabled flag
+
 **HeyGen AI Avatar Integration - v1.0.10 (10) Complete Architecture Fix**: Removed all remaining sources of native WebRTC crashes:
 - **Removed useFrameworks: static**: Static framework linkage causes memory corruption with RN 0.81 TurboModules and WebRTC. LiveKit's Expo plugin doesn't require it.
 - **Added EAS build env override**: Set `EXPO_USE_NEW_ARCH=0` in eas.json for preview and production profiles to force legacy architecture during EAS builds (Expo 54 defaults to New Arch)
