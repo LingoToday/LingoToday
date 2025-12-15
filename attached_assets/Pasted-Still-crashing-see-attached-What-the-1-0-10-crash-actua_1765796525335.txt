@@ -1,0 +1,83 @@
+Still crashing, see attached. What the 1.0.10 crash actually says
+
+Exception Type: EXC_BAD_ACCESS (SIGSEGV) at address 0x10 (null-ish pointer)
+
+Triggered by Thread: 24
+
+Thread 24 stack: Hermes crashes while React Native is trying to convert an NSException thrown by a TurboModule into a JS Error (convertNSExceptionToJSError → jsi::Object::setProperty → Hermes HiddenClass::addProperty → crash).
+
+In the same report, Thread 21 shows the original native source of the exception path:
+WebRTCModule(RTCPeerConnection) peerConnectionSetLocalDescription ... WebRTCModule+RTCPeerConnection.m:283
+
+So what’s happening is:
+
+Something inside WebRTC/LiveKit triggers a native exception (likely around setLocalDescription)
+
+RN new-arch/TurboModule layer tries to convert that exception to a JS error
+
+Hermes crashes during that conversion, so the app dies with EXC_BAD_ACCESS (not catchable in JS)
+
+This is why you’re still crashing even after “token parsing” fixes — the crash is in the native WebRTC layer + new-arch bridge, not your API calls.
+
+The key thing Replit is doing wrong (for Expo 54 right now)
+
+They’re trying to run LiveKit + react-native-webrtc in the New Architecture (TurboModules / bridgeless path).
+
+LiveKit’s own RN packages have been flagged by Expo Doctor as “Unsupported on New Architecture” (specifically @livekit/react-native and @livekit/react-native-webrtc). 
+GitHub
+
+And Expo SDK 53+ increasingly defaults toward the New Architecture unless you opt out. 
+Expo
++1
+
+That combination matches exactly the kind of TurboModule/Hermes crash you’re seeing.
+
+Would these fixes work?
+1) Force Legacy Architecture (critical)
+
+In app.json / app.config.js:
+
+{
+  "expo": {
+    "newArchEnabled": false
+  }
+}
+
+
+Then EAS build again (a new TestFlight build).
+This is the single highest-impact change for your crash signature.
+
+2) Align to LiveKit’s Expo setup (don’t improvise)
+
+LiveKit’s Expo guide expects you to use the Expo plugin + their webrtc package: 
+LiveKit docs
++1
+
+Install exactly this set (use expo install where possible):
+
+npx expo install livekit-client @livekit/react-native @livekit/react-native-expo-plugin @livekit/react-native-webrtc @config-plugins/react-native-webrtc
+
+
+GitHub
+
+And set plugins:
+
+{
+  "expo": {
+    "plugins": ["@livekit/react-native-expo-plugin", "@config-plugins/react-native-webrtc"]
+  }
+}
+
+
+GitHub
+
+3) Call registerGlobals() in the true entry file, before LiveKit usage
+
+LiveKit says to call registerGlobals() in index.js (entry point) to set up WebRTC globals. 
+GitHub
+
+And do it before you render / before you import modules that touch WebRTC.
+
+4) Remove useFrameworks: "static" unless you absolutely need it
+
+It’s a common source of subtle WebRTC/runtime weirdness. If you don’t need it for other native libs, drop it temporarily while stabilising LiveKit.

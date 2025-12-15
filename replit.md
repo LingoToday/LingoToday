@@ -4,6 +4,12 @@
 LingoToday is a React Native mobile application built with Expo SDK 54 that facilitates language learning through micro-lessons. It supports multi-language learning (Italian, Spanish, German, French), adaptive learning paths, user onboarding, course administration, progress monitoring, and subscription services. The app aims to deliver a unified learning experience across iOS, Android, and Web platforms, with a vision to integrate AI-powered language partners in the near future.
 
 ## Recent Changes (Dec 15, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (8) Architecture Fix - Correct Placement**: Fixed New Architecture disable flag placement:
+- **Root Cause of Build 7 Crash**: The `newArchEnabled: false` was placed inside `expo-build-properties` plugin, but it must be at the **top level** of the expo config for EAS to actually disable New Architecture
+- **Correct Fix**: Added `"newArchEnabled": false` at the root `expo` object level in app.json
+- **Removed Redundant Flags**: Removed `newArchEnabled` from expo-build-properties (kept `useFrameworks: "static"` for LiveKit)
+- **Why This Matters**: Without the top-level flag, the native build still defines `USE_NEW_ARCHITECTURE=1`, causing TurboModule crashes when WebRTC throws exceptions
+
 **HeyGen AI Avatar Integration - v1.0.10 (7) Architecture Fix**: Disabled New Architecture and properly configured LiveKit for Expo:
 - **Root Cause**: LiveKit's RN SDK + WebRTC is flagged as "Unsupported on New Architecture" (Expo 54 / RN 0.81). TurboModule ObjC exceptions cause uncatchable SIGABRT crashes.
 - **Disabled New Architecture**: Set `newArchEnabled: false` in expo-build-properties for both iOS and Android
