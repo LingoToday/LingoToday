@@ -1,0 +1,89 @@
+Yep — I can see why you’re still crashing, and it explains why “moving newArchEnabled:false to the root” didn’t fix it.
+
+What this new crash report shows
+
+Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+
+Exception Subtype: KERN_INVALID_ADDRESS … (possible pointer authentication failure)
+
+Triggered by Thread: 7 (Hermes / microtasks)
+
+But the important clue is still present: another thread is inside
+-[WebRTCModule(RTCPeerConnection) peerConnectionSetLocalDescription:…] at WebRTCModule+RTCPeerConnection.m:283.
+
+So you still have native WebRTC blowing up / corrupting memory, and Hermes dies shortly after while draining microtasks (classic “native did something bad, JS engine crashes later”). The “pointer authentication failure” hint also matches “bad pointer / corrupted memory” cases. 
+suelan.github.io
+
+What Replit is doing wrong (now)
+
+Replit kept:
+
+useFrameworks: "static" for LiveKit
+
+That’s a huge red flag in 2025-era RN/Expo, because use_frameworks! + New Architecture/Fabric combinations are known to cause crashes / weird runtime behavior in native modules. Even if you think you’re on old architecture, Expo SDK 53+ makes New Architecture the default and the interaction is easy to get wrong. 
+Expo
++2
+GitHub
++2
+
+Also, you must ensure you’re using the LiveKit Expo plugin + LiveKit’s WebRTC package exactly as recommended — not a “mostly equivalent” webrtc install. LiveKit’s Expo plugin README is explicit about the install set. 
+GitHub
+
+Do these fixes (in this order)
+1) Confirm you are truly running Legacy architecture
+
+Expo SDK 53+ enables New Architecture by default; opting out must be applied correctly. 
+Expo
++1
+
+Do BOTH:
+
+Keep "newArchEnabled": false at the root of "expo" (you already did).
+
+Add an EAS build env var to make it unambiguous:
+
+eas.json
+
+{
+  "build": {
+    "production": {
+      "env": {
+        "EXPO_USE_NEW_ARCH": "0"
+      }
+    }
+  }
+}
+
+
+Then rebuild.
+
+(Reason: I’ve seen cases where config is correct but the build cache still behaves like new arch until you force it.)
+
+2) Remove useFrameworks: "static" (at least to prove the point)
+
+Temporarily remove it and rebuild.
+There’s a long tail of “use_frameworks! causes crashes” issues around RN new architecture + native libs. 
+GitHub
+
+Once it works, you can re-introduce it only if you absolutely need it for another dependency — and then we handle that separately.
+
+3) Make sure you installed LiveKit exactly the “Expo managed” way
+
+LiveKit’s Expo plugin repo instructs installing:
+
+npx expo install livekit-client @livekit/react-native @livekit/react-native-expo-plugin @livekit/react-native-webrtc @config-plugins/react-native-webrtc
+
+
+GitHub
+
+If Replit installed react-native-webrtc (instead of @livekit/react-native-webrtc) or mixed versions, you can end up with the exact RTCPeerConnection setLocalDescription crashes you’re seeing.
+
+4) registerGlobals() must run once, before any LiveKit/WebRTC usage
+
+Put it in the real entry file (e.g. index.js) and ensure it runs only once on cold start.
+
+Why your crash still happens even after “newArchEnabled: false”
+
+Because the crash is coming from native WebRTC / module linkage, not from your session token flow. Disabling new arch helps, but if useFrameworks or the wrong WebRTC package is in play, you can still crash at setLocalDescription (and then Hermes dies later).
+
+Also: LiveKit packages are literally flagged “Unsupported on New Architecture” by expo-doctor, which reinforces that you want the simplest, most compatible setup while you stabilise

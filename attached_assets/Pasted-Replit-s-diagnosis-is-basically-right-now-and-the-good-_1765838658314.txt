@@ -1,0 +1,77 @@
+Replit’s diagnosis is basically right now — and the “good news” (using @livekit/react-native-webrtc) means you’re down to two high-leverage toggles that can absolutely be the difference between “stable” and “random native crashes”.
+
+Here’s what I’d do, with the exact config changes.
+
+1) Remove useFrameworks: "static" (do this first)
+
+Even if LiveKit can work with static frameworks, you don’t want it while debugging native WebRTC crashes. Static/dynamic framework linkage issues often show up as runtime memory corruption (which looks like your crash).
+
+In app.json (or app.config.js) remove this:
+
+"expo-build-properties": {
+  "ios": {
+    "useFrameworks": "static"
+  }
+}
+
+
+If you need useFrameworks for another library (Firebase, etc.), we can re-introduce it later after LiveKit is stable, or isolate the library that forces it.
+
+2) Force legacy architecture in EAS explicitly
+
+Expo SDK 54 can still end up building with new architecture unless you force it at build time.
+
+Add this to eas.json for each profile you build (production + preview)
+{
+  "build": {
+    "production": {
+      "env": {
+        "EXPO_USE_NEW_ARCH": "0"
+      }
+    },
+    "preview": {
+      "env": {
+        "EXPO_USE_NEW_ARCH": "0"
+      }
+    }
+  }
+}
+
+
+Keep "newArchEnabled": false at the root of expo too — do both.
+
+3) Make sure registerGlobals() is in the entry file and runs once
+
+Put it in index.js (or your actual entry point before your app renders):
+
+import { registerGlobals } from '@livekit/react-native';
+registerGlobals();
+
+
+No conditionals, no placing it inside a component, and don’t call it multiple times.
+
+4) Rebuild clean (important)
+
+Native crashes can persist through caches.
+
+Do a clean EAS build:
+
+bump build number
+
+run eas build --clear-cache (or equivalent in your pipeline)
+
+Why these two changes matter
+
+Your crash signatures (SIGABRT / EXC_BAD_ACCESS / pointer auth failure) are classic “native layer unhappy” outcomes. If new architecture is still in play, and/or framework linkage is off, WebRTC is one of the first things to explode — and it often looks like “random Hermes crash” even though the root cause is native.
+
+Replit’s statement that LiveKit packages are installed correctly is great — it means you’re not fighting the wrong dependency anymore.
+
+Minimal checklist for Replit (copy/paste)
+
+Remove useFrameworks: "static" from expo-build-properties.
+
+Add EXPO_USE_NEW_ARCH=0 to EAS build env for the profiles you use.
+
+Keep "newArchEnabled": false at expo root.
+
+Ensure registerGlobals() is called once in index.js.
