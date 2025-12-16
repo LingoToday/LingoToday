@@ -123,19 +123,86 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
 // MINIMAL TEST: Content that renders NOTHING initially - just logs connection
 // Phase 1: Empty render (test pure connection)
 // Phase 2: After connection confirmed, enable remote video subscription
+// Separate component for mic control to satisfy React hook rules
+function MicController({ 
+  modules, 
+  isConnected 
+}: { 
+  modules: LiveKitModules; 
+  isConnected: boolean;
+}) {
+  const [isMicEnabled, setIsMicEnabled] = useState(false);
+  const [micError, setMicError] = useState<string | null>(null);
+  
+  // Always call hook unconditionally (React rules)
+  const { localParticipant } = modules!.useLocalParticipant();
+  
+  // Enable mic after connection is established
+  useEffect(() => {
+    if (isConnected && localParticipant && !isMicEnabled) {
+      console.log('[AIAvatar] Phase 3: Attempting to enable local microphone...');
+      const enableMic = async () => {
+        try {
+          await localParticipant.setMicrophoneEnabled(true);
+          console.log('[AIAvatar] Phase 3: Local microphone ENABLED successfully');
+          setIsMicEnabled(true);
+          setMicError(null);
+        } catch (err: any) {
+          console.error('[AIAvatar] Phase 3: Failed to enable microphone:', err);
+          setMicError(err?.message || 'Failed to enable mic');
+        }
+      };
+      enableMic();
+    }
+  }, [isConnected, localParticipant, isMicEnabled]);
+  
+  const toggleMic = async () => {
+    if (!localParticipant) return;
+    try {
+      const newState = !isMicEnabled;
+      await localParticipant.setMicrophoneEnabled(newState);
+      console.log('[AIAvatar] Mic toggled to:', newState);
+      setIsMicEnabled(newState);
+    } catch (err: any) {
+      console.error('[AIAvatar] Failed to toggle mic:', err);
+      setMicError(err?.message || 'Mic toggle failed');
+    }
+  };
+  
+  return (
+    <View style={styles.micOverlay}>
+      <TouchableOpacity
+        style={[styles.micButton, isMicEnabled ? styles.micButtonActive : styles.micButtonInactive]}
+        onPress={toggleMic}
+      >
+        <Ionicons 
+          name={isMicEnabled ? "mic" : "mic-off"} 
+          size={36} 
+          color="#fff" 
+        />
+      </TouchableOpacity>
+      {micError && (
+        <Text style={styles.micErrorText}>{micError}</Text>
+      )}
+      <Text style={styles.micStatusText}>
+        {isMicEnabled ? 'Mic ON - Speak now' : 'Mic OFF'}
+      </Text>
+    </View>
+  );
+}
+
 function MinimalLiveKitContent({ 
   isConnected,
   showRemoteVideo,
+  enableLocalMic,
   modules
 }: { 
   isConnected: boolean;
   showRemoteVideo: boolean;
+  enableLocalMic: boolean;
   modules: LiveKitModules;
 }) {
-  // NO useTracks, NO setMicrophoneEnabled, NO audio session, NO device handling
-  // Just a simple UI to show connection status
-  
-  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo);
+  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic);
   
   return (
     <View style={styles.videoContainer}>
@@ -145,8 +212,14 @@ function MinimalLiveKitContent({
           <Text style={styles.loadingText}>Connecting to LiveKit room...</Text>
         </View>
       ) : showRemoteVideo ? (
-        // Phase 2: Only render remote video after connection is stable
-        <MinimalRemoteVideoRenderer modules={modules} />
+        // Phase 2+: Render remote video after connection is stable
+        <>
+          <MinimalRemoteVideoRenderer modules={modules} />
+          {/* Phase 3: Mic control as separate component to satisfy React hook rules */}
+          {enableLocalMic && modules && (
+            <MicController modules={modules} isConnected={isConnected} />
+          )}
+        </>
       ) : (
         // Phase 1: Connection successful, but no track subscription yet
         <View style={styles.avatarPlaceholder}>
@@ -338,8 +411,10 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Phase 2 - Test remote video track subscription (camera only, no mic)
+  // MINIMAL TEST: Phase 3 - Test local microphone after video works
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
+  // Phase 3: Enable local mic (no remote audio subscription yet)
+  const [enableLocalMic, setEnableLocalMic] = useState(true);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
@@ -807,6 +882,7 @@ export default function AIAvatarScreen() {
           <MinimalLiveKitContent
             isConnected={isConnected}
             showRemoteVideo={showRemoteVideo}
+            enableLocalMic={enableLocalMic}
             modules={liveKitModules}
           />
         </LiveKitRoom>
@@ -1043,8 +1119,32 @@ const styles = StyleSheet.create({
   micButtonActive: {
     backgroundColor: '#22c55e',
   },
+  micButtonInactive: {
+    backgroundColor: '#6b7280',
+  },
   micButtonDisabled: {
     opacity: 0.5,
+  },
+  micOverlay: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  micErrorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  micStatusText: {
+    color: '#ffffff',
+    fontSize: 14,
+    marginTop: 8,
+    textAlign: 'center',
+    fontWeight: '500',
   },
   warningBanner: {
     flexDirection: 'row',

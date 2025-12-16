@@ -39,13 +39,14 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 16, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (14) Phase 2 Remote Video Test**: Testing remote video track subscription:
+**HeyGen AI Avatar Integration - v1.0.10 (15) Phase 3 Local Mic Test**: Testing local microphone publishing:
 - **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works without crash
-- **Phase 2 (Current Build 14)**: `showRemoteVideo=true` - Subscribe to remote avatar camera track only
-- **No Microphone Yet**: useTracks([Track.Source.Camera]) only, no mic subscription
-- **Test Goal**: Confirm remote video rendering works before testing mic/audio
-- **If Crashes**: Video track subscription is the issue
-- **If Works**: Next test mic/audio handling incrementally
+- **Phase 2 PASSED (Build 14)**: Remote video track subscription works - avatar visible
+- **Phase 3 (Current Build 15)**: `enableLocalMic=true` - Enable local microphone with setMicrophoneEnabled(true)
+- **No Remote Audio Yet**: Only local mic publishing, no remote audio subscription
+- **Test Goal**: Confirm local mic publishing works before testing avatar's audio response
+- **If Crashes**: Local microphone/WebRTC audio publishing is the issue
+- **If Works**: Next test remote audio subscription (hearing the avatar speak)
 
 ## Previous Changes (Dec 15, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:
