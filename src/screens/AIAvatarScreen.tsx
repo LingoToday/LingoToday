@@ -120,6 +120,120 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
   );
 }
 
+// Phase 4: Remote audio renderer - subscribe to avatar's audio track
+function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
+  if (!modules) return null;
+  
+  const { useTracks, Track, AudioTrack } = modules;
+  // Subscribe to remote microphone track (avatar's voice)
+  const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: false });
+  const audioTrack = tracks.find((t: any) => t.source === Track.Source.Microphone);
+  
+  console.log('[AIAvatar] RemoteAudioRenderer - audio tracks found:', tracks.length);
+  
+  if (!audioTrack) {
+    console.log('[AIAvatar] No remote audio track yet');
+    return null;
+  }
+  
+  console.log('[AIAvatar] Rendering remote audio track');
+  return <AudioTrack trackRef={audioTrack} />;
+}
+
+// Phase 4: Voice loop controller - sends avatar.start_listening and logs events
+function VoiceLoopController({ 
+  modules, 
+  isConnected 
+}: { 
+  modules: LiveKitModules; 
+  isConnected: boolean;
+}) {
+  const [listeningStarted, setListeningStarted] = useState(false);
+  const [avatarState, setAvatarState] = useState<string>('idle');
+  
+  // Get room context to send data channel messages
+  const room = modules?.useRoomContext ? modules.useRoomContext() : null;
+  
+  // Send avatar.start_listening command after connection
+  useEffect(() => {
+    if (isConnected && room && !listeningStarted) {
+      console.log('[AIAvatar] Phase 4: Sending avatar.start_listening command...');
+      
+      const sendStartListening = async () => {
+        try {
+          const command = JSON.stringify({
+            type: 'avatar.start_listening'
+          });
+          const encoder = new TextEncoder();
+          const data = encoder.encode(command);
+          
+          // LiveKit publishData signature: (data, kind?, destination?, topic?)
+          // Default is reliable, so we can omit the second argument
+          await room.localParticipant.publishData(data);
+          console.log('[AIAvatar] Phase 4: avatar.start_listening command SENT');
+          setListeningStarted(true);
+        } catch (err: any) {
+          console.error('[AIAvatar] Phase 4: Failed to send start_listening:', err);
+        }
+      };
+      
+      // Small delay to ensure room is fully ready
+      setTimeout(sendStartListening, 500);
+    }
+  }, [isConnected, room, listeningStarted]);
+  
+  // Listen for server events via DataReceived
+  useEffect(() => {
+    if (!room) return;
+    
+    const handleDataReceived = (payload: Uint8Array) => {
+      try {
+        const decoder = new TextDecoder();
+        const message = decoder.decode(payload);
+        const data = JSON.parse(message);
+        
+        console.log('[AIAvatar] Server event received:', data.type || data);
+        
+        // Update state based on events
+        if (data.type === 'user.speak_started') {
+          console.log('[AIAvatar] >>> User started speaking');
+          setAvatarState('listening');
+        } else if (data.type === 'user.speak_ended') {
+          console.log('[AIAvatar] >>> User stopped speaking');
+          setAvatarState('processing');
+        } else if (data.type === 'avatar.speak_started') {
+          console.log('[AIAvatar] >>> Avatar started speaking');
+          setAvatarState('speaking');
+        } else if (data.type === 'avatar.speak_ended') {
+          console.log('[AIAvatar] >>> Avatar stopped speaking');
+          setAvatarState('idle');
+        }
+      } catch (err) {
+        console.log('[AIAvatar] Non-JSON data received');
+      }
+    };
+    
+    room.on('dataReceived', handleDataReceived);
+    console.log('[AIAvatar] Phase 4: DataReceived listener attached');
+    
+    return () => {
+      room.off('dataReceived', handleDataReceived);
+    };
+  }, [room]);
+  
+  // Status indicator overlay
+  return (
+    <View style={styles.voiceStateOverlay}>
+      <Text style={styles.voiceStateText}>
+        {avatarState === 'listening' ? '🎤 Listening...' :
+         avatarState === 'processing' ? '🤔 Processing...' :
+         avatarState === 'speaking' ? '🗣️ Speaking...' :
+         listeningStarted ? '✅ Ready' : '⏳ Starting...'}
+      </Text>
+    </View>
+  );
+}
+
 // MINIMAL TEST: Content that renders NOTHING initially - just logs connection
 // Phase 1: Empty render (test pure connection)
 // Phase 2: After connection confirmed, enable remote video subscription
@@ -195,14 +309,16 @@ function MinimalLiveKitContent({
   isConnected,
   showRemoteVideo,
   enableLocalMic,
+  enableVoiceLoop,
   modules
 }: { 
   isConnected: boolean;
   showRemoteVideo: boolean;
   enableLocalMic: boolean;
+  enableVoiceLoop: boolean;
   modules: LiveKitModules;
 }) {
-  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic);
+  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableVoiceLoop:', enableVoiceLoop);
   
   return (
     <View style={styles.videoContainer}>
@@ -215,6 +331,14 @@ function MinimalLiveKitContent({
         // Phase 2+: Render remote video after connection is stable
         <>
           <MinimalRemoteVideoRenderer modules={modules} />
+          {/* Phase 4: Remote audio playback (hear the avatar) */}
+          {enableVoiceLoop && modules && (
+            <RemoteAudioRenderer modules={modules} />
+          )}
+          {/* Phase 4: Voice loop controller (send start_listening, log events) */}
+          {enableVoiceLoop && modules && (
+            <VoiceLoopController modules={modules} isConnected={isConnected} />
+          )}
           {/* Phase 3: Mic control as separate component to satisfy React hook rules */}
           {enableLocalMic && modules && (
             <MicController modules={modules} isConnected={isConnected} />
@@ -411,10 +535,12 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Phase 3 - Test local microphone after video works
+  // MINIMAL TEST: Phase 4 - Full voice loop test
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
-  // Phase 3: Enable local mic (no remote audio subscription yet)
+  // Phase 3: Enable local mic
   const [enableLocalMic, setEnableLocalMic] = useState(true);
+  // Phase 4: Enable voice loop (remote audio + avatar.start_listening + event logging)
+  const [enableVoiceLoop, setEnableVoiceLoop] = useState(true);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
@@ -883,6 +1009,7 @@ export default function AIAvatarScreen() {
             isConnected={isConnected}
             showRemoteVideo={showRemoteVideo}
             enableLocalMic={enableLocalMic}
+            enableVoiceLoop={enableVoiceLoop}
             modules={liveKitModules}
           />
         </LiveKitRoom>
@@ -1145,6 +1272,24 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
     fontWeight: '500',
+  },
+  voiceStateOverlay: {
+    position: 'absolute',
+    top: 10,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  voiceStateText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
   warningBanner: {
     flexDirection: 'row',
