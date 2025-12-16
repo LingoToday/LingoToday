@@ -39,14 +39,13 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 16, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (13) Minimal LiveKit Test**: Isolating crash source:
-- **Minimal Test Approach**: Created `MinimalLiveKitContent` component that renders NOTHING that queries tracks initially
-- **No useTracks**: Removed all track subscriptions during connection phase
-- **No setMicrophoneEnabled**: No mic handling, no audio session management
-- **No device handling**: No camera, no device switching
-- **Phase 1 (current)**: `showRemoteVideo=false` - Pure connection test, just logs success/failure
-- **Phase 2 (if Phase 1 works)**: Set `showRemoteVideo=true` to subscribe to remote avatar video only
-- **Diagnostic Purpose**: If this still crashes, it confirms Expo 54 + LiveKit/WebRTC native incompatibility
+**HeyGen AI Avatar Integration - v1.0.10 (14) Phase 2 Remote Video Test**: Testing remote video track subscription:
+- **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works without crash
+- **Phase 2 (Current Build 14)**: `showRemoteVideo=true` - Subscribe to remote avatar camera track only
+- **No Microphone Yet**: useTracks([Track.Source.Camera]) only, no mic subscription
+- **Test Goal**: Confirm remote video rendering works before testing mic/audio
+- **If Crashes**: Video track subscription is the issue
+- **If Works**: Next test mic/audio handling incrementally
 
 ## Previous Changes (Dec 15, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:

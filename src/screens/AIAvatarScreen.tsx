@@ -338,8 +338,8 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Set to false for Phase 1 (pure connection test), true for Phase 2 (remote video)
-  const [showRemoteVideo, setShowRemoteVideo] = useState(false);
+  // MINIMAL TEST: Phase 2 - Test remote video track subscription (camera only, no mic)
+  const [showRemoteVideo, setShowRemoteVideo] = useState(true);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
