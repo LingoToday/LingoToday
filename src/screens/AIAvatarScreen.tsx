@@ -91,6 +91,78 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
   }
 }
 
+// MINIMAL TEST: Remote video renderer - only used AFTER connection confirmed
+function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
+  if (!modules) return null;
+  
+  const { useTracks, Track, VideoTrack } = modules;
+  // Only subscribe to remote camera track (avatar video) - no mic, no audio
+  const tracks = useTracks([Track.Source.Camera]);
+  const videoTrack = tracks.find((t: any) => t.source === Track.Source.Camera);
+  
+  console.log('[AIAvatar] MinimalRemoteVideoRenderer - tracks found:', tracks.length);
+  
+  if (!videoTrack) {
+    return (
+      <View style={styles.avatarPlaceholder}>
+        <Text style={styles.placeholderText}>Waiting for avatar video track...</Text>
+      </View>
+    );
+  }
+  
+  return (
+    <View style={styles.mediaContainer}>
+      <VideoTrack
+        trackRef={videoTrack}
+        style={styles.videoTrack}
+      />
+    </View>
+  );
+}
+
+// MINIMAL TEST: Content that renders NOTHING initially - just logs connection
+// Phase 1: Empty render (test pure connection)
+// Phase 2: After connection confirmed, enable remote video subscription
+function MinimalLiveKitContent({ 
+  isConnected,
+  showRemoteVideo,
+  modules
+}: { 
+  isConnected: boolean;
+  showRemoteVideo: boolean;
+  modules: LiveKitModules;
+}) {
+  // NO useTracks, NO setMicrophoneEnabled, NO audio session, NO device handling
+  // Just a simple UI to show connection status
+  
+  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo);
+  
+  return (
+    <View style={styles.videoContainer}>
+      {!isConnected ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={styles.loadingText}>Connecting to LiveKit room...</Text>
+        </View>
+      ) : showRemoteVideo ? (
+        // Phase 2: Only render remote video after connection is stable
+        <MinimalRemoteVideoRenderer modules={modules} />
+      ) : (
+        // Phase 1: Connection successful, but no track subscription yet
+        <View style={styles.avatarPlaceholder}>
+          <Ionicons name="checkmark-circle" size={64} color={theme.colors.primary} />
+          <Text style={styles.placeholderText}>LiveKit Connected!</Text>
+          <Text style={styles.placeholderSubtext}>Connection test passed</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ORIGINAL COMPONENTS - DISABLED FOR MINIMAL TEST
+// Uncomment these and LiveKitContent after minimal test passes
+
+/*
 function AvatarMediaRenderer({ modules }: { modules: LiveKitModules }) {
   if (!modules) return null;
   
@@ -243,6 +315,7 @@ function LiveKitContent({
     </>
   );
 }
+*/
 
 export default function AIAvatarScreen() {
   const navigation = useNavigation();
@@ -264,6 +337,9 @@ export default function AIAvatarScreen() {
   const [liveKitToken, setLiveKitToken] = useState<string>('');
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
+  
+  // MINIMAL TEST: Set to false for Phase 1 (pure connection test), true for Phase 2 (remote video)
+  const [showRemoteVideo, setShowRemoteVideo] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
@@ -727,15 +803,11 @@ export default function AIAvatarScreen() {
             setError(`Connection error: ${errorMessage}`);
           }}
         >
-          <LiveKitContent
-            modules={liveKitModules}
-            isConnecting={isConnecting}
-            statusMessage={statusMessage}
-            isListening={isListening}
-            setIsListening={setIsListening}
-            isSpeaking={isSpeaking}
+          {/* MINIMAL TEST: Using MinimalLiveKitContent instead of full LiveKitContent */}
+          <MinimalLiveKitContent
             isConnected={isConnected}
-            onMicReady={handleMicReady}
+            showRemoteVideo={showRemoteVideo}
+            modules={liveKitModules}
           />
         </LiveKitRoom>
       );
