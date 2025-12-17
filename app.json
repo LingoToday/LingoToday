@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
-      "buildNumber": "22",
+      "buildNumber": "23",
       "bitcode": false,
       "infoPlist": {
         "NSUserNotificationUsageDescription": "LingoToday sends you reminders to help you stay consistent with your language learning practice.",
@@ -34,7 +34,7 @@
         "backgroundColor": "#6366f1"
       },
       "package": "com.lingotoday.mobile",
-      "versionCode": 48,
+      "versionCode": 49,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",

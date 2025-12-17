@@ -39,15 +39,20 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (22) Build 19b - AudioSession Fix**: Fixed mic not working on iOS:
-- **Root Cause**: LiveKit AudioSession not started before enabling mic, and start_listening sent before mic track published
-- **Build 19b Fixes**:
-  1. **AudioSession.startAudioSession()**: Now called in MicController BEFORE enabling mic (required for iOS)
-  2. **Audio permissions**: Added Expo Audio.requestPermissionsAsync() call before enabling mic
-  3. **LocalTrackPublished listener**: VoiceLoopController now listens for this event to confirm mic is ready
-  4. **Event-gated start_listening**: Command only sent AFTER LocalTrackPublished event fires for audio track
-  5. **Removed blind delay**: Replaced 1500ms delay with proper event-based confirmation
-- **Expected Flow**: AudioSession → Permissions → Enable Mic → LocalTrackPublished event → send start_listening
+**HeyGen AI Avatar Integration - v1.0.10 (23) Build 19c - UI Debug Telemetry**: Added UI-visible debugging for microphone voice loop issues:
+- **Problem**: Avatar cannot hear user despite previous fixes - no way to see logs on TestFlight builds
+- **Build 19c Features**:
+  1. **DebugPanel component**: Shows real-time telemetry directly on screen
+  2. **Timestamps for each step**: AudioSession, Permission, Mic Enable, Track Published, start_listening
+  3. **Status indicators**: Checkmarks/X marks for success/failure at each step
+  4. **5-second fallback timer**: If LocalTrackPublished event doesn't fire, checks for audio tracks via fallback
+  5. **Audio track details**: Shows track count, muted state, and track SID
+  6. **Data channel state**: Shows engine connection status before sending command
+  7. **Server events**: Displays last received event from HeyGen
+  8. **Error log**: Shows last 3 errors in the debug panel
+- **Expected Debug Output**: All green checkmarks if mic is working, yellow fallback warning if event didn't fire, red X and error messages if something failed
+
+**Previous Build 19b**: AudioSession → Permissions → Enable Mic → LocalTrackPublished event → send start_listening
 
 **Previous Build 19 Features** (Context Injection):
 - Added `buildSessionContext()` function to generate SESSION_CONTEXT JSON

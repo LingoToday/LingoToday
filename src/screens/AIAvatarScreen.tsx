@@ -120,6 +120,191 @@ type LiveKitModules = {
   Track: any;
 } | null;
 
+// Debug telemetry type for UI-visible debugging (Build 19c)
+type DebugTelemetry = {
+  audioSessionStarted: boolean;
+  audioSessionTime: string | null;
+  permissionGranted: boolean;
+  permissionTime: string | null;
+  micEnabled: boolean;
+  micEnabledTime: string | null;
+  trackPublished: boolean;
+  trackPublishedTime: string | null;
+  trackPublishedViaFallback: boolean;
+  roomConnected: boolean;
+  roomState: string;
+  audioTrackCount: number;
+  audioTrackMuted: boolean | null;
+  audioTrackSid: string | null;
+  dataChannelReady: boolean;
+  startListeningSent: boolean;
+  startListeningTime: string | null;
+  lastServerEvent: string | null;
+  lastServerEventTime: string | null;
+  errors: string[];
+};
+
+const initialDebugTelemetry: DebugTelemetry = {
+  audioSessionStarted: false,
+  audioSessionTime: null,
+  permissionGranted: false,
+  permissionTime: null,
+  micEnabled: false,
+  micEnabledTime: null,
+  trackPublished: false,
+  trackPublishedTime: null,
+  trackPublishedViaFallback: false,
+  roomConnected: false,
+  roomState: 'unknown',
+  audioTrackCount: 0,
+  audioTrackMuted: null,
+  audioTrackSid: null,
+  dataChannelReady: false,
+  startListeningSent: false,
+  startListeningTime: null,
+  lastServerEvent: null,
+  lastServerEventTime: null,
+  errors: [],
+};
+
+const getTimeStamp = () => {
+  const now = new Date();
+  return `${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+};
+
+// Debug Panel Component - Shows telemetry directly in UI
+function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible: boolean }) {
+  if (!visible) return null;
+  
+  const StatusRow = ({ label, value, time }: { label: string; value: boolean | string | number | null; time?: string | null }) => {
+    let icon = '⏳';
+    let color = '#888';
+    
+    if (typeof value === 'boolean') {
+      icon = value ? '✅' : '❌';
+      color = value ? '#4ade80' : '#f87171';
+    } else if (value !== null && value !== undefined) {
+      icon = '📋';
+      color = '#60a5fa';
+    }
+    
+    return (
+      <View style={debugStyles.row}>
+        <Text style={[debugStyles.icon, { color }]}>{icon}</Text>
+        <Text style={debugStyles.label}>{label}</Text>
+        <Text style={debugStyles.value} numberOfLines={1}>
+          {typeof value === 'boolean' ? (value ? 'YES' : 'NO') : String(value ?? '-')}
+        </Text>
+        {time && <Text style={debugStyles.time}>{time}</Text>}
+      </View>
+    );
+  };
+  
+  return (
+    <View style={debugStyles.container}>
+      <Text style={debugStyles.title}>🔧 Build 19c Debug</Text>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
+        <StatusRow label="AudioSession" value={telemetry.audioSessionStarted} time={telemetry.audioSessionTime} />
+        <StatusRow label="Permission" value={telemetry.permissionGranted} time={telemetry.permissionTime} />
+        <StatusRow label="Mic Enabled" value={telemetry.micEnabled} time={telemetry.micEnabledTime} />
+        <StatusRow label="Track Published" value={telemetry.trackPublished} time={telemetry.trackPublishedTime} />
+        {telemetry.trackPublishedViaFallback && <Text style={debugStyles.fallback}>⚠️ Via 5s fallback</Text>}
+      </View>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>Room State</Text>
+        <StatusRow label="Connected" value={telemetry.roomConnected} />
+        <StatusRow label="State" value={telemetry.roomState} />
+        <StatusRow label="Audio Tracks" value={telemetry.audioTrackCount} />
+        <StatusRow label="Track Muted" value={telemetry.audioTrackMuted} />
+        <StatusRow label="Track SID" value={telemetry.audioTrackSid} />
+      </View>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>Voice Loop</Text>
+        <StatusRow label="Data Channel" value={telemetry.dataChannelReady} />
+        <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
+        <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
+      </View>
+      
+      {telemetry.errors.length > 0 && (
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>❗ Errors</Text>
+          {telemetry.errors.slice(-3).map((err, i) => (
+            <Text key={i} style={debugStyles.error}>{err}</Text>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+const debugStyles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 180,
+    left: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    borderRadius: 8,
+    padding: 8,
+    maxHeight: 320,
+    zIndex: 1000,
+  },
+  title: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  section: {
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    color: '#a3e635',
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  icon: {
+    fontSize: 12,
+    width: 18,
+  },
+  label: {
+    color: '#ccc',
+    fontSize: 11,
+    width: 100,
+  },
+  value: {
+    color: '#fff',
+    fontSize: 11,
+    flex: 1,
+  },
+  time: {
+    color: '#888',
+    fontSize: 9,
+    marginLeft: 4,
+  },
+  fallback: {
+    color: '#fbbf24',
+    fontSize: 10,
+    marginLeft: 18,
+  },
+  error: {
+    color: '#f87171',
+    fontSize: 10,
+    marginLeft: 4,
+  },
+});
+
 async function loadLiveKitModules(): Promise<LiveKitModules> {
   try {
     console.log('[AIAvatar] Attempting to load LiveKit modules...');
@@ -292,22 +477,37 @@ function DirectAudioController({
   );
 }
 
-// Phase 4: Voice loop controller - sends avatar.start_listening and logs events
+// Build 19c: Voice loop controller with UI-visible debug telemetry
 function VoiceLoopController({ 
   modules, 
-  isConnected 
+  isConnected,
+  updateTelemetry
 }: { 
   modules: LiveKitModules; 
   isConnected: boolean;
+  updateTelemetry: (updates: Partial<DebugTelemetry>) => void;
 }) {
   const [listeningStarted, setListeningStarted] = useState(false);
   const [avatarState, setAvatarState] = useState<string>('idle');
   const [micTrackPublished, setMicTrackPublished] = useState(false);
+  const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const startListeningSentRef = useRef(false); // Prevent duplicate sends
   
   // Get room context to send data channel messages
   const room = modules?.useRoomContext ? modules.useRoomContext() : null;
   
+  // Update room state in telemetry
+  useEffect(() => {
+    if (room) {
+      updateTelemetry({
+        roomConnected: isConnected,
+        roomState: room.state || 'unknown',
+      });
+    }
+  }, [room, isConnected]);
+  
   // Listen for LocalTrackPublished event to know when mic is truly ready
+  // Also set up 5-second fallback timer
   useEffect(() => {
     if (!room || !isConnected) return;
     
@@ -323,6 +523,19 @@ function VoiceLoopController({
       if (publication?.kind === 'audio' || publication?.source === 'microphone') {
         console.log('[AIAvatar] VoiceLoop: LOCAL MIC TRACK PUBLISHED!');
         setMicTrackPublished(true);
+        updateTelemetry({
+          trackPublished: true,
+          trackPublishedTime: getTimeStamp(),
+          trackPublishedViaFallback: false,
+          audioTrackSid: publication?.trackSid || null,
+          audioTrackMuted: publication?.isMuted ?? null,
+        });
+        
+        // Clear fallback timer since we got the event
+        if (fallbackTimerRef.current) {
+          clearTimeout(fallbackTimerRef.current);
+          fallbackTimerRef.current = null;
+        }
       }
     };
     
@@ -331,35 +544,104 @@ function VoiceLoopController({
     if (existingAudioTracks && existingAudioTracks.size > 0) {
       console.log('[AIAvatar] VoiceLoop: Found existing audio tracks:', existingAudioTracks.size);
       setMicTrackPublished(true);
+      
+      // Get track details
+      let trackSid: string | null = null;
+      let trackMuted: boolean | null = null;
+      existingAudioTracks.forEach((pub: any) => {
+        trackSid = pub.trackSid;
+        trackMuted = pub.isMuted ?? null;
+      });
+      
+      updateTelemetry({
+        trackPublished: true,
+        trackPublishedTime: getTimeStamp(),
+        trackPublishedViaFallback: false,
+        audioTrackCount: existingAudioTracks.size,
+        audioTrackSid: trackSid,
+        audioTrackMuted: trackMuted,
+      });
+    } else {
+      // Set up 5-second fallback timer
+      console.log('[AIAvatar] VoiceLoop: Setting up 5-second fallback timer...');
+      fallbackTimerRef.current = setTimeout(() => {
+        console.log('[AIAvatar] VoiceLoop: FALLBACK TIMER FIRED - checking for audio tracks...');
+        const audioTracks = room.localParticipant?.audioTrackPublications;
+        const trackCount = audioTracks?.size || 0;
+        
+        updateTelemetry({
+          audioTrackCount: trackCount,
+        });
+        
+        if (trackCount > 0) {
+          console.log('[AIAvatar] VoiceLoop: Found audio tracks via fallback, proceeding...');
+          setMicTrackPublished(true);
+          
+          // Clear timer after fallback fires
+          fallbackTimerRef.current = null;
+          
+          let trackSid: string | null = null;
+          let trackMuted: boolean | null = null;
+          audioTracks?.forEach((pub: any) => {
+            trackSid = pub.trackSid;
+            trackMuted = pub.isMuted ?? null;
+          });
+          
+          updateTelemetry({
+            trackPublished: true,
+            trackPublishedTime: getTimeStamp(),
+            trackPublishedViaFallback: true,
+            audioTrackSid: trackSid,
+            audioTrackMuted: trackMuted,
+          });
+        } else {
+          console.warn('[AIAvatar] VoiceLoop: FALLBACK - No audio tracks found after 5s!');
+          updateTelemetry({
+            errors: ['No audio tracks after 5s fallback'],
+          });
+        }
+      }, 5000);
     }
     
     room.on('localTrackPublished', handleLocalTrackPublished);
     
     return () => {
       room.off('localTrackPublished', handleLocalTrackPublished);
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+      }
     };
   }, [room, isConnected]);
   
   // Send avatar.start_listening command ONLY after mic track is published AND room is fully ready
   useEffect(() => {
-    if (isConnected && room && micTrackPublished && !listeningStarted) {
+    if (isConnected && room && micTrackPublished && !listeningStarted && !startListeningSentRef.current) {
       console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, checking room readiness...');
       console.log('[AIAvatar] VoiceLoop: Room state:', room.state);
       console.log('[AIAvatar] VoiceLoop: Room name:', room.name);
       
       const sendStartListening = async () => {
+        // Guard 0: Prevent duplicate sends via ref
+        if (startListeningSentRef.current) {
+          console.log('[AIAvatar] VoiceLoop: start_listening already sent (ref guard), skipping');
+          return;
+        }
+        
         try {
           // Guard 1: Verify room is connected (check both string and enum possibilities)
           const roomState = room.state;
           console.log('[AIAvatar] VoiceLoop: Current room.state value:', roomState, 'type:', typeof roomState);
           
+          updateTelemetry({ roomState: String(roomState) });
+          
           // LiveKit uses 'connected' string in JS SDK
-          const isConnected = roomState === 'connected' || 
+          const isRoomConnected = roomState === 'connected' || 
                              roomState === 'Connected' || 
                              (roomState && String(roomState).toLowerCase() === 'connected');
           
-          if (!isConnected) {
+          if (!isRoomConnected) {
             console.warn('[AIAvatar] VoiceLoop: Room not connected, state:', roomState);
+            updateTelemetry({ errors: [`Room not connected: ${roomState}`] });
             return;
           }
           console.log('[AIAvatar] VoiceLoop: Room state verified as connected');
@@ -367,25 +649,31 @@ function VoiceLoopController({
           // Guard 2: Verify local participant exists and is ready
           if (!room.localParticipant) {
             console.warn('[AIAvatar] VoiceLoop: Local participant not ready');
+            updateTelemetry({ errors: ['Local participant not ready'] });
             return;
           }
           console.log('[AIAvatar] VoiceLoop: Local participant ready, sid:', room.localParticipant.sid);
           
           // Guard 3: Verify mic track is still there
           const audioTracks = room.localParticipant?.audioTrackPublications;
-          console.log('[AIAvatar] VoiceLoop: Verifying audio tracks count:', audioTracks?.size || 0);
+          const trackCount = audioTracks?.size || 0;
+          console.log('[AIAvatar] VoiceLoop: Verifying audio tracks count:', trackCount);
           
-          if (!audioTracks || audioTracks.size === 0) {
+          updateTelemetry({ audioTrackCount: trackCount });
+          
+          if (!audioTracks || trackCount === 0) {
             console.warn('[AIAvatar] VoiceLoop: No audio tracks found, waiting...');
+            updateTelemetry({ errors: ['No audio tracks at send time'] });
             return;
           }
           
           // Guard 4: Check data channel readiness (via engine if available)
           const engine = room.engine;
+          const engineConnected = engine?.connected ?? false;
           console.log('[AIAvatar] VoiceLoop: Engine available:', !!engine);
-          if (engine) {
-            console.log('[AIAvatar] VoiceLoop: Engine connected:', engine.connected);
-          }
+          console.log('[AIAvatar] VoiceLoop: Engine connected:', engineConnected);
+          
+          updateTelemetry({ dataChannelReady: engineConnected });
           
           const command = JSON.stringify({
             type: 'avatar.start_listening'
@@ -397,11 +685,19 @@ function VoiceLoopController({
           
           await room.localParticipant.publishData(data);
           console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT SUCCESSFULLY');
+          startListeningSentRef.current = true; // Set ref first to prevent race
           setListeningStarted(true);
+          updateTelemetry({
+            startListeningSent: true,
+            startListeningTime: getTimeStamp(),
+          });
         } catch (err: any) {
           console.error('[AIAvatar] VoiceLoop: Failed to send start_listening:', err);
           console.error('[AIAvatar] VoiceLoop: Error name:', err?.name);
           console.error('[AIAvatar] VoiceLoop: Error message:', err?.message);
+          updateTelemetry({
+            errors: [`start_listening failed: ${err?.message || 'unknown'}`],
+          });
         }
       };
       
@@ -422,6 +718,11 @@ function VoiceLoopController({
         const data = JSON.parse(message);
         
         console.log('[AIAvatar] Server event received:', data.type || data);
+        
+        updateTelemetry({
+          lastServerEvent: data.type || 'unknown',
+          lastServerEventTime: getTimeStamp(),
+        });
         
         // Update state based on events
         if (data.type === 'user.speak_started') {
@@ -463,16 +764,15 @@ function VoiceLoopController({
   );
 }
 
-// MINIMAL TEST: Content that renders NOTHING initially - just logs connection
-// Phase 1: Empty render (test pure connection)
-// Phase 2: After connection confirmed, enable remote video subscription
-// Separate component for mic control to satisfy React hook rules
+// Build 19c: MicController with UI-visible debug telemetry
 function MicController({ 
   modules, 
-  isConnected 
+  isConnected,
+  updateTelemetry
 }: { 
   modules: LiveKitModules; 
   isConnected: boolean;
+  updateTelemetry: (updates: Partial<DebugTelemetry>) => void;
 }) {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
@@ -493,8 +793,17 @@ function MicController({
             await modules.AudioSession.startAudioSession();
             console.log('[AIAvatar] MicController: AudioSession STARTED successfully');
             setAudioSessionStarted(true);
+            updateTelemetry({
+              audioSessionStarted: true,
+              audioSessionTime: getTimeStamp(),
+            });
           } catch (err: any) {
             console.error('[AIAvatar] MicController: Failed to start AudioSession:', err);
+            updateTelemetry({
+              audioSessionStarted: true,
+              audioSessionTime: getTimeStamp(),
+              errors: [`AudioSession failed: ${err?.message}`],
+            });
             // Continue anyway - might work on some platforms
             setAudioSessionStarted(true);
           }
@@ -504,6 +813,10 @@ function MicController({
         // AudioSession not available (Android/Web) - proceed without it
         console.log('[AIAvatar] MicController: AudioSession not available, skipping (non-iOS platform)');
         setAudioSessionStarted(true);
+        updateTelemetry({
+          audioSessionStarted: true,
+          audioSessionTime: getTimeStamp(),
+        });
       }
     }
   }, [isConnected, modules, audioSessionStarted]);
@@ -522,6 +835,11 @@ function MicController({
           const { status } = await Audio.requestPermissionsAsync();
           console.log('[AIAvatar] MicController: Audio permission status:', status);
           
+          updateTelemetry({
+            permissionGranted: status === 'granted',
+            permissionTime: getTimeStamp(),
+          });
+          
           if (status !== 'granted') {
             throw new Error('Microphone permission denied');
           }
@@ -532,7 +850,9 @@ function MicController({
           
           // Check if mic track is published
           const audioTracks = localParticipant.audioTrackPublications;
-          console.log('[AIAvatar] MicController: Audio track publications count:', audioTracks?.size || 0);
+          const trackCount = audioTracks?.size || 0;
+          console.log('[AIAvatar] MicController: Audio track publications count:', trackCount);
+          
           if (audioTracks) {
             audioTracks.forEach((pub: any, key: string) => {
               console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'trackSid:', pub.trackSid);
@@ -541,12 +861,20 @@ function MicController({
           
           setIsMicEnabled(true);
           setMicError(null);
+          updateTelemetry({
+            micEnabled: true,
+            micEnabledTime: getTimeStamp(),
+            audioTrackCount: trackCount,
+          });
           console.log('[AIAvatar] MicController: Mic ENABLED and ready');
         } catch (err: any) {
           console.error('[AIAvatar] MicController: Failed to enable microphone:', err);
           console.error('[AIAvatar] MicController: Error name:', err?.name);
           console.error('[AIAvatar] MicController: Error message:', err?.message);
           setMicError(err?.message || 'Failed to enable mic');
+          updateTelemetry({
+            errors: [`Mic enable failed: ${err?.message || 'unknown'}`],
+          });
         }
       };
       enableMic();
@@ -560,6 +888,7 @@ function MicController({
       await localParticipant.setMicrophoneEnabled(newState);
       console.log('[AIAvatar] Mic toggled to:', newState);
       setIsMicEnabled(newState);
+      updateTelemetry({ micEnabled: newState });
     } catch (err: any) {
       console.error('[AIAvatar] Failed to toggle mic:', err);
       setMicError(err?.message || 'Mic toggle failed');
@@ -588,6 +917,7 @@ function MicController({
   );
 }
 
+// Build 19c: MinimalLiveKitContent with debug telemetry panel
 function MinimalLiveKitContent({ 
   isConnected,
   showRemoteVideo,
@@ -595,7 +925,8 @@ function MinimalLiveKitContent({
   enableRemoteAudio,
   enableDataChannel,
   enableDirectAudio,
-  modules
+  modules,
+  showDebugPanel = true
 }: { 
   isConnected: boolean;
   showRemoteVideo: boolean;
@@ -604,7 +935,25 @@ function MinimalLiveKitContent({
   enableDataChannel: boolean;
   enableDirectAudio: boolean;
   modules: LiveKitModules;
+  showDebugPanel?: boolean;
 }) {
+  // Build 19c: Debug telemetry state
+  const [debugTelemetry, setDebugTelemetry] = useState<DebugTelemetry>(initialDebugTelemetry);
+  
+  const updateTelemetry = useCallback((updates: Partial<DebugTelemetry>) => {
+    setDebugTelemetry(prev => {
+      // Special handling for errors array - append instead of replace
+      if (updates.errors) {
+        return {
+          ...prev,
+          ...updates,
+          errors: [...prev.errors, ...updates.errors].slice(-5), // Keep last 5 errors
+        };
+      }
+      return { ...prev, ...updates };
+    });
+  }, []);
+  
   console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableDirectAudio:', enableDirectAudio, 'enableDataChannel:', enableDataChannel);
   
   return (
@@ -626,14 +975,16 @@ function MinimalLiveKitContent({
           {enableDirectAudio && modules && (
             <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
           )}
-          {/* Build 17b: Voice loop controller (send start_listening, log events) */}
+          {/* Build 19c: Voice loop controller with debug telemetry */}
           {enableDataChannel && modules && (
-            <VoiceLoopController modules={modules} isConnected={isConnected} />
+            <VoiceLoopController modules={modules} isConnected={isConnected} updateTelemetry={updateTelemetry} />
           )}
-          {/* Phase 3: Mic control as separate component to satisfy React hook rules */}
+          {/* Build 19c: Mic control with debug telemetry */}
           {enableLocalMic && modules && (
-            <MicController modules={modules} isConnected={isConnected} />
+            <MicController modules={modules} isConnected={isConnected} updateTelemetry={updateTelemetry} />
           )}
+          {/* Build 19c: Debug panel overlay */}
+          <DebugPanel telemetry={debugTelemetry} visible={showDebugPanel} />
         </>
       ) : (
         // Phase 1: Connection successful, but no track subscription yet
