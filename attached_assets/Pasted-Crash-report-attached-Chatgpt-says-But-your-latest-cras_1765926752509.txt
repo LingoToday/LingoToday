@@ -1,0 +1,62 @@
+Crash report attached. Chatgpt says: But your latest crash report (build 17) is now pointing to something very specific:
+
+What the crash report actually says
+
+In the crash you attached, the failing stack includes:
+
+WebRTCModule(RTCPeerConnection) peerConnectionSetLocalDescription...
+
+called via facebook::react::ObjCTurboModule::performMethodInvocation(...)
+
+followed by SIGABRT / terminate
+
+That means the app is aborting due to a native exception inside react-native-webrtc during setLocalDescription() (i.e., WebRTC negotiation), not because your HeyGen session token fields are wrong. This matches known “setLocalDescription crashes iOS” issues in react-native-webrtc-land. 
+GitHub
+
+And React Native’s TurboModule bridge will SIGABRT when a native module throws an NSException (it doesn’t get turned into a normal JS error). 
+GitHub
+
+So: the “voice loop” additions are triggering a renegotiation, and that renegotiation is what’s crashing.
+
+The best next move (what I’d tell Replit to do)
+1) Do Phase 4 again, but split it into two isolated builds
+
+Build A (Remote audio only):
+
+Subscribe to remote audio track
+
+Render via AudioTrack
+
+DO NOT send avatar.start_listening (no data channel yet)
+
+DO NOT add extra “voice loop” logic that might re-render/unmount the room
+
+Build B (Data channel only):
+
+Keep remote audio OFF
+
+Only send avatar.start_listening
+
+Confirm it doesn’t crash
+
+This tells you which action triggers renegotiation/crash.
+
+2) Make sure LiveKitRoom never unmounts/re-mounts during state changes
+
+Common hidden killer: toggles like key={something} or conditional rendering around <LiveKitRoom> (or changing serverUrl/token props mid-flight) causing a teardown + re-init while LiveKit is negotiating.
+
+Rule: mount one LiveKitRoom per session, keep its props stable, and drive UI changes inside it.
+
+3) Pin/upgrade LiveKit + webrtc packages as a “compat set”
+
+Because the crash is in the WebRTC layer, you want versions LiveKit actually expects together (not “latest of everything”). LiveKit’s RN quickstart shows the core packages they intend you to use together: @livekit/react-native, @livekit/react-native-webrtc, livekit-client. 
+LiveKit docs
+
+If you’re already on a recent set, try the opposite: move to the exact versions from a known working LiveKit RN Expo example (or ask LiveKit/HeyGen what versions they test with).
+
+4) Keep New Architecture fully off for LiveKit in Expo 54
+
+Expo Doctor / LiveKit issues explicitly flag LiveKit RN as unsupported on New Architecture in some setups. 
+GitHub
+
+You’ve already done EXPO_USE_NEW_ARCH=0 + newArchEnabled:false — keep it that way until everything is stable.

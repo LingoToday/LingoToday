@@ -38,18 +38,22 @@ Core features include:
 - `src/data/`: Static data (lessons, etc.).
 - `src/types/`: TypeScript type definitions.
 
-## Recent Changes (Dec 16, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (16) Phase 4 Voice Loop Test**: Testing complete voice conversation loop:
-- **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works without crash
-- **Phase 2 PASSED (Build 14)**: Remote video track subscription works - avatar visible
-- **Phase 3 PASSED (Build 15)**: Local microphone publishing works without crash
-- **Phase 4 (Current Build 16)**: Full voice loop with LiveAvatar API
-  - Sends `avatar.start_listening` command via LiveKit data channel
-  - Subscribes to remote audio track (Track.Source.Microphone) for avatar's voice
-  - Logs server events: user.speak_started, user.speak_ended, avatar.speak_started, avatar.speak_ended
-  - Shows voice state overlay (Ready/Listening/Processing/Speaking)
-- **Test Goal**: Complete two-way voice conversation with avatar
-- **If Crashes**: Identify which Phase 4 component is the culprit (data channel, remote audio, or event handling)
+## Recent Changes (Dec 17, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (17) Build 17a - Remote Audio Isolation Test**: Diagnosing WebRTC renegotiation crash from Build 16:
+- **Build 16 CRASHED**: Full voice loop crashed with SIGABRT in `setLocalDescription()` during WebRTC renegotiation
+- **Root Cause Analysis**: ChatGPT identified crash in WebRTC layer when TurboModule throws NSException
+- **Build 17a Strategy**: Isolate remote audio subscription from data channel commands
+  - `enableRemoteAudio = true`: Subscribe to avatar's audio track (Track.Source.Microphone)
+  - `enableDataChannel = false`: NO `avatar.start_listening` command, NO VoiceLoopController
+- **Test Goal**: Determine if subscribing to remote audio triggers the renegotiation crash
+- **If Crashes**: Remote audio subscription is triggering renegotiation - need different approach
+- **If Works**: Data channel commands are the issue - test separately in Build 17b
+
+## Previous Phase Results
+- **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works
+- **Phase 2 PASSED (Build 14)**: Remote video track subscription works
+- **Phase 3 PASSED (Build 15)**: Local microphone publishing works
+- **Phase 4 FAILED (Build 16)**: Full voice loop crashed (WebRTC renegotiation)
 
 ## Previous Changes (Dec 15, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:

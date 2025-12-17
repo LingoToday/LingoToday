@@ -309,16 +309,18 @@ function MinimalLiveKitContent({
   isConnected,
   showRemoteVideo,
   enableLocalMic,
-  enableVoiceLoop,
+  enableRemoteAudio,
+  enableDataChannel,
   modules
 }: { 
   isConnected: boolean;
   showRemoteVideo: boolean;
   enableLocalMic: boolean;
-  enableVoiceLoop: boolean;
+  enableRemoteAudio: boolean;
+  enableDataChannel: boolean;
   modules: LiveKitModules;
 }) {
-  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableVoiceLoop:', enableVoiceLoop);
+  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableRemoteAudio:', enableRemoteAudio, 'enableDataChannel:', enableDataChannel);
   
   return (
     <View style={styles.videoContainer}>
@@ -331,12 +333,12 @@ function MinimalLiveKitContent({
         // Phase 2+: Render remote video after connection is stable
         <>
           <MinimalRemoteVideoRenderer modules={modules} />
-          {/* Phase 4: Remote audio playback (hear the avatar) */}
-          {enableVoiceLoop && modules && (
+          {/* Build 17a: Remote audio playback ONLY (no data channel) */}
+          {enableRemoteAudio && modules && (
             <RemoteAudioRenderer modules={modules} />
           )}
-          {/* Phase 4: Voice loop controller (send start_listening, log events) */}
-          {enableVoiceLoop && modules && (
+          {/* Build 17b: Voice loop controller (send start_listening, log events) - DISABLED for 17a */}
+          {enableDataChannel && modules && (
             <VoiceLoopController modules={modules} isConnected={isConnected} />
           )}
           {/* Phase 3: Mic control as separate component to satisfy React hook rules */}
@@ -535,12 +537,15 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Phase 4 - Full voice loop test
+  // MINIMAL TEST: Build 17a - Remote audio isolation test
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
   // Phase 3: Enable local mic
   const [enableLocalMic, setEnableLocalMic] = useState(true);
-  // Phase 4: Enable voice loop (remote audio + avatar.start_listening + event logging)
-  const [enableVoiceLoop, setEnableVoiceLoop] = useState(true);
+  // Build 17a: ISOLATED TESTS - Split voice loop into separate components
+  // enableRemoteAudio = true: Subscribe to avatar's audio track (test audio subscription)
+  // enableDataChannel = false: NO data channel commands (disabled for 17a)
+  const [enableRemoteAudio, setEnableRemoteAudio] = useState(true);
+  const [enableDataChannel, setEnableDataChannel] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
@@ -1009,7 +1014,8 @@ export default function AIAvatarScreen() {
             isConnected={isConnected}
             showRemoteVideo={showRemoteVideo}
             enableLocalMic={enableLocalMic}
-            enableVoiceLoop={enableVoiceLoop}
+            enableRemoteAudio={enableRemoteAudio}
+            enableDataChannel={enableDataChannel}
             modules={liveKitModules}
           />
         </LiveKitRoom>
