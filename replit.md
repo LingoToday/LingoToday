@@ -39,14 +39,15 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (21) Build 19a - Voice Loop Debug**: Debugging why avatar can't hear user:
-- **Issue Reported**: User can hear avatar, but avatar can't hear user
-- **Build 19a Changes**:
-  - Added verbose logging to MicController (participant info, track publications)
-  - Added verbose logging to VoiceLoopController (room state, command sending)
-  - Increased delay before sending start_listening (500ms → 1500ms) to ensure mic is ready
-  - Logs audio track publications after mic enabled
-- **Debug Goal**: Identify if mic is publishing and if start_listening command is received
+**HeyGen AI Avatar Integration - v1.0.10 (22) Build 19b - AudioSession Fix**: Fixed mic not working on iOS:
+- **Root Cause**: LiveKit AudioSession not started before enabling mic, and start_listening sent before mic track published
+- **Build 19b Fixes**:
+  1. **AudioSession.startAudioSession()**: Now called in MicController BEFORE enabling mic (required for iOS)
+  2. **Audio permissions**: Added Expo Audio.requestPermissionsAsync() call before enabling mic
+  3. **LocalTrackPublished listener**: VoiceLoopController now listens for this event to confirm mic is ready
+  4. **Event-gated start_listening**: Command only sent AFTER LocalTrackPublished event fires for audio track
+  5. **Removed blind delay**: Replaced 1500ms delay with proper event-based confirmation
+- **Expected Flow**: AudioSession → Permissions → Enable Mic → LocalTrackPublished event → send start_listening
 
 **Previous Build 19 Features** (Context Injection):
 - Added `buildSessionContext()` function to generate SESSION_CONTEXT JSON

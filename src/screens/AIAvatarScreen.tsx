@@ -302,22 +302,90 @@ function VoiceLoopController({
 }) {
   const [listeningStarted, setListeningStarted] = useState(false);
   const [avatarState, setAvatarState] = useState<string>('idle');
+  const [micTrackPublished, setMicTrackPublished] = useState(false);
   
   // Get room context to send data channel messages
   const room = modules?.useRoomContext ? modules.useRoomContext() : null;
   
-  // Send avatar.start_listening command after connection
+  // Listen for LocalTrackPublished event to know when mic is truly ready
   useEffect(() => {
-    if (isConnected && room && !listeningStarted) {
-      console.log('[AIAvatar] VoiceLoop: Preparing to send avatar.start_listening...');
+    if (!room || !isConnected) return;
+    
+    console.log('[AIAvatar] VoiceLoop: Setting up LocalTrackPublished listener...');
+    
+    const handleLocalTrackPublished = (publication: any, participant: any) => {
+      console.log('[AIAvatar] VoiceLoop: LocalTrackPublished event received');
+      console.log('[AIAvatar] VoiceLoop: Track source:', publication?.source);
+      console.log('[AIAvatar] VoiceLoop: Track kind:', publication?.kind);
+      console.log('[AIAvatar] VoiceLoop: Track SID:', publication?.trackSid);
+      
+      // Check if this is a microphone/audio track
+      if (publication?.kind === 'audio' || publication?.source === 'microphone') {
+        console.log('[AIAvatar] VoiceLoop: LOCAL MIC TRACK PUBLISHED!');
+        setMicTrackPublished(true);
+      }
+    };
+    
+    // Also check if there's already a published audio track
+    const existingAudioTracks = room.localParticipant?.audioTrackPublications;
+    if (existingAudioTracks && existingAudioTracks.size > 0) {
+      console.log('[AIAvatar] VoiceLoop: Found existing audio tracks:', existingAudioTracks.size);
+      setMicTrackPublished(true);
+    }
+    
+    room.on('localTrackPublished', handleLocalTrackPublished);
+    
+    return () => {
+      room.off('localTrackPublished', handleLocalTrackPublished);
+    };
+  }, [room, isConnected]);
+  
+  // Send avatar.start_listening command ONLY after mic track is published AND room is fully ready
+  useEffect(() => {
+    if (isConnected && room && micTrackPublished && !listeningStarted) {
+      console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, checking room readiness...');
       console.log('[AIAvatar] VoiceLoop: Room state:', room.state);
       console.log('[AIAvatar] VoiceLoop: Room name:', room.name);
       
       const sendStartListening = async () => {
         try {
-          // Check if local participant is ready
-          console.log('[AIAvatar] VoiceLoop: localParticipant identity:', room.localParticipant?.identity);
-          console.log('[AIAvatar] VoiceLoop: localParticipant audioTrackPublications:', room.localParticipant?.audioTrackPublications?.size || 0);
+          // Guard 1: Verify room is connected (check both string and enum possibilities)
+          const roomState = room.state;
+          console.log('[AIAvatar] VoiceLoop: Current room.state value:', roomState, 'type:', typeof roomState);
+          
+          // LiveKit uses 'connected' string in JS SDK
+          const isConnected = roomState === 'connected' || 
+                             roomState === 'Connected' || 
+                             (roomState && String(roomState).toLowerCase() === 'connected');
+          
+          if (!isConnected) {
+            console.warn('[AIAvatar] VoiceLoop: Room not connected, state:', roomState);
+            return;
+          }
+          console.log('[AIAvatar] VoiceLoop: Room state verified as connected');
+          
+          // Guard 2: Verify local participant exists and is ready
+          if (!room.localParticipant) {
+            console.warn('[AIAvatar] VoiceLoop: Local participant not ready');
+            return;
+          }
+          console.log('[AIAvatar] VoiceLoop: Local participant ready, sid:', room.localParticipant.sid);
+          
+          // Guard 3: Verify mic track is still there
+          const audioTracks = room.localParticipant?.audioTrackPublications;
+          console.log('[AIAvatar] VoiceLoop: Verifying audio tracks count:', audioTracks?.size || 0);
+          
+          if (!audioTracks || audioTracks.size === 0) {
+            console.warn('[AIAvatar] VoiceLoop: No audio tracks found, waiting...');
+            return;
+          }
+          
+          // Guard 4: Check data channel readiness (via engine if available)
+          const engine = room.engine;
+          console.log('[AIAvatar] VoiceLoop: Engine available:', !!engine);
+          if (engine) {
+            console.log('[AIAvatar] VoiceLoop: Engine connected:', engine.connected);
+          }
           
           const command = JSON.stringify({
             type: 'avatar.start_listening'
@@ -327,8 +395,6 @@ function VoiceLoopController({
           const encoder = new TextEncoder();
           const data = encoder.encode(command);
           
-          // LiveKit publishData signature: (data, kind?, destination?, topic?)
-          // Default is reliable, so we can omit the second argument
           await room.localParticipant.publishData(data);
           console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT SUCCESSFULLY');
           setListeningStarted(true);
@@ -339,11 +405,11 @@ function VoiceLoopController({
         }
       };
       
-      // Increased delay to ensure mic is published first
-      console.log('[AIAvatar] VoiceLoop: Waiting 1500ms for mic to be ready...');
-      setTimeout(sendStartListening, 1500);
+      // Small delay after track published to ensure data channel is fully ready
+      console.log('[AIAvatar] VoiceLoop: Waiting 500ms after track published...');
+      setTimeout(sendStartListening, 500);
     }
-  }, [isConnected, room, listeningStarted]);
+  }, [isConnected, room, micTrackPublished, listeningStarted]);
   
   // Listen for server events via DataReceived
   useEffect(() => {
@@ -410,19 +476,56 @@ function MicController({
 }) {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
+  const [audioSessionStarted, setAudioSessionStarted] = useState(false);
   
   // Always call hook unconditionally (React rules)
   const { localParticipant } = modules!.useLocalParticipant();
   
-  // Enable mic after connection is established
+  // Step 1: Start LiveKit AudioSession FIRST (required for iOS, optional on other platforms)
   useEffect(() => {
-    if (isConnected && localParticipant && !isMicEnabled) {
+    if (isConnected && !audioSessionStarted) {
+      console.log('[AIAvatar] MicController: Checking AudioSession availability...');
+      
+      if (modules?.AudioSession) {
+        console.log('[AIAvatar] MicController: AudioSession available, starting...');
+        const startAudioSession = async () => {
+          try {
+            await modules.AudioSession.startAudioSession();
+            console.log('[AIAvatar] MicController: AudioSession STARTED successfully');
+            setAudioSessionStarted(true);
+          } catch (err: any) {
+            console.error('[AIAvatar] MicController: Failed to start AudioSession:', err);
+            // Continue anyway - might work on some platforms
+            setAudioSessionStarted(true);
+          }
+        };
+        startAudioSession();
+      } else {
+        // AudioSession not available (Android/Web) - proceed without it
+        console.log('[AIAvatar] MicController: AudioSession not available, skipping (non-iOS platform)');
+        setAudioSessionStarted(true);
+      }
+    }
+  }, [isConnected, modules, audioSessionStarted]);
+  
+  // Step 2: Enable mic AFTER AudioSession is started
+  useEffect(() => {
+    if (isConnected && localParticipant && audioSessionStarted && !isMicEnabled) {
       console.log('[AIAvatar] MicController: Attempting to enable local microphone...');
       console.log('[AIAvatar] MicController: localParticipant identity:', localParticipant.identity);
       console.log('[AIAvatar] MicController: localParticipant sid:', localParticipant.sid);
       
       const enableMic = async () => {
         try {
+          // Request audio permissions first (Expo)
+          console.log('[AIAvatar] MicController: Requesting audio permissions...');
+          const { status } = await Audio.requestPermissionsAsync();
+          console.log('[AIAvatar] MicController: Audio permission status:', status);
+          
+          if (status !== 'granted') {
+            throw new Error('Microphone permission denied');
+          }
+          
           console.log('[AIAvatar] MicController: Calling setMicrophoneEnabled(true)...');
           await localParticipant.setMicrophoneEnabled(true);
           console.log('[AIAvatar] MicController: setMicrophoneEnabled COMPLETED');
@@ -432,7 +535,7 @@ function MicController({
           console.log('[AIAvatar] MicController: Audio track publications count:', audioTracks?.size || 0);
           if (audioTracks) {
             audioTracks.forEach((pub: any, key: string) => {
-              console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'isSubscribed:', pub.isSubscribed);
+              console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'trackSid:', pub.trackSid);
             });
           }
           
@@ -448,7 +551,7 @@ function MicController({
       };
       enableMic();
     }
-  }, [isConnected, localParticipant, isMicEnabled]);
+  }, [isConnected, localParticipant, audioSessionStarted, isMicEnabled]);
   
   const toggleMic = async () => {
     if (!localParticipant) return;
