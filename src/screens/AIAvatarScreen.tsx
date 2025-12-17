@@ -120,7 +120,7 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
   );
 }
 
-// Phase 4: Remote audio renderer - subscribe to avatar's audio track
+// Phase 4: Remote audio renderer - subscribe to avatar's audio track (CRASHES - DO NOT USE)
 function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
   if (!modules) return null;
   
@@ -138,6 +138,83 @@ function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
   
   console.log('[AIAvatar] Rendering remote audio track');
   return <AudioTrack trackRef={audioTrack} />;
+}
+
+// Build 18a: Direct audio controller - uses room events instead of useTracks
+// This avoids the Hermes crash caused by useTracks for audio
+function DirectAudioController({ 
+  modules, 
+  isConnected,
+  renderAudio = false
+}: { 
+  modules: LiveKitModules; 
+  isConnected: boolean;
+  renderAudio?: boolean;
+}) {
+  // Use ref to store audio track - prevents re-render loops
+  const audioTrackRef = useRef<any>(null);
+  const [hasAudioTrack, setHasAudioTrack] = useState(false);
+  const listenerAttachedRef = useRef(false);
+  
+  // Get room context
+  const room = modules?.useRoomContext ? modules.useRoomContext() : null;
+  
+  // Register room event listeners for track subscription
+  useEffect(() => {
+    if (!room || !isConnected || listenerAttachedRef.current) return;
+    
+    console.log('[AIAvatar] DirectAudioController: Attaching track event listeners...');
+    listenerAttachedRef.current = true;
+    
+    const handleTrackSubscribed = (track: any, publication: any, participant: any) => {
+      console.log('[AIAvatar] DirectAudioController: TrackSubscribed event');
+      console.log('[AIAvatar] - Track kind:', track?.kind);
+      console.log('[AIAvatar] - Track source:', publication?.source);
+      console.log('[AIAvatar] - Participant identity:', participant?.identity);
+      console.log('[AIAvatar] - Is local:', participant?.isLocal);
+      
+      // Only handle remote audio tracks
+      if (track?.kind === 'audio' && !participant?.isLocal) {
+        console.log('[AIAvatar] DirectAudioController: Remote audio track FOUND!');
+        audioTrackRef.current = { track, publication, participant };
+        setHasAudioTrack(true);
+      }
+    };
+    
+    const handleTrackUnsubscribed = (track: any, publication: any, participant: any) => {
+      console.log('[AIAvatar] DirectAudioController: TrackUnsubscribed event');
+      console.log('[AIAvatar] - Track kind:', track?.kind);
+      
+      // Clear audio track if it was unsubscribed
+      if (track?.kind === 'audio' && !participant?.isLocal) {
+        console.log('[AIAvatar] DirectAudioController: Remote audio track REMOVED');
+        audioTrackRef.current = null;
+        setHasAudioTrack(false);
+      }
+    };
+    
+    // Attach listeners
+    room.on('trackSubscribed', handleTrackSubscribed);
+    room.on('trackUnsubscribed', handleTrackUnsubscribed);
+    console.log('[AIAvatar] DirectAudioController: Event listeners attached');
+    
+    return () => {
+      console.log('[AIAvatar] DirectAudioController: Cleaning up event listeners');
+      room.off('trackSubscribed', handleTrackSubscribed);
+      room.off('trackUnsubscribed', handleTrackUnsubscribed);
+      listenerAttachedRef.current = false;
+    };
+  }, [room, isConnected]);
+  
+  // Build 18a: Log only, no AudioTrack render yet
+  // Build 18b will add: renderAudio && hasAudioTrack && <AudioTrack />
+  return (
+    <View style={styles.directAudioStatus}>
+      <Text style={styles.directAudioText}>
+        {hasAudioTrack ? '🔊 Audio track ready' : '⏳ Waiting for audio...'}
+      </Text>
+    </View>
+  );
 }
 
 // Phase 4: Voice loop controller - sends avatar.start_listening and logs events
@@ -311,6 +388,7 @@ function MinimalLiveKitContent({
   enableLocalMic,
   enableRemoteAudio,
   enableDataChannel,
+  enableDirectAudio,
   modules
 }: { 
   isConnected: boolean;
@@ -318,9 +396,10 @@ function MinimalLiveKitContent({
   enableLocalMic: boolean;
   enableRemoteAudio: boolean;
   enableDataChannel: boolean;
+  enableDirectAudio: boolean;
   modules: LiveKitModules;
 }) {
-  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableRemoteAudio:', enableRemoteAudio, 'enableDataChannel:', enableDataChannel);
+  console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableDirectAudio:', enableDirectAudio, 'enableDataChannel:', enableDataChannel);
   
   return (
     <View style={styles.videoContainer}>
@@ -333,11 +412,15 @@ function MinimalLiveKitContent({
         // Phase 2+: Render remote video after connection is stable
         <>
           <MinimalRemoteVideoRenderer modules={modules} />
-          {/* Build 17a: Remote audio playback ONLY (no data channel) */}
+          {/* Build 17a: Remote audio via useTracks - CRASHES, DO NOT USE */}
           {enableRemoteAudio && modules && (
             <RemoteAudioRenderer modules={modules} />
           )}
-          {/* Build 17b: Voice loop controller (send start_listening, log events) - DISABLED for 17a */}
+          {/* Build 18a: Direct audio via room events - avoids useTracks crash */}
+          {enableDirectAudio && modules && (
+            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
+          )}
+          {/* Build 17b: Voice loop controller (send start_listening, log events) */}
           {enableDataChannel && modules && (
             <VoiceLoopController modules={modules} isConnected={isConnected} />
           )}
@@ -537,15 +620,17 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Build 17b - Data channel isolation test
+  // MINIMAL TEST: Build 18a - Direct audio via room events (log only)
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
   // Phase 3: Enable local mic
   const [enableLocalMic, setEnableLocalMic] = useState(true);
-  // Build 17b: ISOLATED TESTS - Split voice loop into separate components
-  // enableRemoteAudio = false: NO remote audio subscription (crashed in 17a)
+  // Build 18a: ISOLATED TESTS - Test direct audio approach
+  // enableRemoteAudio = false: useTracks for audio CRASHES - DO NOT USE
   // enableDataChannel = true: Send avatar.start_listening, listen for events
+  // enableDirectAudio = true: Use room events for audio track (log only for 18a)
   const [enableRemoteAudio, setEnableRemoteAudio] = useState(false);
   const [enableDataChannel, setEnableDataChannel] = useState(true);
+  const [enableDirectAudio, setEnableDirectAudio] = useState(true);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
@@ -1016,6 +1101,7 @@ export default function AIAvatarScreen() {
             enableLocalMic={enableLocalMic}
             enableRemoteAudio={enableRemoteAudio}
             enableDataChannel={enableDataChannel}
+            enableDirectAudio={enableDirectAudio}
             modules={liveKitModules}
           />
         </LiveKitRoom>
@@ -1295,6 +1381,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+    overflow: 'hidden',
+  },
+  directAudioStatus: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  directAudioText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '500',
+    backgroundColor: 'rgba(34,197,94,0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     overflow: 'hidden',
   },
   warningBanner: {

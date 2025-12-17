@@ -39,22 +39,24 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (18) Build 17b - Data Channel Isolation Test**: Diagnosing crash source after Build 17a failed:
-- **Build 17a CRASHED**: Remote audio subscription caused SIGSEGV in Hermes (memory corruption in JS runtime)
-- **Different crash from Build 16**: Not WebRTC renegotiation, but pointer authentication failure in Hermes interpreter
-- **Build 17b Strategy**: Isolate data channel commands without remote audio
-  - `enableRemoteAudio = false`: NO remote audio subscription (confirmed to crash)
-  - `enableDataChannel = true`: Send `avatar.start_listening`, listen for server events
-- **Test Goal**: Determine if data channel commands work independently
-- **If Crashes**: Both paths are problematic - need architectural changes
-- **If Works**: Remote audio subscription is the sole culprit - need alternative approach
+**HeyGen AI Avatar Integration - v1.0.10 (19) Build 18a - Direct Audio via Room Events**: Alternative approach to avoid useTracks crash:
+- **Build 17b PASSED**: Data channel commands work without remote audio
+- **Root Cause Confirmed**: `useTracks([Track.Source.Microphone])` causes Hermes SIGSEGV crash
+- **Build 18a Strategy**: Use room events instead of useTracks for audio
+  - Created `DirectAudioController` component using `trackSubscribed`/`trackUnsubscribed` events
+  - Stores audio track in ref (not state) to prevent re-render loops
+  - Only handles remote participant's audio tracks
+  - **Log only for 18a**: No AudioTrack render yet, just logging track events
+- **Test Goal**: Confirm room event listeners for audio tracks are stable
+- **If Stable**: Build 18b will add AudioTrack rendering for stored track
 
 ## Previous Phase Results
 - **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works
 - **Phase 2 PASSED (Build 14)**: Remote video track subscription works
 - **Phase 3 PASSED (Build 15)**: Local microphone publishing works
 - **Phase 4 FAILED (Build 16)**: Full voice loop crashed (WebRTC SIGABRT in setLocalDescription)
-- **Build 17a FAILED**: Remote audio subscription crashed (Hermes SIGSEGV - memory corruption)
+- **Build 17a FAILED**: Remote audio subscription via useTracks crashed (Hermes SIGSEGV)
+- **Build 17b PASSED**: Data channel commands work without remote audio
 
 ## Previous Changes (Dec 15, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:
