@@ -39,21 +39,22 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (17) Build 17a - Remote Audio Isolation Test**: Diagnosing WebRTC renegotiation crash from Build 16:
-- **Build 16 CRASHED**: Full voice loop crashed with SIGABRT in `setLocalDescription()` during WebRTC renegotiation
-- **Root Cause Analysis**: ChatGPT identified crash in WebRTC layer when TurboModule throws NSException
-- **Build 17a Strategy**: Isolate remote audio subscription from data channel commands
-  - `enableRemoteAudio = true`: Subscribe to avatar's audio track (Track.Source.Microphone)
-  - `enableDataChannel = false`: NO `avatar.start_listening` command, NO VoiceLoopController
-- **Test Goal**: Determine if subscribing to remote audio triggers the renegotiation crash
-- **If Crashes**: Remote audio subscription is triggering renegotiation - need different approach
-- **If Works**: Data channel commands are the issue - test separately in Build 17b
+**HeyGen AI Avatar Integration - v1.0.10 (18) Build 17b - Data Channel Isolation Test**: Diagnosing crash source after Build 17a failed:
+- **Build 17a CRASHED**: Remote audio subscription caused SIGSEGV in Hermes (memory corruption in JS runtime)
+- **Different crash from Build 16**: Not WebRTC renegotiation, but pointer authentication failure in Hermes interpreter
+- **Build 17b Strategy**: Isolate data channel commands without remote audio
+  - `enableRemoteAudio = false`: NO remote audio subscription (confirmed to crash)
+  - `enableDataChannel = true`: Send `avatar.start_listening`, listen for server events
+- **Test Goal**: Determine if data channel commands work independently
+- **If Crashes**: Both paths are problematic - need architectural changes
+- **If Works**: Remote audio subscription is the sole culprit - need alternative approach
 
 ## Previous Phase Results
 - **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works
 - **Phase 2 PASSED (Build 14)**: Remote video track subscription works
 - **Phase 3 PASSED (Build 15)**: Local microphone publishing works
-- **Phase 4 FAILED (Build 16)**: Full voice loop crashed (WebRTC renegotiation)
+- **Phase 4 FAILED (Build 16)**: Full voice loop crashed (WebRTC SIGABRT in setLocalDescription)
+- **Build 17a FAILED**: Remote audio subscription crashed (Hermes SIGSEGV - memory corruption)
 
 ## Previous Changes (Dec 15, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (12) Force Source Build Fix**: SDK 54's precompiled XCFrameworks ignore legacy arch flags:

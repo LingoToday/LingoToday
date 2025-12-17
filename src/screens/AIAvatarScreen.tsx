@@ -537,15 +537,15 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
   
-  // MINIMAL TEST: Build 17a - Remote audio isolation test
+  // MINIMAL TEST: Build 17b - Data channel isolation test
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
   // Phase 3: Enable local mic
   const [enableLocalMic, setEnableLocalMic] = useState(true);
-  // Build 17a: ISOLATED TESTS - Split voice loop into separate components
-  // enableRemoteAudio = true: Subscribe to avatar's audio track (test audio subscription)
-  // enableDataChannel = false: NO data channel commands (disabled for 17a)
-  const [enableRemoteAudio, setEnableRemoteAudio] = useState(true);
-  const [enableDataChannel, setEnableDataChannel] = useState(false);
+  // Build 17b: ISOLATED TESTS - Split voice loop into separate components
+  // enableRemoteAudio = false: NO remote audio subscription (crashed in 17a)
+  // enableDataChannel = true: Send avatar.start_listening, listen for events
+  const [enableRemoteAudio, setEnableRemoteAudio] = useState(false);
+  const [enableDataChannel, setEnableDataChannel] = useState(true);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
