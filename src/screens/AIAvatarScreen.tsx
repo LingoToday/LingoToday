@@ -309,28 +309,39 @@ function VoiceLoopController({
   // Send avatar.start_listening command after connection
   useEffect(() => {
     if (isConnected && room && !listeningStarted) {
-      console.log('[AIAvatar] Phase 4: Sending avatar.start_listening command...');
+      console.log('[AIAvatar] VoiceLoop: Preparing to send avatar.start_listening...');
+      console.log('[AIAvatar] VoiceLoop: Room state:', room.state);
+      console.log('[AIAvatar] VoiceLoop: Room name:', room.name);
       
       const sendStartListening = async () => {
         try {
+          // Check if local participant is ready
+          console.log('[AIAvatar] VoiceLoop: localParticipant identity:', room.localParticipant?.identity);
+          console.log('[AIAvatar] VoiceLoop: localParticipant audioTrackPublications:', room.localParticipant?.audioTrackPublications?.size || 0);
+          
           const command = JSON.stringify({
             type: 'avatar.start_listening'
           });
+          console.log('[AIAvatar] VoiceLoop: Sending command:', command);
+          
           const encoder = new TextEncoder();
           const data = encoder.encode(command);
           
           // LiveKit publishData signature: (data, kind?, destination?, topic?)
           // Default is reliable, so we can omit the second argument
           await room.localParticipant.publishData(data);
-          console.log('[AIAvatar] Phase 4: avatar.start_listening command SENT');
+          console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT SUCCESSFULLY');
           setListeningStarted(true);
         } catch (err: any) {
-          console.error('[AIAvatar] Phase 4: Failed to send start_listening:', err);
+          console.error('[AIAvatar] VoiceLoop: Failed to send start_listening:', err);
+          console.error('[AIAvatar] VoiceLoop: Error name:', err?.name);
+          console.error('[AIAvatar] VoiceLoop: Error message:', err?.message);
         }
       };
       
-      // Small delay to ensure room is fully ready
-      setTimeout(sendStartListening, 500);
+      // Increased delay to ensure mic is published first
+      console.log('[AIAvatar] VoiceLoop: Waiting 1500ms for mic to be ready...');
+      setTimeout(sendStartListening, 1500);
     }
   }, [isConnected, room, listeningStarted]);
   
@@ -406,15 +417,32 @@ function MicController({
   // Enable mic after connection is established
   useEffect(() => {
     if (isConnected && localParticipant && !isMicEnabled) {
-      console.log('[AIAvatar] Phase 3: Attempting to enable local microphone...');
+      console.log('[AIAvatar] MicController: Attempting to enable local microphone...');
+      console.log('[AIAvatar] MicController: localParticipant identity:', localParticipant.identity);
+      console.log('[AIAvatar] MicController: localParticipant sid:', localParticipant.sid);
+      
       const enableMic = async () => {
         try {
+          console.log('[AIAvatar] MicController: Calling setMicrophoneEnabled(true)...');
           await localParticipant.setMicrophoneEnabled(true);
-          console.log('[AIAvatar] Phase 3: Local microphone ENABLED successfully');
+          console.log('[AIAvatar] MicController: setMicrophoneEnabled COMPLETED');
+          
+          // Check if mic track is published
+          const audioTracks = localParticipant.audioTrackPublications;
+          console.log('[AIAvatar] MicController: Audio track publications count:', audioTracks?.size || 0);
+          if (audioTracks) {
+            audioTracks.forEach((pub: any, key: string) => {
+              console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'isSubscribed:', pub.isSubscribed);
+            });
+          }
+          
           setIsMicEnabled(true);
           setMicError(null);
+          console.log('[AIAvatar] MicController: Mic ENABLED and ready');
         } catch (err: any) {
-          console.error('[AIAvatar] Phase 3: Failed to enable microphone:', err);
+          console.error('[AIAvatar] MicController: Failed to enable microphone:', err);
+          console.error('[AIAvatar] MicController: Error name:', err?.name);
+          console.error('[AIAvatar] MicController: Error message:', err?.message);
           setMicError(err?.message || 'Failed to enable mic');
         }
       };

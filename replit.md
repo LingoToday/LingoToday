@@ -39,16 +39,20 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (20) Build 19 - Context Injection**: Adding dynamic lesson context to avatar sessions:
-- **Build 18a PASSED**: Direct audio via room events works on iOS - full voice interaction functional
-- **Build 19 Features**:
-  - Added `buildSessionContext()` function to generate SESSION_CONTEXT JSON
-  - Context includes: language, level, course, lesson, review phrases
-  - Added `session_context` field to API request body
-  - Updated `context_id` to new value: `36b81552-35ee-40ea-b008-d84cb5ca882c`
-  - Session rules: 120s hard limit, 90s target, topic strict mode enabled
-  - Review items formatted from `reviewPhrases` route params
-- **Expected Behavior**: Avatar should use lesson context to ask targeted questions
+**HeyGen AI Avatar Integration - v1.0.10 (21) Build 19a - Voice Loop Debug**: Debugging why avatar can't hear user:
+- **Issue Reported**: User can hear avatar, but avatar can't hear user
+- **Build 19a Changes**:
+  - Added verbose logging to MicController (participant info, track publications)
+  - Added verbose logging to VoiceLoopController (room state, command sending)
+  - Increased delay before sending start_listening (500ms → 1500ms) to ensure mic is ready
+  - Logs audio track publications after mic enabled
+- **Debug Goal**: Identify if mic is publishing and if start_listening command is received
+
+**Previous Build 19 Features** (Context Injection):
+- Added `buildSessionContext()` function to generate SESSION_CONTEXT JSON
+- Context includes: language, level, course, lesson, review phrases
+- Added `session_context` field to API request body
+- Updated `context_id` to: `36b81552-35ee-40ea-b008-d84cb5ca882c`
 
 ## Previous Phase Results
 - **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works
