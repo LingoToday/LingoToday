@@ -51,6 +51,8 @@ Core features include:
   7. **Server events**: Displays last received event from HeyGen
   8. **Error log**: Shows last 3 errors in the debug panel
 - **Expected Debug Output**: All green checkmarks if mic is working, yellow fallback warning if event didn't fire, red X and error messages if something failed
+- **Duplicate Send Prevention**: Added `startListeningSentRef` to prevent race conditions causing multiple start_listening commands
+- **Fallback Timer Cleanup**: Timer now properly clears after fallback path succeeds
 
 **Previous Build 19b**: AudioSession → Permissions → Enable Mic → LocalTrackPublished event → send start_listening
 
