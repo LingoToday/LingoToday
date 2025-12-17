@@ -39,16 +39,16 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 17, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (19) Build 18a - Direct Audio via Room Events**: Alternative approach to avoid useTracks crash:
-- **Build 17b PASSED**: Data channel commands work without remote audio
-- **Root Cause Confirmed**: `useTracks([Track.Source.Microphone])` causes Hermes SIGSEGV crash
-- **Build 18a Strategy**: Use room events instead of useTracks for audio
-  - Created `DirectAudioController` component using `trackSubscribed`/`trackUnsubscribed` events
-  - Stores audio track in ref (not state) to prevent re-render loops
-  - Only handles remote participant's audio tracks
-  - **Log only for 18a**: No AudioTrack render yet, just logging track events
-- **Test Goal**: Confirm room event listeners for audio tracks are stable
-- **If Stable**: Build 18b will add AudioTrack rendering for stored track
+**HeyGen AI Avatar Integration - v1.0.10 (20) Build 19 - Context Injection**: Adding dynamic lesson context to avatar sessions:
+- **Build 18a PASSED**: Direct audio via room events works on iOS - full voice interaction functional
+- **Build 19 Features**:
+  - Added `buildSessionContext()` function to generate SESSION_CONTEXT JSON
+  - Context includes: language, level, course, lesson, review phrases
+  - Added `session_context` field to API request body
+  - Updated `context_id` to new value: `36b81552-35ee-40ea-b008-d84cb5ca882c`
+  - Session rules: 120s hard limit, 90s target, topic strict mode enabled
+  - Review items formatted from `reviewPhrases` route params
+- **Expected Behavior**: Avatar should use lesson context to ask targeted questions
 
 ## Previous Phase Results
 - **Phase 1 PASSED (Build 13)**: Pure LiveKit room connection works

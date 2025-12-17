@@ -16,13 +16,88 @@ import { Audio } from 'expo-av';
 import { theme } from '../lib/theme';
 
 const HEYGEN_AVATAR_ID = 'bf00036b-558a-44b5-b2ff-1e3cec0f4ceb';
-const HEYGEN_CONTEXT_ID = 'c32cf18d-d920-4d35-8eb4-39c4b1fd90ce';
+const HEYGEN_CONTEXT_ID = '36b81552-35ee-40ea-b008-d84cb5ca882c';
 const HEYGEN_VOICE_ID = 'b2bd6569-a537-4342-aeca-a1f15d2a2c97';
 const API_BASE_URL = 'https://api.liveavatar.com';
 const HEYGEN_API_KEY_STORAGE_KEY = 'heygen_api_key';
 
 const SESSION_SOFT_LIMIT = 90;
 const SESSION_HARD_LIMIT = 120;
+
+type SessionContext = {
+  role: string;
+  language_learning: {
+    target_language: string;
+    ui_language: string;
+    level: string;
+    course: string;
+    lesson: string;
+    review_type: string;
+  };
+  session_rules: {
+    duration_seconds: number;
+    target_seconds: number;
+    topic_strict: boolean;
+    redirect_line: string;
+  };
+  review_items: Array<{
+    id: string;
+    prompt_en: string;
+    expected_target: string[];
+    notes?: string;
+  }>;
+};
+
+const buildSessionContext = (
+  language: string,
+  level: string,
+  courseTitle: string,
+  lessonTitle: string,
+  reviewPhrases: string[],
+  languageCode: string
+): SessionContext => {
+  const languageNames: { [key: string]: string } = {
+    'it': 'Italian',
+    'es': 'Spanish',
+    'de': 'German',
+    'fr': 'French',
+    'en': 'English'
+  };
+  const targetLanguageName = languageNames[languageCode] || language;
+  
+  const reviewItems = reviewPhrases.map((phrase, index) => ({
+    id: `r${index + 1}`,
+    prompt_en: phrase,
+    expected_target: [],
+    notes: `Ask user to translate "${phrase}" to ${targetLanguageName}. Evaluate their spoken response using your language knowledge.`
+  }));
+
+  return {
+    role: 'LingoToday Review Coach',
+    language_learning: {
+      target_language: languageCode,
+      ui_language: 'en',
+      level: level || 'beginner',
+      course: courseTitle || 'Language Practice',
+      lesson: lessonTitle || 'Review Session',
+      review_type: 'recall_translation'
+    },
+    session_rules: {
+      duration_seconds: SESSION_HARD_LIMIT,
+      target_seconds: SESSION_SOFT_LIMIT,
+      topic_strict: true,
+      redirect_line: "Let's get back to practising the phrases from this lesson."
+    },
+    review_items: reviewItems.length > 0 ? reviewItems : [
+      {
+        id: 'r1',
+        prompt_en: 'Practice conversation',
+        expected_target: [],
+        notes: `Have a simple conversation practice in ${targetLanguageName}. Ask basic questions appropriate for the user's level.`
+      }
+    ]
+  };
+};
 
 type AIAvatarRouteParams = {
   language?: string;
@@ -780,14 +855,26 @@ export default function AIAvatarScreen() {
     console.log('[AIAvatar] Avatar ID:', HEYGEN_AVATAR_ID);
     console.log('[AIAvatar] Context ID:', HEYGEN_CONTEXT_ID);
     
+    const langCode = getLanguageCode(language);
+    const sessionContext = buildSessionContext(
+      language,
+      level,
+      courseTitle,
+      lessonTitle,
+      reviewPhrases,
+      langCode
+    );
+    console.log('[AIAvatar] Session context:', JSON.stringify(sessionContext, null, 2));
+    
     const requestBody = {
       mode: 'FULL',
       avatar_id: HEYGEN_AVATAR_ID,
       avatar_persona: {
         voice_id: HEYGEN_VOICE_ID,
         context_id: HEYGEN_CONTEXT_ID,
-        language: getLanguageCode(language),
+        language: langCode,
       },
+      session_context: sessionContext,
     };
     console.log('[AIAvatar] Request body:', JSON.stringify(requestBody, null, 2));
     
