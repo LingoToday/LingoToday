@@ -142,6 +142,11 @@ type DebugTelemetry = {
   startListeningTime: string | null;
   lastServerEvent: string | null;
   lastServerEventTime: string | null;
+  // Build 19e: Audio track capture state
+  trackStarted: boolean | null;
+  trackEnabled: boolean | null;
+  mediaStreamActive: boolean | null;
+  mediaTrackReadyState: string | null;
   errors: string[];
 };
 
@@ -166,6 +171,10 @@ const initialDebugTelemetry: DebugTelemetry = {
   startListeningTime: null,
   lastServerEvent: null,
   lastServerEventTime: null,
+  trackStarted: null,
+  trackEnabled: null,
+  mediaStreamActive: null,
+  mediaTrackReadyState: null,
   errors: [],
 };
 
@@ -204,7 +213,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 19d Debug</Text>
+      <Text style={debugStyles.title}>🔧 Build 19e Debug</Text>
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -222,6 +231,14 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
         <StatusRow label="Audio Tracks" value={telemetry.audioTrackCount} />
         <StatusRow label="Track Muted" value={telemetry.audioTrackMuted} />
         <StatusRow label="Track SID" value={telemetry.audioTrackSid} />
+      </View>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>Audio Capture</Text>
+        <StatusRow label="Track Started" value={telemetry.trackStarted} />
+        <StatusRow label="Track Enabled" value={telemetry.trackEnabled} />
+        <StatusRow label="Stream Active" value={telemetry.mediaStreamActive} />
+        <StatusRow label="ReadyState" value={telemetry.mediaTrackReadyState} />
       </View>
       
       <View style={debugStyles.section}>
@@ -526,12 +543,41 @@ function VoiceLoopController({
       if (publication?.kind === 'audio' || publication?.source === 'microphone') {
         console.log('[AIAvatar] VoiceLoop: LOCAL MIC TRACK PUBLISHED!');
         setMicTrackPublished(true);
+        
+        // Build 19e: Deep inspect the published track
+        const track = publication?.track;
+        let trackStarted: boolean | null = null;
+        let trackEnabled: boolean | null = null;
+        let mediaStreamActive: boolean | null = null;
+        let mediaTrackReadyState: string | null = null;
+        
+        if (track) {
+          console.log('[AIAvatar] VoiceLoop: Inspecting published track...');
+          console.log('[AIAvatar] VoiceLoop: track.isStarted:', track.isStarted);
+          console.log('[AIAvatar] VoiceLoop: track.isEnabled:', track.isEnabled);
+          if (track.isStarted !== undefined) trackStarted = track.isStarted;
+          if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
+          
+          const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
+          if (mediaStreamTrack) {
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.readyState:', mediaStreamTrack.readyState);
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.enabled:', mediaStreamTrack.enabled);
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.muted:', mediaStreamTrack.muted);
+            if (mediaStreamTrack.readyState) mediaTrackReadyState = mediaStreamTrack.readyState;
+            if (track.mediaStream?.active !== undefined) mediaStreamActive = track.mediaStream.active;
+          }
+        }
+        
         updateTelemetry({
           trackPublished: true,
           trackPublishedTime: getTimeStamp(),
           trackPublishedViaFallback: false,
           audioTrackSid: publication?.trackSid || null,
           audioTrackMuted: publication?.isMuted ?? null,
+          ...(trackStarted !== null && { trackStarted }),
+          ...(trackEnabled !== null && { trackEnabled }),
+          ...(mediaStreamActive !== null && { mediaStreamActive }),
+          ...(mediaTrackReadyState !== null && { mediaTrackReadyState }),
         });
         
         // Clear fallback timer since we got the event
@@ -542,27 +588,60 @@ function VoiceLoopController({
       }
     };
     
+    // Build 19e: Helper to deep inspect audio track capture state
+    const inspectAudioTrackCapture = (audioTracks: Map<string, any>) => {
+      let trackSid: string | null = null;
+      let trackMuted: boolean | null = null;
+      let trackStarted: boolean | null = null;
+      let trackEnabled: boolean | null = null;
+      let mediaStreamActive: boolean | null = null;
+      let mediaTrackReadyState: string | null = null;
+      
+      audioTracks.forEach((pub: any) => {
+        trackSid = pub.trackSid;
+        trackMuted = pub.isMuted ?? null;
+        
+        const track = pub.track;
+        if (track) {
+          console.log('[AIAvatar] VoiceLoop: Inspecting track capture state...');
+          console.log('[AIAvatar] VoiceLoop: track.isStarted:', track.isStarted);
+          console.log('[AIAvatar] VoiceLoop: track.isEnabled:', track.isEnabled);
+          if (track.isStarted !== undefined) trackStarted = track.isStarted;
+          if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
+          
+          const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
+          if (mediaStreamTrack) {
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.readyState:', mediaStreamTrack.readyState);
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.enabled:', mediaStreamTrack.enabled);
+            console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.muted:', mediaStreamTrack.muted);
+            if (mediaStreamTrack.readyState) mediaTrackReadyState = mediaStreamTrack.readyState;
+            if (track.mediaStream?.active !== undefined) mediaStreamActive = track.mediaStream.active;
+          }
+        }
+      });
+      
+      return { trackSid, trackMuted, trackStarted, trackEnabled, mediaStreamActive, mediaTrackReadyState };
+    };
+    
     // Also check if there's already a published audio track
     const existingAudioTracks = room.localParticipant?.audioTrackPublications;
     if (existingAudioTracks && existingAudioTracks.size > 0) {
       console.log('[AIAvatar] VoiceLoop: Found existing audio tracks:', existingAudioTracks.size);
       setMicTrackPublished(true);
       
-      // Get track details
-      let trackSid: string | null = null;
-      let trackMuted: boolean | null = null;
-      existingAudioTracks.forEach((pub: any) => {
-        trackSid = pub.trackSid;
-        trackMuted = pub.isMuted ?? null;
-      });
+      const captureState = inspectAudioTrackCapture(existingAudioTracks as Map<string, any>);
       
       updateTelemetry({
         trackPublished: true,
         trackPublishedTime: getTimeStamp(),
         trackPublishedViaFallback: false,
         audioTrackCount: existingAudioTracks.size,
-        audioTrackSid: trackSid,
-        audioTrackMuted: trackMuted,
+        audioTrackSid: captureState.trackSid,
+        audioTrackMuted: captureState.trackMuted,
+        ...(captureState.trackStarted !== null && { trackStarted: captureState.trackStarted }),
+        ...(captureState.trackEnabled !== null && { trackEnabled: captureState.trackEnabled }),
+        ...(captureState.mediaStreamActive !== null && { mediaStreamActive: captureState.mediaStreamActive }),
+        ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
       });
     } else {
       // Set up 5-second fallback timer
@@ -583,19 +662,18 @@ function VoiceLoopController({
           // Clear timer after fallback fires
           fallbackTimerRef.current = null;
           
-          let trackSid: string | null = null;
-          let trackMuted: boolean | null = null;
-          audioTracks?.forEach((pub: any) => {
-            trackSid = pub.trackSid;
-            trackMuted = pub.isMuted ?? null;
-          });
+          const captureState = inspectAudioTrackCapture(audioTracks as Map<string, any>);
           
           updateTelemetry({
             trackPublished: true,
             trackPublishedTime: getTimeStamp(),
             trackPublishedViaFallback: true,
-            audioTrackSid: trackSid,
-            audioTrackMuted: trackMuted,
+            audioTrackSid: captureState.trackSid,
+            audioTrackMuted: captureState.trackMuted,
+            ...(captureState.trackStarted !== null && { trackStarted: captureState.trackStarted }),
+            ...(captureState.trackEnabled !== null && { trackEnabled: captureState.trackEnabled }),
+            ...(captureState.mediaStreamActive !== null && { mediaStreamActive: captureState.mediaStreamActive }),
+            ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
           });
         } else {
           console.warn('[AIAvatar] VoiceLoop: FALLBACK - No audio tracks found after 5s!');
@@ -934,11 +1012,54 @@ function MicController({
           const trackCount = audioTracks?.size || 0;
           console.log('[AIAvatar] MicController: Audio track publications count:', trackCount);
           
-          if (audioTracks) {
+          // Build 19e: Helper to inspect LocalAudioTrack capture state
+          const inspectAudioTrack = (audioTracks: Map<string, any>) => {
+            let trackStarted: boolean | null = null;
+            let trackEnabled: boolean | null = null;
+            let mediaStreamActive: boolean | null = null;
+            let mediaTrackReadyState: string | null = null;
+            
             audioTracks.forEach((pub: any, key: string) => {
               console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'trackSid:', pub.trackSid);
+              
+              const track = pub.track;
+              if (track) {
+                console.log('[AIAvatar] MicController: Track object found');
+                console.log('[AIAvatar] MicController: track.isStarted:', track.isStarted);
+                console.log('[AIAvatar] MicController: track.isEnabled:', track.isEnabled);
+                console.log('[AIAvatar] MicController: track.isMuted:', track.isMuted);
+                
+                // Only update if we have actual values (don't overwrite with null)
+                if (track.isStarted !== undefined) trackStarted = track.isStarted;
+                if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
+                
+                const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
+                if (mediaStreamTrack) {
+                  console.log('[AIAvatar] MicController: MediaStreamTrack found');
+                  console.log('[AIAvatar] MicController: mediaStreamTrack.readyState:', mediaStreamTrack.readyState);
+                  console.log('[AIAvatar] MicController: mediaStreamTrack.enabled:', mediaStreamTrack.enabled);
+                  console.log('[AIAvatar] MicController: mediaStreamTrack.muted:', mediaStreamTrack.muted);
+                  
+                  if (mediaStreamTrack.readyState) mediaTrackReadyState = mediaStreamTrack.readyState;
+                  
+                  if (track.mediaStream && track.mediaStream.active !== undefined) {
+                    mediaStreamActive = track.mediaStream.active;
+                    console.log('[AIAvatar] MicController: mediaStream.active:', mediaStreamActive);
+                  }
+                } else {
+                  console.log('[AIAvatar] MicController: No MediaStreamTrack found on track object');
+                  console.log('[AIAvatar] MicController: Track object keys:', Object.keys(track));
+                }
+              } else {
+                console.log('[AIAvatar] MicController: No track object on publication (may still be publishing)');
+              }
             });
-          }
+            
+            return { trackStarted, trackEnabled, mediaStreamActive, mediaTrackReadyState };
+          };
+          
+          // Initial inspection
+          let captureState = inspectAudioTrack(audioTracks as Map<string, any>);
           
           setIsMicEnabled(true);
           setMicError(null);
@@ -946,8 +1067,27 @@ function MicController({
             micEnabled: true,
             micEnabledTime: getTimeStamp(),
             audioTrackCount: trackCount,
+            ...(captureState.trackStarted !== null && { trackStarted: captureState.trackStarted }),
+            ...(captureState.trackEnabled !== null && { trackEnabled: captureState.trackEnabled }),
+            ...(captureState.mediaStreamActive !== null && { mediaStreamActive: captureState.mediaStreamActive }),
+            ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
           });
           console.log('[AIAvatar] MicController: Mic ENABLED and ready');
+          
+          // Re-inspect after a short delay in case track is still publishing
+          setTimeout(() => {
+            const delayedTracks = localParticipant.audioTrackPublications;
+            if (delayedTracks && delayedTracks.size > 0) {
+              console.log('[AIAvatar] MicController: Re-inspecting audio tracks after 500ms...');
+              const delayedState = inspectAudioTrack(delayedTracks as Map<string, any>);
+              updateTelemetry({
+                ...(delayedState.trackStarted !== null && { trackStarted: delayedState.trackStarted }),
+                ...(delayedState.trackEnabled !== null && { trackEnabled: delayedState.trackEnabled }),
+                ...(delayedState.mediaStreamActive !== null && { mediaStreamActive: delayedState.mediaStreamActive }),
+                ...(delayedState.mediaTrackReadyState !== null && { mediaTrackReadyState: delayedState.mediaTrackReadyState }),
+              });
+            }
+          }, 500);
         } catch (err: any) {
           console.error('[AIAvatar] MicController: Failed to enable microphone:', err);
           console.error('[AIAvatar] MicController: Error name:', err?.name);

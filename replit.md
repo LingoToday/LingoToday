@@ -39,15 +39,20 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 18, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (24) Build 19d - Data Channel Fix**: Fixed critical issue where start_listening command was sent before data channel was ready:
-- **Root Cause**: Build 19c showed Data Channel: NO while start_listening was YES - command was sent but never reached server
-- **Fix**: Replaced `engine.connected` check with actual data channel readyState polling
-- **Changes**:
-  1. **checkDataChannelReady()**: New helper that checks `reliableDC`, `lossyDC`, and `publisher.dataChannel` readyStates
-  2. **Polling mechanism**: Polls every 250ms for up to 5 seconds waiting for data channel to open
-  3. **Only sends start_listening when data channel is confirmed open** (readyState === 'open')
-  4. **New telemetry field**: `dataChannelState` shows actual state (reliable:X,lossy:X,pub:X)
-  5. **Debug panel updated**: Shows "DC Ready" (boolean) and "DC State" (detailed states)
+**HeyGen AI Avatar Integration - v1.0.10 (25) Build 19e - Audio Capture Telemetry**: Added deep inspection of LocalAudioTrack capture state to diagnose why audio isn't being transmitted:
+- **Problem**: Build 19d fixed data channel - server now responds with avatar_start_talking, but still shows "Waiting for audio" meaning user's mic audio isn't being transmitted
+- **New Telemetry Fields**:
+  1. **trackStarted**: LocalAudioTrack.isStarted - whether track capture has started
+  2. **trackEnabled**: LocalAudioTrack.isEnabled - whether track is enabled
+  3. **mediaStreamActive**: MediaStream.active - whether underlying stream is active
+  4. **mediaTrackReadyState**: MediaStreamTrack.readyState - should be 'live' for working audio
+- **Debug Panel Updated**: New "Audio Capture" section shows all four states
+- **Deep Track Inspection**: Logs MediaStreamTrack.enabled, .muted, .readyState after mic enable
+
+**Previous Build 19d - Data Channel Fix**:
+- Replaced `engine.connected` check with actual data channel readyState polling
+- Polls every 250ms for up to 5 seconds waiting for data channel to open
+- Only sends start_listening when data channel is confirmed open
 
 ## Previous Changes (Dec 17, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (23) Build 19c - UI Debug Telemetry**: Added UI-visible debugging for microphone voice loop issues:
