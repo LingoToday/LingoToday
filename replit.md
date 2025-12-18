@@ -39,7 +39,16 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 18, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (26) Build 19f - Force Mic Re-Enable + Audio Stats**: Fixed audio transmission issue where LiveKit publishes track but doesn't start sending:
+**HeyGen AI Avatar Integration - v1.0.10 (27) Build 19g - LiveKit Debug Info for meet.livekit.io Testing**: Added diagnostic info to help debug why HeyGen can't process audio despite successful transmission:
+- **Key Finding**: Build 19f proved audio IS being transmitted (273K+ bytes, 1300+ packets sent) but HeyGen shows "unknown" events
+- **LiveKit Info Section**: New debug panel section showing LiveKit URL and token for testing at meet.livekit.io
+- **Participant Identity**: Shows the local participant identity assigned by LiveKit
+- **Audio Codec**: Shows what codec the audio track is using
+- **Server Events Log**: Shows last 5 server events received with timestamps (replaces single "Last Event")
+- **LiveAvatar FULL Mode Research**: According to LiveAvatar docs, voice chat should work automatically once you join the LiveKit room - no special STT config needed server-side
+- **Next Step**: User can copy LiveKit URL/token from debug panel to test at meet.livekit.io - if voice works there but not iOS, confirms iOS-specific issue
+
+**Previous Build 19f - Force Mic Re-Enable + Audio Stats**: Fixed audio transmission issue where LiveKit publishes track but doesn't start sending:
 - **Root Cause Found**: Build 19e telemetry showed MediaStream.active=YES, readyState=live, but track.isStarted/isEnabled were undefined - meaning LiveKit published the track but never started transmitting
 - **Fix Applied**: Force `setMicrophoneEnabled(true)` AFTER track publication is detected to kick-start audio transmission
 - **Re-Enable in Both Paths**: Applied in LocalTrackPublished handler AND 5-second fallback timer

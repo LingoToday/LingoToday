@@ -153,6 +153,12 @@ type DebugTelemetry = {
   packetsSent: number | null;
   micReEnabled: boolean;
   micReEnabledTime: string | null;
+  // Build 19g: LiveKit URL/token for meet.livekit.io testing
+  liveKitUrl: string | null;
+  liveKitToken: string | null;
+  participantIdentity: string | null;
+  audioCodec: string | null;
+  allServerEvents: string[];
   errors: string[];
 };
 
@@ -186,6 +192,11 @@ const initialDebugTelemetry: DebugTelemetry = {
   packetsSent: null,
   micReEnabled: false,
   micReEnabledTime: null,
+  liveKitUrl: null,
+  liveKitToken: null,
+  participantIdentity: null,
+  audioCodec: null,
+  allServerEvents: [],
   errors: [],
 };
 
@@ -224,7 +235,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 19f Debug</Text>
+      <Text style={debugStyles.title}>🔧 Build 19g Debug</Text>
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -267,6 +278,25 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
         <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
         <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
       </View>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>LiveKit Info</Text>
+        <StatusRow label="Participant" value={telemetry.participantIdentity} />
+        <StatusRow label="Audio Codec" value={telemetry.audioCodec} />
+        <Text style={debugStyles.urlLabel}>URL (copy for meet.livekit.io):</Text>
+        <Text style={debugStyles.urlValue} selectable numberOfLines={2}>{telemetry.liveKitUrl || '-'}</Text>
+        <Text style={debugStyles.urlLabel}>Token (first 50 chars):</Text>
+        <Text style={debugStyles.urlValue} selectable numberOfLines={2}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 50) + '...' : '-'}</Text>
+      </View>
+      
+      {telemetry.allServerEvents.length > 0 && (
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>📡 Server Events (last 5)</Text>
+          {telemetry.allServerEvents.slice(-5).map((evt, i) => (
+            <Text key={i} style={debugStyles.eventLog}>{evt}</Text>
+          ))}
+        </View>
+      )}
       
       {telemetry.errors.length > 0 && (
         <View style={debugStyles.section}>
@@ -340,6 +370,21 @@ const debugStyles = StyleSheet.create({
   error: {
     color: '#f87171',
     fontSize: 10,
+    marginLeft: 4,
+  },
+  urlLabel: {
+    color: '#888',
+    fontSize: 9,
+    marginTop: 2,
+  },
+  urlValue: {
+    color: '#60a5fa',
+    fontSize: 8,
+    marginBottom: 4,
+  },
+  eventLog: {
+    color: '#a78bfa',
+    fontSize: 9,
     marginLeft: 4,
   },
 });
@@ -786,10 +831,17 @@ function VoiceLoopController({
             const stats = await pc.getStats();
             stats.forEach((report: any) => {
               if (report.type === 'outbound-rtp' && report.kind === 'audio') {
-                console.log('[AIAvatar] AudioStats: bytesSent:', report.bytesSent, 'packetsSent:', report.packetsSent);
+                console.log('[AIAvatar] AudioStats: bytesSent:', report.bytesSent, 'packetsSent:', report.packetsSent, 'codec:', report.codecId);
                 updateTelemetry({
                   bytesSent: report.bytesSent || 0,
                   packetsSent: report.packetsSent || 0,
+                });
+              }
+              // Build 19g: Get codec info
+              if (report.type === 'codec' && report.mimeType?.includes('audio')) {
+                console.log('[AIAvatar] AudioStats: codec mimeType:', report.mimeType);
+                updateTelemetry({
+                  audioCodec: report.mimeType || 'unknown',
                 });
               }
             });
@@ -1028,12 +1080,16 @@ function VoiceLoopController({
         const message = decoder.decode(payload);
         const data = JSON.parse(message);
         
-        console.log('[AIAvatar] Server event received:', data.type || data);
+        const eventType = data.type || JSON.stringify(data).substring(0, 40);
+        const timestamp = getTimeStamp();
+        console.log('[AIAvatar] Server event received:', eventType, 'Full data:', JSON.stringify(data));
         
+        // Build 19g: Update telemetry with event
         updateTelemetry({
-          lastServerEvent: data.type || 'unknown',
-          lastServerEventTime: getTimeStamp(),
-        });
+          lastServerEvent: eventType,
+          lastServerEventTime: timestamp,
+          appendEvent: `${timestamp}: ${eventType}`,
+        } as any);
         
         // Update state based on events
         if (data.type === 'user.speak_started') {
@@ -1138,6 +1194,11 @@ function MicController({
       console.log('[AIAvatar] MicController: Attempting to enable local microphone...');
       console.log('[AIAvatar] MicController: localParticipant identity:', localParticipant.identity);
       console.log('[AIAvatar] MicController: localParticipant sid:', localParticipant.sid);
+      
+      // Build 19g: Update telemetry with participant identity
+      updateTelemetry({
+        participantIdentity: localParticipant.identity || localParticipant.sid || 'unknown',
+      });
       
       const enableMic = async () => {
         try {
@@ -1299,7 +1360,9 @@ function MinimalLiveKitContent({
   enableDataChannel,
   enableDirectAudio,
   modules,
-  showDebugPanel = true
+  showDebugPanel = true,
+  liveKitUrl = '',
+  liveKitToken = ''
 }: { 
   isConnected: boolean;
   showRemoteVideo: boolean;
@@ -1309,25 +1372,43 @@ function MinimalLiveKitContent({
   enableDirectAudio: boolean;
   modules: LiveKitModules;
   showDebugPanel?: boolean;
+  liveKitUrl?: string;
+  liveKitToken?: string;
 }) {
   // Build 19c: Debug telemetry state
   const [debugTelemetry, setDebugTelemetry] = useState<DebugTelemetry>(initialDebugTelemetry);
   
-  const updateTelemetry = useCallback((updates: Partial<DebugTelemetry>) => {
+  const updateTelemetry = useCallback((updates: Partial<DebugTelemetry> & { appendEvent?: string }) => {
     setDebugTelemetry(prev => {
+      let newState = { ...prev, ...updates };
+      
       // Special handling for errors array - append instead of replace
       if (updates.errors) {
-        return {
-          ...prev,
-          ...updates,
-          errors: [...prev.errors, ...updates.errors].slice(-5), // Keep last 5 errors
-        };
+        newState.errors = [...prev.errors, ...updates.errors].slice(-5);
       }
-      return { ...prev, ...updates };
+      
+      // Build 19g: Special handling for allServerEvents - append
+      if ((updates as any).appendEvent) {
+        newState.allServerEvents = [...(prev.allServerEvents || []), (updates as any).appendEvent].slice(-10);
+        delete (newState as any).appendEvent;
+      }
+      
+      return newState;
     });
   }, []);
   
   console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableDirectAudio:', enableDirectAudio, 'enableDataChannel:', enableDataChannel);
+  
+  // Build 19g: Update telemetry with LiveKit URL/token for meet.livekit.io testing
+  useEffect(() => {
+    if (liveKitUrl || liveKitToken) {
+      setDebugTelemetry(prev => ({
+        ...prev,
+        liveKitUrl: liveKitUrl || prev.liveKitUrl,
+        liveKitToken: liveKitToken || prev.liveKitToken,
+      }));
+    }
+  }, [liveKitUrl, liveKitToken]);
   
   return (
     <View style={styles.videoContainer}>
@@ -1912,6 +1993,10 @@ export default function AIAvatarScreen() {
       setLiveKitUrl(url);
       setLiveKitToken(token);
       
+      // Build 19g: Log LiveKit URL/token for meet.livekit.io testing
+      console.log('[AIAvatar] Build 19g: LiveKit URL for testing:', url);
+      console.log('[AIAvatar] Build 19g: LiveKit Token (first 50):', token.substring(0, 50));
+      
       if (!modules) {
         setIsConnected(true);
         setIsConnecting(false);
@@ -2045,6 +2130,8 @@ export default function AIAvatarScreen() {
             enableDataChannel={enableDataChannel}
             enableDirectAudio={enableDirectAudio}
             modules={liveKitModules}
+            liveKitUrl={liveKitUrl}
+            liveKitToken={liveKitToken}
           />
         </LiveKitRoom>
       );
