@@ -39,15 +39,19 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Dec 18, 2025)
-**HeyGen AI Avatar Integration - v1.0.10 (25) Build 19e - Audio Capture Telemetry**: Added deep inspection of LocalAudioTrack capture state to diagnose why audio isn't being transmitted:
-- **Problem**: Build 19d fixed data channel - server now responds with avatar_start_talking, but still shows "Waiting for audio" meaning user's mic audio isn't being transmitted
-- **New Telemetry Fields**:
-  1. **trackStarted**: LocalAudioTrack.isStarted - whether track capture has started
-  2. **trackEnabled**: LocalAudioTrack.isEnabled - whether track is enabled
-  3. **mediaStreamActive**: MediaStream.active - whether underlying stream is active
-  4. **mediaTrackReadyState**: MediaStreamTrack.readyState - should be 'live' for working audio
-- **Debug Panel Updated**: New "Audio Capture" section shows all four states
-- **Deep Track Inspection**: Logs MediaStreamTrack.enabled, .muted, .readyState after mic enable
+**HeyGen AI Avatar Integration - v1.0.10 (26) Build 19f - Force Mic Re-Enable + Audio Stats**: Fixed audio transmission issue where LiveKit publishes track but doesn't start sending:
+- **Root Cause Found**: Build 19e telemetry showed MediaStream.active=YES, readyState=live, but track.isStarted/isEnabled were undefined - meaning LiveKit published the track but never started transmitting
+- **Fix Applied**: Force `setMicrophoneEnabled(true)` AFTER track publication is detected to kick-start audio transmission
+- **Re-Enable in Both Paths**: Applied in LocalTrackPublished handler AND 5-second fallback timer
+- **New Telemetry - Mic Re-Enabled**: Shows if the force re-enable was successful with timestamp
+- **New Telemetry - Mic Level Meter**: Real-time audio amplitude (0.00 → 0.4 when speaking) using AudioContext/AnalyserNode
+- **New Telemetry - Outbound Audio Stats**: Shows bytesSent and packetsSent from RTCPeerConnection stats to confirm actual transmission
+- **Debug Panel Updated**: New "Audio Stats" section showing Mic Level, Bytes Sent, Packets Sent
+
+**Previous Build 19e - Audio Capture Telemetry**:
+- Added deep inspection of LocalAudioTrack capture state
+- New telemetry: trackStarted, trackEnabled, mediaStreamActive, mediaTrackReadyState
+- Revealed that WebRTC capture was working but LiveKit wasn't transmitting
 
 **Previous Build 19d - Data Channel Fix**:
 - Replaced `engine.connected` check with actual data channel readyState polling

@@ -147,6 +147,12 @@ type DebugTelemetry = {
   trackEnabled: boolean | null;
   mediaStreamActive: boolean | null;
   mediaTrackReadyState: string | null;
+  // Build 19f: Mic level meter and outbound stats
+  micLevel: number | null;
+  bytesSent: number | null;
+  packetsSent: number | null;
+  micReEnabled: boolean;
+  micReEnabledTime: string | null;
   errors: string[];
 };
 
@@ -175,6 +181,11 @@ const initialDebugTelemetry: DebugTelemetry = {
   trackEnabled: null,
   mediaStreamActive: null,
   mediaTrackReadyState: null,
+  micLevel: null,
+  bytesSent: null,
+  packetsSent: null,
+  micReEnabled: false,
+  micReEnabledTime: null,
   errors: [],
 };
 
@@ -213,7 +224,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 19e Debug</Text>
+      <Text style={debugStyles.title}>🔧 Build 19f Debug</Text>
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -239,6 +250,14 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
         <StatusRow label="Track Enabled" value={telemetry.trackEnabled} />
         <StatusRow label="Stream Active" value={telemetry.mediaStreamActive} />
         <StatusRow label="ReadyState" value={telemetry.mediaTrackReadyState} />
+        <StatusRow label="Mic Re-Enabled" value={telemetry.micReEnabled} time={telemetry.micReEnabledTime} />
+      </View>
+      
+      <View style={debugStyles.section}>
+        <Text style={debugStyles.sectionTitle}>Audio Stats</Text>
+        <StatusRow label="Mic Level" value={telemetry.micLevel !== null ? telemetry.micLevel.toFixed(2) : '-'} />
+        <StatusRow label="Bytes Sent" value={telemetry.bytesSent} />
+        <StatusRow label="Packets Sent" value={telemetry.packetsSent} />
       </View>
       
       <View style={debugStyles.section}>
@@ -580,6 +599,24 @@ function VoiceLoopController({
           ...(mediaTrackReadyState !== null && { mediaTrackReadyState }),
         });
         
+        // Build 19f: Force re-enable mic to start audio transmission
+        console.log('[AIAvatar] VoiceLoop: Build 19f - Force re-enabling mic after publication...');
+        (async () => {
+          try {
+            await room.localParticipant.setMicrophoneEnabled(true);
+            console.log('[AIAvatar] VoiceLoop: Mic re-enabled successfully');
+            updateTelemetry({
+              micReEnabled: true,
+              micReEnabledTime: getTimeStamp(),
+            });
+          } catch (reEnableErr) {
+            console.error('[AIAvatar] VoiceLoop: Failed to re-enable mic:', reEnableErr);
+            updateTelemetry({
+              errors: [`Re-enable failed: ${reEnableErr}`],
+            });
+          }
+        })();
+        
         // Clear fallback timer since we got the event
         if (fallbackTimerRef.current) {
           clearTimeout(fallbackTimerRef.current);
@@ -675,6 +712,24 @@ function VoiceLoopController({
             ...(captureState.mediaStreamActive !== null && { mediaStreamActive: captureState.mediaStreamActive }),
             ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
           });
+          
+          // Build 19f: Force re-enable mic in fallback path too
+          console.log('[AIAvatar] VoiceLoop: Build 19f - Force re-enabling mic after fallback detection...');
+          (async () => {
+            try {
+              await room.localParticipant.setMicrophoneEnabled(true);
+              console.log('[AIAvatar] VoiceLoop: Mic re-enabled successfully (fallback path)');
+              updateTelemetry({
+                micReEnabled: true,
+                micReEnabledTime: getTimeStamp(),
+              });
+            } catch (reEnableErr) {
+              console.error('[AIAvatar] VoiceLoop: Failed to re-enable mic (fallback):', reEnableErr);
+              updateTelemetry({
+                errors: [`Re-enable failed (fallback): ${reEnableErr}`],
+              });
+            }
+          })();
         } else {
           console.warn('[AIAvatar] VoiceLoop: FALLBACK - No audio tracks found after 5s!');
           updateTelemetry({
@@ -693,6 +748,103 @@ function VoiceLoopController({
       }
     };
   }, [room, isConnected]);
+  
+  // Build 19f: Refs for AudioContext to persist across interval iterations
+  const audioContextRef = useRef<any>(null);
+  const analyserRef = useRef<any>(null);
+  
+  // Build 19f: Monitor mic level and outbound audio stats
+  useEffect(() => {
+    if (!room || !isConnected || !micTrackPublished) return;
+    
+    let intervalId: NodeJS.Timeout | null = null;
+    
+    const monitorAudioStats = async () => {
+      try {
+        // Get audio track publication
+        const audioTracks = room.localParticipant?.audioTrackPublications;
+        if (!audioTracks || audioTracks.size === 0) return;
+        
+        let track: any = null;
+        let publication: any = null;
+        audioTracks.forEach((pub: any) => {
+          publication = pub;
+          track = pub.track;
+        });
+        
+        if (!track) return;
+        
+        // Get MediaStreamTrack for audio level
+        const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
+        
+        // Try to get outbound stats via RTCPeerConnection
+        const engine = room.engine as any;
+        const pc = engine?.publisher?.pc || engine?.pcManager?.publisher;
+        
+        if (pc && typeof pc.getStats === 'function') {
+          try {
+            const stats = await pc.getStats();
+            stats.forEach((report: any) => {
+              if (report.type === 'outbound-rtp' && report.kind === 'audio') {
+                console.log('[AIAvatar] AudioStats: bytesSent:', report.bytesSent, 'packetsSent:', report.packetsSent);
+                updateTelemetry({
+                  bytesSent: report.bytesSent || 0,
+                  packetsSent: report.packetsSent || 0,
+                });
+              }
+            });
+          } catch (statsErr) {
+            console.log('[AIAvatar] AudioStats: Failed to get stats:', statsErr);
+          }
+        }
+        
+        // Try to get audio level using AudioContext (web/native) - only create once
+        if (mediaStreamTrack && !audioContextRef.current) {
+          try {
+            const AudioContextClass = (globalThis as any).AudioContext || (globalThis as any).webkitAudioContext;
+            if (AudioContextClass && track.mediaStream) {
+              audioContextRef.current = new AudioContextClass();
+              const source = audioContextRef.current.createMediaStreamSource(track.mediaStream);
+              analyserRef.current = audioContextRef.current.createAnalyser();
+              analyserRef.current.fftSize = 256;
+              source.connect(analyserRef.current);
+              console.log('[AIAvatar] AudioStats: AudioContext created for mic level monitoring');
+            }
+          } catch (ctxErr) {
+            console.log('[AIAvatar] AudioStats: Failed to create AudioContext:', ctxErr);
+          }
+        }
+        
+        // Read audio level from analyser
+        if (analyserRef.current) {
+          const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+          analyserRef.current.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+          const normalizedLevel = average / 255;
+          updateTelemetry({
+            micLevel: normalizedLevel,
+          });
+        }
+      } catch (err) {
+        console.log('[AIAvatar] AudioStats: Error monitoring:', err);
+      }
+    };
+    
+    // Poll every 500ms
+    intervalId = setInterval(monitorAudioStats, 500);
+    monitorAudioStats(); // Initial check
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (audioContextRef.current) {
+        try { 
+          audioContextRef.current.close(); 
+          audioContextRef.current = null;
+          analyserRef.current = null;
+        } catch (e) {}
+      }
+    };
+  }, [room, isConnected, micTrackPublished]);
   
   // Helper to check actual data channel readiness
   const checkDataChannelReady = useCallback(() => {
