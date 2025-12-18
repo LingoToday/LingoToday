@@ -137,6 +137,7 @@ type DebugTelemetry = {
   audioTrackMuted: boolean | null;
   audioTrackSid: string | null;
   dataChannelReady: boolean;
+  dataChannelState: string | null;
   startListeningSent: boolean;
   startListeningTime: string | null;
   lastServerEvent: string | null;
@@ -160,6 +161,7 @@ const initialDebugTelemetry: DebugTelemetry = {
   audioTrackMuted: null,
   audioTrackSid: null,
   dataChannelReady: false,
+  dataChannelState: null,
   startListeningSent: false,
   startListeningTime: null,
   lastServerEvent: null,
@@ -202,7 +204,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 19c Debug</Text>
+      <Text style={debugStyles.title}>🔧 Build 19d Debug</Text>
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -224,7 +226,8 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Voice Loop</Text>
-        <StatusRow label="Data Channel" value={telemetry.dataChannelReady} />
+        <StatusRow label="DC Ready" value={telemetry.dataChannelReady} />
+        <StatusRow label="DC State" value={telemetry.dataChannelState} />
         <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
         <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
       </View>
@@ -613,28 +616,101 @@ function VoiceLoopController({
     };
   }, [room, isConnected]);
   
-  // Send avatar.start_listening command ONLY after mic track is published AND room is fully ready
+  // Helper to check actual data channel readiness
+  const checkDataChannelReady = useCallback(() => {
+    if (!room) return { ready: false, state: 'no_room' };
+    
+    const engine = room.engine as any;
+    if (!engine) return { ready: false, state: 'no_engine' };
+    
+    // Check multiple possible data channel locations in LiveKit
+    // The publisher data channel is used for reliable data messages
+    const publisherDC = engine.publisher?.dataChannel;
+    const reliableDC = engine.reliableDC;
+    const lossyDC = engine.lossyDC;
+    
+    // Log all possible data channel states
+    const publisherState = publisherDC?.readyState || 'undefined';
+    const reliableState = reliableDC?.readyState || 'undefined';
+    const lossyState = lossyDC?.readyState || 'undefined';
+    const engineConnected = engine.connected ?? false;
+    
+    console.log('[AIAvatar] DataChannel states:');
+    console.log('  - engine.connected:', engineConnected);
+    console.log('  - publisher.dataChannel:', publisherState);
+    console.log('  - reliableDC:', reliableState);
+    console.log('  - lossyDC:', lossyState);
+    
+    // Check if any data channel is open
+    const isReliableOpen = reliableState === 'open';
+    const isLossyOpen = lossyState === 'open';
+    const isPublisherOpen = publisherState === 'open';
+    
+    const anyOpen = isReliableOpen || isLossyOpen || isPublisherOpen;
+    const stateString = `reliable:${reliableState},lossy:${lossyState},pub:${publisherState}`;
+    
+    return { 
+      ready: anyOpen, 
+      state: stateString,
+      engineConnected,
+      reliableState,
+      lossyState,
+      publisherState
+    };
+  }, [room]);
+
+  // Send avatar.start_listening command ONLY after mic track is published AND data channel is ready
   useEffect(() => {
     if (isConnected && room && micTrackPublished && !listeningStarted && !startListeningSentRef.current) {
       console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, checking room readiness...');
       console.log('[AIAvatar] VoiceLoop: Room state:', room.state);
       console.log('[AIAvatar] VoiceLoop: Room name:', room.name);
       
-      const sendStartListening = async () => {
+      let pollCount = 0;
+      const maxPolls = 20; // 20 polls * 250ms = 5 seconds max wait
+      let pollInterval: NodeJS.Timeout | null = null;
+      
+      const attemptSendStartListening = async () => {
         // Guard 0: Prevent duplicate sends via ref
         if (startListeningSentRef.current) {
           console.log('[AIAvatar] VoiceLoop: start_listening already sent (ref guard), skipping');
+          if (pollInterval) clearInterval(pollInterval);
           return;
         }
         
+        pollCount++;
+        console.log(`[AIAvatar] VoiceLoop: Poll attempt ${pollCount}/${maxPolls}`);
+        
+        // Check data channel readiness first
+        const dcStatus = checkDataChannelReady();
+        console.log('[AIAvatar] VoiceLoop: DataChannel ready:', dcStatus.ready, 'state:', dcStatus.state);
+        
+        updateTelemetry({ 
+          dataChannelReady: dcStatus.ready,
+          dataChannelState: dcStatus.state,
+        });
+        
+        if (!dcStatus.ready) {
+          if (pollCount >= maxPolls) {
+            console.error('[AIAvatar] VoiceLoop: Data channel never opened after 5s!');
+            updateTelemetry({
+              errors: [`Data channel timeout: ${dcStatus.state}`],
+            });
+            if (pollInterval) clearInterval(pollInterval);
+          }
+          return; // Will retry on next poll
+        }
+        
+        // Data channel is ready! Stop polling and send command
+        if (pollInterval) clearInterval(pollInterval);
+        
         try {
-          // Guard 1: Verify room is connected (check both string and enum possibilities)
+          // Guard 1: Verify room is connected
           const roomState = room.state;
-          console.log('[AIAvatar] VoiceLoop: Current room.state value:', roomState, 'type:', typeof roomState);
+          console.log('[AIAvatar] VoiceLoop: Current room.state value:', roomState);
           
           updateTelemetry({ roomState: String(roomState) });
           
-          // LiveKit uses 'connected' string in JS SDK
           const isRoomConnected = roomState === 'connected' || 
                              roomState === 'Connected' || 
                              (roomState && String(roomState).toLowerCase() === 'connected');
@@ -646,7 +722,7 @@ function VoiceLoopController({
           }
           console.log('[AIAvatar] VoiceLoop: Room state verified as connected');
           
-          // Guard 2: Verify local participant exists and is ready
+          // Guard 2: Verify local participant exists
           if (!room.localParticipant) {
             console.warn('[AIAvatar] VoiceLoop: Local participant not ready');
             updateTelemetry({ errors: ['Local participant not ready'] });
@@ -662,30 +738,23 @@ function VoiceLoopController({
           updateTelemetry({ audioTrackCount: trackCount });
           
           if (!audioTracks || trackCount === 0) {
-            console.warn('[AIAvatar] VoiceLoop: No audio tracks found, waiting...');
+            console.warn('[AIAvatar] VoiceLoop: No audio tracks found');
             updateTelemetry({ errors: ['No audio tracks at send time'] });
             return;
           }
-          
-          // Guard 4: Check data channel readiness (via engine if available)
-          const engine = room.engine;
-          const engineConnected = engine?.connected ?? false;
-          console.log('[AIAvatar] VoiceLoop: Engine available:', !!engine);
-          console.log('[AIAvatar] VoiceLoop: Engine connected:', engineConnected);
-          
-          updateTelemetry({ dataChannelReady: engineConnected });
           
           const command = JSON.stringify({
             type: 'avatar.start_listening'
           });
           console.log('[AIAvatar] VoiceLoop: Sending command:', command);
+          console.log('[AIAvatar] VoiceLoop: DataChannel confirmed open:', dcStatus.state);
           
           const encoder = new TextEncoder();
           const data = encoder.encode(command);
           
           await room.localParticipant.publishData(data);
           console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT SUCCESSFULLY');
-          startListeningSentRef.current = true; // Set ref first to prevent race
+          startListeningSentRef.current = true;
           setListeningStarted(true);
           updateTelemetry({
             startListeningSent: true,
@@ -701,11 +770,23 @@ function VoiceLoopController({
         }
       };
       
-      // Small delay after track published to ensure data channel is fully ready
-      console.log('[AIAvatar] VoiceLoop: Waiting 500ms after track published...');
-      setTimeout(sendStartListening, 500);
+      // Start polling for data channel readiness
+      console.log('[AIAvatar] VoiceLoop: Starting data channel readiness polling...');
+      
+      // Initial check after 200ms delay
+      setTimeout(() => {
+        attemptSendStartListening();
+        // Then poll every 250ms if first attempt didn't succeed
+        if (!startListeningSentRef.current && pollCount < maxPolls) {
+          pollInterval = setInterval(attemptSendStartListening, 250);
+        }
+      }, 200);
+      
+      return () => {
+        if (pollInterval) clearInterval(pollInterval);
+      };
     }
-  }, [isConnected, room, micTrackPublished, listeningStarted]);
+  }, [isConnected, room, micTrackPublished, listeningStarted, checkDataChannelReady]);
   
   // Listen for server events via DataReceived
   useEffect(() => {

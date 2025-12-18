@@ -38,7 +38,18 @@ Core features include:
 - `src/data/`: Static data (lessons, etc.).
 - `src/types/`: TypeScript type definitions.
 
-## Recent Changes (Dec 17, 2025)
+## Recent Changes (Dec 18, 2025)
+**HeyGen AI Avatar Integration - v1.0.10 (24) Build 19d - Data Channel Fix**: Fixed critical issue where start_listening command was sent before data channel was ready:
+- **Root Cause**: Build 19c showed Data Channel: NO while start_listening was YES - command was sent but never reached server
+- **Fix**: Replaced `engine.connected` check with actual data channel readyState polling
+- **Changes**:
+  1. **checkDataChannelReady()**: New helper that checks `reliableDC`, `lossyDC`, and `publisher.dataChannel` readyStates
+  2. **Polling mechanism**: Polls every 250ms for up to 5 seconds waiting for data channel to open
+  3. **Only sends start_listening when data channel is confirmed open** (readyState === 'open')
+  4. **New telemetry field**: `dataChannelState` shows actual state (reliable:X,lossy:X,pub:X)
+  5. **Debug panel updated**: Shows "DC Ready" (boolean) and "DC State" (detailed states)
+
+## Previous Changes (Dec 17, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (23) Build 19c - UI Debug Telemetry**: Added UI-visible debugging for microphone voice loop issues:
 - **Problem**: Avatar cannot hear user despite previous fixes - no way to see logs on TestFlight builds
 - **Build 19c Features**:
