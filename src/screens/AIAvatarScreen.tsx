@@ -8,6 +8,7 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -248,91 +249,92 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 20 Debug</Text>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
-        <StatusRow label="AudioSession" value={telemetry.audioSessionStarted} time={telemetry.audioSessionTime} />
-        <StatusRow label="Permission" value={telemetry.permissionGranted} time={telemetry.permissionTime} />
-        <StatusRow label="Mic Enabled" value={telemetry.micEnabled} time={telemetry.micEnabledTime} />
-        <StatusRow label="Track Published" value={telemetry.trackPublished} time={telemetry.trackPublishedTime} />
-        {telemetry.trackPublishedViaFallback && <Text style={debugStyles.fallback}>⚠️ Via 5s fallback</Text>}
-      </View>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>Room State</Text>
-        <StatusRow label="Connected" value={telemetry.roomConnected} />
-        <StatusRow label="State" value={telemetry.roomState} />
-        <StatusRow label="Audio Tracks" value={telemetry.audioTrackCount} />
-        <StatusRow label="Track Muted" value={telemetry.audioTrackMuted} />
-        <StatusRow label="Track SID" value={telemetry.audioTrackSid} />
-      </View>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>Audio Capture</Text>
-        <StatusRow label="Track Started" value={telemetry.trackStarted} />
-        <StatusRow label="Track Enabled" value={telemetry.trackEnabled} />
-        <StatusRow label="Stream Active" value={telemetry.mediaStreamActive} />
-        <StatusRow label="ReadyState" value={telemetry.mediaTrackReadyState} />
-        <StatusRow label="Mic Re-Enabled" value={telemetry.micReEnabled} time={telemetry.micReEnabledTime} />
-      </View>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>Audio Stats</Text>
-        <StatusRow label="Mic Level" value={telemetry.micLevel !== null ? telemetry.micLevel.toFixed(2) : '-'} />
-        <StatusRow label="Bytes Sent" value={telemetry.bytesSent} />
-        <StatusRow label="Packets Sent" value={telemetry.packetsSent} />
-      </View>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>Voice Loop</Text>
-        <StatusRow label="DC Ready" value={telemetry.dataChannelReady} />
-        <StatusRow label="DC State" value={telemetry.dataChannelState} />
-        <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
-        <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
-      </View>
-      
-      <View style={debugStyles.section}>
-        <Text style={debugStyles.sectionTitle}>LiveKit Info</Text>
-        <StatusRow label="Participant" value={telemetry.participantIdentity} />
-        <StatusRow label="Audio Codec" value={telemetry.audioCodec} />
-        <TouchableOpacity 
-          onPress={() => telemetry.liveKitUrl && copyToClipboard(telemetry.liveKitUrl, 'url')}
-          style={debugStyles.copyButton}
-        >
-          <Text style={debugStyles.urlLabel}>
-            URL (tap to copy) {copiedField === 'url' ? '✅' : '📋'}
-          </Text>
-          <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitUrl || '-'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => telemetry.liveKitToken && copyToClipboard(telemetry.liveKitToken, 'token')}
-          style={debugStyles.copyButton}
-        >
-          <Text style={debugStyles.urlLabel}>
-            Token (tap to copy full) {copiedField === 'token' ? '✅' : '📋'}
-          </Text>
-          <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 40) + '...' : '-'}</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {telemetry.allServerEvents.length > 0 && (
+      <Text style={debugStyles.title}>🔧 Build 21 Debug (scroll for more)</Text>
+      <ScrollView style={debugStyles.scrollContent} showsVerticalScrollIndicator={true}>
         <View style={debugStyles.section}>
-          <Text style={debugStyles.sectionTitle}>📡 Server Events (last 5)</Text>
-          {telemetry.allServerEvents.slice(-5).map((evt, i) => (
-            <Text key={i} style={debugStyles.eventLog}>{evt}</Text>
-          ))}
+          <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
+          <StatusRow label="AudioSession" value={telemetry.audioSessionStarted} time={telemetry.audioSessionTime} />
+          <StatusRow label="Permission" value={telemetry.permissionGranted} time={telemetry.permissionTime} />
+          <StatusRow label="Mic Enabled" value={telemetry.micEnabled} time={telemetry.micEnabledTime} />
+          <StatusRow label="Track Published" value={telemetry.trackPublished} time={telemetry.trackPublishedTime} />
+          {telemetry.trackPublishedViaFallback && <Text style={debugStyles.fallback}>⚠️ Via 5s fallback</Text>}
         </View>
-      )}
-      
-      {telemetry.errors.length > 0 && (
+        
         <View style={debugStyles.section}>
-          <Text style={debugStyles.sectionTitle}>❗ Errors</Text>
-          {telemetry.errors.slice(-3).map((err, i) => (
-            <Text key={i} style={debugStyles.error}>{err}</Text>
-          ))}
+          <Text style={debugStyles.sectionTitle}>Room State</Text>
+          <StatusRow label="Connected" value={telemetry.roomConnected} />
+          <StatusRow label="State" value={telemetry.roomState} />
+          <StatusRow label="Audio Tracks" value={telemetry.audioTrackCount} />
+          <StatusRow label="Track Muted" value={telemetry.audioTrackMuted} />
+          <StatusRow label="Track SID" value={telemetry.audioTrackSid} />
         </View>
-      )}
+        
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>Audio Capture</Text>
+          <StatusRow label="Track Started" value={telemetry.trackStarted} />
+          <StatusRow label="Track Enabled" value={telemetry.trackEnabled} />
+          <StatusRow label="Stream Active" value={telemetry.mediaStreamActive} />
+          <StatusRow label="ReadyState" value={telemetry.mediaTrackReadyState} />
+          <StatusRow label="Mic Re-Enabled" value={telemetry.micReEnabled} time={telemetry.micReEnabledTime} />
+        </View>
+        
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>Audio Stats</Text>
+          <StatusRow label="Mic Level" value={telemetry.micLevel !== null ? telemetry.micLevel.toFixed(2) : '-'} />
+          <StatusRow label="Bytes Sent" value={telemetry.bytesSent} />
+          <StatusRow label="Packets Sent" value={telemetry.packetsSent} />
+        </View>
+        
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>Voice Loop</Text>
+          <StatusRow label="DC Ready" value={telemetry.dataChannelReady} />
+          <StatusRow label="DC State" value={telemetry.dataChannelState} />
+          <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
+          <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
+        </View>
+        
+        <View style={debugStyles.section}>
+          <Text style={debugStyles.sectionTitle}>LiveKit Info (Scroll down)</Text>
+          <StatusRow label="Participant" value={telemetry.participantIdentity} />
+          <StatusRow label="Audio Codec" value={telemetry.audioCodec} />
+          <TouchableOpacity 
+            onPress={() => telemetry.liveKitUrl && copyToClipboard(telemetry.liveKitUrl, 'url')}
+            style={debugStyles.copyButton}
+          >
+            <Text style={debugStyles.urlLabel}>
+              URL (tap to copy) {copiedField === 'url' ? '✅' : '📋'}
+            </Text>
+            <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitUrl || '-'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => telemetry.liveKitToken && copyToClipboard(telemetry.liveKitToken, 'token')}
+            style={debugStyles.copyButton}
+          >
+            <Text style={debugStyles.urlLabel}>
+              Token (tap to copy full) {copiedField === 'token' ? '✅' : '📋'}
+            </Text>
+            <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 40) + '...' : '-'}</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {telemetry.allServerEvents.length > 0 && (
+          <View style={debugStyles.section}>
+            <Text style={debugStyles.sectionTitle}>📡 Server Events (last 5)</Text>
+            {telemetry.allServerEvents.slice(-5).map((evt, i) => (
+              <Text key={i} style={debugStyles.eventLog}>{evt}</Text>
+            ))}
+          </View>
+        )}
+        
+        {telemetry.errors.length > 0 && (
+          <View style={debugStyles.section}>
+            <Text style={debugStyles.sectionTitle}>❗ Errors</Text>
+            {telemetry.errors.slice(-3).map((err, i) => (
+              <Text key={i} style={debugStyles.error}>{err}</Text>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -346,8 +348,11 @@ const debugStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     borderRadius: 8,
     padding: 8,
-    maxHeight: 320,
+    maxHeight: 400,
     zIndex: 1000,
+  },
+  scrollContent: {
+    flex: 1,
   },
   title: {
     color: '#fff',
@@ -1058,17 +1063,24 @@ function VoiceLoopController({
             return;
           }
           
+          // Build 21 FIX: Use correct event format and topic per LiveAvatar docs
+          // Command events must use "event_type" (not "type") and publish to "agent-control" topic
           const command = JSON.stringify({
-            type: 'avatar.start_listening'
+            event_type: 'avatar.start_listening'
           });
           console.log('[AIAvatar] VoiceLoop: Sending command:', command);
+          console.log('[AIAvatar] VoiceLoop: Publishing to topic: agent-control');
           console.log('[AIAvatar] VoiceLoop: DataChannel confirmed open:', dcStatus.state);
           
           const encoder = new TextEncoder();
           const data = encoder.encode(command);
           
-          await room.localParticipant.publishData(data);
-          console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT SUCCESSFULLY');
+          // Publish to agent-control topic as required by LiveAvatar FULL mode
+          await room.localParticipant.publishData(data, { 
+            reliable: true,
+            topic: 'agent-control'
+          });
+          console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT to agent-control topic');
           startListeningSentRef.current = true;
           setListeningStarted(true);
           updateTelemetry({
@@ -1104,39 +1116,49 @@ function VoiceLoopController({
   }, [isConnected, room, micTrackPublished, listeningStarted, checkDataChannelReady]);
   
   // Listen for server events via DataReceived
+  // Build 21: Updated to handle event_type field and agent-response topic
   useEffect(() => {
     if (!room) return;
     
-    const handleDataReceived = (payload: Uint8Array) => {
+    const handleDataReceived = (payload: Uint8Array, participant: any, kind: any, topic?: string) => {
       try {
         const decoder = new TextDecoder();
         const message = decoder.decode(payload);
         const data = JSON.parse(message);
         
-        const eventType = data.type || JSON.stringify(data).substring(0, 40);
+        // Build 21: LiveAvatar uses event_type field, but also check type for backwards compat
+        const eventType = data.event_type || data.type || JSON.stringify(data).substring(0, 40);
         const timestamp = getTimeStamp();
-        console.log('[AIAvatar] Server event received:', eventType, 'Full data:', JSON.stringify(data));
+        console.log('[AIAvatar] Server event received:', eventType);
+        console.log('[AIAvatar] Event topic:', topic || 'no-topic');
+        console.log('[AIAvatar] Full data:', JSON.stringify(data));
         
-        // Build 19g: Update telemetry with event
+        // Build 21: Update telemetry with event
         updateTelemetry({
           lastServerEvent: eventType,
           lastServerEventTime: timestamp,
           appendEvent: `${timestamp}: ${eventType}`,
         } as any);
         
-        // Update state based on events
-        if (data.type === 'user.speak_started') {
+        // Update state based on events - check both event_type and type fields
+        const evt = data.event_type || data.type;
+        if (evt === 'user.speak_started') {
           console.log('[AIAvatar] >>> User started speaking');
           setAvatarState('listening');
-        } else if (data.type === 'user.speak_ended') {
+        } else if (evt === 'user.speak_ended') {
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
-        } else if (data.type === 'avatar.speak_started') {
+        } else if (evt === 'avatar.speak_started') {
           console.log('[AIAvatar] >>> Avatar started speaking');
           setAvatarState('speaking');
-        } else if (data.type === 'avatar.speak_ended') {
+        } else if (evt === 'avatar.speak_ended') {
           console.log('[AIAvatar] >>> Avatar stopped speaking');
           setAvatarState('idle');
+        } else if (evt === 'user.transcription_ended') {
+          // Build 21: Log transcription for debugging
+          console.log('[AIAvatar] >>> User transcription:', data.text);
+        } else if (evt === 'avatar.transcription_ended') {
+          console.log('[AIAvatar] >>> Avatar response:', data.text);
         }
       } catch (err) {
         console.log('[AIAvatar] Non-JSON data received');
@@ -1144,7 +1166,7 @@ function VoiceLoopController({
     };
     
     room.on('dataReceived', handleDataReceived);
-    console.log('[AIAvatar] Phase 4: DataReceived listener attached');
+    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 21 - event_type support)');
     
     return () => {
       room.off('dataReceived', handleDataReceived);

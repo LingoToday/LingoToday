@@ -39,13 +39,18 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Jan 03, 2026)
-**HeyGen AI Avatar Integration - v1.0.10 (28) Build 20 - Tap-to-Copy LiveKit Credentials**: Enhanced debugging to help user test audio at meet.livekit.io:
-- **Tap-to-Copy Buttons**: LiveKit URL and Token can now be copied by tapping in the debug panel
-- **Visual Feedback**: Shows checkmark when copy succeeds
-- **expo-clipboard Added**: Added package dependency for clipboard functionality
-- **Build Title Updated**: Debug panel now shows "Build 20 Debug"
-- **Key Insight from Build 19g**: Debug panel showed `user.speak_ended` event IS being received from HeyGen, meaning server detects speech ending but something is wrong with how it processes the audio
-- **Next Step**: User can tap to copy LiveKit URL/token and test at meet.livekit.io to verify if audio capture is working correctly outside the app
+**HeyGen AI Avatar Integration - v1.0.10 (29) Build 21 - Critical Protocol Fix**: Fixed two major issues preventing avatar from hearing user:
+- **ROOT CAUSE FOUND**: Commands were using wrong format. LiveAvatar FULL mode requires:
+  1. `event_type` field (not `type`) in JSON payload
+  2. Commands must publish to `agent-control` topic (not default topic)
+- **Fixed start_listening command**: Now uses `event_type: 'avatar.start_listening'` and publishes to `agent-control` topic with `reliable: true`
+- **Fixed event handler**: Now checks for both `event_type` and `type` fields for backwards compatibility
+- **Scrollable Debug Panel**: Added ScrollView wrapper so LiveKit Info section is now accessible on smaller iPhone screens
+- **Increased maxHeight**: Debug panel now 400px (was 320px)
+- **Event topic logging**: Added logging of event topic for server responses
+- **Transcription logging**: Added logging for `user.transcription_ended` and `avatar.transcription_ended` events
+
+**Previous Build 20**: Added tap-to-copy for LiveKit URL/Token
 
 ## Previous Changes (Dec 18, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (27) Build 19g - LiveKit Debug Info for meet.livekit.io Testing**: Added diagnostic info to help debug why HeyGen can't process audio despite successful transmission:
