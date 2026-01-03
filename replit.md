@@ -39,16 +39,14 @@ Core features include:
 - `src/types/`: TypeScript type definitions.
 
 ## Recent Changes (Jan 03, 2026)
-**HeyGen AI Avatar Integration - v1.0.10 (29) Build 21 - Critical Protocol Fix**: Fixed two major issues preventing avatar from hearing user:
-- **ROOT CAUSE FOUND**: Commands were using wrong format. LiveAvatar FULL mode requires:
-  1. `event_type` field (not `type`) in JSON payload
-  2. Commands must publish to `agent-control` topic (not default topic)
-- **Fixed start_listening command**: Now uses `event_type: 'avatar.start_listening'` and publishes to `agent-control` topic with `reliable: true`
-- **Fixed event handler**: Now checks for both `event_type` and `type` fields for backwards compatibility
-- **Scrollable Debug Panel**: Added ScrollView wrapper so LiveKit Info section is now accessible on smaller iPhone screens
-- **Increased maxHeight**: Debug panel now 400px (was 320px)
-- **Event topic logging**: Added logging of event topic for server responses
-- **Transcription logging**: Added logging for `user.transcription_ended` and `avatar.transcription_ended` events
+**HeyGen AI Avatar Integration - v1.0.10 (30) Build 22 - Multi-Turn Conversation Fix**: Fixed issue where avatar only responded once and then stopped:
+- **ROOT CAUSE**: In FULL mode, the avatar stops listening after speaking. We were only sending `start_listening` once at session start, so subsequent utterances were never processed.
+- **FIX**: After receiving `avatar.speak_ended` event, automatically re-send `avatar.start_listening` command to re-arm listening mode for the next conversational turn
+- **Conversation Turn Tracking**: Added `conversationTurnRef` to track turn count for telemetry
+- **Reusable sendStartListeningCommand**: Extracted into a callback that can be called both at startup and after each avatar response
+- **Telemetry Enhancement**: Server Events now show `start_listening (turn N)` for each re-arm
+
+**Previous Build 21**: Fixed command format (`event_type` + `agent-control` topic), made debug panel scrollable
 
 **Previous Build 20**: Added tap-to-copy for LiveKit URL/Token
 

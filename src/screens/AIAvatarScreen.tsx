@@ -249,7 +249,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 21 Debug (scroll for more)</Text>
+      <Text style={debugStyles.title}>🔧 Build 22 Debug (scroll for more)</Text>
       <ScrollView style={debugStyles.scrollContent} showsVerticalScrollIndicator={true}>
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -979,21 +979,94 @@ function VoiceLoopController({
     };
   }, [room]);
 
-  // Send avatar.start_listening command ONLY after mic track is published AND data channel is ready
+  // Build 22: Track conversation turn count for telemetry
+  const conversationTurnRef = useRef(0);
+
+  // Build 22: Reusable function to send avatar.start_listening command
+  // Can be called at startup and after avatar finishes speaking
+  const sendStartListeningCommand = useCallback(async (reason: string) => {
+    if (!room) {
+      console.log('[AIAvatar] sendStartListening: No room available');
+      return false;
+    }
+
+    const dcStatus = checkDataChannelReady();
+    console.log(`[AIAvatar] sendStartListening (${reason}): DataChannel ready:`, dcStatus.ready);
+    
+    if (!dcStatus.ready) {
+      console.log(`[AIAvatar] sendStartListening (${reason}): DataChannel not ready, skipping`);
+      return false;
+    }
+
+    try {
+      const roomState = room.state;
+      const isRoomConnected = roomState === 'connected' || 
+                         roomState === 'Connected' || 
+                         (roomState && String(roomState).toLowerCase() === 'connected');
+      
+      if (!isRoomConnected) {
+        console.warn(`[AIAvatar] sendStartListening (${reason}): Room not connected`);
+        return false;
+      }
+
+      if (!room.localParticipant) {
+        console.warn(`[AIAvatar] sendStartListening (${reason}): Local participant not ready`);
+        return false;
+      }
+
+      conversationTurnRef.current += 1;
+      const turnNum = conversationTurnRef.current;
+      
+      const command = JSON.stringify({
+        event_type: 'avatar.start_listening'
+      });
+      console.log(`[AIAvatar] sendStartListening (${reason}): Sending command, turn #${turnNum}`);
+      
+      const encoder = new TextEncoder();
+      const data = encoder.encode(command);
+      
+      await room.localParticipant.publishData(data, { 
+        reliable: true,
+        topic: 'agent-control'
+      });
+      
+      console.log(`[AIAvatar] sendStartListening (${reason}): Command SENT successfully, turn #${turnNum}`);
+      
+      // Build 22 FIX: Update state flags to prevent duplicate sends and sync state machine
+      startListeningSentRef.current = true;
+      setListeningStarted(true);
+      
+      updateTelemetry({
+        startListeningSent: true,
+        startListeningTime: getTimeStamp(),
+        appendEvent: `${getTimeStamp()}: start_listening (turn ${turnNum})`,
+      } as any);
+      
+      return true;
+    } catch (err: any) {
+      console.error(`[AIAvatar] sendStartListening (${reason}): Failed:`, err);
+      updateTelemetry({
+        errors: [`start_listening failed (${reason}): ${err?.message || 'unknown'}`],
+      });
+      return false;
+    }
+  }, [room, checkDataChannelReady, updateTelemetry]);
+
+  // Build 22: Simplified initial start_listening trigger using the reusable helper
+  // Polls for data channel readiness, then calls sendStartListeningCommand
   useEffect(() => {
     if (isConnected && room && micTrackPublished && !listeningStarted && !startListeningSentRef.current) {
-      console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, checking room readiness...');
-      console.log('[AIAvatar] VoiceLoop: Room state:', room.state);
-      console.log('[AIAvatar] VoiceLoop: Room name:', room.name);
+      console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, starting DC poll...');
       
       let pollCount = 0;
       const maxPolls = 20; // 20 polls * 250ms = 5 seconds max wait
       let pollInterval: NodeJS.Timeout | null = null;
+      let stopped = false;
       
-      const attemptSendStartListening = async () => {
-        // Guard 0: Prevent duplicate sends via ref
-        if (startListeningSentRef.current) {
-          console.log('[AIAvatar] VoiceLoop: start_listening already sent (ref guard), skipping');
+      const pollAndSend = async () => {
+        // Guard: Already sent or stopped
+        if (startListeningSentRef.current || stopped) {
+          console.log('[AIAvatar] VoiceLoop: Already sent or stopped, clearing poll');
           if (pollInterval) clearInterval(pollInterval);
           return;
         }
@@ -1001,10 +1074,8 @@ function VoiceLoopController({
         pollCount++;
         console.log(`[AIAvatar] VoiceLoop: Poll attempt ${pollCount}/${maxPolls}`);
         
-        // Check data channel readiness first
+        // Check data channel readiness
         const dcStatus = checkDataChannelReady();
-        console.log('[AIAvatar] VoiceLoop: DataChannel ready:', dcStatus.ready, 'state:', dcStatus.state);
-        
         updateTelemetry({ 
           dataChannelReady: dcStatus.ready,
           dataChannelState: dcStatus.state,
@@ -1013,87 +1084,21 @@ function VoiceLoopController({
         if (!dcStatus.ready) {
           if (pollCount >= maxPolls) {
             console.error('[AIAvatar] VoiceLoop: Data channel never opened after 5s!');
-            updateTelemetry({
-              errors: [`Data channel timeout: ${dcStatus.state}`],
-            });
+            updateTelemetry({ errors: [`Data channel timeout: ${dcStatus.state}`] });
             if (pollInterval) clearInterval(pollInterval);
           }
           return; // Will retry on next poll
         }
         
-        // Data channel is ready! Stop polling and send command
+        // DC ready - stop polling and send via helper
         if (pollInterval) clearInterval(pollInterval);
+        stopped = true;
         
-        try {
-          // Guard 1: Verify room is connected
-          const roomState = room.state;
-          console.log('[AIAvatar] VoiceLoop: Current room.state value:', roomState);
-          
-          updateTelemetry({ roomState: String(roomState) });
-          
-          const isRoomConnected = roomState === 'connected' || 
-                             roomState === 'Connected' || 
-                             (roomState && String(roomState).toLowerCase() === 'connected');
-          
-          if (!isRoomConnected) {
-            console.warn('[AIAvatar] VoiceLoop: Room not connected, state:', roomState);
-            updateTelemetry({ errors: [`Room not connected: ${roomState}`] });
-            return;
-          }
-          console.log('[AIAvatar] VoiceLoop: Room state verified as connected');
-          
-          // Guard 2: Verify local participant exists
-          if (!room.localParticipant) {
-            console.warn('[AIAvatar] VoiceLoop: Local participant not ready');
-            updateTelemetry({ errors: ['Local participant not ready'] });
-            return;
-          }
-          console.log('[AIAvatar] VoiceLoop: Local participant ready, sid:', room.localParticipant.sid);
-          
-          // Guard 3: Verify mic track is still there
-          const audioTracks = room.localParticipant?.audioTrackPublications;
-          const trackCount = audioTracks?.size || 0;
-          console.log('[AIAvatar] VoiceLoop: Verifying audio tracks count:', trackCount);
-          
-          updateTelemetry({ audioTrackCount: trackCount });
-          
-          if (!audioTracks || trackCount === 0) {
-            console.warn('[AIAvatar] VoiceLoop: No audio tracks found');
-            updateTelemetry({ errors: ['No audio tracks at send time'] });
-            return;
-          }
-          
-          // Build 21 FIX: Use correct event format and topic per LiveAvatar docs
-          // Command events must use "event_type" (not "type") and publish to "agent-control" topic
-          const command = JSON.stringify({
-            event_type: 'avatar.start_listening'
-          });
-          console.log('[AIAvatar] VoiceLoop: Sending command:', command);
-          console.log('[AIAvatar] VoiceLoop: Publishing to topic: agent-control');
-          console.log('[AIAvatar] VoiceLoop: DataChannel confirmed open:', dcStatus.state);
-          
-          const encoder = new TextEncoder();
-          const data = encoder.encode(command);
-          
-          // Publish to agent-control topic as required by LiveAvatar FULL mode
-          await room.localParticipant.publishData(data, { 
-            reliable: true,
-            topic: 'agent-control'
-          });
-          console.log('[AIAvatar] VoiceLoop: avatar.start_listening command SENT to agent-control topic');
-          startListeningSentRef.current = true;
-          setListeningStarted(true);
-          updateTelemetry({
-            startListeningSent: true,
-            startListeningTime: getTimeStamp(),
-          });
-        } catch (err: any) {
-          console.error('[AIAvatar] VoiceLoop: Failed to send start_listening:', err);
-          console.error('[AIAvatar] VoiceLoop: Error name:', err?.name);
-          console.error('[AIAvatar] VoiceLoop: Error message:', err?.message);
-          updateTelemetry({
-            errors: [`start_listening failed: ${err?.message || 'unknown'}`],
-          });
+        console.log('[AIAvatar] VoiceLoop: DC ready, calling sendStartListeningCommand...');
+        const success = await sendStartListeningCommand('initial');
+        
+        if (!success) {
+          console.error('[AIAvatar] VoiceLoop: Initial sendStartListeningCommand failed');
         }
       };
       
@@ -1102,21 +1107,22 @@ function VoiceLoopController({
       
       // Initial check after 200ms delay
       setTimeout(() => {
-        attemptSendStartListening();
+        pollAndSend();
         // Then poll every 250ms if first attempt didn't succeed
-        if (!startListeningSentRef.current && pollCount < maxPolls) {
-          pollInterval = setInterval(attemptSendStartListening, 250);
+        if (!startListeningSentRef.current && !stopped) {
+          pollInterval = setInterval(pollAndSend, 250);
         }
       }, 200);
       
       return () => {
+        stopped = true;
         if (pollInterval) clearInterval(pollInterval);
       };
     }
-  }, [isConnected, room, micTrackPublished, listeningStarted, checkDataChannelReady]);
+  }, [isConnected, room, micTrackPublished, listeningStarted, checkDataChannelReady, sendStartListeningCommand]);
   
   // Listen for server events via DataReceived
-  // Build 21: Updated to handle event_type field and agent-response topic
+  // Build 22: Updated to re-send start_listening after avatar finishes speaking
   useEffect(() => {
     if (!room) return;
     
@@ -1154,6 +1160,17 @@ function VoiceLoopController({
         } else if (evt === 'avatar.speak_ended') {
           console.log('[AIAvatar] >>> Avatar stopped speaking');
           setAvatarState('idle');
+          
+          // Build 22: Re-send start_listening after avatar finishes speaking
+          // This re-arms the listening mode for the next conversational turn
+          console.log('[AIAvatar] >>> Re-arming listening mode for next turn...');
+          
+          // Reset the guard to allow sending a new start_listening command
+          startListeningSentRef.current = false;
+          
+          setTimeout(() => {
+            sendStartListeningCommand('avatar_finished');
+          }, 100); // Small delay to ensure avatar has fully finished
         } else if (evt === 'user.transcription_ended') {
           // Build 21: Log transcription for debugging
           console.log('[AIAvatar] >>> User transcription:', data.text);
@@ -1166,12 +1183,12 @@ function VoiceLoopController({
     };
     
     room.on('dataReceived', handleDataReceived);
-    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 21 - event_type support)');
+    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 22 - auto re-arm listening)');
     
     return () => {
       room.off('dataReceived', handleDataReceived);
     };
-  }, [room]);
+  }, [room, sendStartListeningCommand]);
   
   // Status indicator overlay
   return (
