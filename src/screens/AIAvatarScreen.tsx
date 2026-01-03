@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import * as Clipboard from 'expo-clipboard';
 import { Audio } from 'expo-av';
 import { theme } from '../lib/theme';
 
@@ -207,6 +208,18 @@ const getTimeStamp = () => {
 
 // Debug Panel Component - Shows telemetry directly in UI
 function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible: boolean }) {
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  
+  const copyToClipboard = async (text: string, fieldName: string) => {
+    try {
+      await Clipboard.setStringAsync(text);
+      setCopiedField(fieldName);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('[AIAvatar] Failed to copy to clipboard:', err);
+    }
+  };
+  
   if (!visible) return null;
   
   const StatusRow = ({ label, value, time }: { label: string; value: boolean | string | number | null; time?: string | null }) => {
@@ -235,7 +248,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 19g Debug</Text>
+      <Text style={debugStyles.title}>🔧 Build 20 Debug</Text>
       
       <View style={debugStyles.section}>
         <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -283,10 +296,24 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
         <Text style={debugStyles.sectionTitle}>LiveKit Info</Text>
         <StatusRow label="Participant" value={telemetry.participantIdentity} />
         <StatusRow label="Audio Codec" value={telemetry.audioCodec} />
-        <Text style={debugStyles.urlLabel}>URL (copy for meet.livekit.io):</Text>
-        <Text style={debugStyles.urlValue} selectable numberOfLines={2}>{telemetry.liveKitUrl || '-'}</Text>
-        <Text style={debugStyles.urlLabel}>Token (first 50 chars):</Text>
-        <Text style={debugStyles.urlValue} selectable numberOfLines={2}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 50) + '...' : '-'}</Text>
+        <TouchableOpacity 
+          onPress={() => telemetry.liveKitUrl && copyToClipboard(telemetry.liveKitUrl, 'url')}
+          style={debugStyles.copyButton}
+        >
+          <Text style={debugStyles.urlLabel}>
+            URL (tap to copy) {copiedField === 'url' ? '✅' : '📋'}
+          </Text>
+          <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitUrl || '-'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => telemetry.liveKitToken && copyToClipboard(telemetry.liveKitToken, 'token')}
+          style={debugStyles.copyButton}
+        >
+          <Text style={debugStyles.urlLabel}>
+            Token (tap to copy full) {copiedField === 'token' ? '✅' : '📋'}
+          </Text>
+          <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 40) + '...' : '-'}</Text>
+        </TouchableOpacity>
       </View>
       
       {telemetry.allServerEvents.length > 0 && (
@@ -381,6 +408,12 @@ const debugStyles = StyleSheet.create({
     color: '#60a5fa',
     fontSize: 8,
     marginBottom: 4,
+  },
+  copyButton: {
+    backgroundColor: 'rgba(96, 165, 250, 0.1)',
+    borderRadius: 4,
+    padding: 4,
+    marginVertical: 2,
   },
   eventLog: {
     color: '#a78bfa',

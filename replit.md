@@ -38,7 +38,16 @@ Core features include:
 - `src/data/`: Static data (lessons, etc.).
 - `src/types/`: TypeScript type definitions.
 
-## Recent Changes (Dec 18, 2025)
+## Recent Changes (Jan 03, 2026)
+**HeyGen AI Avatar Integration - v1.0.10 (28) Build 20 - Tap-to-Copy LiveKit Credentials**: Enhanced debugging to help user test audio at meet.livekit.io:
+- **Tap-to-Copy Buttons**: LiveKit URL and Token can now be copied by tapping in the debug panel
+- **Visual Feedback**: Shows checkmark when copy succeeds
+- **expo-clipboard Added**: Added package dependency for clipboard functionality
+- **Build Title Updated**: Debug panel now shows "Build 20 Debug"
+- **Key Insight from Build 19g**: Debug panel showed `user.speak_ended` event IS being received from HeyGen, meaning server detects speech ending but something is wrong with how it processes the audio
+- **Next Step**: User can tap to copy LiveKit URL/token and test at meet.livekit.io to verify if audio capture is working correctly outside the app
+
+## Previous Changes (Dec 18, 2025)
 **HeyGen AI Avatar Integration - v1.0.10 (27) Build 19g - LiveKit Debug Info for meet.livekit.io Testing**: Added diagnostic info to help debug why HeyGen can't process audio despite successful transmission:
 - **Key Finding**: Build 19f proved audio IS being transmitted (273K+ bytes, 1300+ packets sent) but HeyGen shows "unknown" events
 - **LiveKit Info Section**: New debug panel section showing LiveKit URL and token for testing at meet.livekit.io
