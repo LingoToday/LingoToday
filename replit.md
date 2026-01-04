@@ -38,7 +38,15 @@ Core features include:
 - `src/data/`: Static data (lessons, etc.).
 - `src/types/`: TypeScript type definitions.
 
-## Recent Changes (Jan 03, 2026)
+## Recent Changes (Jan 04, 2026)
+**HeyGen AI Avatar Integration - v1.0.10 (31) Build 23 - Session State Reset Fix**: Fixed issue where avatar only worked in the first session, but subsequent sessions showed no avatar responses:
+- **ROOT CAUSE**: State flags (`listeningStarted`, `startListeningSentRef`, `micTrackPublished`) were not being reset when starting a new session, causing the initial `avatar.start_listening` command to be blocked by stale guards
+- **FIX**: Added `wasConnectedRef` to detect new session connection (transition from disconnected → connected) and reset all voice loop state
+- **State Reset Logic**: When a new session connects, resets: `listeningStarted=false`, `startListeningSentRef=false`, `micTrackPublished=false`, `conversationTurnRef=0`
+- **Telemetry Reset**: Also clears telemetry (`startListeningSent`, `trackPublished`, `allServerEvents`, `errors`) for clean slate each session
+- **Moved conversationTurnRef**: Relocated to top of VoiceLoopController for proper scoping
+
+## Previous Changes (Jan 03, 2026)
 **HeyGen AI Avatar Integration - v1.0.10 (30) Build 22 - Multi-Turn Conversation Fix**: Fixed issue where avatar only responded once and then stopped:
 - **ROOT CAUSE**: In FULL mode, the avatar stops listening after speaking. We were only sending `start_listening` once at session start, so subsequent utterances were never processed.
 - **FIX**: After receiving `avatar.speak_ended` event, automatically re-send `avatar.start_listening` command to re-arm listening mode for the next conversational turn

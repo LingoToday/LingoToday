@@ -249,7 +249,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 22 Debug (scroll for more)</Text>
+      <Text style={debugStyles.title}>🔧 Build 23 Debug (scroll for more)</Text>
       <ScrollView style={debugStyles.scrollContent} showsVerticalScrollIndicator={true}>
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -614,9 +614,42 @@ function VoiceLoopController({
   const [micTrackPublished, setMicTrackPublished] = useState(false);
   const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   const startListeningSentRef = useRef(false); // Prevent duplicate sends
+  const wasConnectedRef = useRef(false); // Track previous connection state for reset logic
+  const conversationTurnRef = useRef(0); // Build 22: Track conversation turn count
   
   // Get room context to send data channel messages
   const room = modules?.useRoomContext ? modules.useRoomContext() : null;
+  
+  // Build 23: Reset all state when a new session connects
+  // This ensures subsequent sessions work properly by clearing stale flags
+  // Note: We intentionally exclude updateTelemetry from deps to prevent re-running on every render
+  useEffect(() => {
+    if (isConnected && !wasConnectedRef.current) {
+      // Transitioning from disconnected -> connected = new session starting
+      console.log('[AIAvatar] VoiceLoop: NEW SESSION DETECTED - Resetting all state');
+      setListeningStarted(false);
+      setAvatarState('idle');
+      setMicTrackPublished(false);
+      startListeningSentRef.current = false;
+      conversationTurnRef.current = 0;
+      
+      // Reset telemetry for new session
+      updateTelemetry({
+        startListeningSent: false,
+        startListeningTime: null,
+        trackPublished: false,
+        trackPublishedTime: null,
+        allServerEvents: [],
+        errors: [],
+      });
+      
+      console.log('[AIAvatar] VoiceLoop: State reset complete for new session');
+    }
+    
+    // Update the ref to track current connection state
+    wasConnectedRef.current = isConnected;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected]);
   
   // Update room state in telemetry
   useEffect(() => {
@@ -978,9 +1011,6 @@ function VoiceLoopController({
       publisherState
     };
   }, [room]);
-
-  // Build 22: Track conversation turn count for telemetry
-  const conversationTurnRef = useRef(0);
 
   // Build 22: Reusable function to send avatar.start_listening command
   // Can be called at startup and after avatar finishes speaking
