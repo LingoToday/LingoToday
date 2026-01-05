@@ -249,7 +249,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 23 Debug (scroll for more)</Text>
+      <Text style={debugStyles.title}>🔧 Build 24 Debug (scroll for more)</Text>
       <ScrollView style={debugStyles.scrollContent} showsVerticalScrollIndicator={true}>
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -1082,6 +1082,71 @@ function VoiceLoopController({
     }
   }, [room, checkDataChannelReady, updateTelemetry]);
 
+  // Build 24: Function to send avatar.stop_listening command
+  // Must be sent after user.speak_ended to signal HeyGen to generate a response
+  const sendStopListeningCommand = useCallback(async (reason: string) => {
+    if (!room) {
+      console.log('[AIAvatar] sendStopListening: No room available');
+      return false;
+    }
+
+    const dcStatus = checkDataChannelReady();
+    console.log(`[AIAvatar] sendStopListening (${reason}): DataChannel ready:`, dcStatus.ready);
+    
+    if (!dcStatus.ready) {
+      console.log(`[AIAvatar] sendStopListening (${reason}): DataChannel not ready, skipping`);
+      return false;
+    }
+
+    try {
+      const roomState = room.state;
+      const isRoomConnected = roomState === 'connected' || 
+                         roomState === 'Connected' || 
+                         (roomState && String(roomState).toLowerCase() === 'connected');
+      
+      if (!isRoomConnected) {
+        console.warn(`[AIAvatar] sendStopListening (${reason}): Room not connected`);
+        return false;
+      }
+
+      if (!room.localParticipant) {
+        console.warn(`[AIAvatar] sendStopListening (${reason}): Local participant not ready`);
+        return false;
+      }
+
+      const command = JSON.stringify({
+        event_type: 'avatar.stop_listening'
+      });
+      console.log(`[AIAvatar] sendStopListening (${reason}): Sending command...`);
+      
+      const encoder = new TextEncoder();
+      const data = encoder.encode(command);
+      
+      await room.localParticipant.publishData(data, { 
+        reliable: true,
+        topic: 'agent-control'
+      });
+      
+      console.log(`[AIAvatar] sendStopListening (${reason}): Command SENT successfully`);
+      
+      // NOTE: Do NOT reset listening guards here!
+      // The avatar.speak_ended handler already resets startListeningSentRef before re-arming.
+      // Resetting guards here would cause the initial polling useEffect to fire again.
+      
+      updateTelemetry({
+        appendEvent: `${getTimeStamp()}: stop_listening (${reason})`,
+      } as any);
+      
+      return true;
+    } catch (err: any) {
+      console.error(`[AIAvatar] sendStopListening (${reason}): Failed:`, err);
+      updateTelemetry({
+        errors: [`stop_listening failed (${reason}): ${err?.message || 'unknown'}`],
+      });
+      return false;
+    }
+  }, [room, checkDataChannelReady, updateTelemetry]);
+
   // Build 22: Simplified initial start_listening trigger using the reusable helper
   // Polls for data channel readiness, then calls sendStartListeningCommand
   useEffect(() => {
@@ -1184,6 +1249,13 @@ function VoiceLoopController({
         } else if (evt === 'user.speak_ended') {
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
+          
+          // Build 24: Send stop_listening to signal HeyGen to process and respond
+          // In FULL mode, avatar won't respond until we explicitly tell it we're done
+          console.log('[AIAvatar] >>> Sending stop_listening to trigger avatar response...');
+          setTimeout(() => {
+            sendStopListeningCommand('user_finished');
+          }, 50); // Small delay to ensure event processing completes
         } else if (evt === 'avatar.speak_started') {
           console.log('[AIAvatar] >>> Avatar started speaking');
           setAvatarState('speaking');
@@ -1213,12 +1285,12 @@ function VoiceLoopController({
     };
     
     room.on('dataReceived', handleDataReceived);
-    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 22 - auto re-arm listening)');
+    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 24 - stop/start listening protocol)');
     
     return () => {
       room.off('dataReceived', handleDataReceived);
     };
-  }, [room, sendStartListeningCommand]);
+  }, [room, sendStartListeningCommand, sendStopListeningCommand]);
   
   // Status indicator overlay
   return (

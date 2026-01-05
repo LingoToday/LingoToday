@@ -38,7 +38,15 @@ Core features include:
 - `src/data/`: Static data (lessons, etc.).
 - `src/types/`: TypeScript type definitions.
 
-## Recent Changes (Jan 04, 2026)
+## Recent Changes (Jan 05, 2026)
+**HeyGen AI Avatar Integration - v1.0.10 (32) Build 24 - Stop Listening Protocol Fix**: Fixed multi-turn conversation where avatar heard user but never responded after first turn:
+- **ROOT CAUSE**: In FULL mode, HeyGen requires explicit `avatar.stop_listening` command after user finishes speaking to trigger avatar response generation. We were only sending `start_listening`, so after the first turn the avatar stayed stuck in listening mode waiting for us to signal the user was done.
+- **FIX**: Added `sendStopListeningCommand` helper function that sends `{event_type: 'avatar.stop_listening'}` to `agent-control` topic with `reliable: true`
+- **Protocol Flow**: When `user.speak_ended` event is received, automatically send `stop_listening` → avatar processes and responds → `avatar.speak_ended` → send `start_listening` → ready for next turn
+- **State Management**: `sendStopListeningCommand` does NOT reset listening guards (to avoid re-triggering initial polling effect); guards are reset by `avatar.speak_ended` handler before re-arming
+- **Telemetry**: Added `stop_listening (user_finished)` events to Server Events log
+
+## Previous Changes (Jan 04, 2026)
 **HeyGen AI Avatar Integration - v1.0.10 (31) Build 23 - Session State Reset Fix**: Fixed issue where avatar only worked in the first session, but subsequent sessions showed no avatar responses:
 - **ROOT CAUSE**: State flags (`listeningStarted`, `startListeningSentRef`, `micTrackPublished`) were not being reset when starting a new session, causing the initial `avatar.start_listening` command to be blocked by stale guards
 - **FIX**: Added `wasConnectedRef` to detect new session connection (transition from disconnected → connected) and reset all voice loop state
