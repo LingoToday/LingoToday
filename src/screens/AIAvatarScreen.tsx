@@ -249,7 +249,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
   
   return (
     <View style={debugStyles.container}>
-      <Text style={debugStyles.title}>🔧 Build 24 Debug (scroll for more)</Text>
+      <Text style={debugStyles.title}>🔧 Build 25 Debug (scroll for more)</Text>
       <ScrollView style={debugStyles.scrollContent} showsVerticalScrollIndicator={true}>
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Mic Setup</Text>
@@ -613,6 +613,7 @@ function VoiceLoopController({
   const [avatarState, setAvatarState] = useState<string>('idle');
   const [micTrackPublished, setMicTrackPublished] = useState(false);
   const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const stopListeningSentRef = useRef(false); // Build 25: Prevent duplicate stop_listening sends
   const startListeningSentRef = useRef(false); // Prevent duplicate sends
   const wasConnectedRef = useRef(false); // Track previous connection state for reset logic
   const conversationTurnRef = useRef(0); // Build 22: Track conversation turn count
@@ -631,7 +632,14 @@ function VoiceLoopController({
       setAvatarState('idle');
       setMicTrackPublished(false);
       startListeningSentRef.current = false;
+      stopListeningSentRef.current = false; // Build 25: Reset stop_listening guard
       conversationTurnRef.current = 0;
+      
+      // Clear any pending fallback timer
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
       
       // Reset telemetry for new session
       updateTelemetry({
@@ -1250,12 +1258,18 @@ function VoiceLoopController({
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
           
-          // Build 24: Send stop_listening to signal HeyGen to process and respond
-          // In FULL mode, avatar won't respond until we explicitly tell it we're done
-          console.log('[AIAvatar] >>> Sending stop_listening to trigger avatar response...');
-          setTimeout(() => {
-            sendStopListeningCommand('user_finished');
-          }, 50); // Small delay to ensure event processing completes
+          // Build 25: Set up fallback timer - if transcription_ended doesn't arrive in 3s, send stop_listening anyway
+          // This prevents deadlock if transcription fails or is delayed
+          if (fallbackTimerRef.current) {
+            clearTimeout(fallbackTimerRef.current);
+          }
+          fallbackTimerRef.current = setTimeout(() => {
+            if (!stopListeningSentRef.current) {
+              console.log('[AIAvatar] >>> Fallback: transcription_ended not received in 3s, sending stop_listening...');
+              sendStopListeningCommand('fallback_timeout');
+              stopListeningSentRef.current = true;
+            }
+          }, 3000);
         } else if (evt === 'avatar.speak_started') {
           console.log('[AIAvatar] >>> Avatar started speaking');
           setAvatarState('speaking');
@@ -1267,15 +1281,40 @@ function VoiceLoopController({
           // This re-arms the listening mode for the next conversational turn
           console.log('[AIAvatar] >>> Re-arming listening mode for next turn...');
           
-          // Reset the guard to allow sending a new start_listening command
+          // Reset guards to allow sending commands for next turn
           startListeningSentRef.current = false;
+          stopListeningSentRef.current = false; // Build 25: Reset for next turn
+          
+          // Clear any pending fallback timer
+          if (fallbackTimerRef.current) {
+            clearTimeout(fallbackTimerRef.current);
+            fallbackTimerRef.current = null;
+          }
           
           setTimeout(() => {
             sendStartListeningCommand('avatar_finished');
           }, 100); // Small delay to ensure avatar has fully finished
         } else if (evt === 'user.transcription_ended') {
-          // Build 21: Log transcription for debugging
+          // Build 25: Send stop_listening AFTER transcription is complete
+          // This ensures the transcript is fully delivered before signaling end of turn
           console.log('[AIAvatar] >>> User transcription:', data.text);
+          
+          // Clear fallback timer since transcription arrived
+          if (fallbackTimerRef.current) {
+            clearTimeout(fallbackTimerRef.current);
+            fallbackTimerRef.current = null;
+          }
+          
+          // Only send stop_listening if we haven't already (guard against duplicates)
+          if (!stopListeningSentRef.current) {
+            console.log('[AIAvatar] >>> Transcription complete, sending stop_listening...');
+            stopListeningSentRef.current = true;
+            setTimeout(() => {
+              sendStopListeningCommand('transcription_finished');
+            }, 50);
+          } else {
+            console.log('[AIAvatar] >>> Transcription complete, but stop_listening already sent');
+          }
         } else if (evt === 'avatar.transcription_ended') {
           console.log('[AIAvatar] >>> Avatar response:', data.text);
         }
@@ -1285,7 +1324,7 @@ function VoiceLoopController({
     };
     
     room.on('dataReceived', handleDataReceived);
-    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 24 - stop/start listening protocol)');
+    console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 25 - stop on transcription_ended)');
     
     return () => {
       room.off('dataReceived', handleDataReceived);
