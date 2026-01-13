@@ -3,7 +3,7 @@
     "name": "LingoToday",
     "slug": "lingotoday-mobile",
     "version": "1.0.10",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0a1628"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
