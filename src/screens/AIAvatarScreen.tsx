@@ -67,7 +67,7 @@ const buildSessionContext = (
     'en': 'English'
   };
   const targetLanguageName = languageNames[languageCode] || language;
-  
+
   const reviewItems = reviewPhrases.map((phrase, index) => ({
     id: `r${index + 1}`,
     prompt_en: phrase,
@@ -110,10 +110,10 @@ const buildAvatarPrompt = (
   lessonTitle: string,
   reviewPhrases: string[]
 ): string => {
-  const phrasesText = reviewPhrases.length > 0 
-    ? `The phrases to practice are: ${reviewPhrases.map((p, i) => `${i+1}. "${p}"`).join(', ')}.`
+  const phrasesText = reviewPhrases.length > 0
+    ? `The phrases to practice are: ${reviewPhrases.map((p, i) => `${i + 1}. "${p}"`).join(', ')}.`
     : 'Practice general conversation appropriate for their level.';
-  
+
   return `You are a friendly ${language} language tutor for LingoToday. 
 You are conducting a 2-minute review session for a ${level} level learner.
 Course: ${courseTitle || 'Language Practice'}
@@ -121,8 +121,8 @@ Lesson: ${lessonTitle || 'Review Session'}
 
 YOUR BEHAVIOR:
 1. Start by greeting the learner warmly and briefly introducing what you'll practice together.
-2. Ask the learner to translate English phrases to ${language}, one at a time.
-3. Wait for their spoken response before proceeding.
+2. Ask the learner to translate English phrases to ${language}, one at a time. Do NOT ask all at once.
+3. Wait for their spoken response before proceeding to the next phrase.
 4. Give brief, encouraging feedback: "Great job!", "Almost! Try...", "Perfect pronunciation!"
 5. If they struggle, give a gentle hint, then the correct answer.
 6. Keep responses short (1-2 sentences max) to maintain conversation flow.
@@ -135,7 +135,8 @@ IMPORTANT RULES:
 - Speak mainly in English, but use ${language} for the target phrases.
 - Keep the session interactive and encouraging.
 - This is a spoken conversation - be natural and conversational.
-- You have about 90 seconds for this review.`;
+- You have about 90 seconds for this review.
+- STRICTLY follow the script and do not deviate.`;
 };
 
 type AIAvatarRouteParams = {
@@ -151,7 +152,6 @@ type RouteType = RouteProp<{ AIAvatar: AIAvatarRouteParams }, 'AIAvatar'>;
 type LiveKitModules = {
   LiveKitRoom: any;
   VideoTrack: any;
-  AudioTrack: any;
   useTracks: any;
   useLocalParticipant: any;
   useRoomContext: any;
@@ -247,7 +247,7 @@ const getTimeStamp = () => {
 // Debug Panel Component - Shows telemetry directly in UI
 function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible: boolean }) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  
+
   const copyToClipboard = async (text: string, fieldName: string) => {
     try {
       await Clipboard.setStringAsync(text);
@@ -257,13 +257,13 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
       console.error('[AIAvatar] Failed to copy to clipboard:', err);
     }
   };
-  
+
   if (!visible) return null;
-  
+
   const StatusRow = ({ label, value, time }: { label: string; value: boolean | string | number | null; time?: string | null }) => {
     let icon = '⏳';
     let color = '#888';
-    
+
     if (typeof value === 'boolean') {
       icon = value ? '✅' : '❌';
       color = value ? '#4ade80' : '#f87171';
@@ -271,7 +271,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
       icon = '📋';
       color = '#60a5fa';
     }
-    
+
     return (
       <View style={debugStyles.row}>
         <Text style={[debugStyles.icon, { color }]}>{icon}</Text>
@@ -283,7 +283,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
       </View>
     );
   };
-  
+
   return (
     <View style={debugStyles.container}>
       <Text style={debugStyles.title}>🔧 Build 25 Debug (scroll for more)</Text>
@@ -296,7 +296,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
           <StatusRow label="Track Published" value={telemetry.trackPublished} time={telemetry.trackPublishedTime} />
           {telemetry.trackPublishedViaFallback && <Text style={debugStyles.fallback}>⚠️ Via 5s fallback</Text>}
         </View>
-        
+
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Room State</Text>
           <StatusRow label="Connected" value={telemetry.roomConnected} />
@@ -305,7 +305,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
           <StatusRow label="Track Muted" value={telemetry.audioTrackMuted} />
           <StatusRow label="Track SID" value={telemetry.audioTrackSid} />
         </View>
-        
+
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Audio Capture</Text>
           <StatusRow label="Track Started" value={telemetry.trackStarted} />
@@ -314,14 +314,14 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
           <StatusRow label="ReadyState" value={telemetry.mediaTrackReadyState} />
           <StatusRow label="Mic Re-Enabled" value={telemetry.micReEnabled} time={telemetry.micReEnabledTime} />
         </View>
-        
+
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Audio Stats</Text>
           <StatusRow label="Mic Level" value={telemetry.micLevel !== null ? telemetry.micLevel.toFixed(2) : '-'} />
           <StatusRow label="Bytes Sent" value={telemetry.bytesSent} />
           <StatusRow label="Packets Sent" value={telemetry.packetsSent} />
         </View>
-        
+
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>Voice Loop</Text>
           <StatusRow label="DC Ready" value={telemetry.dataChannelReady} />
@@ -329,12 +329,12 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
           <StatusRow label="start_listening" value={telemetry.startListeningSent} time={telemetry.startListeningTime} />
           <StatusRow label="Last Event" value={telemetry.lastServerEvent} time={telemetry.lastServerEventTime} />
         </View>
-        
+
         <View style={debugStyles.section}>
           <Text style={debugStyles.sectionTitle}>LiveKit Info (Scroll down)</Text>
           <StatusRow label="Participant" value={telemetry.participantIdentity} />
           <StatusRow label="Audio Codec" value={telemetry.audioCodec} />
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => telemetry.liveKitUrl && copyToClipboard(telemetry.liveKitUrl, 'url')}
             style={debugStyles.copyButton}
           >
@@ -343,7 +343,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
             </Text>
             <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitUrl || '-'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => telemetry.liveKitToken && copyToClipboard(telemetry.liveKitToken, 'token')}
             style={debugStyles.copyButton}
           >
@@ -353,7 +353,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
             <Text style={debugStyles.urlValue} numberOfLines={1}>{telemetry.liveKitToken ? telemetry.liveKitToken.substring(0, 40) + '...' : '-'}</Text>
           </TouchableOpacity>
         </View>
-        
+
         {telemetry.allServerEvents.length > 0 && (
           <View style={debugStyles.section}>
             <Text style={debugStyles.sectionTitle}>📡 Server Events (last 5)</Text>
@@ -362,7 +362,7 @@ function DebugPanel({ telemetry, visible }: { telemetry: DebugTelemetry; visible
             ))}
           </View>
         )}
-        
+
         {telemetry.errors.length > 0 && (
           <View style={debugStyles.section}>
             <Text style={debugStyles.sectionTitle}>❗ Errors</Text>
@@ -467,37 +467,36 @@ const debugStyles = StyleSheet.create({
 async function loadLiveKitModules(): Promise<LiveKitModules> {
   try {
     console.log('[AIAvatar] Attempting to load LiveKit modules...');
-    
+
     let livekit: any;
     let livekitClient: any;
-    
+
     try {
       livekit = await import('@livekit/react-native');
     } catch (importErr) {
       console.log('[AIAvatar] Failed to import @livekit/react-native:', importErr);
       return null;
     }
-    
+
     try {
       livekitClient = await import('livekit-client');
     } catch (importErr) {
       console.log('[AIAvatar] Failed to import livekit-client:', importErr);
       return null;
     }
-    
+
     // Note: registerGlobals() is now called in index.js at app startup (before React renders)
     // This is required for LiveKit to detect WebRTC and must run with New Architecture disabled.
-    
+
     if (!livekit?.LiveKitRoom || !livekit?.useTracks || !livekitClient?.Track) {
       console.log('[AIAvatar] LiveKit modules missing required exports');
       return null;
     }
-    
+
     console.log('[AIAvatar] LiveKit modules loaded successfully');
     return {
       LiveKitRoom: livekit.LiveKitRoom,
       VideoTrack: livekit.VideoTrack || null,
-      AudioTrack: livekit.AudioTrack || null,
       useTracks: livekit.useTracks,
       useLocalParticipant: livekit.useLocalParticipant || null,
       useRoomContext: livekit.useRoomContext || null,
@@ -513,14 +512,14 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
 // MINIMAL TEST: Remote video renderer - only used AFTER connection confirmed
 function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
   if (!modules) return null;
-  
+
   const { useTracks, Track, VideoTrack } = modules;
   // Only subscribe to remote camera track (avatar video) - no mic, no audio
   const tracks = useTracks([Track.Source.Camera]);
   const videoTrack = tracks.find((t: any) => t.source === Track.Source.Camera);
-  
+
   console.log('[AIAvatar] MinimalRemoteVideoRenderer - tracks found:', tracks.length);
-  
+
   if (!videoTrack) {
     return (
       <View style={styles.avatarPlaceholder}>
@@ -528,7 +527,7 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
       </View>
     );
   }
-  
+
   return (
     <View style={styles.mediaContainer}>
       <VideoTrack
@@ -542,31 +541,31 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
 // Phase 4: Remote audio renderer - subscribe to avatar's audio track (CRASHES - DO NOT USE)
 function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
   if (!modules) return null;
-  
-  const { useTracks, Track, AudioTrack } = modules;
+
+  const { useTracks, Track } = modules;
   // Subscribe to remote microphone track (avatar's voice)
   const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: false });
   const audioTrack = tracks.find((t: any) => t.source === Track.Source.Microphone);
-  
+
   console.log('[AIAvatar] RemoteAudioRenderer - audio tracks found:', tracks.length);
-  
+
   if (!audioTrack) {
     console.log('[AIAvatar] No remote audio track yet');
     return null;
   }
-  
-  console.log('[AIAvatar] Rendering remote audio track');
-  return <AudioTrack trackRef={audioTrack} />;
+
+  console.log('[AIAvatar] Rendering remote audio track - NOTE: Audio plays automatically in RN');
+  return null; // Audio plays automatically, no component needed
 }
 
 // Build 18a: Direct audio controller - uses room events instead of useTracks
 // This avoids the Hermes crash caused by useTracks for audio
-function DirectAudioController({ 
-  modules, 
+function DirectAudioController({
+  modules,
   isConnected,
   renderAudio = false
-}: { 
-  modules: LiveKitModules; 
+}: {
+  modules: LiveKitModules;
   isConnected: boolean;
   renderAudio?: boolean;
 }) {
@@ -574,24 +573,24 @@ function DirectAudioController({
   const audioTrackRef = useRef<any>(null);
   const [hasAudioTrack, setHasAudioTrack] = useState(false);
   const listenerAttachedRef = useRef(false);
-  
+
   // Get room context
   const room = modules?.useRoomContext ? modules.useRoomContext() : null;
-  
+
   // Register room event listeners for track subscription
   useEffect(() => {
     if (!room || !isConnected || listenerAttachedRef.current) return;
-    
+
     console.log('[AIAvatar] DirectAudioController: Attaching track event listeners...');
     listenerAttachedRef.current = true;
-    
+
     const handleTrackSubscribed = (track: any, publication: any, participant: any) => {
       console.log('[AIAvatar] DirectAudioController: TrackSubscribed event');
       console.log('[AIAvatar] - Track kind:', track?.kind);
       console.log('[AIAvatar] - Track source:', publication?.source);
       console.log('[AIAvatar] - Participant identity:', participant?.identity);
       console.log('[AIAvatar] - Is local:', participant?.isLocal);
-      
+
       // Only handle remote audio tracks
       if (track?.kind === 'audio' && !participant?.isLocal) {
         console.log('[AIAvatar] DirectAudioController: Remote audio track FOUND!');
@@ -599,11 +598,11 @@ function DirectAudioController({
         setHasAudioTrack(true);
       }
     };
-    
+
     const handleTrackUnsubscribed = (track: any, publication: any, participant: any) => {
       console.log('[AIAvatar] DirectAudioController: TrackUnsubscribed event');
       console.log('[AIAvatar] - Track kind:', track?.kind);
-      
+
       // Clear audio track if it was unsubscribed
       if (track?.kind === 'audio' && !participant?.isLocal) {
         console.log('[AIAvatar] DirectAudioController: Remote audio track REMOVED');
@@ -611,12 +610,12 @@ function DirectAudioController({
         setHasAudioTrack(false);
       }
     };
-    
+
     // Attach listeners
     room.on('trackSubscribed', handleTrackSubscribed);
     room.on('trackUnsubscribed', handleTrackUnsubscribed);
     console.log('[AIAvatar] DirectAudioController: Event listeners attached');
-    
+
     return () => {
       console.log('[AIAvatar] DirectAudioController: Cleaning up event listeners');
       room.off('trackSubscribed', handleTrackSubscribed);
@@ -624,25 +623,29 @@ function DirectAudioController({
       listenerAttachedRef.current = false;
     };
   }, [room, isConnected]);
-  
+
   // Build 18a: Log only, no AudioTrack render yet
-  // Build 18b will add: renderAudio && hasAudioTrack && <AudioTrack />
+  // Build 18b: renderAudio && hasAudioTrack && <AudioTrack />
+  // FIXED: Audio plays automatically in React Native, no need to render AudioTrack component
+  if (!modules) return null;
+
   return (
     <View style={styles.directAudioStatus}>
       <Text style={styles.directAudioText}>
         {hasAudioTrack ? '🔊 Audio track ready' : '⏳ Waiting for audio...'}
       </Text>
+      {/* Audio plays automatically via WebRTC when subscribed */}
     </View>
   );
 }
 
 // Build 19c: Voice loop controller with UI-visible debug telemetry
-function VoiceLoopController({ 
-  modules, 
+function VoiceLoopController({
+  modules,
   isConnected,
   updateTelemetry
-}: { 
-  modules: LiveKitModules; 
+}: {
+  modules: LiveKitModules;
   isConnected: boolean;
   updateTelemetry: (updates: Partial<DebugTelemetry>) => void;
 }) {
@@ -654,10 +657,10 @@ function VoiceLoopController({
   const startListeningSentRef = useRef(false); // Prevent duplicate sends
   const wasConnectedRef = useRef(false); // Track previous connection state for reset logic
   const conversationTurnRef = useRef(0); // Build 22: Track conversation turn count
-  
+
   // Get room context to send data channel messages
   const room = modules?.useRoomContext ? modules.useRoomContext() : null;
-  
+
   // Build 23: Reset all state when a new session connects
   // This ensures subsequent sessions work properly by clearing stale flags
   // Note: We intentionally exclude updateTelemetry from deps to prevent re-running on every render
@@ -671,13 +674,13 @@ function VoiceLoopController({
       startListeningSentRef.current = false;
       stopListeningSentRef.current = false; // Build 25: Reset stop_listening guard
       conversationTurnRef.current = 0;
-      
+
       // Clear any pending fallback timer
       if (fallbackTimerRef.current) {
         clearTimeout(fallbackTimerRef.current);
         fallbackTimerRef.current = null;
       }
-      
+
       // Reset telemetry for new session
       updateTelemetry({
         startListeningSent: false,
@@ -687,15 +690,15 @@ function VoiceLoopController({
         allServerEvents: [],
         errors: [],
       });
-      
+
       console.log('[AIAvatar] VoiceLoop: State reset complete for new session');
     }
-    
+
     // Update the ref to track current connection state
     wasConnectedRef.current = isConnected;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
-  
+
   // Update room state in telemetry
   useEffect(() => {
     if (room) {
@@ -705,39 +708,39 @@ function VoiceLoopController({
       });
     }
   }, [room, isConnected]);
-  
+
   // Listen for LocalTrackPublished event to know when mic is truly ready
   // Also set up 5-second fallback timer
   useEffect(() => {
     if (!room || !isConnected) return;
-    
+
     console.log('[AIAvatar] VoiceLoop: Setting up LocalTrackPublished listener...');
-    
+
     const handleLocalTrackPublished = (publication: any, participant: any) => {
       console.log('[AIAvatar] VoiceLoop: LocalTrackPublished event received');
       console.log('[AIAvatar] VoiceLoop: Track source:', publication?.source);
       console.log('[AIAvatar] VoiceLoop: Track kind:', publication?.kind);
       console.log('[AIAvatar] VoiceLoop: Track SID:', publication?.trackSid);
-      
+
       // Check if this is a microphone/audio track
       if (publication?.kind === 'audio' || publication?.source === 'microphone') {
         console.log('[AIAvatar] VoiceLoop: LOCAL MIC TRACK PUBLISHED!');
         setMicTrackPublished(true);
-        
+
         // Build 19e: Deep inspect the published track
         const track = publication?.track;
         let trackStarted: boolean | null = null;
         let trackEnabled: boolean | null = null;
         let mediaStreamActive: boolean | null = null;
         let mediaTrackReadyState: string | null = null;
-        
+
         if (track) {
           console.log('[AIAvatar] VoiceLoop: Inspecting published track...');
           console.log('[AIAvatar] VoiceLoop: track.isStarted:', track.isStarted);
           console.log('[AIAvatar] VoiceLoop: track.isEnabled:', track.isEnabled);
           if (track.isStarted !== undefined) trackStarted = track.isStarted;
           if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
-          
+
           const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
           if (mediaStreamTrack) {
             console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.readyState:', mediaStreamTrack.readyState);
@@ -747,7 +750,7 @@ function VoiceLoopController({
             if (track.mediaStream?.active !== undefined) mediaStreamActive = track.mediaStream.active;
           }
         }
-        
+
         updateTelemetry({
           trackPublished: true,
           trackPublishedTime: getTimeStamp(),
@@ -759,7 +762,7 @@ function VoiceLoopController({
           ...(mediaStreamActive !== null && { mediaStreamActive }),
           ...(mediaTrackReadyState !== null && { mediaTrackReadyState }),
         });
-        
+
         // Build 19f: Force re-enable mic to start audio transmission
         console.log('[AIAvatar] VoiceLoop: Build 19f - Force re-enabling mic after publication...');
         (async () => {
@@ -777,7 +780,7 @@ function VoiceLoopController({
             });
           }
         })();
-        
+
         // Clear fallback timer since we got the event
         if (fallbackTimerRef.current) {
           clearTimeout(fallbackTimerRef.current);
@@ -785,7 +788,7 @@ function VoiceLoopController({
         }
       }
     };
-    
+
     // Build 19e: Helper to deep inspect audio track capture state
     const inspectAudioTrackCapture = (audioTracks: Map<string, any>) => {
       let trackSid: string | null = null;
@@ -794,11 +797,11 @@ function VoiceLoopController({
       let trackEnabled: boolean | null = null;
       let mediaStreamActive: boolean | null = null;
       let mediaTrackReadyState: string | null = null;
-      
+
       audioTracks.forEach((pub: any) => {
         trackSid = pub.trackSid;
         trackMuted = pub.isMuted ?? null;
-        
+
         const track = pub.track;
         if (track) {
           console.log('[AIAvatar] VoiceLoop: Inspecting track capture state...');
@@ -806,7 +809,7 @@ function VoiceLoopController({
           console.log('[AIAvatar] VoiceLoop: track.isEnabled:', track.isEnabled);
           if (track.isStarted !== undefined) trackStarted = track.isStarted;
           if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
-          
+
           const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
           if (mediaStreamTrack) {
             console.log('[AIAvatar] VoiceLoop: MediaStreamTrack.readyState:', mediaStreamTrack.readyState);
@@ -817,18 +820,18 @@ function VoiceLoopController({
           }
         }
       });
-      
+
       return { trackSid, trackMuted, trackStarted, trackEnabled, mediaStreamActive, mediaTrackReadyState };
     };
-    
+
     // Also check if there's already a published audio track
     const existingAudioTracks = room.localParticipant?.audioTrackPublications;
     if (existingAudioTracks && existingAudioTracks.size > 0) {
       console.log('[AIAvatar] VoiceLoop: Found existing audio tracks:', existingAudioTracks.size);
       setMicTrackPublished(true);
-      
+
       const captureState = inspectAudioTrackCapture(existingAudioTracks as Map<string, any>);
-      
+
       updateTelemetry({
         trackPublished: true,
         trackPublishedTime: getTimeStamp(),
@@ -848,20 +851,20 @@ function VoiceLoopController({
         console.log('[AIAvatar] VoiceLoop: FALLBACK TIMER FIRED - checking for audio tracks...');
         const audioTracks = room.localParticipant?.audioTrackPublications;
         const trackCount = audioTracks?.size || 0;
-        
+
         updateTelemetry({
           audioTrackCount: trackCount,
         });
-        
+
         if (trackCount > 0) {
           console.log('[AIAvatar] VoiceLoop: Found audio tracks via fallback, proceeding...');
           setMicTrackPublished(true);
-          
+
           // Clear timer after fallback fires
           fallbackTimerRef.current = null;
-          
+
           const captureState = inspectAudioTrackCapture(audioTracks as Map<string, any>);
-          
+
           updateTelemetry({
             trackPublished: true,
             trackPublishedTime: getTimeStamp(),
@@ -873,7 +876,7 @@ function VoiceLoopController({
             ...(captureState.mediaStreamActive !== null && { mediaStreamActive: captureState.mediaStreamActive }),
             ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
           });
-          
+
           // Build 19f: Force re-enable mic in fallback path too
           console.log('[AIAvatar] VoiceLoop: Build 19f - Force re-enabling mic after fallback detection...');
           (async () => {
@@ -899,9 +902,9 @@ function VoiceLoopController({
         }
       }, 5000);
     }
-    
+
     room.on('localTrackPublished', handleLocalTrackPublished);
-    
+
     return () => {
       room.off('localTrackPublished', handleLocalTrackPublished);
       if (fallbackTimerRef.current) {
@@ -909,39 +912,39 @@ function VoiceLoopController({
       }
     };
   }, [room, isConnected]);
-  
+
   // Build 19f: Refs for AudioContext to persist across interval iterations
   const audioContextRef = useRef<any>(null);
   const analyserRef = useRef<any>(null);
-  
+
   // Build 19f: Monitor mic level and outbound audio stats
   useEffect(() => {
     if (!room || !isConnected || !micTrackPublished) return;
-    
+
     let intervalId: NodeJS.Timeout | null = null;
-    
+
     const monitorAudioStats = async () => {
       try {
         // Get audio track publication
         const audioTracks = room.localParticipant?.audioTrackPublications;
         if (!audioTracks || audioTracks.size === 0) return;
-        
+
         let track: any = null;
         let publication: any = null;
         audioTracks.forEach((pub: any) => {
           publication = pub;
           track = pub.track;
         });
-        
+
         if (!track) return;
-        
+
         // Get MediaStreamTrack for audio level
         const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
-        
+
         // Try to get outbound stats via RTCPeerConnection
         const engine = room.engine as any;
         const pc = engine?.publisher?.pc || engine?.pcManager?.publisher;
-        
+
         if (pc && typeof pc.getStats === 'function') {
           try {
             const stats = await pc.getStats();
@@ -965,7 +968,7 @@ function VoiceLoopController({
             console.log('[AIAvatar] AudioStats: Failed to get stats:', statsErr);
           }
         }
-        
+
         // Try to get audio level using AudioContext (web/native) - only create once
         if (mediaStreamTrack && !audioContextRef.current) {
           try {
@@ -982,7 +985,7 @@ function VoiceLoopController({
             console.log('[AIAvatar] AudioStats: Failed to create AudioContext:', ctxErr);
           }
         }
-        
+
         // Read audio level from analyser
         if (analyserRef.current) {
           const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
@@ -997,58 +1000,58 @@ function VoiceLoopController({
         console.log('[AIAvatar] AudioStats: Error monitoring:', err);
       }
     };
-    
+
     // Poll every 500ms
     intervalId = setInterval(monitorAudioStats, 500);
     monitorAudioStats(); // Initial check
-    
+
     return () => {
       if (intervalId) clearInterval(intervalId);
       if (audioContextRef.current) {
-        try { 
-          audioContextRef.current.close(); 
+        try {
+          audioContextRef.current.close();
           audioContextRef.current = null;
           analyserRef.current = null;
-        } catch (e) {}
+        } catch (e) { }
       }
     };
   }, [room, isConnected, micTrackPublished]);
-  
+
   // Helper to check actual data channel readiness
   const checkDataChannelReady = useCallback(() => {
     if (!room) return { ready: false, state: 'no_room' };
-    
+
     const engine = room.engine as any;
     if (!engine) return { ready: false, state: 'no_engine' };
-    
+
     // Check multiple possible data channel locations in LiveKit
     // The publisher data channel is used for reliable data messages
     const publisherDC = engine.publisher?.dataChannel;
     const reliableDC = engine.reliableDC;
     const lossyDC = engine.lossyDC;
-    
+
     // Log all possible data channel states
     const publisherState = publisherDC?.readyState || 'undefined';
     const reliableState = reliableDC?.readyState || 'undefined';
     const lossyState = lossyDC?.readyState || 'undefined';
     const engineConnected = engine.connected ?? false;
-    
+
     console.log('[AIAvatar] DataChannel states:');
     console.log('  - engine.connected:', engineConnected);
     console.log('  - publisher.dataChannel:', publisherState);
     console.log('  - reliableDC:', reliableState);
     console.log('  - lossyDC:', lossyState);
-    
+
     // Check if any data channel is open
     const isReliableOpen = reliableState === 'open';
     const isLossyOpen = lossyState === 'open';
     const isPublisherOpen = publisherState === 'open';
-    
+
     const anyOpen = isReliableOpen || isLossyOpen || isPublisherOpen;
     const stateString = `reliable:${reliableState},lossy:${lossyState},pub:${publisherState}`;
-    
-    return { 
-      ready: anyOpen, 
+
+    return {
+      ready: anyOpen,
       state: stateString,
       engineConnected,
       reliableState,
@@ -1067,7 +1070,7 @@ function VoiceLoopController({
 
     const dcStatus = checkDataChannelReady();
     console.log(`[AIAvatar] sendStartListening (${reason}): DataChannel ready:`, dcStatus.ready);
-    
+
     if (!dcStatus.ready) {
       console.log(`[AIAvatar] sendStartListening (${reason}): DataChannel not ready, skipping`);
       return false;
@@ -1075,10 +1078,10 @@ function VoiceLoopController({
 
     try {
       const roomState = room.state;
-      const isRoomConnected = roomState === 'connected' || 
-                         roomState === 'Connected' || 
-                         (roomState && String(roomState).toLowerCase() === 'connected');
-      
+      const isRoomConnected = roomState === 'connected' ||
+        roomState === 'Connected' ||
+        (roomState && String(roomState).toLowerCase() === 'connected');
+
       if (!isRoomConnected) {
         console.warn(`[AIAvatar] sendStartListening (${reason}): Room not connected`);
         return false;
@@ -1091,32 +1094,32 @@ function VoiceLoopController({
 
       conversationTurnRef.current += 1;
       const turnNum = conversationTurnRef.current;
-      
+
       const command = JSON.stringify({
         event_type: 'avatar.start_listening'
       });
       console.log(`[AIAvatar] sendStartListening (${reason}): Sending command, turn #${turnNum}`);
-      
+
       const encoder = new TextEncoder();
       const data = encoder.encode(command);
-      
-      await room.localParticipant.publishData(data, { 
+
+      await room.localParticipant.publishData(data, {
         reliable: true,
         topic: 'agent-control'
       });
-      
+
       console.log(`[AIAvatar] sendStartListening (${reason}): Command SENT successfully, turn #${turnNum}`);
-      
+
       // Build 22 FIX: Update state flags to prevent duplicate sends and sync state machine
       startListeningSentRef.current = true;
       setListeningStarted(true);
-      
+
       updateTelemetry({
         startListeningSent: true,
         startListeningTime: getTimeStamp(),
         appendEvent: `${getTimeStamp()}: start_listening (turn ${turnNum})`,
       } as any);
-      
+
       return true;
     } catch (err: any) {
       console.error(`[AIAvatar] sendStartListening (${reason}): Failed:`, err);
@@ -1137,7 +1140,7 @@ function VoiceLoopController({
 
     const dcStatus = checkDataChannelReady();
     console.log(`[AIAvatar] sendStopListening (${reason}): DataChannel ready:`, dcStatus.ready);
-    
+
     if (!dcStatus.ready) {
       console.log(`[AIAvatar] sendStopListening (${reason}): DataChannel not ready, skipping`);
       return false;
@@ -1145,10 +1148,10 @@ function VoiceLoopController({
 
     try {
       const roomState = room.state;
-      const isRoomConnected = roomState === 'connected' || 
-                         roomState === 'Connected' || 
-                         (roomState && String(roomState).toLowerCase() === 'connected');
-      
+      const isRoomConnected = roomState === 'connected' ||
+        roomState === 'Connected' ||
+        (roomState && String(roomState).toLowerCase() === 'connected');
+
       if (!isRoomConnected) {
         console.warn(`[AIAvatar] sendStopListening (${reason}): Room not connected`);
         return false;
@@ -1163,25 +1166,25 @@ function VoiceLoopController({
         event_type: 'avatar.stop_listening'
       });
       console.log(`[AIAvatar] sendStopListening (${reason}): Sending command...`);
-      
+
       const encoder = new TextEncoder();
       const data = encoder.encode(command);
-      
-      await room.localParticipant.publishData(data, { 
+
+      await room.localParticipant.publishData(data, {
         reliable: true,
         topic: 'agent-control'
       });
-      
+
       console.log(`[AIAvatar] sendStopListening (${reason}): Command SENT successfully`);
-      
+
       // NOTE: Do NOT reset listening guards here!
       // The avatar.speak_ended handler already resets startListeningSentRef before re-arming.
       // Resetting guards here would cause the initial polling useEffect to fire again.
-      
+
       updateTelemetry({
         appendEvent: `${getTimeStamp()}: stop_listening (${reason})`,
       } as any);
-      
+
       return true;
     } catch (err: any) {
       console.error(`[AIAvatar] sendStopListening (${reason}): Failed:`, err);
@@ -1197,12 +1200,12 @@ function VoiceLoopController({
   useEffect(() => {
     if (isConnected && room && micTrackPublished && !listeningStarted && !startListeningSentRef.current) {
       console.log('[AIAvatar] VoiceLoop: Mic track confirmed published, starting DC poll...');
-      
+
       let pollCount = 0;
       const maxPolls = 20; // 20 polls * 250ms = 5 seconds max wait
       let pollInterval: NodeJS.Timeout | null = null;
       let stopped = false;
-      
+
       const pollAndSend = async () => {
         // Guard: Already sent or stopped
         if (startListeningSentRef.current || stopped) {
@@ -1210,17 +1213,17 @@ function VoiceLoopController({
           if (pollInterval) clearInterval(pollInterval);
           return;
         }
-        
+
         pollCount++;
         console.log(`[AIAvatar] VoiceLoop: Poll attempt ${pollCount}/${maxPolls}`);
-        
+
         // Check data channel readiness
         const dcStatus = checkDataChannelReady();
-        updateTelemetry({ 
+        updateTelemetry({
           dataChannelReady: dcStatus.ready,
           dataChannelState: dcStatus.state,
         });
-        
+
         if (!dcStatus.ready) {
           if (pollCount >= maxPolls) {
             console.error('[AIAvatar] VoiceLoop: Data channel never opened after 5s!');
@@ -1229,22 +1232,22 @@ function VoiceLoopController({
           }
           return; // Will retry on next poll
         }
-        
+
         // DC ready - stop polling and send via helper
         if (pollInterval) clearInterval(pollInterval);
         stopped = true;
-        
+
         console.log('[AIAvatar] VoiceLoop: DC ready, calling sendStartListeningCommand...');
         const success = await sendStartListeningCommand('initial');
-        
+
         if (!success) {
           console.error('[AIAvatar] VoiceLoop: Initial sendStartListeningCommand failed');
         }
       };
-      
+
       // Start polling for data channel readiness
       console.log('[AIAvatar] VoiceLoop: Starting data channel readiness polling...');
-      
+
       // Initial check after 200ms delay
       setTimeout(() => {
         pollAndSend();
@@ -1253,39 +1256,39 @@ function VoiceLoopController({
           pollInterval = setInterval(pollAndSend, 250);
         }
       }, 200);
-      
+
       return () => {
         stopped = true;
         if (pollInterval) clearInterval(pollInterval);
       };
     }
   }, [isConnected, room, micTrackPublished, listeningStarted, checkDataChannelReady, sendStartListeningCommand]);
-  
+
   // Listen for server events via DataReceived
   // Build 22: Updated to re-send start_listening after avatar finishes speaking
   useEffect(() => {
     if (!room) return;
-    
+
     const handleDataReceived = (payload: Uint8Array, participant: any, kind: any, topic?: string) => {
       try {
         const decoder = new TextDecoder();
         const message = decoder.decode(payload);
         const data = JSON.parse(message);
-        
+
         // Build 21: LiveAvatar uses event_type field, but also check type for backwards compat
         const eventType = data.event_type || data.type || JSON.stringify(data).substring(0, 40);
         const timestamp = getTimeStamp();
         console.log('[AIAvatar] Server event received:', eventType);
         console.log('[AIAvatar] Event topic:', topic || 'no-topic');
         console.log('[AIAvatar] Full data:', JSON.stringify(data));
-        
+
         // Build 21: Update telemetry with event
         updateTelemetry({
           lastServerEvent: eventType,
           lastServerEventTime: timestamp,
           appendEvent: `${timestamp}: ${eventType}`,
         } as any);
-        
+
         // Update state based on events - check both event_type and type fields
         const evt = data.event_type || data.type;
         if (evt === 'user.speak_started') {
@@ -1294,7 +1297,7 @@ function VoiceLoopController({
         } else if (evt === 'user.speak_ended') {
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
-          
+
           // Build 25: Set up fallback timer - if transcription_ended doesn't arrive in 3s, send stop_listening anyway
           // This prevents deadlock if transcription fails or is delayed
           if (fallbackTimerRef.current) {
@@ -1313,21 +1316,21 @@ function VoiceLoopController({
         } else if (evt === 'avatar.speak_ended') {
           console.log('[AIAvatar] >>> Avatar stopped speaking');
           setAvatarState('idle');
-          
+
           // Build 22: Re-send start_listening after avatar finishes speaking
           // This re-arms the listening mode for the next conversational turn
           console.log('[AIAvatar] >>> Re-arming listening mode for next turn...');
-          
+
           // Reset guards to allow sending commands for next turn
           startListeningSentRef.current = false;
           stopListeningSentRef.current = false; // Build 25: Reset for next turn
-          
+
           // Clear any pending fallback timer
           if (fallbackTimerRef.current) {
             clearTimeout(fallbackTimerRef.current);
             fallbackTimerRef.current = null;
           }
-          
+
           setTimeout(() => {
             sendStartListeningCommand('avatar_finished');
           }, 100); // Small delay to ensure avatar has fully finished
@@ -1335,13 +1338,13 @@ function VoiceLoopController({
           // Build 25: Send stop_listening AFTER transcription is complete
           // This ensures the transcript is fully delivered before signaling end of turn
           console.log('[AIAvatar] >>> User transcription:', data.text);
-          
+
           // Clear fallback timer since transcription arrived
           if (fallbackTimerRef.current) {
             clearTimeout(fallbackTimerRef.current);
             fallbackTimerRef.current = null;
           }
-          
+
           // Only send stop_listening if we haven't already (guard against duplicates)
           if (!stopListeningSentRef.current) {
             console.log('[AIAvatar] >>> Transcription complete, sending stop_listening...');
@@ -1359,50 +1362,50 @@ function VoiceLoopController({
         console.log('[AIAvatar] Non-JSON data received');
       }
     };
-    
+
     room.on('dataReceived', handleDataReceived);
     console.log('[AIAvatar] Phase 4: DataReceived listener attached (Build 25 - stop on transcription_ended)');
-    
+
     return () => {
       room.off('dataReceived', handleDataReceived);
     };
   }, [room, sendStartListeningCommand, sendStopListeningCommand]);
-  
+
   // Status indicator overlay
   return (
     <View style={styles.voiceStateOverlay}>
       <Text style={styles.voiceStateText}>
         {avatarState === 'listening' ? '🎤 Listening...' :
-         avatarState === 'processing' ? '🤔 Processing...' :
-         avatarState === 'speaking' ? '🗣️ Speaking...' :
-         listeningStarted ? '✅ Ready' : '⏳ Starting...'}
+          avatarState === 'processing' ? '🤔 Processing...' :
+            avatarState === 'speaking' ? '🗣️ Speaking...' :
+              listeningStarted ? '✅ Ready' : '⏳ Starting...'}
       </Text>
     </View>
   );
 }
 
 // Build 19c: MicController with UI-visible debug telemetry
-function MicController({ 
-  modules, 
+function MicController({
+  modules,
   isConnected,
   updateTelemetry
-}: { 
-  modules: LiveKitModules; 
+}: {
+  modules: LiveKitModules;
   isConnected: boolean;
   updateTelemetry: (updates: Partial<DebugTelemetry>) => void;
 }) {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const [audioSessionStarted, setAudioSessionStarted] = useState(false);
-  
+
   // Always call hook unconditionally (React rules)
   const { localParticipant } = modules!.useLocalParticipant();
-  
+
   // Step 1: Start LiveKit AudioSession FIRST (required for iOS, optional on other platforms)
   useEffect(() => {
     if (isConnected && !audioSessionStarted) {
       console.log('[AIAvatar] MicController: Checking AudioSession availability...');
-      
+
       if (modules?.AudioSession) {
         console.log('[AIAvatar] MicController: AudioSession available, starting...');
         const startAudioSession = async () => {
@@ -1437,74 +1440,74 @@ function MicController({
       }
     }
   }, [isConnected, modules, audioSessionStarted]);
-  
+
   // Step 2: Enable mic AFTER AudioSession is started
   useEffect(() => {
     if (isConnected && localParticipant && audioSessionStarted && !isMicEnabled) {
       console.log('[AIAvatar] MicController: Attempting to enable local microphone...');
       console.log('[AIAvatar] MicController: localParticipant identity:', localParticipant.identity);
       console.log('[AIAvatar] MicController: localParticipant sid:', localParticipant.sid);
-      
+
       // Build 19g: Update telemetry with participant identity
       updateTelemetry({
         participantIdentity: localParticipant.identity || localParticipant.sid || 'unknown',
       });
-      
+
       const enableMic = async () => {
         try {
           // Request audio permissions first (Expo)
           console.log('[AIAvatar] MicController: Requesting audio permissions...');
           const { status } = await Audio.requestPermissionsAsync();
           console.log('[AIAvatar] MicController: Audio permission status:', status);
-          
+
           updateTelemetry({
             permissionGranted: status === 'granted',
             permissionTime: getTimeStamp(),
           });
-          
+
           if (status !== 'granted') {
             throw new Error('Microphone permission denied');
           }
-          
+
           console.log('[AIAvatar] MicController: Calling setMicrophoneEnabled(true)...');
           await localParticipant.setMicrophoneEnabled(true);
           console.log('[AIAvatar] MicController: setMicrophoneEnabled COMPLETED');
-          
+
           // Check if mic track is published
           const audioTracks = localParticipant.audioTrackPublications;
           const trackCount = audioTracks?.size || 0;
           console.log('[AIAvatar] MicController: Audio track publications count:', trackCount);
-          
+
           // Build 19e: Helper to inspect LocalAudioTrack capture state
           const inspectAudioTrack = (audioTracks: Map<string, any>) => {
             let trackStarted: boolean | null = null;
             let trackEnabled: boolean | null = null;
             let mediaStreamActive: boolean | null = null;
             let mediaTrackReadyState: string | null = null;
-            
+
             audioTracks.forEach((pub: any, key: string) => {
               console.log('[AIAvatar] MicController: Audio track:', key, 'source:', pub.source, 'trackSid:', pub.trackSid);
-              
+
               const track = pub.track;
               if (track) {
                 console.log('[AIAvatar] MicController: Track object found');
                 console.log('[AIAvatar] MicController: track.isStarted:', track.isStarted);
                 console.log('[AIAvatar] MicController: track.isEnabled:', track.isEnabled);
                 console.log('[AIAvatar] MicController: track.isMuted:', track.isMuted);
-                
+
                 // Only update if we have actual values (don't overwrite with null)
                 if (track.isStarted !== undefined) trackStarted = track.isStarted;
                 if (track.isEnabled !== undefined) trackEnabled = track.isEnabled;
-                
+
                 const mediaStreamTrack = track.mediaStreamTrack || track._mediaStreamTrack;
                 if (mediaStreamTrack) {
                   console.log('[AIAvatar] MicController: MediaStreamTrack found');
                   console.log('[AIAvatar] MicController: mediaStreamTrack.readyState:', mediaStreamTrack.readyState);
                   console.log('[AIAvatar] MicController: mediaStreamTrack.enabled:', mediaStreamTrack.enabled);
                   console.log('[AIAvatar] MicController: mediaStreamTrack.muted:', mediaStreamTrack.muted);
-                  
+
                   if (mediaStreamTrack.readyState) mediaTrackReadyState = mediaStreamTrack.readyState;
-                  
+
                   if (track.mediaStream && track.mediaStream.active !== undefined) {
                     mediaStreamActive = track.mediaStream.active;
                     console.log('[AIAvatar] MicController: mediaStream.active:', mediaStreamActive);
@@ -1517,13 +1520,13 @@ function MicController({
                 console.log('[AIAvatar] MicController: No track object on publication (may still be publishing)');
               }
             });
-            
+
             return { trackStarted, trackEnabled, mediaStreamActive, mediaTrackReadyState };
           };
-          
+
           // Initial inspection
           let captureState = inspectAudioTrack(audioTracks as Map<string, any>);
-          
+
           setIsMicEnabled(true);
           setMicError(null);
           updateTelemetry({
@@ -1536,7 +1539,7 @@ function MicController({
             ...(captureState.mediaTrackReadyState !== null && { mediaTrackReadyState: captureState.mediaTrackReadyState }),
           });
           console.log('[AIAvatar] MicController: Mic ENABLED and ready');
-          
+
           // Re-inspect after a short delay in case track is still publishing
           setTimeout(() => {
             const delayedTracks = localParticipant.audioTrackPublications;
@@ -1564,7 +1567,7 @@ function MicController({
       enableMic();
     }
   }, [isConnected, localParticipant, audioSessionStarted, isMicEnabled]);
-  
+
   const toggleMic = async () => {
     if (!localParticipant) return;
     try {
@@ -1578,17 +1581,17 @@ function MicController({
       setMicError(err?.message || 'Mic toggle failed');
     }
   };
-  
+
   return (
     <View style={styles.micOverlay}>
       <TouchableOpacity
         style={[styles.micButton, isMicEnabled ? styles.micButtonActive : styles.micButtonInactive]}
         onPress={toggleMic}
       >
-        <Ionicons 
-          name={isMicEnabled ? "mic" : "mic-off"} 
-          size={36} 
-          color="#fff" 
+        <Ionicons
+          name={isMicEnabled ? "mic" : "mic-off"}
+          size={36}
+          color="#fff"
         />
       </TouchableOpacity>
       {micError && (
@@ -1602,7 +1605,7 @@ function MicController({
 }
 
 // Build 19c: MinimalLiveKitContent with debug telemetry panel
-function MinimalLiveKitContent({ 
+function MinimalLiveKitContent({
   isConnected,
   showRemoteVideo,
   enableLocalMic,
@@ -1613,7 +1616,7 @@ function MinimalLiveKitContent({
   showDebugPanel = true,
   liveKitUrl = '',
   liveKitToken = ''
-}: { 
+}: {
   isConnected: boolean;
   showRemoteVideo: boolean;
   enableLocalMic: boolean;
@@ -1627,28 +1630,28 @@ function MinimalLiveKitContent({
 }) {
   // Build 19c: Debug telemetry state
   const [debugTelemetry, setDebugTelemetry] = useState<DebugTelemetry>(initialDebugTelemetry);
-  
+
   const updateTelemetry = useCallback((updates: Partial<DebugTelemetry> & { appendEvent?: string }) => {
     setDebugTelemetry(prev => {
       let newState = { ...prev, ...updates };
-      
+
       // Special handling for errors array - append instead of replace
       if (updates.errors) {
         newState.errors = [...prev.errors, ...updates.errors].slice(-5);
       }
-      
+
       // Build 19g: Special handling for allServerEvents - append
       if ((updates as any).appendEvent) {
         newState.allServerEvents = [...(prev.allServerEvents || []), (updates as any).appendEvent].slice(-10);
         delete (newState as any).appendEvent;
       }
-      
+
       return newState;
     });
   }, []);
-  
+
   console.log('[AIAvatar] MinimalLiveKitContent render - isConnected:', isConnected, 'showRemoteVideo:', showRemoteVideo, 'enableLocalMic:', enableLocalMic, 'enableDirectAudio:', enableDirectAudio, 'enableDataChannel:', enableDataChannel);
-  
+
   // Build 19g: Update telemetry with LiveKit URL/token for meet.livekit.io testing
   useEffect(() => {
     if (liveKitUrl || liveKitToken) {
@@ -1659,7 +1662,7 @@ function MinimalLiveKitContent({
       }));
     }
   }, [liveKitUrl, liveKitToken]);
-  
+
   return (
     <View style={styles.videoContainer}>
       {!isConnected ? (
@@ -1677,7 +1680,7 @@ function MinimalLiveKitContent({
           )}
           {/* Build 18a: Direct audio via room events - avoids useTracks crash */}
           {enableDirectAudio && modules && (
-            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
+            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={true} />
           )}
           {/* Build 19c: Voice loop controller with debug telemetry */}
           {enableDataChannel && modules && (
@@ -1863,9 +1866,9 @@ function LiveKitContent({
 export default function AIAvatarScreen() {
   const navigation = useNavigation();
   const route = useRoute<RouteType>();
-  
+
   const { language = 'Italian', level = 'beginner', courseTitle = '', lessonTitle = '', reviewPhrases = [] } = route.params || {};
-  
+
   const [isConnecting, setIsConnecting] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -1873,16 +1876,16 @@ export default function AIAvatarScreen() {
   const [sessionTime, setSessionTime] = useState(0);
   const [statusMessage, setStatusMessage] = useState('Initializing...');
   const [error, setError] = useState<string | null>(null);
-  
+
   // Debug panel visibility - toggle with 5 taps on timer (for testing)
   const [showDebugPanel, setShowDebugPanel] = useState(__DEV__); // Show in dev mode by default
   const debugTapCountRef = useRef(0);
   const debugTapTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const handleTimerTap = () => {
     debugTapCountRef.current += 1;
     if (debugTapTimerRef.current) clearTimeout(debugTapTimerRef.current);
-    
+
     if (debugTapCountRef.current >= 5) {
       setShowDebugPanel(prev => !prev);
       debugTapCountRef.current = 0;
@@ -1892,14 +1895,14 @@ export default function AIAvatarScreen() {
       }, 2000);
     }
   };
-  
+
   const [sessionId, setSessionId] = useState<string>('');
   const [sessionToken, setSessionToken] = useState<string>('');
   const [liveKitUrl, setLiveKitUrl] = useState<string>('');
   const [liveKitToken, setLiveKitToken] = useState<string>('');
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
-  
+
   // LiveKit feature flags
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
   const [enableLocalMic, setEnableLocalMic] = useState(true);
@@ -1909,7 +1912,7 @@ export default function AIAvatarScreen() {
   const [enableRemoteAudio, setEnableRemoteAudio] = useState(false);
   const [enableDataChannel, setEnableDataChannel] = useState(true);
   const [enableDirectAudio, setEnableDirectAudio] = useState(true);
-  
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const sessionDataRef = useRef<{ sessionId: string; sessionToken: string }>({ sessionId: '', sessionToken: '' });
   const softWarningShownRef = useRef(false);
@@ -1940,16 +1943,16 @@ export default function AIAvatarScreen() {
     if (!key) {
       return { valid: false, error: 'HeyGen API key not configured. Please set up your API key first.' };
     }
-    
+
     const trimmedKey = key.trim();
     if (trimmedKey.length === 0) {
       return { valid: false, error: 'API key is empty. Please enter a valid HeyGen API key.' };
     }
-    
+
     if (trimmedKey.length < 20) {
       return { valid: false, error: 'API key appears to be invalid (too short). Please check your HeyGen API key.' };
     }
-    
+
     return { valid: true };
   };
 
@@ -1976,7 +1979,7 @@ export default function AIAvatarScreen() {
 
   const parseApiError = (status: number, errorBody: string): string => {
     console.log('[AIAvatar] Parsing error - status:', status, 'body:', errorBody);
-    
+
     try {
       const parsed = JSON.parse(errorBody);
       if (parsed.message) return parsed.message;
@@ -1984,7 +1987,7 @@ export default function AIAvatarScreen() {
       if (parsed.detail) return typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail);
     } catch {
     }
-    
+
     switch (status) {
       case 401:
         return 'Invalid API key. Please check your HeyGen API key and try again.';
@@ -2005,60 +2008,60 @@ export default function AIAvatarScreen() {
 
   const extractSessionData = (data: any): { sessionId: string; sessionToken: string } | null => {
     console.log('[AIAvatar] Extracting session data from:', JSON.stringify(data, null, 2));
-    
+
     if (data.session_id && data.session_token) {
       console.log('[AIAvatar] Found session data at top level');
       return { sessionId: data.session_id, sessionToken: data.session_token };
     }
-    
+
     if (data.data && data.data.session_id && data.data.session_token) {
       console.log('[AIAvatar] Found session data in data wrapper');
       return { sessionId: data.data.session_id, sessionToken: data.data.session_token };
     }
-    
+
     if (data.session_id && data.access_token) {
       console.log('[AIAvatar] Found session_id with access_token (old format)');
       return { sessionId: data.session_id, sessionToken: data.access_token };
     }
-    
+
     if (data.data && data.data.session_id && data.data.access_token) {
       console.log('[AIAvatar] Found session data in data wrapper (old format)');
       return { sessionId: data.data.session_id, sessionToken: data.data.access_token };
     }
-    
+
     console.log('[AIAvatar] Could not extract session data. Available keys:', Object.keys(data));
     if (data.data) {
       console.log('[AIAvatar] data.data keys:', Object.keys(data.data));
     }
-    
+
     return null;
   };
 
   const extractLiveKitData = (data: any): { liveKitUrl: string; liveKitToken: string } | null => {
     console.log('[AIAvatar] Extracting LiveKit data from:', JSON.stringify(data, null, 2));
-    
+
     if (data.livekit_url && data.livekit_client_token) {
       return { liveKitUrl: data.livekit_url, liveKitToken: data.livekit_client_token };
     }
-    
+
     if (data.data && data.data.livekit_url && data.data.livekit_client_token) {
       return { liveKitUrl: data.data.livekit_url, liveKitToken: data.data.livekit_client_token };
     }
-    
+
     if (data.url && data.access_token) {
       console.log('[AIAvatar] Found url with access_token (old streaming.new format)');
       return { liveKitUrl: data.url, liveKitToken: data.access_token };
     }
-    
+
     if (data.data && data.data.url && data.data.access_token) {
       return { liveKitUrl: data.data.url, liveKitToken: data.data.access_token };
     }
-    
+
     console.log('[AIAvatar] Could not extract LiveKit data. Available keys:', Object.keys(data));
     if (data.data) {
       console.log('[AIAvatar] data.data keys:', Object.keys(data.data));
     }
-    
+
     return null;
   };
 
@@ -2067,7 +2070,7 @@ export default function AIAvatarScreen() {
     console.log('[AIAvatar] Using API base URL:', API_BASE_URL);
     console.log('[AIAvatar] Avatar ID:', HEYGEN_AVATAR_ID);
     console.log('[AIAvatar] Context ID:', HEYGEN_CONTEXT_ID);
-    
+
     const langCode = getLanguageCode(language);
     const sessionContext = buildSessionContext(
       language,
@@ -2077,7 +2080,7 @@ export default function AIAvatarScreen() {
       reviewPhrases,
       langCode
     );
-    
+
     // Build the dynamic avatar prompt for this lesson
     const avatarPrompt = buildAvatarPrompt(
       language,
@@ -2088,7 +2091,7 @@ export default function AIAvatarScreen() {
     );
     console.log('[AIAvatar] Avatar prompt:', avatarPrompt);
     console.log('[AIAvatar] Session context:', JSON.stringify(sessionContext, null, 2));
-    
+
     const requestBody = {
       mode: 'FULL',
       avatar_id: HEYGEN_AVATAR_ID,
@@ -2102,7 +2105,7 @@ export default function AIAvatarScreen() {
       session_context: sessionContext,
     };
     console.log('[AIAvatar] Request body:', JSON.stringify(requestBody, null, 2));
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/v1/sessions/token`, {
         method: 'POST',
@@ -2113,17 +2116,17 @@ export default function AIAvatarScreen() {
         },
         body: JSON.stringify(requestBody),
       });
-      
+
       console.log('[AIAvatar] Session token response status:', response.status);
-      
+
       const responseText = await response.text();
       console.log('[AIAvatar] Raw response body:', responseText);
-      
+
       if (!response.ok) {
         const errorMessage = parseApiError(response.status, responseText);
         throw new Error(errorMessage);
       }
-      
+
       let data;
       try {
         data = JSON.parse(responseText);
@@ -2131,13 +2134,13 @@ export default function AIAvatarScreen() {
         console.error('[AIAvatar] Failed to parse JSON response:', parseErr);
         throw new Error('Invalid response from server. Please try again.');
       }
-      
+
       const sessionData = extractSessionData(data);
       if (sessionData) {
         console.log('[AIAvatar] Successfully extracted session data');
         return sessionData;
       }
-      
+
       throw new Error('Unexpected response format from HeyGen. Please try again or contact support.');
     } catch (err: any) {
       console.error('[AIAvatar] Error creating session token:', err);
@@ -2150,7 +2153,7 @@ export default function AIAvatarScreen() {
 
   const startSession = async (token: string) => {
     console.log('[AIAvatar] Starting session with token length:', token.length);
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/v1/sessions/start`, {
         method: 'POST',
@@ -2159,17 +2162,17 @@ export default function AIAvatarScreen() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       console.log('[AIAvatar] Start session response status:', response.status);
-      
+
       const responseText = await response.text();
       console.log('[AIAvatar] Raw start session response:', responseText);
-      
+
       if (!response.ok) {
         const errorMessage = parseApiError(response.status, responseText);
         throw new Error(errorMessage);
       }
-      
+
       let data;
       try {
         data = JSON.parse(responseText);
@@ -2177,13 +2180,13 @@ export default function AIAvatarScreen() {
         console.error('[AIAvatar] Failed to parse start session JSON:', parseErr);
         throw new Error('Invalid response from server. Please try again.');
       }
-      
+
       const liveKitData = extractLiveKitData(data);
       if (liveKitData) {
         console.log('[AIAvatar] Successfully extracted LiveKit data');
         return liveKitData;
       }
-      
+
       throw new Error('Unexpected response format when starting stream. Please try again.');
     } catch (err: any) {
       console.error('[AIAvatar] Error starting session:', err);
@@ -2197,7 +2200,7 @@ export default function AIAvatarScreen() {
   const closeSession = async () => {
     const token = sessionDataRef.current.sessionToken || sessionToken;
     if (!token) return;
-    
+
     console.log('[AIAvatar] Closing session...');
     try {
       await fetch(`${API_BASE_URL}/v1/sessions/stop`, {
@@ -2229,17 +2232,17 @@ export default function AIAvatarScreen() {
     setIsConnected(true);
     setIsConnecting(false);
     setStatusMessage('Connected! Say something to practice.');
-    
+
     timerRef.current = setInterval(() => {
       setSessionTime(prev => {
         const newTime = prev + 1;
-        
+
         if (newTime >= SESSION_HARD_LIMIT) {
           handleLeaveSession();
         } else if (newTime >= SESSION_SOFT_LIMIT && !softWarningShownRef.current) {
           softWarningShownRef.current = true;
         }
-        
+
         return newTime;
       });
     }, 1000);
@@ -2249,15 +2252,15 @@ export default function AIAvatarScreen() {
     try {
       setIsConnecting(true);
       setStatusMessage('Loading modules...');
-      
+
       const modules = await loadLiveKitModules();
       setLiveKitModules(modules);
       setLiveKitLoaded(true);
-      
+
       if (!modules) {
         console.log('[AIAvatar] LiveKit not available, showing fallback UI');
       }
-      
+
       setStatusMessage('Checking API credentials...');
       const storedKey = await getStoredApiKey();
       const keyValidation = validateApiKey(storedKey);
@@ -2266,31 +2269,31 @@ export default function AIAvatarScreen() {
         setIsConnecting(false);
         return;
       }
-      
+
       if (modules) {
         await initializeAudioSession();
       }
-      
+
       setStatusMessage('Creating session...');
       const { sessionId: sid, sessionToken: sToken } = await createSessionWithToken(storedKey!);
       setSessionId(sid);
       setSessionToken(sToken);
       sessionDataRef.current = { sessionId: sid, sessionToken: sToken };
-      
+
       setStatusMessage('Starting stream...');
       const { liveKitUrl: url, liveKitToken: token } = await startSession(sToken);
       setLiveKitUrl(url);
       setLiveKitToken(token);
-      
+
       // Build 19g: Log LiveKit URL/token for meet.livekit.io testing
       console.log('[AIAvatar] Build 19g: LiveKit URL for testing:', url);
       console.log('[AIAvatar] Build 19g: LiveKit Token (first 50):', token.substring(0, 50));
-      
+
       if (!modules) {
         setIsConnected(true);
         setIsConnecting(false);
         setStatusMessage('Connected (video requires development build)');
-        
+
         timerRef.current = setInterval(() => {
           setSessionTime(prev => {
             const newTime = prev + 1;
@@ -2301,7 +2304,7 @@ export default function AIAvatarScreen() {
           });
         }, 1000);
       }
-      
+
     } catch (err: any) {
       console.error('[AIAvatar] Session initialization error:', err);
       setError(`Failed to connect: ${err.message || 'Unknown error'}`);
@@ -2314,7 +2317,7 @@ export default function AIAvatarScreen() {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    
+
     await closeSession();
     navigation.goBack();
   };
@@ -2345,16 +2348,16 @@ export default function AIAvatarScreen() {
         return false;
       }
     };
-    
+
     const setup = async () => {
       const hasPermission = await requestMicPermission();
       if (hasPermission) {
         await initializeSession();
       }
     };
-    
+
     setup();
-    
+
     return () => {
       console.log('[AIAvatar] Cleanup');
       if (timerRef.current) {
@@ -2426,7 +2429,7 @@ export default function AIAvatarScreen() {
         </LiveKitRoom>
       );
     }
-    
+
     return (
       <>
         <View style={styles.videoContainer}>
@@ -2475,7 +2478,7 @@ export default function AIAvatarScreen() {
             {formatTime(sessionTime)} / {formatTime(SESSION_HARD_LIMIT)}
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity onPress={confirmLeave} style={styles.leaveButton}>
           <Ionicons name="close" size={24} color="#fff" />
           <Text style={styles.leaveButtonText}>Leave</Text>
