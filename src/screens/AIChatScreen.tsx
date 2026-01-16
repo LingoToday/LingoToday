@@ -81,7 +81,7 @@ export default function AIChatScreen() {
                 level: user?.selectedLevel || 'beginner',
                 courseTitle: 'General Practice',
                 lessonTitle: 'Conversation',
-                reviewPhrases: user?.reviewPhrases || [],
+                reviewPhrases: user?.reviewPhrases || ['Guten Tag', 'Guten Abend', 'Guten Morgen'],
               })
             },
             {
