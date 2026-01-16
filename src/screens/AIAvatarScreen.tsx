@@ -1300,18 +1300,14 @@ function VoiceLoopController({
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
 
-          // Build 25: Set up fallback timer - if transcription_ended doesn't arrive in 3s, send stop_listening anyway
-          // This prevents deadlock if transcription fails or is delayed
+          // Build 26: Send stop_listening IMMEDIATELY on VAD end.
+          // Do not wait for transcription. This triggers the avatar to respond.
+          // Clear any existing fallback timer just in case
           if (fallbackTimerRef.current) {
             clearTimeout(fallbackTimerRef.current);
+            fallbackTimerRef.current = null;
           }
-          fallbackTimerRef.current = setTimeout(() => {
-            if (!stopListeningSentRef.current) {
-              console.log('[AIAvatar] >>> Fallback: transcription_ended not received in 3s, sending stop_listening...');
-              sendStopListeningCommand('fallback_timeout');
-              stopListeningSentRef.current = true;
-            }
-          }, 3000);
+          sendStopListeningCommand('user.speak_ended');
         } else if (evt === 'avatar.speak_started') {
           console.log('[AIAvatar] >>> Avatar started speaking');
           setAvatarState('speaking');
@@ -1412,6 +1408,30 @@ function MicController({
         console.log('[AIAvatar] MicController: AudioSession available, starting...');
         const startAudioSession = async () => {
           try {
+            // Configure audio session for voice chat (playAndRecord)
+            // This is CRITICAL for the mic to work while hearing audio
+            await modules.AudioSession.configureAudio({
+              android: {
+                preferredOutputList: ['earpiece', 'speaker', 'headset', 'bluetooth'],
+                audioTypeOptions: {
+                  manageAudioFocus: true,
+                  audioMode: 'inCommunication',
+                  audioFocusMode: 'gain',
+                  audioAttributesUsageType: 'voiceCommunication',
+                  audioAttributesContentType: 'speech',
+                  audioStreamType: 'voiceCall',
+                  forceHandleAudioRouting: true
+                }
+              },
+              ios: {
+                defaultOutput: 'speaker',
+                audioCategory: 'playAndRecord',
+                audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP', 'mixWithOthers', 'defaultToSpeaker'],
+                audioMode: 'videoChat'
+              }
+            });
+            console.log('[AIAvatar] MicController: AudioSession configured');
+
             await modules.AudioSession.startAudioSession();
             console.log('[AIAvatar] MicController: AudioSession STARTED successfully');
             setAudioSessionStarted(true);
