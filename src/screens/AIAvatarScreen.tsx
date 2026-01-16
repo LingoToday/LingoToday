@@ -18,11 +18,10 @@ import { Audio } from 'expo-av';
 import { theme } from '../lib/theme';
 
 const HEYGEN_AVATAR_ID = 'bf00036b-558a-44b5-b2ff-1e3cec0f4ceb';
-const HEYGEN_CONTEXT_ID = 'c32cf18d-d920-4d35-8eb4-39c4b1fd90ce'; // Updated context ID from client
+const HEYGEN_CONTEXT_ID = '36b81552-35ee-40ea-b008-d84cb5ca882c';
 const HEYGEN_VOICE_ID = 'b2bd6569-a537-4342-aeca-a1f15d2a2c97';
 const API_BASE_URL = 'https://api.liveavatar.com';
 const HEYGEN_API_KEY_STORAGE_KEY = 'heygen_api_key';
-const HEYGEN_API_KEY_HARDCODED = '785e5d3e-d8eb-11f0-a99e-066a7fa2e369'; // Fallback API key
 
 const SESSION_SOFT_LIMIT = 90;
 const SESSION_HARD_LIMIT = 120;
@@ -72,7 +71,7 @@ const buildSessionContext = (
     id: `r${index + 1}`,
     prompt_en: phrase,
     expected_target: [],
-    notes: `Ask the user: "How would you say '${phrase}' in ${targetLanguageName}?" Wait for their response, then provide feedback.`
+    notes: `Ask user to translate "${phrase}" to ${targetLanguageName}. Evaluate their spoken response using your language knowledge.`
   }));
 
   return {
@@ -96,47 +95,10 @@ const buildSessionContext = (
         id: 'r1',
         prompt_en: 'Practice conversation',
         expected_target: [],
-        notes: `Have a simple ${targetLanguageName} conversation practice. Ask basic questions appropriate for the ${level} level.`
+        notes: `Have a simple conversation practice in ${targetLanguageName}. Ask basic questions appropriate for the user's level.`
       }
     ]
   };
-};
-
-// Build the avatar prompt text that will be sent to the avatar context
-const buildAvatarPrompt = (
-  language: string,
-  level: string,
-  courseTitle: string,
-  lessonTitle: string,
-  reviewPhrases: string[]
-): string => {
-  const phrasesText = reviewPhrases.length > 0
-    ? `The phrases to practice are: ${reviewPhrases.map((p, i) => `${i + 1}. "${p}"`).join(', ')}.`
-    : 'Practice general conversation appropriate for their level.';
-
-  return `You are a friendly ${language} language tutor for LingoToday. 
-You are conducting a 2-minute review session for a ${level} level learner.
-Course: ${courseTitle || 'Language Practice'}
-Lesson: ${lessonTitle || 'Review Session'}
-
-YOUR BEHAVIOR:
-1. Start by greeting the learner warmly and briefly introducing what you'll practice together.
-2. Ask the learner to translate English phrases to ${language}, one at a time. Do NOT ask all at once.
-3. Wait for their spoken response before proceeding to the next phrase.
-4. Give brief, encouraging feedback: "Great job!", "Almost! Try...", "Perfect pronunciation!"
-5. If they struggle, give a gentle hint, then the correct answer.
-6. Keep responses short (1-2 sentences max) to maintain conversation flow.
-7. If they go off-topic, gently redirect: "That's interesting! Let's get back to practicing our phrases."
-
-PHRASES TO PRACTICE:
-${phrasesText}
-
-IMPORTANT RULES:
-- Speak mainly in English, but use ${language} for the target phrases.
-- Keep the session interactive and encouraging.
-- This is a spoken conversation - be natural and conversational.
-- You have about 90 seconds for this review.
-- STRICTLY follow the script and do not deviate.`;
 };
 
 type AIAvatarRouteParams = {
@@ -152,6 +114,7 @@ type RouteType = RouteProp<{ AIAvatar: AIAvatarRouteParams }, 'AIAvatar'>;
 type LiveKitModules = {
   LiveKitRoom: any;
   VideoTrack: any;
+  AudioTrack: any;
   useTracks: any;
   useLocalParticipant: any;
   useRoomContext: any;
@@ -497,6 +460,7 @@ async function loadLiveKitModules(): Promise<LiveKitModules> {
     return {
       LiveKitRoom: livekit.LiveKitRoom,
       VideoTrack: livekit.VideoTrack || null,
+      AudioTrack: livekit.AudioTrack || null,
       useTracks: livekit.useTracks,
       useLocalParticipant: livekit.useLocalParticipant || null,
       useRoomContext: livekit.useRoomContext || null,
@@ -542,7 +506,7 @@ function MinimalRemoteVideoRenderer({ modules }: { modules: LiveKitModules }) {
 function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
   if (!modules) return null;
 
-  const { useTracks, Track } = modules;
+  const { useTracks, Track, AudioTrack } = modules;
   // Subscribe to remote microphone track (avatar's voice)
   const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: false });
   const audioTrack = tracks.find((t: any) => t.source === Track.Source.Microphone);
@@ -554,8 +518,8 @@ function RemoteAudioRenderer({ modules }: { modules: LiveKitModules }) {
     return null;
   }
 
-  console.log('[AIAvatar] Rendering remote audio track - NOTE: Audio plays automatically in RN');
-  return null; // Audio plays automatically, no component needed
+  console.log('[AIAvatar] Rendering remote audio track');
+  return <AudioTrack trackRef={audioTrack} />;
 }
 
 // Build 18a: Direct audio controller - uses room events instead of useTracks
@@ -625,16 +589,12 @@ function DirectAudioController({
   }, [room, isConnected]);
 
   // Build 18a: Log only, no AudioTrack render yet
-  // Build 18b: renderAudio && hasAudioTrack && <AudioTrack />
-  // FIXED: Audio plays automatically in React Native, no need to render AudioTrack component
-  if (!modules) return null;
-
+  // Build 18b will add: renderAudio && hasAudioTrack && <AudioTrack />
   return (
     <View style={styles.directAudioStatus}>
       <Text style={styles.directAudioText}>
         {hasAudioTrack ? '🔊 Audio track ready' : '⏳ Waiting for audio...'}
       </Text>
-      {/* Audio plays automatically via WebRTC when subscribed */}
     </View>
   );
 }
@@ -1680,7 +1640,7 @@ function MinimalLiveKitContent({
           )}
           {/* Build 18a: Direct audio via room events - avoids useTracks crash */}
           {enableDirectAudio && modules && (
-            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={true} />
+            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
           )}
           {/* Build 19c: Voice loop controller with debug telemetry */}
           {enableDataChannel && modules && (
@@ -1877,25 +1837,6 @@ export default function AIAvatarScreen() {
   const [statusMessage, setStatusMessage] = useState('Initializing...');
   const [error, setError] = useState<string | null>(null);
 
-  // Debug panel visibility - toggle with 5 taps on timer (for testing)
-  const [showDebugPanel, setShowDebugPanel] = useState(__DEV__); // Show in dev mode by default
-  const debugTapCountRef = useRef(0);
-  const debugTapTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleTimerTap = () => {
-    debugTapCountRef.current += 1;
-    if (debugTapTimerRef.current) clearTimeout(debugTapTimerRef.current);
-
-    if (debugTapCountRef.current >= 5) {
-      setShowDebugPanel(prev => !prev);
-      debugTapCountRef.current = 0;
-    } else {
-      debugTapTimerRef.current = setTimeout(() => {
-        debugTapCountRef.current = 0;
-      }, 2000);
-    }
-  };
-
   const [sessionId, setSessionId] = useState<string>('');
   const [sessionToken, setSessionToken] = useState<string>('');
   const [liveKitUrl, setLiveKitUrl] = useState<string>('');
@@ -1903,9 +1844,11 @@ export default function AIAvatarScreen() {
   const [liveKitModules, setLiveKitModules] = useState<LiveKitModules>(null);
   const [liveKitLoaded, setLiveKitLoaded] = useState(false);
 
-  // LiveKit feature flags
+  // MINIMAL TEST: Build 18a - Direct audio via room events (log only)
   const [showRemoteVideo, setShowRemoteVideo] = useState(true);
+  // Phase 3: Enable local mic
   const [enableLocalMic, setEnableLocalMic] = useState(true);
+  // Build 18a: ISOLATED TESTS - Test direct audio approach
   // enableRemoteAudio = false: useTracks for audio CRASHES - DO NOT USE
   // enableDataChannel = true: Send avatar.start_listening, listen for events
   // enableDirectAudio = true: Use room events for audio track (log only for 18a)
@@ -1960,19 +1903,9 @@ export default function AIAvatarScreen() {
     try {
       const key = await SecureStore.getItemAsync(HEYGEN_API_KEY_STORAGE_KEY);
       console.log('[AIAvatar] API key retrieved:', key ? `exists (length: ${key.length})` : 'not found');
-      // Fall back to hardcoded API key if no stored key
-      if (!key && HEYGEN_API_KEY_HARDCODED) {
-        console.log('[AIAvatar] Using fallback API key');
-        return HEYGEN_API_KEY_HARDCODED;
-      }
       return key;
     } catch (err) {
       console.error('[AIAvatar] Error retrieving API key:', err);
-      // Fall back to hardcoded API key on error
-      if (HEYGEN_API_KEY_HARDCODED) {
-        console.log('[AIAvatar] Using fallback API key after error');
-        return HEYGEN_API_KEY_HARDCODED;
-      }
       return null;
     }
   };
@@ -2080,16 +2013,6 @@ export default function AIAvatarScreen() {
       reviewPhrases,
       langCode
     );
-
-    // Build the dynamic avatar prompt for this lesson
-    const avatarPrompt = buildAvatarPrompt(
-      language,
-      level,
-      courseTitle,
-      lessonTitle,
-      reviewPhrases
-    );
-    console.log('[AIAvatar] Avatar prompt:', avatarPrompt);
     console.log('[AIAvatar] Session context:', JSON.stringify(sessionContext, null, 2));
 
     const requestBody = {
@@ -2099,8 +2022,6 @@ export default function AIAvatarScreen() {
         voice_id: HEYGEN_VOICE_ID,
         context_id: HEYGEN_CONTEXT_ID,
         language: langCode,
-        // Add dynamic context prompt for this specific lesson
-        system_prompt: avatarPrompt,
       },
       session_context: sessionContext,
     };
@@ -2422,7 +2343,6 @@ export default function AIAvatarScreen() {
             enableDataChannel={enableDataChannel}
             enableDirectAudio={enableDirectAudio}
             modules={liveKitModules}
-            showDebugPanel={showDebugPanel}
             liveKitUrl={liveKitUrl}
             liveKitToken={liveKitToken}
           />
@@ -2472,12 +2392,12 @@ export default function AIAvatarScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleTimerTap} style={styles.timerContainer}>
+        <View style={styles.timerContainer}>
           <View style={[styles.liveIndicator, isConnected && styles.liveIndicatorActive]} />
           <Text style={styles.timerText}>
             {formatTime(sessionTime)} / {formatTime(SESSION_HARD_LIMIT)}
           </Text>
-        </TouchableOpacity>
+        </View>
 
         <TouchableOpacity onPress={confirmLeave} style={styles.leaveButton}>
           <Ionicons name="close" size={24} color="#fff" />
@@ -2492,13 +2412,7 @@ export default function AIAvatarScreen() {
         <Text style={styles.contextText}>
           {language} - {level}
           {courseTitle ? ` - ${courseTitle}` : ''}
-          {lessonTitle ? ` • ${lessonTitle}` : ''}
         </Text>
-        {reviewPhrases.length > 0 && (
-          <Text style={styles.contextPhrases}>
-            Practicing: {reviewPhrases.slice(0, 3).join(', ')}{reviewPhrases.length > 3 ? '...' : ''}
-          </Text>
-        )}
       </View>
 
       {sessionTime >= SESSION_SOFT_LIMIT && (
@@ -2617,12 +2531,6 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
     fontSize: 14,
     marginTop: 4,
-  },
-  contextPhrases: {
-    color: theme.colors.primary,
-    fontSize: 12,
-    marginTop: 6,
-    fontStyle: 'italic',
   },
   controls: {
     paddingHorizontal: 20,
