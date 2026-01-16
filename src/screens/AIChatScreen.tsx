@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as SecureStore from 'expo-secure-store';
 import { theme } from '../lib/theme';
 import { Card, CardContent } from '../components/ui/Card';
+import { AuthContext } from '../contexts/AuthContext';
 
 const SECRET_TAP_COUNT = 5;
 const SECRET_TAP_TIMEOUT = 3000;
@@ -26,16 +27,17 @@ type NavigationProp = NativeStackNavigationProp<any>;
 
 export default function AIChatScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useContext(AuthContext)!;
   const { width } = useWindowDimensions();
   const isSmallScreen = width < 768;
-  
+
   const containerPadding = 40;
   const imageGap = 12;
   const numColumns = 2;
   const totalMargins = numColumns * imageGap;
-  
-  const imageSize = isSmallScreen 
-    ? (width - containerPadding - totalMargins) / numColumns 
+
+  const imageSize = isSmallScreen
+    ? (width - containerPadding - totalMargins) / numColumns
     : 160;
 
   const [tapCount, setTapCount] = useState(0);
@@ -63,7 +65,7 @@ export default function AIChatScreen() {
 
     if (newTapCount >= SECRET_TAP_COUNT) {
       setTapCount(0);
-      
+
       const storedKey = await SecureStore.getItemAsync(HEYGEN_API_KEY_STORAGE_KEY);
       if (storedKey) {
         setIsAvatarEnabled(true);
@@ -72,14 +74,14 @@ export default function AIChatScreen() {
           'Secret mode activated! You can now test the AI Avatar feature.',
           [
             { text: 'Cancel', style: 'cancel' },
-            { 
-              text: 'Start Session', 
+            {
+              text: 'Start Session',
               onPress: () => navigation.navigate('AIAvatar', {
-                language: 'Italian',
-                level: 'beginner',
-                courseTitle: 'Essential Greetings',
-                lessonTitle: 'Hello and Goodbye',
-                reviewPhrases: ['Ciao', 'Buongiorno', 'Arrivederci'],
+                language: user?.selectedLanguage || 'German',
+                level: user?.selectedLevel || 'beginner',
+                courseTitle: 'General Practice',
+                lessonTitle: 'Conversation',
+                reviewPhrases: user?.reviewPhrases || [],
               })
             },
             {
@@ -100,31 +102,31 @@ export default function AIChatScreen() {
 
   const saveApiKey = async () => {
     const keyToSave = apiKeyInput.trim();
-    
+
     if (!keyToSave) {
       Alert.alert('Error', 'Please enter a valid HeyGen API key.');
       return;
     }
-    
+
     try {
       await SecureStore.setItemAsync(HEYGEN_API_KEY_STORAGE_KEY, keyToSave);
       setShowApiKeyModal(false);
       setApiKeyInput('');
       setIsAvatarEnabled(true);
-      
+
       Alert.alert(
         'Success',
         'API key saved! You can now use the AI Avatar feature.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Start Session', 
+          {
+            text: 'Start Session',
             onPress: () => navigation.navigate('AIAvatar', {
-              language: 'Italian',
-              level: 'beginner',
-              courseTitle: 'Essential Greetings',
-              lessonTitle: 'Hello and Goodbye',
-              reviewPhrases: ['Ciao', 'Buongiorno', 'Arrivederci'],
+              language: user?.selectedLanguage || 'German',
+              level: user?.selectedLevel || 'beginner',
+              courseTitle: 'General Practice',
+              lessonTitle: 'Conversation',
+              reviewPhrases: [],
             })
           }
         ]
@@ -136,12 +138,12 @@ export default function AIChatScreen() {
 
   const renderPartnerImage = (partner: { id: number; image: any }, isFirstImage: boolean) => {
     const imageContent = (
-      <View 
-        key={partner.id} 
+      <View
+        key={partner.id}
         style={[
           styles.imageWrapper,
-          { 
-            width: imageSize, 
+          {
+            width: imageSize,
             height: imageSize,
             marginHorizontal: imageGap / 2,
           }
@@ -157,8 +159,8 @@ export default function AIChatScreen() {
 
     if (isFirstImage) {
       return (
-        <TouchableOpacity 
-          key={partner.id} 
+        <TouchableOpacity
+          key={partner.id}
           onPress={handleSecretTap}
           activeOpacity={0.9}
         >
@@ -172,7 +174,7 @@ export default function AIChatScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -182,26 +184,26 @@ export default function AIChatScreen() {
               <Text style={styles.title}>
                 Coming Soon - Choose Your AI Language Partner
               </Text>
-              
+
               <Text style={styles.subtitle}>
                 Pick your perfect learning partner for your daily lessons - and talk to them in real conversations!
               </Text>
 
               <View style={styles.imageGrid}>
                 <View style={styles.imageRow}>
-                  {aiPartners.slice(0, 2).map((partner, index) => 
+                  {aiPartners.slice(0, 2).map((partner, index) =>
                     renderPartnerImage(partner, index === 1)
                   )}
                 </View>
 
                 <View style={styles.imageRow}>
-                  {aiPartners.slice(2, 4).map((partner) => 
+                  {aiPartners.slice(2, 4).map((partner) =>
                     renderPartnerImage(partner, false)
                   )}
                 </View>
 
                 <View style={styles.imageRow}>
-                  {aiPartners.slice(4, 6).map((partner) => 
+                  {aiPartners.slice(4, 6).map((partner) =>
                     renderPartnerImage(partner, false)
                   )}
                 </View>
@@ -224,7 +226,7 @@ export default function AIChatScreen() {
               Enter your HeyGen API key to enable the AI Avatar feature.
               You can find your API key at app.heygen.com/settings.
             </Text>
-            
+
             <TextInput
               style={styles.apiKeyInput}
               placeholder="HeyGen API Key (required)"
@@ -235,9 +237,9 @@ export default function AIChatScreen() {
               autoCorrect={false}
               secureTextEntry
             />
-            
+
             <View style={styles.modalButtons}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => {
                   setShowApiKeyModal(false);
@@ -246,8 +248,8 @@ export default function AIChatScreen() {
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={styles.saveButton}
                 onPress={saveApiKey}
               >
