@@ -67,6 +67,8 @@ const buildSessionContext = (
   };
   const targetLanguageName = languageNames[languageCode] || language;
 
+  const isConversationMode = reviewPhrases.length === 0;
+
   const reviewItems = reviewPhrases.map((phrase, index) => ({
     id: `r${index + 1}`,
     prompt_en: phrase,
@@ -82,22 +84,24 @@ const buildSessionContext = (
       level: level || 'beginner',
       course: courseTitle || 'Language Practice',
       lesson: lessonTitle || 'Review Session',
-      review_type: 'recall_translation'
+      review_type: isConversationMode ? 'conversation' : 'recall_translation'
     },
     session_rules: {
       duration_seconds: SESSION_HARD_LIMIT,
       target_seconds: SESSION_SOFT_LIMIT,
-      topic_strict: true,
-      redirect_line: "Let's get back to practising the phrases from this lesson."
+      topic_strict: !isConversationMode,
+      redirect_line: isConversationMode
+        ? "Let's continue our conversation practice."
+        : "Let's get back to practising the phrases from this lesson."
     },
-    review_items: reviewItems.length > 0 ? reviewItems : [
+    review_items: isConversationMode ? [
       {
-        id: 'r1',
-        prompt_en: 'Practice conversation',
+        id: 'c1',
+        prompt_en: 'Conversation Practice',
         expected_target: [],
-        notes: `Have a simple conversation practice in ${targetLanguageName}. Ask basic questions appropriate for the user's level.`
+        notes: `Conduct a natural conversation practice in ${targetLanguageName}. Start by greeting the user and asking a simple question appropriate for ${level} level. Correct mistakes gently.`
       }
-    ]
+    ] : reviewItems
   };
 };
 
@@ -575,6 +579,33 @@ function DirectAudioController({
       }
     };
 
+    // Check for existing tracks on mount
+    const checkExistingTracks = () => {
+      if (!room) return;
+      console.log('[AIAvatar] DirectAudioController: Checking existing remote tracks...');
+
+      let found = false;
+      room.remoteParticipants.forEach((participant: any) => {
+        participant.audioTrackPublications.forEach((pub: any) => {
+          if (pub.track) {
+            console.log('[AIAvatar] DirectAudioController: Found existing remote audio track:', pub.trackSid);
+            audioTrackRef.current = {
+              track: pub.track,
+              publication: pub,
+              participant: participant
+            };
+            found = true;
+          }
+        });
+      });
+
+      if (found) {
+        setHasAudioTrack(true);
+      }
+    };
+
+    checkExistingTracks();
+
     // Attach listeners
     room.on('trackSubscribed', handleTrackSubscribed);
     room.on('trackUnsubscribed', handleTrackUnsubscribed);
@@ -590,11 +621,22 @@ function DirectAudioController({
 
   // Build 18a: Log only, no AudioTrack render yet
   // Build 18b will add: renderAudio && hasAudioTrack && <AudioTrack />
+  const { AudioTrack } = modules || {};
+
   return (
     <View style={styles.directAudioStatus}>
       <Text style={styles.directAudioText}>
         {hasAudioTrack ? '🔊 Audio track ready' : '⏳ Waiting for audio...'}
       </Text>
+      {renderAudio && hasAudioTrack && audioTrackRef.current && AudioTrack && (
+        <View style={{ height: 1, width: 1, overflow: 'hidden' }}>
+          <AudioTrack trackRef={{
+            participant: audioTrackRef.current.participant,
+            publication: audioTrackRef.current.publication,
+            source: audioTrackRef.current.publication.source
+          }} />
+        </View>
+      )}
     </View>
   );
 }
@@ -1640,7 +1682,7 @@ function MinimalLiveKitContent({
           )}
           {/* Build 18a: Direct audio via room events - avoids useTracks crash */}
           {enableDirectAudio && modules && (
-            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
+            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={true} />
           )}
           {/* Build 19c: Voice loop controller with debug telemetry */}
           {enableDataChannel && modules && (
