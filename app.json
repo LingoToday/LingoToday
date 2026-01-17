@@ -2,7 +2,7 @@
   "expo": {
     "name": "LingoToday",
     "slug": "lingotoday-mobile",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lingotoday.mobile",
-      "buildNumber": "36",
+      "buildNumber": "37",
       "bitcode": false,
       "infoPlist": {
         "NSUserNotificationUsageDescription": "LingoToday sends you reminders to help you stay consistent with your language learning practice.",
@@ -36,7 +36,7 @@
         "backgroundColor": "#6366f1"
       },
       "package": "com.lingotoday.mobile",
-      "versionCode": 52,
+      "versionCode": 53,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
