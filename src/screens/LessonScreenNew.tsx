@@ -1505,9 +1505,9 @@ export default function LessonScreen() {
     return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
-  // Reset speak-back mode to true when arriving at a video_choice step
+  // Reset speak-back mode to true when arriving at a video_choice or pro_video step
   useEffect(() => {
-    if (stepData?.type === 'video_choice') {
+    if (stepData?.type === 'video_choice' || stepData?.type === 'pro_video') {
       setUseSpeakBackMode(true);
       setSpeakBackResult(null);
     }
@@ -2378,17 +2378,75 @@ export default function LessonScreen() {
 
                   {stepData.hasAccess && (
                     <>
-                      <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
-                        <TextInput
-                          style={styles.textInput}
-                          value={selectedAnswer}
-                          onChangeText={setSelectedAnswer}
-                          placeholder="Type your response..."
-                        />
-                      </View>
+                      {/* Speak-back mode for pro_video */}
+                      {useSpeakBackMode && !speakBackResult && (
+                        <View style={styles.speakBackSection}>
+                          <SpeakBackComponent
+                            expectedAnswer={stepData.expectedAnswers?.[0] || stepData.answer || ''}
+                            alternativeAnswers={stepData.expectedAnswers?.slice(1) || []}
+                            language={language || 'italian'}
+                            onResult={(correct, transcription) => {
+                              setSpeakBackResult({ isCorrect: correct, transcription });
+                              setIsCorrect(correct);
+                              setShowResult(true);
+                              setStepResults(prev => ({ ...prev, [currentStep]: correct }));
+                            }}
+                            onSwitchToText={() => {
+                              setUseSpeakBackMode(false);
+                            }}
+                          />
+                        </View>
+                      )}
+
+                      {/* Speak-back result for pro_video */}
+                      {useSpeakBackMode && speakBackResult && (
+                        <View style={styles.speakBackResultSection}>
+                          <View style={[styles.resultBadgeInline, speakBackResult.isCorrect ? styles.correctBadgeInline : styles.incorrectBadgeInline]}>
+                            <Ionicons 
+                              name={speakBackResult.isCorrect ? "checkmark-circle" : "close-circle"} 
+                              size={24} 
+                              color="#fff" 
+                            />
+                            <Text style={styles.resultBadgeTextInline}>
+                              {speakBackResult.isCorrect ? 'Correct!' : 'Not quite right'}
+                            </Text>
+                          </View>
+                          <Text style={styles.transcriptionDisplay}>You said: "{speakBackResult.transcription}"</Text>
+                          {!speakBackResult.isCorrect && (
+                            <>
+                              <Text style={styles.expectedAnswerHint}>Expected: "{stepData.expectedAnswers?.[0] || stepData.answer || ''}"</Text>
+                              <TouchableOpacity 
+                                style={styles.tryAgainButtonInline}
+                                onPress={() => {
+                                  setSpeakBackResult(null);
+                                  setShowResult(false);
+                                }}
+                              >
+                                <Ionicons name="refresh" size={18} color={theme.colors.primary} />
+                                <Text style={styles.tryAgainTextInline}>Try Again</Text>
+                              </TouchableOpacity>
+                            </>
+                          )}
+                        </View>
+                      )}
+
+                      {/* Text input mode (when speak-back is off) */}
+                      {!useSpeakBackMode && (
+                        <View style={styles.inputContainer}>
+                          <View style={styles.inputHeaderRow}>
+                            <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
+                            <TouchableOpacity 
+                              style={styles.switchToSpeakButtonSmall}
+                              onPress={() => setUseSpeakBackMode(true)}
+                            >
+                              <Ionicons name="mic-outline" size={16} color={theme.colors.primary} />
+                              <Text style={styles.switchToSpeakTextSmall}>Speak</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      )}
                       
-                      {stepData.options && stepData.options.length > 0 && (
+                      {!useSpeakBackMode && stepData.options && stepData.options.length > 0 && (
                         <View style={styles.optionsContainer}>
                           {stepData.options.map((option: string, index: number) => {
                             const letters = ['A', 'B', 'C', 'D'];
@@ -2850,7 +2908,7 @@ export default function LessonScreen() {
                           onPress={handleNextStep}
                           style={styles.submitButton}
                         />
-                      ) : stepData.type === 'video_choice' && useSpeakBackMode && !speakBackResult ? (
+                      ) : (stepData.type === 'video_choice' || stepData.type === 'pro_video') && useSpeakBackMode && !speakBackResult ? (
                         null
                       ) : (
                         <Button
