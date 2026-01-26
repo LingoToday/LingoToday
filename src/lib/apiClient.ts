@@ -556,6 +556,58 @@ export class ApiClient {
     });
   }
 
+  // Speech-to-text transcription for speak-back feature
+  async transcribeAudio(audioUri: string, language: string): Promise<{ success: boolean; transcription?: string; confidence?: number; error?: string }> {
+    const authToken = await this.getAuthToken();
+    
+    // Create FormData with the audio file
+    const formData = new FormData();
+    
+    // Get file info from URI
+    const filename = audioUri.split('/').pop() || 'recording.m4a';
+    const fileType = filename.endsWith('.wav') ? 'audio/wav' : 
+                     filename.endsWith('.mp3') ? 'audio/mpeg' : 'audio/m4a';
+    
+    // Append audio file
+    formData.append('audio', {
+      uri: audioUri,
+      name: filename,
+      type: fileType,
+    } as any);
+    
+    // Append language code
+    formData.append('language', language);
+    
+    const headers: Record<string, string> = {};
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    // Note: Don't set Content-Type for FormData - fetch will set it automatically with boundary
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/lessons/transcribe`, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          return { success: false, error: errorData.error || errorData.message || 'Transcription failed' };
+        } catch {
+          return { success: false, error: `Transcription failed: ${response.status}` };
+        }
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Transcription error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Network error during transcription' };
+    }
+  }
+
   // Debug method to check API connectivity
   async healthCheck() {
     try {

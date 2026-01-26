@@ -40,7 +40,17 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Jan 05, 2026)
+## Recent Changes (Jan 26, 2026)
+**Speak-Back Feature for Lesson Steps**: Added microphone-based speak-back option for lesson steps:
+- **SpeakBackComponent**: New component at `src/components/SpeakBackComponent.tsx` that records user audio, sends to backend for transcription via OpenAI Whisper API, and validates answers
+- **Word Review Steps**: Users can now speak the word/phrase instead of just reading it; includes visual recording feedback, transcription display, and correct/incorrect status
+- **Video Choice Steps**: Speak-back mode available as default, with option to switch to text input if user can't talk
+- **Answer Validation**: Fuzzy matching with Levenshtein distance for pronunciation variations (80% similarity threshold)
+- **Mode Toggle**: Users can switch between speak and text modes at any time
+- **API Integration**: Added `transcribeAudio` method to apiClient.ts for calling backend `/api/lessons/transcribe` endpoint
+- **Backend Requirements**: Backend needs new POST `/api/lessons/transcribe` endpoint that accepts audio file + language, uses OpenAI Whisper for transcription, returns `{ success, transcription, confidence }`
+
+## Previous Changes (Jan 05, 2026)
 **HeyGen AI Avatar Integration - v1.0.10 (33) Build 25 - Transcription-Based Stop Listening Fix**: Fixed avatar not responding at all by correcting stop_listening timing:
 - **ROOT CAUSE**: Build 24 sent `stop_listening` immediately on `user.speak_ended`, which aborted transcript delivery before it was complete. HeyGen never transitioned to response generation.
 - **FIX**: Moved `stop_listening` trigger from `user.speak_ended` to `user.transcription_ended` event
