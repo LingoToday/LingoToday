@@ -1505,6 +1505,14 @@ export default function LessonScreen() {
     return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
+  // Reset speak-back mode to true when arriving at a video_choice step
+  useEffect(() => {
+    if (stepData?.type === 'video_choice') {
+      setUseSpeakBackMode(true);
+      setSpeakBackResult(null);
+    }
+  }, [currentStep, stepData?.type]);
+
   // Memoize video choice options from step 2's quick check data
   const videoChoiceOptions = useMemo(() => {
     if (stepData?.type === 'video_choice') {
