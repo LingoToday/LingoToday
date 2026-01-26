@@ -41,10 +41,10 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **expo-secure-store**: Secure credential storage.
 
 ## Recent Changes (Jan 26, 2026)
-**Speak-Back Feature for Lesson Steps**: Added microphone-based speak-back option for lesson steps:
+**Speak-Back Feature for Video Choice Steps (Step 4)**: Added microphone-based speak-back option for video lesson steps:
 - **SpeakBackComponent**: New component at `src/components/SpeakBackComponent.tsx` that records user audio, sends to backend for transcription via OpenAI Whisper API, and validates answers
-- **Word Review Steps**: Users can now speak the word/phrase instead of just reading it; includes visual recording feedback, transcription display, and correct/incorrect status
-- **Video Choice Steps**: Speak-back mode available as default, with option to switch to text input if user can't talk
+- **Video Choice Steps**: Speak-back mode is the default for step 4 video questions; users speak their answer after watching the video
+- **Text Mode Fallback**: Users can switch to text input mode if they can't talk, which shows the existing multiple choice options
 - **Answer Validation**: Fuzzy matching with Levenshtein distance for pronunciation variations (80% similarity threshold)
 - **Mode Toggle**: Users can switch between speak and text modes at any time
 - **API Integration**: Added `transcribeAudio` method to apiClient.ts for calling backend `/api/lessons/transcribe` endpoint

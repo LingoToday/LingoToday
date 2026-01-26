@@ -2477,70 +2477,6 @@ export default function LessonScreen() {
                     </View>
                   )}
 
-                  {/* Speak-back practice section */}
-                  {useSpeakBackMode && !speakBackResult && (
-                    <View style={styles.speakBackSection}>
-                      <View style={styles.speakBackDivider}>
-                        <View style={styles.dividerLine} />
-                        <Text style={styles.dividerText}>Now say it yourself</Text>
-                        <View style={styles.dividerLine} />
-                      </View>
-                      <SpeakBackComponent
-                        expectedAnswer={stepData.word}
-                        alternativeAnswers={stepData.alternatives || []}
-                        language={language || 'italian'}
-                        onResult={(correct, transcription) => {
-                          setSpeakBackResult({ isCorrect: correct, transcription });
-                          setIsCorrect(correct);
-                          setShowResult(true);
-                          setStepResults(prev => ({ ...prev, [currentStep]: correct }));
-                        }}
-                        onSwitchToText={() => {
-                          setUseSpeakBackMode(false);
-                        }}
-                      />
-                    </View>
-                  )}
-
-                  {/* Speak-back result showing */}
-                  {useSpeakBackMode && speakBackResult && (
-                    <View style={styles.speakBackResultSection}>
-                      <View style={[styles.resultBadgeInline, speakBackResult.isCorrect ? styles.correctBadgeInline : styles.incorrectBadgeInline]}>
-                        <Ionicons 
-                          name={speakBackResult.isCorrect ? "checkmark-circle" : "close-circle"} 
-                          size={24} 
-                          color="#fff" 
-                        />
-                        <Text style={styles.resultBadgeTextInline}>
-                          {speakBackResult.isCorrect ? 'Correct!' : 'Not quite right'}
-                        </Text>
-                      </View>
-                      <Text style={styles.transcriptionDisplay}>You said: "{speakBackResult.transcription}"</Text>
-                      {!speakBackResult.isCorrect && (
-                        <TouchableOpacity 
-                          style={styles.tryAgainButtonInline}
-                          onPress={() => {
-                            setSpeakBackResult(null);
-                            setShowResult(false);
-                          }}
-                        >
-                          <Ionicons name="refresh" size={18} color={theme.colors.primary} />
-                          <Text style={styles.tryAgainTextInline}>Try Again</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  )}
-
-                  {/* Text mode toggle when speak-back is off */}
-                  {!useSpeakBackMode && (
-                    <TouchableOpacity 
-                      style={styles.switchToSpeakButton}
-                      onPress={() => setUseSpeakBackMode(true)}
-                    >
-                      <Ionicons name="mic-outline" size={20} color={theme.colors.primary} />
-                      <Text style={styles.switchToSpeakText}>Switch to speak mode</Text>
-                    </TouchableOpacity>
-                  )}
                 </>
               )}
 
@@ -2900,23 +2836,22 @@ export default function LessonScreen() {
                 <View style={styles.quizSection}>
                   {!showResult ? (
                     <>
-                      {/* For word_review with speak-back: hide button while waiting for speak-back */}
-                      {stepData.type === 'word_review' && useSpeakBackMode && !speakBackResult ? (
-                        null
-                      ) : stepData.type === 'text_tip' ? (
+                      {stepData.type === 'text_tip' || stepData.type === 'word_review' ? (
                         <Button
                           title="Continue"
                           onPress={handleNextStep}
                           style={styles.submitButton}
                         />
-                      ) : !useSpeakBackMode || stepData.type === 'video_choice' ? (
+                      ) : stepData.type === 'video_choice' && useSpeakBackMode && !speakBackResult ? (
+                        null
+                      ) : (
                         <Button
                           title="Check Answer"
                           onPress={handleStepSubmit}
                           disabled={!selectedAnswer.trim()}
                           style={styles.submitButton}
                         />
-                      ) : null}
+                      )}
                     </>
                   ) : (
                     <Button
