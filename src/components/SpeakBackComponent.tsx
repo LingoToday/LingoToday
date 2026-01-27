@@ -41,6 +41,14 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
   const recordingRef = useRef<Audio.Recording | null>(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const meteringIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  
+  // Audio level visualization - animated bars
+  const bar1Anim = useRef(new Animated.Value(0.3)).current;
+  const bar2Anim = useRef(new Animated.Value(0.3)).current;
+  const bar3Anim = useRef(new Animated.Value(0.3)).current;
+  const bar4Anim = useRef(new Animated.Value(0.3)).current;
+  const bar5Anim = useRef(new Animated.Value(0.3)).current;
 
   const languageCodeMap: { [key: string]: string } = {
     'italian': 'it',
@@ -57,10 +65,59 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
   useEffect(() => {
     if (recordingState === 'recording') {
       startPulseAnimation();
+      startMeteringInterval();
     } else {
       pulseAnim.setValue(1);
+      stopMeteringInterval();
+      // Reset bars when not recording
+      [bar1Anim, bar2Anim, bar3Anim, bar4Anim, bar5Anim].forEach(bar => bar.setValue(0.3));
     }
+    
+    return () => {
+      stopMeteringInterval();
+    };
   }, [recordingState]);
+  
+  const startMeteringInterval = () => {
+    // Poll audio levels every 100ms for responsive visualization
+    meteringIntervalRef.current = setInterval(async () => {
+      if (recordingRef.current) {
+        try {
+          const status = await recordingRef.current.getStatusAsync();
+          if (status.isRecording && status.metering !== undefined) {
+            // Metering is in dB, typically -160 to 0
+            // Normalize to 0-1 range for visualization
+            const normalizedLevel = Math.max(0, Math.min(1, (status.metering + 60) / 60));
+            animateAudioBars(normalizedLevel);
+          }
+        } catch (err) {
+          // Ignore errors during polling
+        }
+      }
+    }, 100);
+  };
+  
+  const stopMeteringInterval = () => {
+    if (meteringIntervalRef.current) {
+      clearInterval(meteringIntervalRef.current);
+      meteringIntervalRef.current = null;
+    }
+  };
+  
+  const animateAudioBars = (level: number) => {
+    // Create slightly different heights for each bar based on audio level
+    // Add some randomness to make it look more natural
+    const bars = [bar1Anim, bar2Anim, bar3Anim, bar4Anim, bar5Anim];
+    bars.forEach((bar, index) => {
+      const variation = (Math.random() * 0.3) - 0.15; // ±15% variation
+      const barLevel = Math.max(0.15, Math.min(1, level + variation + (index === 2 ? 0.1 : 0))); // Center bar slightly higher
+      Animated.timing(bar, {
+        toValue: barLevel,
+        duration: 80,
+        useNativeDriver: false, // height animation requires false
+      }).start();
+    });
+  };
 
   const checkPermission = async () => {
     try {
@@ -122,9 +179,13 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
         playsInSilentModeIOS: true,
       });
 
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
+      // Enable metering for audio level visualization
+      const recordingOptions = {
+        ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
+        isMeteringEnabled: true,
+      };
+
+      const { recording } = await Audio.Recording.createAsync(recordingOptions);
 
       recordingRef.current = recording;
       setRecordingState('recording');
@@ -164,28 +225,68 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
   const processRecording = async (audioUri: string) => {
     const langCode = languageCodeMap[language.toLowerCase()] || language;
     
-    const result = await apiClient.transcribeAudio(audioUri, langCode);
+    try {
+      const result = await apiClient.transcribeAudio(audioUri, langCode);
 
-    if (!result.success || !result.transcription) {
-      setError(result.error || 'Failed to transcribe audio. Please try again.');
+      if (!result.success || !result.transcription) {
+        // Parse error message and show user-friendly version
+        const friendlyError = getFriendlyErrorMessage(result.error);
+        setError(friendlyError);
+        setRecordingState('idle');
+        return;
+      }
+
+      const userSaid = result.transcription.toLowerCase().trim();
+      setTranscription(result.transcription);
+
+      const correct = checkAnswer(userSaid);
+      setIsCorrect(correct);
+      setRecordingState('result');
+
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+
+      onResult(correct, result.transcription);
+    } catch (err: any) {
+      console.error('Transcription error:', err);
+      const friendlyError = getFriendlyErrorMessage(err?.message);
+      setError(friendlyError);
       setRecordingState('idle');
-      return;
     }
-
-    const userSaid = result.transcription.toLowerCase().trim();
-    setTranscription(result.transcription);
-
-    const correct = checkAnswer(userSaid);
-    setIsCorrect(correct);
-    setRecordingState('result');
-
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-
-    onResult(correct, result.transcription);
+  };
+  
+  const getFriendlyErrorMessage = (errorMsg?: string): string => {
+    if (!errorMsg) {
+      return 'Something went wrong. Please try again.';
+    }
+    
+    const lowerError = errorMsg.toLowerCase();
+    
+    // Handle common error patterns with friendly messages
+    if (lowerError.includes('json parse') || lowerError.includes('unexpected character') || lowerError.includes('unexpected token')) {
+      return 'Speech recognition is not available right now. Please try text mode instead.';
+    }
+    if (lowerError.includes('network') || lowerError.includes('fetch') || lowerError.includes('connection')) {
+      return 'Network error. Please check your connection and try again.';
+    }
+    if (lowerError.includes('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+    if (lowerError.includes('401') || lowerError.includes('unauthorized')) {
+      return 'Session expired. Please log in again.';
+    }
+    if (lowerError.includes('404') || lowerError.includes('not found')) {
+      return 'Speech recognition service is unavailable. Please try text mode.';
+    }
+    if (lowerError.includes('500') || lowerError.includes('server error')) {
+      return 'Server error. Please try again in a moment.';
+    }
+    
+    // For other errors, show a generic message
+    return 'Could not process your speech. Please try again or switch to text mode.';
   };
 
   const checkAnswer = (userSaid: string): boolean => {
@@ -284,6 +385,25 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
       <Text style={styles.promptText}>Listening...</Text>
       <Text style={styles.expectedText}>{expectedAnswer}</Text>
       
+      {/* Audio level visualization bars */}
+      <View style={styles.audioVisualizerContainer}>
+        {[bar1Anim, bar2Anim, bar3Anim, bar4Anim, bar5Anim].map((barAnim, index) => (
+          <Animated.View
+            key={index}
+            style={[
+              styles.audioBar,
+              {
+                height: barAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [8, 40],
+                }),
+                backgroundColor: theme.colors.primary,
+              },
+            ]}
+          />
+        ))}
+      </View>
+      
       <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
         <TouchableOpacity
           style={[styles.micButton, styles.micButtonRecording]}
@@ -300,8 +420,11 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
 
   const renderProcessingState = () => (
     <View style={styles.container}>
-      <Text style={styles.promptText}>Processing your answer...</Text>
-      <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loader} />
+      <View style={styles.processingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={styles.processingText}>Processing your answer...</Text>
+        <Text style={styles.processingHint}>Transcribing audio</Text>
+      </View>
     </View>
   );
 
@@ -494,6 +617,35 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     fontWeight: '600',
     color: theme.colors.primary,
+  },
+  audioVisualizerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    height: 50,
+    marginBottom: theme.spacing.lg,
+  },
+  audioBar: {
+    width: 6,
+    borderRadius: 3,
+    backgroundColor: theme.colors.primary,
+  },
+  processingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.xl,
+    gap: theme.spacing.md,
+  },
+  processingText: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
+    color: theme.colors.foreground,
+    marginTop: theme.spacing.md,
+  },
+  processingHint: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.mutedForeground,
   },
 });
 
