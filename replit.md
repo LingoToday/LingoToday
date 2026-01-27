@@ -40,7 +40,16 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Jan 26, 2026)
+## Recent Changes (Jan 27, 2026)
+**Speak-Back Feature Extended to Review Steps**: Added the same microphone-based speak-back option to review lesson steps:
+- **Review MCQ Support**: Speak-back mode is now the default for `review_mcq` step types in course reviews
+- **Consistent UX**: Same UI pattern as video steps - speak-back mode default, with "Use text mode" toggle and "Use the speech option" button in text mode
+- **State Management**: Proper state reset (selectedAnswer, showResult, isCorrect) when entering review steps to prevent stale selections
+- **Audio Level Visualization**: 5 animated bars that react to voice volume while recording
+- **Processing Indicator**: "Transcribing audio" spinner shown during processing
+- **Error Handling**: User-friendly error messages for network/server errors
+
+## Previous Changes (Jan 26, 2026)
 **Speak-Back Feature for Video Steps (Step 4)**: Added microphone-based speak-back option for video lesson steps:
 - **SpeakBackComponent**: New component at `src/components/SpeakBackComponent.tsx` that records user audio, sends to backend for transcription via OpenAI Whisper API, and validates answers
 - **Video Steps Support**: Speak-back mode is the default for both `video_choice` AND `pro_video` step types (step 4 video questions); users speak their answer after watching the video
