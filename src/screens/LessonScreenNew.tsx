@@ -1883,7 +1883,86 @@ export default function LessonScreen() {
     }
   };
 
-  // FIXED: Text-to-speech function using expo-speech
+  // State for OpenAI TTS pronunciation
+  const [isPlayingPronunciation, setIsPlayingPronunciation] = useState(false);
+  const pronunciationSoundRef = useRef<Audio.Sound | null>(null);
+
+  // OpenAI TTS pronunciation function - more natural sounding
+  const playOpenAIPronunciation = async (text: string) => {
+    if (isPlayingPronunciation) return;
+    
+    setIsPlayingPronunciation(true);
+    
+    try {
+      // Clean up any existing sound
+      if (pronunciationSoundRef.current) {
+        await pronunciationSoundRef.current.unloadAsync();
+        pronunciationSoundRef.current = null;
+      }
+      
+      const languageCode = language === 'spanish' ? 'es' : 
+                          language === 'french' ? 'fr' :
+                          language === 'italian' ? 'it' :
+                          language === 'german' ? 'de' : 'en';
+      
+      const result = await apiClient.pronounceText(text, languageCode);
+      
+      if (!result.success || !result.audioBase64) {
+        console.error('Pronunciation failed:', result.error);
+        // Fallback to expo-speech if OpenAI TTS fails
+        await speakTextFallback(text);
+        setIsPlayingPronunciation(false);
+        return;
+      }
+      
+      // Create and play audio from base64
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: `data:audio/mp3;base64,${result.audioBase64}` },
+        { shouldPlay: true }
+      );
+      
+      pronunciationSoundRef.current = sound;
+      
+      // Listen for playback completion
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          setIsPlayingPronunciation(false);
+        }
+      });
+      
+      console.log('🔊 Playing OpenAI TTS for:', text);
+    } catch (error) {
+      console.error('❌ OpenAI TTS error:', error);
+      // Fallback to expo-speech
+      await speakTextFallback(text);
+      setIsPlayingPronunciation(false);
+    }
+  };
+
+  // Fallback text-to-speech function using expo-speech
+  const speakTextFallback = async (text: string) => {
+    try {
+      await Speech.stop();
+      
+      const languageCode = language === 'spanish' ? 'es' : 
+                          language === 'french' ? 'fr' :
+                          language === 'italian' ? 'it' :
+                          language === 'german' ? 'de' : 'en';
+      
+      await Speech.speak(text, {
+        language: languageCode,
+        pitch: 1.0,
+        rate: 0.8,
+        volume: 1.0,
+      });
+      
+      console.log('🔊 Speaking (fallback):', text, 'in language:', languageCode);
+    } catch (error) {
+      console.error('❌ TTS fallback error:', error);
+    }
+  };
+
+  // Legacy speakText function for backward compatibility (listening steps, etc.)
   const speakText = async (text: string) => {
     try {
       // Stop any current speech
@@ -1910,6 +1989,15 @@ export default function LessonScreen() {
       Alert.alert('Audio', `Would speak: "${text}"`);
     }
   };
+
+  // Cleanup pronunciation sound on unmount
+  useEffect(() => {
+    return () => {
+      if (pronunciationSoundRef.current) {
+        pronunciationSoundRef.current.unloadAsync();
+      }
+    };
+  }, []);
 
   // Handle upgrade button press - trigger RevenueCat purchase flow
   const handleUpgrade = async () => {
@@ -2529,12 +2617,13 @@ export default function LessonScreen() {
                     <Text style={styles.translationText}>{stepData.translation}</Text>
                     
                     <TouchableOpacity 
-                      style={styles.speakButton}
-                      onPress={() => speakText(stepData.word)}
+                      style={[styles.speakButton, isPlayingPronunciation && styles.speakButtonPlaying]}
+                      onPress={() => playOpenAIPronunciation(stepData.word)}
+                      disabled={isPlayingPronunciation}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="volume-high" size={20} color={theme.colors.foreground} />
-                      <Text style={styles.speakButtonText}>Pronunciation</Text>
+                      <Ionicons name={isPlayingPronunciation ? "volume-high" : "volume-medium"} size={20} color={theme.colors.foreground} />
+                      <Text style={styles.speakButtonText}>{isPlayingPronunciation ? 'Playing...' : 'Pronunciation'}</Text>
                     </TouchableOpacity>
                   </View>
                   
@@ -2639,6 +2728,7 @@ export default function LessonScreen() {
                         expectedAnswer={stepData.answer || ''}
                         alternativeAnswers={[]}
                         language={language || 'italian'}
+                        showPronunciationButton={true}
                         onResult={(correct, transcription) => {
                           setSpeakBackResult({ isCorrect: correct, transcription });
                           setIsCorrect(correct);
@@ -3245,6 +3335,9 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
     borderWidth: 1,
     borderColor: theme.colors.outline,
+  },
+  speakButtonPlaying: {
+    opacity: 0.7,
   },
   speakButtonText: {
     color: theme.colors.foreground,

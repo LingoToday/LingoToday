@@ -608,6 +608,41 @@ export class ApiClient {
     }
   }
 
+  // Text-to-speech pronunciation using OpenAI TTS API
+  async pronounceText(text: string, language: string): Promise<{ success: boolean; audioBase64?: string; error?: string }> {
+    const authToken = await this.getAuthToken();
+    
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/lessons/pronounce`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ text, language }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          return { success: false, error: errorData.error || errorData.message || 'Pronunciation failed' };
+        } catch {
+          return { success: false, error: `Pronunciation failed: ${response.status}` };
+        }
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Pronunciation error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Network error during pronunciation' };
+    }
+  }
+
   // Debug method to check API connectivity
   async healthCheck() {
     try {

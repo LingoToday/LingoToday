@@ -20,6 +20,7 @@ interface SpeakBackComponentProps {
   onResult: (isCorrect: boolean, transcription: string) => void;
   onSwitchToText: () => void;
   disabled?: boolean;
+  showPronunciationButton?: boolean;
 }
 
 type RecordingState = 'idle' | 'recording' | 'processing' | 'result';
@@ -31,12 +32,15 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
   onResult,
   onSwitchToText,
   disabled = false,
+  showPronunciationButton = false,
 }) => {
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [transcription, setTranscription] = useState<string>('');
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isPlayingPronunciation, setIsPlayingPronunciation] = useState(false);
+  const pronunciationSoundRef = useRef<Audio.Sound | null>(null);
   
   const recordingRef = useRef<Audio.Recording | null>(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -355,6 +359,58 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
     fadeAnim.setValue(0);
   };
 
+  const playPronunciation = async () => {
+    if (isPlayingPronunciation) return;
+    
+    setIsPlayingPronunciation(true);
+    
+    try {
+      // Clean up any existing sound
+      if (pronunciationSoundRef.current) {
+        await pronunciationSoundRef.current.unloadAsync();
+        pronunciationSoundRef.current = null;
+      }
+      
+      const langCode = languageCodeMap[language.toLowerCase()] || language;
+      const result = await apiClient.pronounceText(expectedAnswer, langCode);
+      
+      if (!result.success || !result.audioBase64) {
+        console.error('Pronunciation failed:', result.error);
+        setError('Could not play pronunciation. Please try again.');
+        setIsPlayingPronunciation(false);
+        return;
+      }
+      
+      // Create and play audio from base64
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: `data:audio/mp3;base64,${result.audioBase64}` },
+        { shouldPlay: true }
+      );
+      
+      pronunciationSoundRef.current = sound;
+      
+      // Listen for playback completion
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          setIsPlayingPronunciation(false);
+        }
+      });
+    } catch (err) {
+      console.error('Error playing pronunciation:', err);
+      setError('Could not play pronunciation. Please try again.');
+      setIsPlayingPronunciation(false);
+    }
+  };
+
+  // Cleanup pronunciation sound on unmount
+  useEffect(() => {
+    return () => {
+      if (pronunciationSoundRef.current) {
+        pronunciationSoundRef.current.unloadAsync();
+      }
+    };
+  }, []);
+
   const renderIdleState = () => (
     <View style={styles.container}>
       <Text style={styles.promptText}>Say the word or phrase:</Text>
@@ -370,6 +426,24 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
       </TouchableOpacity>
       
       <Text style={styles.hintText}>Tap to record</Text>
+      
+      {showPronunciationButton && (
+        <TouchableOpacity 
+          style={[styles.pronunciationButton, isPlayingPronunciation && styles.pronunciationButtonPlaying]}
+          onPress={playPronunciation}
+          disabled={isPlayingPronunciation}
+          activeOpacity={0.7}
+        >
+          <Ionicons 
+            name={isPlayingPronunciation ? "volume-high" : "volume-medium"} 
+            size={20} 
+            color={theme.colors.foreground} 
+          />
+          <Text style={styles.pronunciationButtonText}>
+            {isPlayingPronunciation ? 'Playing...' : 'Pronunciation'}
+          </Text>
+        </TouchableOpacity>
+      )}
       
       {error && <Text style={styles.errorText}>{error}</Text>}
       
@@ -646,6 +720,25 @@ const styles = StyleSheet.create({
   processingHint: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
+  },
+  pronunciationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.muted,
+    borderRadius: theme.borderRadius.lg,
+    marginTop: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+  },
+  pronunciationButtonPlaying: {
+    opacity: 0.7,
+  },
+  pronunciationButtonText: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '500',
+    color: theme.colors.foreground,
   },
 });
 
