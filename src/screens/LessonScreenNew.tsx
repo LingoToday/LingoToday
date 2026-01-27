@@ -1505,11 +1505,14 @@ export default function LessonScreen() {
     return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
 
-  // Reset speak-back mode to true when arriving at a video_choice or pro_video step
+  // Reset speak-back mode to true when arriving at a video_choice, pro_video, or review_mcq step
   useEffect(() => {
-    if (stepData?.type === 'video_choice' || stepData?.type === 'pro_video') {
+    if (stepData?.type === 'video_choice' || stepData?.type === 'pro_video' || stepData?.type === 'review_mcq') {
       setUseSpeakBackMode(true);
       setSpeakBackResult(null);
+      setSelectedAnswer('');
+      setShowResult(false);
+      setIsCorrect(false);
     }
   }, [currentStep, stepData?.type]);
 
@@ -2629,51 +2632,117 @@ export default function LessonScreen() {
                     <Text style={styles.questionText}>{stepData.question}</Text>
                   </View>
 
-                  <View style={styles.optionsContainer}>
-                    {stepData.options.map((option: string, index: number) => {
-                      const isCorrectAnswer = showResult && option === stepData.answer;
-                      const shouldAnimate = isCorrectAnswer && isCorrect;
-                      
-                      return (
-                        <Animated.View
-                          key={index}
-                          style={[
-                            shouldAnimate && {
-                              transform: [{ scale: correctAnswerScale }],
-                              shadowColor: theme.colors.checkmarkGreen,
-                              shadowOffset: { width: 0, height: 0 },
-                              shadowOpacity: correctAnswerBorder,
-                              shadowRadius: correctAnswerBorder.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [0, 12]
-                              }),
-                              elevation: 8,
-                            }
-                          ]}
-                        >
-                          <TouchableOpacity
-                            style={[
-                              styles.optionButton,
-                              selectedAnswer === option && styles.selectedOption,
-                              showResult && option === stepData.answer && styles.correctOption,
-                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
-                            ]}
-                            onPress={() => !showResult && setSelectedAnswer(option)}
-                            disabled={showResult}
+                  {/* Speak-back mode for review MCQ */}
+                  {useSpeakBackMode && !speakBackResult && (
+                    <View style={styles.speakBackSection}>
+                      <SpeakBackComponent
+                        expectedAnswer={stepData.answer || ''}
+                        alternativeAnswers={[]}
+                        language={language || 'italian'}
+                        onResult={(correct, transcription) => {
+                          setSpeakBackResult({ isCorrect: correct, transcription });
+                          setIsCorrect(correct);
+                          setShowResult(true);
+                          setStepResults(prev => ({ ...prev, [currentStep]: correct }));
+                        }}
+                        onSwitchToText={() => {
+                          setUseSpeakBackMode(false);
+                        }}
+                      />
+                    </View>
+                  )}
+
+                  {/* Speak-back result for review MCQ */}
+                  {useSpeakBackMode && speakBackResult && (
+                    <View style={styles.speakBackResultSection}>
+                      <View style={[styles.resultBadgeInline, speakBackResult.isCorrect ? styles.correctBadgeInline : styles.incorrectBadgeInline]}>
+                        <Ionicons 
+                          name={speakBackResult.isCorrect ? "checkmark-circle" : "close-circle"} 
+                          size={24} 
+                          color="#fff" 
+                        />
+                        <Text style={styles.resultBadgeTextInline}>
+                          {speakBackResult.isCorrect ? 'Correct!' : 'Not quite right'}
+                        </Text>
+                      </View>
+                      <Text style={styles.transcriptionDisplay}>You said: "{speakBackResult.transcription}"</Text>
+                      {!speakBackResult.isCorrect && (
+                        <>
+                          <Text style={styles.expectedAnswerHint}>Expected: "{stepData.answer}"</Text>
+                          <TouchableOpacity 
+                            style={styles.tryAgainButtonInline}
+                            onPress={() => {
+                              setSpeakBackResult(null);
+                              setShowResult(false);
+                            }}
                           >
-                            <Text style={[
-                              styles.optionText,
-                              selectedAnswer === option && styles.selectedOptionText,
-                              showResult && option === stepData.answer && styles.correctOptionText,
-                              showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
-                            ]}>
-                              {option} {showResult && option === stepData.answer && '✅'}
-                            </Text>
+                            <Ionicons name="refresh" size={18} color={theme.colors.primary} />
+                            <Text style={styles.tryAgainTextInline}>Try Again</Text>
                           </TouchableOpacity>
-                        </Animated.View>
-                      );
-                    })}
-                  </View>
+                        </>
+                      )}
+                    </View>
+                  )}
+
+                  {/* Text mode (multiple choice) for review MCQ */}
+                  {!useSpeakBackMode && (
+                    <View style={styles.optionsContainer}>
+                      {stepData.options.map((option: string, index: number) => {
+                        const isCorrectAnswer = showResult && option === stepData.answer;
+                        const shouldAnimate = isCorrectAnswer && isCorrect;
+                        
+                        return (
+                          <Animated.View
+                            key={index}
+                            style={[
+                              shouldAnimate && {
+                                transform: [{ scale: correctAnswerScale }],
+                                shadowColor: theme.colors.checkmarkGreen,
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: correctAnswerBorder,
+                                shadowRadius: correctAnswerBorder.interpolate({
+                                  inputRange: [0, 1],
+                                  outputRange: [0, 12]
+                                }),
+                                elevation: 8,
+                              }
+                            ]}
+                          >
+                            <TouchableOpacity
+                              style={[
+                                styles.optionButton,
+                                selectedAnswer === option && styles.selectedOption,
+                                showResult && option === stepData.answer && styles.correctOption,
+                                showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOption,
+                              ]}
+                              onPress={() => !showResult && setSelectedAnswer(option)}
+                              disabled={showResult}
+                            >
+                              <Text style={[
+                                styles.optionText,
+                                selectedAnswer === option && styles.selectedOptionText,
+                                showResult && option === stepData.answer && styles.correctOptionText,
+                                showResult && selectedAnswer === option && option !== stepData.answer && styles.incorrectOptionText,
+                              ]}>
+                                {option} {showResult && option === stepData.answer && '✅'}
+                              </Text>
+                            </TouchableOpacity>
+                          </Animated.View>
+                        );
+                      })}
+                    </View>
+                  )}
+
+                  {/* Switch to speech option button in text mode */}
+                  {!useSpeakBackMode && !showResult && (
+                    <TouchableOpacity 
+                      style={styles.switchToSpeakButton}
+                      onPress={() => setUseSpeakBackMode(true)}
+                    >
+                      <Ionicons name="mic-outline" size={18} color={theme.colors.primary} />
+                      <Text style={styles.switchToSpeakText}>Use the speech option</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               )}
 
@@ -2910,7 +2979,7 @@ export default function LessonScreen() {
                           onPress={handleNextStep}
                           style={styles.submitButton}
                         />
-                      ) : (stepData.type === 'video_choice' || stepData.type === 'pro_video') && useSpeakBackMode && !speakBackResult ? (
+                      ) : (stepData.type === 'video_choice' || stepData.type === 'pro_video' || stepData.type === 'review_mcq') && useSpeakBackMode && !speakBackResult ? (
                         null
                       ) : (
                         <Button
