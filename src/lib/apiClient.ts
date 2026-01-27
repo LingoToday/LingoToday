@@ -609,6 +609,7 @@ export class ApiClient {
   }
 
   // Text-to-speech pronunciation using OpenAI TTS API
+  // Backend returns raw MP3 binary data, we convert to base64 for audio playback
   async pronounceText(text: string, language: string): Promise<{ success: boolean; audioBase64?: string; error?: string }> {
     const authToken = await this.getAuthToken();
     
@@ -636,7 +637,20 @@ export class ApiClient {
         }
       }
       
-      return await response.json();
+      // Backend returns raw MP3 binary data - convert to base64
+      const arrayBuffer = await response.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      // Convert binary to base64 string
+      let binary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, i + chunkSize);
+        binary += String.fromCharCode.apply(null, Array.from(chunk));
+      }
+      const audioBase64 = btoa(binary);
+      
+      return { success: true, audioBase64 };
     } catch (error) {
       console.error('Pronunciation error:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Network error during pronunciation' };
