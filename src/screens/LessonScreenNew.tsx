@@ -2231,16 +2231,7 @@ export default function LessonScreen() {
                   {/* Text input mode (when speak-back is off) */}
                   {!useSpeakBackMode && (
                     <View style={styles.inputContainer}>
-                      <View style={styles.inputHeaderRow}>
-                        <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
-                        <TouchableOpacity 
-                          style={styles.switchToSpeakButtonSmall}
-                          onPress={() => setUseSpeakBackMode(true)}
-                        >
-                          <Ionicons name="mic-outline" size={16} color={theme.colors.primary} />
-                          <Text style={styles.switchToSpeakTextSmall}>Speak</Text>
-                        </TouchableOpacity>
-                      </View>
+                      <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
                       <TextInput
                         style={styles.textInput}
                         value={selectedAnswer}
@@ -2313,6 +2304,16 @@ export default function LessonScreen() {
                         );
                       })}
                     </View>
+                  )}
+
+                  {!useSpeakBackMode && !showResult && (
+                    <TouchableOpacity 
+                      style={styles.switchToSpeakButton}
+                      onPress={() => setUseSpeakBackMode(true)}
+                    >
+                      <Ionicons name="mic-outline" size={18} color={theme.colors.primary} />
+                      <Text style={styles.switchToSpeakText}>Use the speech option</Text>
+                    </TouchableOpacity>
                   )}
                 </>
               )}
@@ -2433,16 +2434,7 @@ export default function LessonScreen() {
                       {/* Text input mode (when speak-back is off) */}
                       {!useSpeakBackMode && (
                         <View style={styles.inputContainer}>
-                          <View style={styles.inputHeaderRow}>
-                            <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
-                            <TouchableOpacity 
-                              style={styles.switchToSpeakButtonSmall}
-                              onPress={() => setUseSpeakBackMode(true)}
-                            >
-                              <Ionicons name="mic-outline" size={16} color={theme.colors.primary} />
-                              <Text style={styles.switchToSpeakTextSmall}>Speak</Text>
-                            </TouchableOpacity>
-                          </View>
+                          <Text style={styles.inputLabel}>{stepData.answerPrompt}</Text>
                         </View>
                       )}
                       
@@ -2509,6 +2501,16 @@ export default function LessonScreen() {
                             );
                           })}
                         </View>
+                      )}
+
+                      {!useSpeakBackMode && !showResult && (
+                        <TouchableOpacity 
+                          style={styles.switchToSpeakButton}
+                          onPress={() => setUseSpeakBackMode(true)}
+                        >
+                          <Ionicons name="mic-outline" size={18} color={theme.colors.primary} />
+                          <Text style={styles.switchToSpeakText}>Use the speech option</Text>
+                        </TouchableOpacity>
                       )}
                     </>
                   )}
