@@ -371,8 +371,9 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
         pronunciationSoundRef.current = null;
       }
       
-      const langCode = languageCodeMap[language.toLowerCase()] || language;
-      const result = await apiClient.pronounceText(expectedAnswer, langCode);
+      // Backend expects full language names (italian, french, etc.) not codes (it, fr, etc.)
+      const languageName = language.toLowerCase();
+      const result = await apiClient.pronounceText(expectedAnswer, languageName);
       
       if (!result.success || !result.audioBase64) {
         console.error('Pronunciation failed:', result.error);

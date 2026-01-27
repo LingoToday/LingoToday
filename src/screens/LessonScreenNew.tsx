@@ -1900,12 +1900,10 @@ export default function LessonScreen() {
         pronunciationSoundRef.current = null;
       }
       
-      const languageCode = language === 'spanish' ? 'es' : 
-                          language === 'french' ? 'fr' :
-                          language === 'italian' ? 'it' :
-                          language === 'german' ? 'de' : 'en';
+      // Backend expects full language names (italian, french, etc.) not codes (it, fr, etc.)
+      const languageName = (language || 'english').toLowerCase();
       
-      const result = await apiClient.pronounceText(text, languageCode);
+      const result = await apiClient.pronounceText(text, languageName);
       
       if (!result.success || !result.audioBase64) {
         console.error('Pronunciation failed:', result.error);
