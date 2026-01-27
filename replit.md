@@ -41,6 +41,13 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **expo-secure-store**: Secure credential storage.
 
 ## Recent Changes (Jan 27, 2026)
+**OpenAI TTS Pronunciation Integration**: Upgraded pronunciation feature to use OpenAI's TTS API for more natural-sounding audio:
+- **Backend Endpoint**: New `POST /api/lessons/pronounce` endpoint required - accepts `{ text, language }`, returns `{ success, audioBase64 }` using OpenAI TTS (`tts-1-hd` model with natural voice)
+- **Step 1 Pronunciation Button**: Now uses OpenAI TTS via `playOpenAIPronunciation()` with automatic fallback to expo-speech if backend unavailable
+- **Review Steps Pronunciation**: Added "Pronunciation" button to SpeakBackComponent (under "tap to record") with `showPronunciationButton` prop
+- **Audio Playback**: Uses expo-av Audio.Sound for base64 audio playback with proper cleanup on completion and unmount
+- **Loading States**: Button shows "Playing..." state while audio is playing
+
 **Speak-Back Feature Extended to Review Steps**: Added the same microphone-based speak-back option to review lesson steps:
 - **Review MCQ Support**: Speak-back mode is now the default for `review_mcq` step types in course reviews
 - **Consistent UX**: Same UI pattern as video steps - speak-back mode default, with "Use text mode" toggle and "Use the speech option" button in text mode

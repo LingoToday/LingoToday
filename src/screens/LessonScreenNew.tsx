@@ -1923,10 +1923,19 @@ export default function LessonScreen() {
       
       pronunciationSoundRef.current = sound;
       
-      // Listen for playback completion
-      sound.setOnPlaybackStatusUpdate((status) => {
+      // Listen for playback completion and cleanup
+      sound.setOnPlaybackStatusUpdate(async (status) => {
         if (status.isLoaded && status.didJustFinish) {
           setIsPlayingPronunciation(false);
+          // Cleanup sound after playback
+          try {
+            await sound.unloadAsync();
+            if (pronunciationSoundRef.current === sound) {
+              pronunciationSoundRef.current = null;
+            }
+          } catch (e) {
+            // Ignore cleanup errors
+          }
         }
       });
       
