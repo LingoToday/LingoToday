@@ -2290,6 +2290,7 @@ export default function LessonScreen() {
                         onSwitchToText={() => {
                           setUseSpeakBackMode(false);
                         }}
+                        showPronunciationButton={true}
                       />
                     </View>
                   )}
@@ -2493,6 +2494,7 @@ export default function LessonScreen() {
                             onSwitchToText={() => {
                               setUseSpeakBackMode(false);
                             }}
+                            showPronunciationButton={true}
                           />
                         </View>
                       )}
