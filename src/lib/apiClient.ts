@@ -637,20 +637,9 @@ export class ApiClient {
         }
       }
       
-      // Backend returns raw MP3 binary data - convert to base64
-      const arrayBuffer = await response.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      // Convert binary to base64 string
-      let binary = '';
-      const chunkSize = 8192;
-      for (let i = 0; i < uint8Array.length; i += chunkSize) {
-        const chunk = uint8Array.subarray(i, i + chunkSize);
-        binary += String.fromCharCode.apply(null, Array.from(chunk));
-      }
-      const audioBase64 = btoa(binary);
-      
-      return { success: true, audioBase64 };
+      // Backend returns JSON with base64-encoded audio: { success: true, audioBase64: "..." }
+      const result = await response.json();
+      return result;
     } catch (error) {
       console.error('Pronunciation error:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Network error during pronunciation' };
