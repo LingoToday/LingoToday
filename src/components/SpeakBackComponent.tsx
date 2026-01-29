@@ -178,9 +178,15 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
     }
 
     try {
+      // Configure audio mode for recording with Bluetooth/AirPods microphone support
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
+        // Required for Bluetooth headset microphone (AirPods, etc.)
+        interruptionModeIOS: 1, // DO_NOT_MIX - ensures Bluetooth mic works properly
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+        staysActiveInBackground: false,
       });
 
       // Enable metering for audio level visualization
@@ -209,8 +215,13 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
       const uri = recordingRef.current.getURI();
       recordingRef.current = null;
 
+      // Reset audio mode after recording stops
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        interruptionModeIOS: 1, // DO_NOT_MIX
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
       });
 
       if (uri) {
