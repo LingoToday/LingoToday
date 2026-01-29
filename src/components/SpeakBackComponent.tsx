@@ -447,6 +447,7 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
       </TouchableOpacity>
       
       <Text style={styles.hintText}>Tap to record</Text>
+      <Text style={styles.micHint}>For best results, use your device microphone</Text>
       
       {showPronunciationButton && (
         <TouchableOpacity 
@@ -616,7 +617,14 @@ const styles = StyleSheet.create({
   hintText: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
+    marginBottom: theme.spacing.xs,
+  },
+  micHint: {
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
+    opacity: 0.7,
     marginBottom: theme.spacing.lg,
+    fontStyle: 'italic',
   },
   errorText: {
     fontSize: theme.fontSize.sm,
