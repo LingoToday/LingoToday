@@ -40,7 +40,15 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Jan 27, 2026)
+## Recent Changes (Jan 30, 2026)
+**Lesson Step 1 Screen Split**: Split Phase 1 (Word Review) into two separate screens for better UX:
+- **Screen 1 - Word/Phrase Introduction**: Shows the lesson word/phrase, translation label, and pronunciation button only
+- **Screen 2 - When to Use**: Displays usage notes in a nicely formatted dark card with header, divider, and readable text styling
+- **Conditional Skip**: If `lesson.content.note` is empty/undefined, the "When to use" screen is skipped and user proceeds directly to Phase 2 (Quick Check)
+- **Navigation**: Added back button on "When to use" screen to return to word intro; navigation from Phase 2 back to Phase 1 resets to word intro screen
+- **New Component**: `phase1SubStep` state manages sub-step navigation ('word' | 'usage')
+
+## Previous Changes (Jan 27, 2026)
 **OpenAI TTS Pronunciation Integration**: Upgraded pronunciation feature to use OpenAI's TTS API for more natural-sounding audio:
 - **Backend Endpoint**: New `POST /api/lessons/pronounce` endpoint required - accepts `{ text, language }`, returns `{ success, audioBase64 }` using OpenAI TTS (`tts-1-hd` model with natural voice)
 - **Step 1 Pronunciation Button**: Now uses OpenAI TTS via `playOpenAIPronunciation()` with automatic fallback to expo-speech if backend unavailable
