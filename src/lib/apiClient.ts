@@ -681,6 +681,7 @@ export class ApiClient {
       dailyLifeUsage: string;
     };
     error?: string;
+    httpStatus?: number;
   }> {
     const authToken = await this.getAuthToken();
     console.log('[ApiClient.enhance] Auth token present:', !!authToken, authToken ? `(${authToken.substring(0, 20)}...)` : '');
@@ -710,18 +711,30 @@ export class ApiClient {
         console.log('[ApiClient.enhance] Error response:', errorText);
         try {
           const errorData = JSON.parse(errorText);
-          return { success: false, error: errorData.error || errorData.message || 'Enhancement failed' };
+          return { 
+            success: false, 
+            error: errorData.error || errorData.message || 'Enhancement failed', 
+            httpStatus: response.status 
+          };
         } catch {
-          return { success: false, error: `Enhancement failed: ${response.status}` };
+          return { 
+            success: false, 
+            error: `Enhancement failed: ${response.status} - ${errorText.substring(0, 100)}`, 
+            httpStatus: response.status 
+          };
         }
       }
       
       const result = await response.json();
       console.log('[ApiClient.enhance] Success response:', JSON.stringify(result));
-      return result;
+      return { ...result, httpStatus: response.status };
     } catch (error) {
       console.error('[ApiClient.enhance] Network/fetch error:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Network error during enhancement' };
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Network error during enhancement',
+        httpStatus: 0 
+      };
     }
   }
 }

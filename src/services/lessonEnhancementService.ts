@@ -44,6 +44,7 @@ export interface EnhancedContentResult {
   content: EnhancedContent | null;
   fromCache: boolean;
   error?: string;
+  httpStatus?: number;
 }
 
 export async function generateEnhancedContent(
@@ -82,7 +83,7 @@ export async function generateEnhancedContent(
     if (!response.success || !response.enhancedContent) {
       const errorMsg = response.error || 'API returned no content';
       console.error('[EnhanceService] API returned error or no content:', errorMsg);
-      return { content: null, fromCache: false, error: errorMsg };
+      return { content: null, fromCache: false, error: errorMsg, httpStatus: response.httpStatus };
     }
     
     const enhancedContent: EnhancedContent = {

@@ -168,6 +168,7 @@ export default function LessonScreen() {
     word: string;
     hasNote: boolean;
     apiUrl: string;
+    httpStatus: number;
   }>({
     status: 'Not started',
     apiCalled: false,
@@ -177,6 +178,7 @@ export default function LessonScreen() {
     word: '',
     hasNote: false,
     apiUrl: '',
+    httpStatus: 0,
   });
 
   // Video refs for controlling playback
@@ -593,13 +595,15 @@ export default function LessonScreen() {
             status: result.fromCache ? 'CACHED' : 'SUCCESS', 
             response: JSON.stringify(result.content).substring(0, 200),
             error: '',
+            httpStatus: result.httpStatus || 200,
           }));
           setEnhancedContent(result.content);
         } else {
           setDebugInfo(prev => ({ 
             ...prev, 
-            status: result.fromCache ? 'CACHED (empty)' : 'API returned null', 
+            status: result.fromCache ? 'CACHED (empty)' : `API Error (${result.httpStatus || 'unknown'})`, 
             error: result.error || 'No content returned',
+            httpStatus: result.httpStatus || 0,
           }));
         }
       } catch (error) {
@@ -2822,6 +2826,7 @@ export default function LessonScreen() {
                       <View style={styles.debugPanel}>
                         <Text style={styles.debugTitle}>DEBUG INFO</Text>
                         <Text style={styles.debugText}>Status: {debugInfo.status}</Text>
+                        <Text style={styles.debugText}>HTTP Status: {debugInfo.httpStatus || '(none)'}</Text>
                         <Text style={styles.debugText}>API Called: {debugInfo.apiCalled ? 'YES' : 'NO'}</Text>
                         <Text style={styles.debugText}>API URL: {debugInfo.apiUrl || '(not set)'}</Text>
                         <Text style={styles.debugText}>LessonId: {debugInfo.lessonId || '(none)'}</Text>
