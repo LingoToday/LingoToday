@@ -42,6 +42,9 @@ export default function LessonModal({
   const [currentPhase, setCurrentPhase] = useState<Phase>(1);
   const [completedPhases, setCompletedPhases] = useState<Set<Phase>>(new Set());
   
+  // Phase 1 sub-step state: 'word' for word intro, 'usage' for when to use
+  const [phase1SubStep, setPhase1SubStep] = useState<'word' | 'usage'>('word');
+  
   // Phase 2 state (Quick Check MCQ)
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [showPhase2Result, setShowPhase2Result] = useState(false);
@@ -102,10 +105,28 @@ export default function LessonModal({
     });
   };
 
+  // Check if lesson has "when to use" content
+  const hasWhenToUseContent = () => {
+    return lesson?.content?.note && lesson.content.note.trim().length > 0;
+  };
+
   // Phase handlers - matching web logic exactly
+  const handlePhase1Continue = () => {
+    // If there's "when to use" content and we're on word sub-step, show usage screen
+    if (phase1SubStep === 'word' && hasWhenToUseContent()) {
+      setPhase1SubStep('usage');
+    } else {
+      // No usage content or already on usage screen, move to Phase 2
+      setCompletedPhases(prev => new Set([...Array.from(prev), 1 as Phase]));
+      setPhase1SubStep('word'); // Reset for next time
+      setCurrentPhase(2);
+    }
+  };
+
   const handlePhase1Complete = () => {
     // Phase 1 is just word review, automatically mark as complete
     setCompletedPhases(prev => new Set([...Array.from(prev), 1 as Phase]));
+    setPhase1SubStep('word'); // Reset for next time
     setCurrentPhase(2);
   };
 
@@ -188,7 +209,7 @@ export default function LessonModal({
   };
 
   // Render phases - matching web structure exactly
-  const renderPhase1 = () => (
+  const renderPhase1WordIntro = () => (
     <View style={styles.phaseContainer}>
       <Text style={styles.phaseTitle}>Phase 1 — Word Review</Text>
       
@@ -196,30 +217,65 @@ export default function LessonModal({
       <View style={styles.wordIntroCard}>
         <Text style={styles.wordEmoji}>{lesson.emoji}</Text>
         <Text style={styles.wordText}>{lesson.content.word}</Text>
+        <Text style={styles.translationLabel}>TRANSLATION</Text>
         <Text style={styles.translationText}>{lesson.content.translation}</Text>
         <TouchableOpacity
           style={styles.speakButton}
           onPress={() => speakText(lesson.content.word)}
         >
           <Ionicons name="volume-high" size={20} color="#ffffff" />
-          <Text style={styles.speakButtonText}>Listen</Text>
+          <Text style={styles.speakButtonText}>Pronunciation</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Usage Note */}
-      <View style={styles.usageNoteCard}>
-        <Text style={styles.usageNoteTitle}>Usage Note</Text>
-        <Text style={styles.usageNoteText}>
-          {lesson.content.note || 'Polite but still friendly. Good for strangers or when you want to be respectful without being too formal.'}
-        </Text>
-      </View>
-
-      <Button style={styles.continueButton} onPress={handlePhase1Complete}>
-        <Text style={styles.continueButtonText}>Continue to Quick Check</Text>
+      <Button style={styles.continueButton} onPress={handlePhase1Continue}>
+        <Text style={styles.continueButtonText}>Continue</Text>
         <Ionicons name="arrow-forward" size={16} color="#ffffff" />
       </Button>
     </View>
   );
+
+  const renderPhase1WhenToUse = () => (
+    <View style={styles.phaseContainer}>
+      <Text style={styles.phaseTitle}>Phase 1 — When to Use</Text>
+      
+      {/* When to Use Card - nicely formatted */}
+      <View style={styles.whenToUseCard}>
+        <View style={styles.whenToUseHeader}>
+          <Ionicons name="information-circle" size={24} color={theme.colors.primary} />
+          <Text style={styles.whenToUseTitle}>When to use</Text>
+        </View>
+        
+        <View style={styles.whenToUseDivider} />
+        
+        <Text style={styles.whenToUseText}>
+          {lesson.content.note}
+        </Text>
+      </View>
+
+      <View style={styles.buttonRow}>
+        <Button
+          style={styles.backButton}
+          onPress={() => setPhase1SubStep('word')}
+        >
+          <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
+          <Text style={styles.backButtonText}>Back</Text>
+        </Button>
+        
+        <Button style={styles.continueButton} onPress={handlePhase1Complete}>
+          <Text style={styles.continueButtonText}>Continue to Quick Check</Text>
+          <Ionicons name="arrow-forward" size={16} color="#ffffff" />
+        </Button>
+      </View>
+    </View>
+  );
+
+  const renderPhase1 = () => {
+    if (phase1SubStep === 'usage' && hasWhenToUseContent()) {
+      return renderPhase1WhenToUse();
+    }
+    return renderPhase1WordIntro();
+  };
 
   const renderPhase2 = () => (
     <View style={styles.phaseContainer}>
@@ -276,7 +332,7 @@ export default function LessonModal({
       <View style={styles.buttonRow}>
         <Button
           style={styles.backButton}
-          onPress={() => setCurrentPhase(1)}
+          onPress={() => { setPhase1SubStep('word'); setCurrentPhase(1); }}
         >
           <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
           <Text style={styles.backButtonText}>Back to Word Review</Text>
@@ -710,6 +766,39 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.mutedForeground,
     lineHeight: 22,
+  },
+  translationLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '600',
+    color: theme.colors.mutedForeground,
+    letterSpacing: 1,
+    marginTop: theme.spacing.sm,
+  },
+  whenToUseCard: {
+    backgroundColor: '#1c1c2e',
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    gap: theme.spacing.md,
+  },
+  whenToUseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  whenToUseTitle: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  whenToUseDivider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginVertical: theme.spacing.sm,
+  },
+  whenToUseText: {
+    fontSize: theme.fontSize.base,
+    color: 'rgba(255, 255, 255, 0.85)',
+    lineHeight: 24,
   },
 
   // Phase 2 & 4 - Questions and Options
