@@ -499,29 +499,49 @@ export default function LessonScreen() {
   // Pre-fetch enhanced content when lesson loads for "How to use" screen
   useEffect(() => {
     const fetchEnhancedContent = async () => {
+      console.log('[Enhancement] === Starting enhancement check ===');
+      console.log('[Enhancement] currentLesson exists:', !!currentLesson);
+      console.log('[Enhancement] currentLesson.lesson exists:', !!currentLesson?.lesson);
+      console.log('[Enhancement] currentLesson.lesson.steps exists:', !!currentLesson?.lesson?.steps);
+      
       // Get the first step's note (word_review step) from currentLesson
-      if (!currentLesson?.lesson?.steps) return;
+      if (!currentLesson?.lesson?.steps) {
+        console.log('[Enhancement] SKIP: No steps found in currentLesson');
+        return;
+      }
       
       const steps = currentLesson.lesson.steps;
-      const firstStep = Array.isArray(steps) ? steps[0] : null;
-      if (!firstStep) return;
+      console.log('[Enhancement] Steps type:', Array.isArray(steps) ? 'array' : typeof steps);
+      console.log('[Enhancement] Steps length:', Array.isArray(steps) ? steps.length : 'N/A');
       
-      const note = firstStep?.content?.note;
-      const word = firstStep?.content?.word;
-      const translation = firstStep?.content?.translation || firstStep?.content?.english;
+      const firstStep = Array.isArray(steps) ? steps[0] : null;
+      if (!firstStep) {
+        console.log('[Enhancement] SKIP: No first step found');
+        return;
+      }
+      
+      console.log('[Enhancement] First step keys:', Object.keys(firstStep));
+      console.log('[Enhancement] First step content:', JSON.stringify(firstStep.content || firstStep, null, 2).substring(0, 500));
+      
+      const stepAny = firstStep as any;
+      const note = firstStep?.content?.note || stepAny?.note;
+      const word = firstStep?.content?.word || stepAny?.word;
+      const translation = firstStep?.content?.translation || firstStep?.content?.english || stepAny?.translation || stepAny?.english;
+      
+      console.log('[Enhancement] Extracted - note:', note?.substring(0, 50), ', word:', word, ', translation:', translation);
       
       if (!note || note.trim().length === 0 || !word) {
-        console.log('[Enhancement] No note or word found, skipping enhancement');
+        console.log('[Enhancement] SKIP: Missing note or word. note:', !!note, ', word:', !!word);
         return;
       }
 
       if (!language) {
-        console.log('[Enhancement] No language found, skipping enhancement');
+        console.log('[Enhancement] SKIP: No language found');
         return;
       }
       
       const currentLessonId = lessonId || `lesson_${Date.now()}`;
-      console.log('[Enhancement] Starting enhancement fetch for:', { language, lessonId: currentLessonId, word });
+      console.log('[Enhancement] ✅ All checks passed! Fetching for:', { language, lessonId: currentLessonId, word });
       setIsLoadingEnhanced(true);
       
       try {
@@ -531,15 +551,15 @@ export default function LessonScreen() {
           {
             word: word,
             translation: translation || '',
-            example: firstStep?.content?.example,
-            exampleTranslation: firstStep?.content?.exampleTranslation,
+            example: firstStep?.content?.example || stepAny?.example,
+            exampleTranslation: firstStep?.content?.exampleTranslation || stepAny?.exampleTranslation,
             note: note,
           }
         );
-        console.log('[Enhancement] Received content:', content);
+        console.log('[Enhancement] ✅ Received content:', JSON.stringify(content, null, 2));
         setEnhancedContent(content);
       } catch (error) {
-        console.error('[Enhancement] Error fetching enhanced content:', error);
+        console.error('[Enhancement] ❌ Error fetching enhanced content:', error);
       } finally {
         setIsLoadingEnhanced(false);
       }

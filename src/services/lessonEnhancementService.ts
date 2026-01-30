@@ -45,15 +45,21 @@ export async function generateEnhancedContent(
   lessonId: string,
   lessonInfo: LessonInfo
 ): Promise<EnhancedContent | null> {
+  console.log('[EnhanceService] generateEnhancedContent called with:', { language, lessonId, word: lessonInfo.word });
+  
   const cached = await getEnhancedContent(language, lessonId);
   if (cached) {
+    console.log('[EnhanceService] Returning cached content');
     return cached;
   }
 
   if (!lessonInfo.note || lessonInfo.note.trim().length === 0) {
+    console.log('[EnhanceService] No note provided, returning null');
     return null;
   }
 
+  console.log('[EnhanceService] Making API call to enhance content...');
+  
   try {
     const response = await apiClient.enhanceLessonContent({
       language,
@@ -65,7 +71,10 @@ export async function generateEnhancedContent(
       note: lessonInfo.note,
     });
 
+    console.log('[EnhanceService] API response:', JSON.stringify(response, null, 2));
+
     if (!response.success || !response.enhancedContent) {
+      console.error('[EnhanceService] API returned error or no content:', response.error);
       throw new Error(response.error || 'Failed to enhance content');
     }
     
@@ -76,16 +85,19 @@ export async function generateEnhancedContent(
       originalNote: lessonInfo.note,
     };
 
+    console.log('[EnhanceService] ✅ Enhanced content created:', enhancedContent);
+
     const cacheKey = getCacheKey(language, lessonId);
     try {
       await AsyncStorage.setItem(cacheKey, JSON.stringify(enhancedContent));
+      console.log('[EnhanceService] Content cached successfully');
     } catch (cacheError) {
-      console.warn('Error caching enhanced content:', cacheError);
+      console.warn('[EnhanceService] Error caching enhanced content:', cacheError);
     }
 
     return enhancedContent;
   } catch (error) {
-    console.error('Error generating enhanced content:', error);
+    console.error('[EnhanceService] ❌ Error generating enhanced content:', error);
     return null;
   }
 }
