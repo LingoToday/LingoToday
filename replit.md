@@ -41,6 +41,15 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **expo-secure-store**: Secure credential storage.
 
 ## Recent Changes (Jan 30, 2026)
+**AI-Enhanced "How to Use" Content**: Enhanced the "When to Use" screen with AI-generated content via backend API:
+- **Backend Endpoint**: New `POST /api/lessons/enhance` endpoint required - accepts `{ language, lessonId, word, translation, example?, exampleTranslation?, note }`, returns `{ success, enhancedContent: { pronunciation, genderNote, dailyLifeUsage } }` using OpenAI GPT
+- **Enhanced Content Sections**: Pronunciation (phonetic spelling for English speakers), Male/Female forms (gender/formal variants), Daily Life Usage (practical examples)
+- **Client-Side Caching**: Uses AsyncStorage to cache enhanced content per language+lessonId to avoid repeated API calls
+- **Pre-fetch Strategy**: Content is fetched when lesson modal opens, so it's ready before user reaches the "How to use" screen
+- **UI Changes**: Title changed from "When to Use" to "How to Use", sections displayed with labeled headers
+- **Fallback**: Shows original note if API fails or returns no content
+- **Files Modified**: `src/services/lessonEnhancementService.ts` (new), `src/components/LessonModal.tsx`, `src/lib/apiClient.ts`
+
 **Lesson Step 1 Screen Split**: Split Phase 1 (Word Review) into two separate screens for better UX in `LessonScreenNew.tsx`:
 - **Screen 1 - Word/Phrase Introduction**: Shows the lesson word/phrase, translation label, and pronunciation button only
 - **Screen 2 - When to Use**: Displays usage notes in a nicely formatted card with header, divider, and readable text styling

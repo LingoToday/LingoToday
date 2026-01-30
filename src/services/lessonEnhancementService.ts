@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import OpenAI from 'openai';
-import Constants from 'expo-constants';
+import { apiClient } from '../lib/apiClient';
 
 const CACHE_KEY_PREFIX = 'enhanced_lesson_';
 
@@ -19,19 +18,13 @@ interface LessonInfo {
   note?: string;
 }
 
-const openai = new OpenAI({
-  apiKey: Constants?.expoConfig?.extra?.openaiApiKey || process.env.OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
-
 function getCacheKey(language: string, lessonId: string): string {
   return `${CACHE_KEY_PREFIX}${language}_${lessonId}`;
 }
 
 export async function getEnhancedContent(
   language: string,
-  lessonId: string,
-  lessonInfo: LessonInfo
+  lessonId: string
 ): Promise<EnhancedContent | null> {
   const cacheKey = getCacheKey(language, lessonId);
   
@@ -52,7 +45,7 @@ export async function generateEnhancedContent(
   lessonId: string,
   lessonInfo: LessonInfo
 ): Promise<EnhancedContent | null> {
-  const cached = await getEnhancedContent(language, lessonId, lessonInfo);
+  const cached = await getEnhancedContent(language, lessonId);
   if (cached) {
     return cached;
   }
@@ -62,50 +55,24 @@ export async function generateEnhancedContent(
   }
 
   try {
-    const languageName = language.charAt(0).toUpperCase() + language.slice(1);
-    
-    const prompt = `You are a language learning expert helping students learn ${languageName}. Given the following lesson information, create an enhanced "How to use" guide.
-
-Lesson Word/Phrase: ${lessonInfo.word}
-Translation: ${lessonInfo.translation}
-${lessonInfo.example ? `Example: ${lessonInfo.example}` : ''}
-${lessonInfo.exampleTranslation ? `Example Translation: ${lessonInfo.exampleTranslation}` : ''}
-Current "When to use" note: ${lessonInfo.note}
-
-Please provide an enhanced version with the following sections. Format each section on its own line with a blank line between sections:
-
-1. Pronunciation: Write how to pronounce "${lessonInfo.word}" using easy phonetic spelling that English speakers can read. Include stress marks if helpful.
-
-2. Gender/Form: If the word has masculine/feminine forms, plural variants, or formal/informal versions in ${languageName}, explain briefly. If not applicable, write "Not applicable for this word."
-
-3. Daily Life Usage: Give 1-2 practical examples of when someone would use this word or phrase in everyday situations. Keep it conversational and relatable.
-
-Respond with ONLY JSON in this exact format:
-{
-  "pronunciation": "your pronunciation guide here",
-  "genderNote": "your gender/form note here", 
-  "dailyLifeUsage": "your daily life usage examples here"
-}`;
-
-    // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-    const response = await openai.chat.completions.create({
-      model: "gpt-5",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      max_completion_tokens: 500,
+    const response = await apiClient.enhanceLessonContent({
+      language,
+      lessonId,
+      word: lessonInfo.word,
+      translation: lessonInfo.translation,
+      example: lessonInfo.example,
+      exampleTranslation: lessonInfo.exampleTranslation,
+      note: lessonInfo.note,
     });
 
-    const content = response.choices[0].message.content;
-    if (!content) {
-      throw new Error('No response from OpenAI');
+    if (!response.success || !response.enhancedContent) {
+      throw new Error(response.error || 'Failed to enhance content');
     }
-
-    const parsed = JSON.parse(content);
     
     const enhancedContent: EnhancedContent = {
-      pronunciation: parsed.pronunciation || '',
-      genderNote: parsed.genderNote || '',
-      dailyLifeUsage: parsed.dailyLifeUsage || '',
+      pronunciation: response.enhancedContent.pronunciation || '',
+      genderNote: response.enhancedContent.genderNote || '',
+      dailyLifeUsage: response.enhancedContent.dailyLifeUsage || '',
       originalNote: lessonInfo.note,
     };
 

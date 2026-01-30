@@ -665,7 +665,55 @@ export class ApiClient {
     }
   }
 
-  
+  async enhanceLessonContent(data: {
+    language: string;
+    lessonId: string;
+    word: string;
+    translation: string;
+    example?: string;
+    exampleTranslation?: string;
+    note?: string;
+  }): Promise<{
+    success: boolean;
+    enhancedContent?: {
+      pronunciation: string;
+      genderNote: string;
+      dailyLifeUsage: string;
+    };
+    error?: string;
+  }> {
+    const authToken = await this.getAuthToken();
+    
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/lessons/enhance`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          return { success: false, error: errorData.error || errorData.message || 'Enhancement failed' };
+        } catch {
+          return { success: false, error: `Enhancement failed: ${response.status}` };
+        }
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Enhancement error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Network error during enhancement' };
+    }
+  }
 }
 
 export const apiClient = new ApiClient();
