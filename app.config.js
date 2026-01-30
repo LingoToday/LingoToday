@@ -12,6 +12,7 @@ export default ({ config }) => {
       // For EAS builds: Set via EAS Secrets (eas secret:create)
       revenuecatIosKey: process.env.REVENUECAT_IOS_KEY || config.extra?.revenuecatIosKey || '',
       revenuecatAndroidKey: process.env.REVENUECAT_ANDROID_KEY || config.extra?.revenuecatAndroidKey || '',
+      openaiApiKey: process.env.OPENAI_API_KEY || config.extra?.openaiApiKey || '',
     },
   };
 };

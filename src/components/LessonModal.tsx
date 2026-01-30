@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ScrollView,
   Modal,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,6 +21,7 @@ import { apiClient } from '../lib/apiClient';
 import { Card, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
+import { generateEnhancedContent } from '../services/lessonEnhancementService';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -59,6 +61,39 @@ export default function LessonModal({
   const [phase4Answer, setPhase4Answer] = useState<string>('');
   const [showPhase4Result, setShowPhase4Result] = useState(false);
   const [phase4Correct, setPhase4Correct] = useState(false);
+
+  // Enhanced content state for "How to use" screen
+  const [enhancedContent, setEnhancedContent] = useState<{
+    pronunciation: string;
+    genderNote: string;
+    dailyLifeUsage: string;
+    originalNote: string;
+  } | null>(null);
+  const [isLoadingEnhanced, setIsLoadingEnhanced] = useState(false);
+
+  // Pre-fetch enhanced content when lesson modal opens
+  useEffect(() => {
+    if (visible && lesson?.content?.note && lesson.content.note.trim().length > 0) {
+      setIsLoadingEnhanced(true);
+      generateEnhancedContent(
+        language,
+        lesson.id,
+        {
+          word: lesson.content.word,
+          translation: lesson.content.translation,
+          example: lesson.content.example,
+          exampleTranslation: lesson.content.exampleTranslation,
+          note: lesson.content.note,
+        }
+      ).then((content) => {
+        setEnhancedContent(content);
+        setIsLoadingEnhanced(false);
+      }).catch((error) => {
+        console.error('Error fetching enhanced content:', error);
+        setIsLoadingEnhanced(false);
+      });
+    }
+  }, [visible, lesson?.id, language]);
 
   const completeLessonMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -237,21 +272,47 @@ export default function LessonModal({
 
   const renderPhase1WhenToUse = () => (
     <View style={styles.phaseContainer}>
-      <Text style={styles.phaseTitle}>Phase 1 — When to Use</Text>
+      <Text style={styles.phaseTitle}>Phase 1 — How to Use</Text>
       
-      {/* When to Use Card - nicely formatted */}
-      <View style={styles.whenToUseCard}>
-        <View style={styles.whenToUseHeader}>
-          <Ionicons name="information-circle" size={24} color={theme.colors.primary} />
-          <Text style={styles.whenToUseTitle}>When to use</Text>
+      {/* How to Use Card - nicely formatted with enhanced content */}
+      <ScrollView style={styles.howToUseScrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.whenToUseCard}>
+          <View style={styles.whenToUseHeader}>
+            <Ionicons name="information-circle" size={24} color={theme.colors.primary} />
+            <Text style={styles.whenToUseTitle}>How to use</Text>
+          </View>
+          
+          <View style={styles.whenToUseDivider} />
+          
+          {isLoadingEnhanced ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={theme.colors.primary} />
+              <Text style={styles.loadingText}>Enhancing lesson content...</Text>
+            </View>
+          ) : enhancedContent ? (
+            <View style={styles.enhancedContentContainer}>
+              <View style={styles.enhancedSection}>
+                <Text style={styles.enhancedLabel}>Pronunciation</Text>
+                <Text style={styles.whenToUseText}>{enhancedContent.pronunciation}</Text>
+              </View>
+
+              <View style={styles.enhancedSection}>
+                <Text style={styles.enhancedLabel}>Male / Female</Text>
+                <Text style={styles.whenToUseText}>{enhancedContent.genderNote}</Text>
+              </View>
+
+              <View style={styles.enhancedSection}>
+                <Text style={styles.enhancedLabel}>Daily Life Usage</Text>
+                <Text style={styles.whenToUseText}>{enhancedContent.dailyLifeUsage}</Text>
+              </View>
+            </View>
+          ) : (
+            <Text style={styles.whenToUseText}>
+              {lesson.content.note}
+            </Text>
+          )}
         </View>
-        
-        <View style={styles.whenToUseDivider} />
-        
-        <Text style={styles.whenToUseText}>
-          {lesson.content.note}
-        </Text>
-      </View>
+      </ScrollView>
 
       <View style={styles.buttonRow}>
         <Button
@@ -799,6 +860,34 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: 'rgba(255, 255, 255, 0.85)',
     lineHeight: 24,
+  },
+  howToUseScrollView: {
+    flex: 1,
+    marginBottom: theme.spacing.md,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.lg,
+    gap: theme.spacing.sm,
+  },
+  loadingText: {
+    fontSize: theme.fontSize.sm,
+    color: 'rgba(255, 255, 255, 0.6)',
+  },
+  enhancedContentContainer: {
+    gap: theme.spacing.lg,
+  },
+  enhancedSection: {
+    gap: theme.spacing.xs,
+  },
+  enhancedLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '600',
+    color: theme.colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
 
   // Phase 2 & 4 - Questions and Options
