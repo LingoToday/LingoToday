@@ -399,6 +399,22 @@ useEffect(() => {
       }))
     : [];
 
+  // Full-screen loading overlay
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.fullScreenLoading}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={styles.fullScreenLoadingText}>
+              Getting everything ready for you.{'\n'}It'll be just a few seconds
+            </Text>
+          </View>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -413,15 +429,6 @@ useEffect(() => {
             <View style={isTablet ? styles.gridContainerTablet : styles.gridContainerMobile}>
               {/* Left Column - Main Content */}
               <View style={isTablet ? styles.leftColumn : styles.mobileColumn}>
-                {/* Loading indicator */}
-                {isLoading && (
-                  <Card style={styles.loadingCard}>
-                    <CardContent style={styles.loadingContent}>
-                      <ActivityIndicator size="small" color={theme.colors.primary} />
-                      <Text style={styles.loadingText}>Loading dashboard data...</Text>
-                    </CardContent>
-                  </Card>
-                )}
 
                 {/* Welcome Section */}
                 <Card style={styles.welcomeCard}>
@@ -760,23 +767,19 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
     gap: 24,
   },
 
-  // Loading Card
-  loadingCard: {
-    backgroundColor: theme.colors.card,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  loadingContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  // Full-screen Loading
+  fullScreenLoading: {
+    flex: 1,
     justifyContent: 'center',
-    paddingVertical: 12,
-    gap: 12,
+    alignItems: 'center',
+    paddingHorizontal: 32,
   },
-  loadingText: {
-    fontSize: 14,
-    color: theme.colors.primary,
+  fullScreenLoadingText: {
+    fontSize: 16,
+    color: theme.colors.foreground,
+    textAlign: 'center' as any,
+    marginTop: 24,
+    lineHeight: 24,
   },
 
   // Welcome Card - matching web exactly
