@@ -2651,22 +2651,10 @@ export default function LessonScreen() {
                   {phase1SubStep === 'usage' && stepData.note && (
                     <View style={styles.whenToUseContainer}>
                       <View style={styles.whenToUseCard}>
-                        <View style={styles.whenToUseHeader}>
-                          <Ionicons name="information-circle" size={24} color={theme.colors.primary} />
-                          <Text style={styles.whenToUseTitle}>When to use</Text>
-                        </View>
+                        <Text style={styles.whenToUseTitleCentered}>When to use</Text>
                         <View style={styles.whenToUseDivider} />
-                        <Text style={styles.whenToUseText}>{stepData.note}</Text>
+                        <Text style={styles.whenToUseTextCentered}>{stepData.note}</Text>
                       </View>
-                      
-                      {/* Back button to return to word intro */}
-                      <TouchableOpacity 
-                        style={styles.backToWordButton}
-                        onPress={() => setPhase1SubStep('word')}
-                      >
-                        <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
-                        <Text style={styles.backToWordButtonText}>Back</Text>
-                      </TouchableOpacity>
                     </View>
                   )}
                 </>
@@ -3103,7 +3091,7 @@ export default function LessonScreen() {
                         />
                       ) : stepData.type === 'word_review' ? (
                         <Button
-                          title={phase1SubStep === 'word' && stepData.note ? "Continue" : "Continue to Quick Check"}
+                          title="Continue"
                           onPress={() => {
                             if (phase1SubStep === 'word' && stepData.note) {
                               setPhase1SubStep('usage');
@@ -3434,6 +3422,12 @@ const styles = StyleSheet.create({
     fontWeight: '600' as any,
     color: theme.colors.foreground,
   },
+  whenToUseTitleCentered: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600' as any,
+    color: theme.colors.foreground,
+    textAlign: 'center' as any,
+  },
   whenToUseDivider: {
     height: 1,
     backgroundColor: theme.colors.outline,
@@ -3443,6 +3437,12 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.onSurfaceVariant,
     lineHeight: theme.fontSize.base * 1.6,
+  },
+  whenToUseTextCentered: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.onSurfaceVariant,
+    lineHeight: theme.fontSize.base * 1.6,
+    textAlign: 'center' as any,
   },
   backToWordButton: {
     flexDirection: 'row',
