@@ -157,6 +157,27 @@ export default function LessonScreen() {
     originalNote: string;
   } | null>(null);
   const [isLoadingEnhanced, setIsLoadingEnhanced] = useState(false);
+  
+  // Debug info state for troubleshooting enhancement API
+  const [debugInfo, setDebugInfo] = useState<{
+    status: string;
+    apiCalled: boolean;
+    response: string;
+    error: string;
+    lessonId: string;
+    word: string;
+    hasNote: boolean;
+    apiUrl: string;
+  }>({
+    status: 'Not started',
+    apiCalled: false,
+    response: '',
+    error: '',
+    lessonId: '',
+    word: '',
+    hasNote: false,
+    apiUrl: '',
+  });
 
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
@@ -500,52 +521,54 @@ export default function LessonScreen() {
   useEffect(() => {
     const fetchEnhancedContent = async () => {
       console.log('[Enhancement] === Starting enhancement check ===');
-      console.log('[Enhancement] currentLesson exists:', !!currentLesson);
-      console.log('[Enhancement] currentLesson.lesson exists:', !!currentLesson?.lesson);
-      console.log('[Enhancement] currentLesson.lesson.steps exists:', !!currentLesson?.lesson?.steps);
+      setDebugInfo(prev => ({ ...prev, status: 'Starting check...' }));
       
       // Get the first step's note (word_review step) from currentLesson
       if (!currentLesson?.lesson?.steps) {
-        console.log('[Enhancement] SKIP: No steps found in currentLesson');
+        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No steps found', error: 'currentLesson.lesson.steps is empty' }));
         return;
       }
       
       const steps = currentLesson.lesson.steps;
-      console.log('[Enhancement] Steps type:', Array.isArray(steps) ? 'array' : typeof steps);
-      console.log('[Enhancement] Steps length:', Array.isArray(steps) ? steps.length : 'N/A');
-      
       const firstStep = Array.isArray(steps) ? steps[0] : null;
       if (!firstStep) {
-        console.log('[Enhancement] SKIP: No first step found');
+        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No first step', error: 'steps array is empty' }));
         return;
       }
-      
-      console.log('[Enhancement] First step keys:', Object.keys(firstStep));
-      console.log('[Enhancement] First step content:', JSON.stringify(firstStep.content || firstStep, null, 2).substring(0, 500));
       
       const stepAny = firstStep as any;
       const note = firstStep?.content?.note || stepAny?.note;
       const word = firstStep?.content?.word || stepAny?.word;
       const translation = firstStep?.content?.translation || firstStep?.content?.english || stepAny?.translation || stepAny?.english;
       
-      console.log('[Enhancement] Extracted - note:', note?.substring(0, 50), ', word:', word, ', translation:', translation);
+      const currentLessonId = lessonId || `lesson_${Date.now()}`;
+      setDebugInfo(prev => ({ 
+        ...prev, 
+        lessonId: currentLessonId,
+        word: word || '(none)',
+        hasNote: !!note && note.trim().length > 0,
+      }));
       
       if (!note || note.trim().length === 0 || !word) {
-        console.log('[Enhancement] SKIP: Missing note or word. note:', !!note, ', word:', !!word);
+        setDebugInfo(prev => ({ 
+          ...prev, 
+          status: 'SKIP: Missing data', 
+          error: `note: ${!!note}, word: ${!!word}` 
+        }));
         return;
       }
 
       if (!language) {
-        console.log('[Enhancement] SKIP: No language found');
+        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No language', error: 'language param missing' }));
         return;
       }
       
-      const currentLessonId = lessonId || `lesson_${Date.now()}`;
-      console.log('[Enhancement] ✅ All checks passed! Fetching for:', { language, lessonId: currentLessonId, word });
+      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
+      setDebugInfo(prev => ({ ...prev, status: 'Calling API...', apiCalled: true, apiUrl: apiBaseUrl }));
       setIsLoadingEnhanced(true);
       
       try {
-        const content = await generateEnhancedContent(
+        const result = await generateEnhancedContent(
           language,
           currentLessonId,
           {
@@ -556,10 +579,29 @@ export default function LessonScreen() {
             note: note,
           }
         );
-        console.log('[Enhancement] ✅ Received content:', JSON.stringify(content, null, 2));
-        setEnhancedContent(content);
+        
+        if (result.content) {
+          setDebugInfo(prev => ({ 
+            ...prev, 
+            status: result.fromCache ? 'CACHED' : 'SUCCESS', 
+            response: JSON.stringify(result.content).substring(0, 200),
+            error: '',
+          }));
+          setEnhancedContent(result.content);
+        } else {
+          setDebugInfo(prev => ({ 
+            ...prev, 
+            status: result.fromCache ? 'CACHED (empty)' : 'API returned null', 
+            error: result.error || 'No content returned',
+          }));
+        }
       } catch (error) {
-        console.error('[Enhancement] ❌ Error fetching enhanced content:', error);
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        setDebugInfo(prev => ({ 
+          ...prev, 
+          status: 'ERROR', 
+          error: errorMsg,
+        }));
       } finally {
         setIsLoadingEnhanced(false);
       }
@@ -2768,6 +2810,23 @@ export default function LessonScreen() {
                           <Text style={styles.whenToUseTextCentered}>{stepData.note}</Text>
                         )}
                       </View>
+                      
+                      {/* DEBUG PANEL - Remove after troubleshooting */}
+                      <View style={styles.debugPanel}>
+                        <Text style={styles.debugTitle}>DEBUG INFO</Text>
+                        <Text style={styles.debugText}>Status: {debugInfo.status}</Text>
+                        <Text style={styles.debugText}>API Called: {debugInfo.apiCalled ? 'YES' : 'NO'}</Text>
+                        <Text style={styles.debugText}>API URL: {debugInfo.apiUrl || '(not set)'}</Text>
+                        <Text style={styles.debugText}>LessonId: {debugInfo.lessonId || '(none)'}</Text>
+                        <Text style={styles.debugText}>Word: {debugInfo.word || '(none)'}</Text>
+                        <Text style={styles.debugText}>Has Note: {debugInfo.hasNote ? 'YES' : 'NO'}</Text>
+                        {debugInfo.error ? (
+                          <Text style={styles.debugError}>Error: {debugInfo.error}</Text>
+                        ) : null}
+                        {debugInfo.response ? (
+                          <Text style={styles.debugSuccess}>Response: {debugInfo.response.substring(0, 100)}...</Text>
+                        ) : null}
+                      </View>
                     </View>
                   )}
                 </>
@@ -3595,6 +3654,38 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     color: theme.colors.foreground,
     fontWeight: '500' as any,
+  },
+  
+  // Debug panel styles - temporary for troubleshooting
+  debugPanel: {
+    marginTop: theme.spacing.lg,
+    padding: theme.spacing.md,
+    backgroundColor: 'rgba(255, 100, 100, 0.1)',
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 100, 100, 0.3)',
+  },
+  debugTitle: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '700' as any,
+    color: '#ff6b6b',
+    marginBottom: theme.spacing.sm,
+    textAlign: 'center' as any,
+  },
+  debugText: {
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.mutedForeground,
+    marginBottom: 2,
+  },
+  debugError: {
+    fontSize: theme.fontSize.xs,
+    color: '#ff6b6b',
+    marginTop: theme.spacing.xs,
+  },
+  debugSuccess: {
+    fontSize: theme.fontSize.xs,
+    color: theme.colors.primary,
+    marginTop: theme.spacing.xs,
   },
 
   // Quick Check Specific Styles - Dark theme

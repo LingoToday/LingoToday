@@ -40,22 +40,28 @@ export async function getEnhancedContent(
   return null;
 }
 
+export interface EnhancedContentResult {
+  content: EnhancedContent | null;
+  fromCache: boolean;
+  error?: string;
+}
+
 export async function generateEnhancedContent(
   language: string,
   lessonId: string,
   lessonInfo: LessonInfo
-): Promise<EnhancedContent | null> {
+): Promise<EnhancedContentResult> {
   console.log('[EnhanceService] generateEnhancedContent called with:', { language, lessonId, word: lessonInfo.word });
   
   const cached = await getEnhancedContent(language, lessonId);
   if (cached) {
     console.log('[EnhanceService] Returning cached content');
-    return cached;
+    return { content: cached, fromCache: true };
   }
 
   if (!lessonInfo.note || lessonInfo.note.trim().length === 0) {
     console.log('[EnhanceService] No note provided, returning null');
-    return null;
+    return { content: null, fromCache: false, error: 'No note provided' };
   }
 
   console.log('[EnhanceService] Making API call to enhance content...');
@@ -74,8 +80,9 @@ export async function generateEnhancedContent(
     console.log('[EnhanceService] API response:', JSON.stringify(response, null, 2));
 
     if (!response.success || !response.enhancedContent) {
-      console.error('[EnhanceService] API returned error or no content:', response.error);
-      throw new Error(response.error || 'Failed to enhance content');
+      const errorMsg = response.error || 'API returned no content';
+      console.error('[EnhanceService] API returned error or no content:', errorMsg);
+      return { content: null, fromCache: false, error: errorMsg };
     }
     
     const enhancedContent: EnhancedContent = {
@@ -95,10 +102,11 @@ export async function generateEnhancedContent(
       console.warn('[EnhanceService] Error caching enhanced content:', cacheError);
     }
 
-    return enhancedContent;
+    return { content: enhancedContent, fromCache: false };
   } catch (error) {
-    console.error('[EnhanceService] ❌ Error generating enhanced content:', error);
-    return null;
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[EnhanceService] ❌ Error generating enhanced content:', errorMsg);
+    return { content: null, fromCache: false, error: errorMsg };
   }
 }
 
