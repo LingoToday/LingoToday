@@ -683,6 +683,8 @@ export class ApiClient {
     error?: string;
   }> {
     const authToken = await this.getAuthToken();
+    console.log('[ApiClient.enhance] Auth token present:', !!authToken, authToken ? `(${authToken.substring(0, 20)}...)` : '');
+    console.log('[ApiClient.enhance] API_BASE_URL:', API_BASE_URL);
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -691,6 +693,9 @@ export class ApiClient {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
     
+    console.log('[ApiClient.enhance] Making request to:', `${API_BASE_URL}/api/lessons/enhance`);
+    console.log('[ApiClient.enhance] Request body:', JSON.stringify(data));
+    
     try {
       const response = await fetch(`${API_BASE_URL}/api/lessons/enhance`, {
         method: 'POST',
@@ -698,8 +703,11 @@ export class ApiClient {
         body: JSON.stringify(data),
       });
       
+      console.log('[ApiClient.enhance] Response status:', response.status);
+      
       if (!response.ok) {
         const errorText = await response.text();
+        console.log('[ApiClient.enhance] Error response:', errorText);
         try {
           const errorData = JSON.parse(errorText);
           return { success: false, error: errorData.error || errorData.message || 'Enhancement failed' };
@@ -708,9 +716,11 @@ export class ApiClient {
         }
       }
       
-      return await response.json();
+      const result = await response.json();
+      console.log('[ApiClient.enhance] Success response:', JSON.stringify(result));
+      return result;
     } catch (error) {
-      console.error('Enhancement error:', error);
+      console.error('[ApiClient.enhance] Network/fetch error:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Network error during enhancement' };
     }
   }
