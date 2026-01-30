@@ -523,23 +523,30 @@ export default function LessonScreen() {
       console.log('[Enhancement] === Starting enhancement check ===');
       setDebugInfo(prev => ({ ...prev, status: 'Starting check...' }));
       
-      // Get the first step's note (word_review step) from currentLesson
-      if (!currentLesson?.lesson?.steps) {
-        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No steps found', error: 'currentLesson.lesson.steps is empty' }));
+      // Get step1 data from currentLesson (lesson structure uses step1, step2, etc. as direct properties)
+      if (!currentLesson?.lesson) {
+        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No lesson', error: 'currentLesson.lesson is empty' }));
         return;
       }
       
-      const steps = currentLesson.lesson.steps;
-      const firstStep = Array.isArray(steps) ? steps[0] : null;
-      if (!firstStep) {
-        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No first step', error: 'steps array is empty' }));
+      // Try step1 first (word_review step), then check steps array as fallback
+      const lessonData = currentLesson.lesson as any;
+      let step1Data = lessonData.step1 || lessonData.steps?.step1;
+      
+      // Fallback to steps array if step1 not found
+      if (!step1Data && lessonData.steps) {
+        const stepsArr = Array.isArray(lessonData.steps) ? lessonData.steps : Object.values(lessonData.steps);
+        step1Data = stepsArr[0];
+      }
+      
+      if (!step1Data) {
+        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No step1', error: 'lesson.step1 not found' }));
         return;
       }
       
-      const stepAny = firstStep as any;
-      const note = firstStep?.content?.note || stepAny?.note;
-      const word = firstStep?.content?.word || stepAny?.word;
-      const translation = firstStep?.content?.translation || firstStep?.content?.english || stepAny?.translation || stepAny?.english;
+      const note = step1Data?.content?.note || step1Data?.note;
+      const word = step1Data?.content?.word || step1Data?.word;
+      const translation = step1Data?.content?.translation || step1Data?.content?.english || step1Data?.translation || step1Data?.english;
       
       const currentLessonId = lessonId || `lesson_${Date.now()}`;
       setDebugInfo(prev => ({ 
@@ -574,8 +581,8 @@ export default function LessonScreen() {
           {
             word: word,
             translation: translation || '',
-            example: firstStep?.content?.example || stepAny?.example,
-            exampleTranslation: firstStep?.content?.exampleTranslation || stepAny?.exampleTranslation,
+            example: step1Data?.content?.example || step1Data?.example,
+            exampleTranslation: step1Data?.content?.exampleTranslation || step1Data?.exampleTranslation,
             note: note,
           }
         );
