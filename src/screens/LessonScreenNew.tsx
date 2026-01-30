@@ -144,6 +144,9 @@ export default function LessonScreen() {
   const [tokenStatus, setTokenStatus] = useState<'pending' | 'resolved'>('pending');
   const [useSpeakBackMode, setUseSpeakBackMode] = useState(true);
   const [speakBackResult, setSpeakBackResult] = useState<{ isCorrect: boolean; transcription: string } | null>(null);
+  
+  // Phase 1 sub-step state: 'word' for word intro, 'usage' for when to use
+  const [phase1SubStep, setPhase1SubStep] = useState<'word' | 'usage'>('word');
 
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
@@ -197,6 +200,11 @@ export default function LessonScreen() {
   useEffect(() => {
     typeOptionsCache.current = {};
   }, [lessonId]);
+
+  // Reset phase1SubStep when step changes to ensure word intro always shows first
+  useEffect(() => {
+    setPhase1SubStep('word');
+  }, [currentStep]);
 
   // Check if user came from notification
   useEffect(() => {
@@ -2617,35 +2625,50 @@ export default function LessonScreen() {
                 </>
               )}
 
-              {/* Word Review Step - Updated with speak-back option */}
+              {/* Word Review Step - Split into word intro and when to use screens */}
               {stepData && stepData.type === 'word_review' && (
                 <>
-                  <View style={styles.wordReviewContainer}>
-                    <Text style={styles.wordText}>{stepData.word}</Text>
-                    <Text style={styles.translationLabel}>TRANSLATION</Text>
-                    <Text style={styles.translationText}>{stepData.translation}</Text>
-                    
-                    <TouchableOpacity 
-                      style={[styles.speakButton, isPlayingPronunciation && styles.speakButtonPlaying]}
-                      onPress={() => playOpenAIPronunciation(stepData.word)}
-                      disabled={isPlayingPronunciation}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons name={isPlayingPronunciation ? "volume-high" : "volume-medium"} size={20} color={theme.colors.foreground} />
-                      <Text style={styles.speakButtonText}>{isPlayingPronunciation ? 'Playing...' : 'Pronunciation'}</Text>
-                    </TouchableOpacity>
-                  </View>
-                  
-                  {stepData.note && (
-                    <View style={styles.noteContainer}>
-                      <View style={styles.noteTitleRow}>
-                        <Ionicons name="information-circle-outline" size={20} color={theme.colors.gradientBlue} />
-                        <Text style={styles.noteTitle}>When to use</Text>
-                      </View>
-                      <Text style={styles.noteText}>{stepData.note}</Text>
+                  {/* Screen 1: Word/Phrase Introduction (also shows if usage selected but no note) */}
+                  {(phase1SubStep === 'word' || (phase1SubStep === 'usage' && !stepData.note)) && (
+                    <View style={styles.wordReviewContainer}>
+                      <Text style={styles.wordText}>{stepData.word}</Text>
+                      <Text style={styles.translationLabel}>TRANSLATION</Text>
+                      <Text style={styles.translationText}>{stepData.translation}</Text>
+                      
+                      <TouchableOpacity 
+                        style={[styles.speakButton, isPlayingPronunciation && styles.speakButtonPlaying]}
+                        onPress={() => playOpenAIPronunciation(stepData.word)}
+                        disabled={isPlayingPronunciation}
+                        activeOpacity={0.7}
+                      >
+                        <Ionicons name={isPlayingPronunciation ? "volume-high" : "volume-medium"} size={20} color={theme.colors.foreground} />
+                        <Text style={styles.speakButtonText}>{isPlayingPronunciation ? 'Playing...' : 'Pronunciation'}</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
-
+                  
+                  {/* Screen 2: When to Use (only shown if note exists and on usage sub-step) */}
+                  {phase1SubStep === 'usage' && stepData.note && (
+                    <View style={styles.whenToUseContainer}>
+                      <View style={styles.whenToUseCard}>
+                        <View style={styles.whenToUseHeader}>
+                          <Ionicons name="information-circle" size={24} color={theme.colors.primary} />
+                          <Text style={styles.whenToUseTitle}>When to use</Text>
+                        </View>
+                        <View style={styles.whenToUseDivider} />
+                        <Text style={styles.whenToUseText}>{stepData.note}</Text>
+                      </View>
+                      
+                      {/* Back button to return to word intro */}
+                      <TouchableOpacity 
+                        style={styles.backToWordButton}
+                        onPress={() => setPhase1SubStep('word')}
+                      >
+                        <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
+                        <Text style={styles.backToWordButtonText}>Back</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </>
               )}
 
@@ -3072,10 +3095,23 @@ export default function LessonScreen() {
                 <View style={styles.quizSection}>
                   {!showResult ? (
                     <>
-                      {stepData.type === 'text_tip' || stepData.type === 'word_review' ? (
+                      {stepData.type === 'text_tip' ? (
                         <Button
                           title="Continue"
                           onPress={handleNextStep}
+                          style={styles.submitButton}
+                        />
+                      ) : stepData.type === 'word_review' ? (
+                        <Button
+                          title={phase1SubStep === 'word' && stepData.note ? "Continue" : "Continue to Quick Check"}
+                          onPress={() => {
+                            if (phase1SubStep === 'word' && stepData.note) {
+                              setPhase1SubStep('usage');
+                            } else {
+                              setPhase1SubStep('word');
+                              handleNextStep();
+                            }
+                          }}
                           style={styles.submitButton}
                         />
                       ) : (stepData.type === 'video_choice' || stepData.type === 'pro_video' || stepData.type === 'review_mcq') && useSpeakBackMode && !speakBackResult ? (
@@ -3376,6 +3412,52 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     color: theme.colors.onSurfaceVariant,
     lineHeight: theme.fontSize.sm * 1.5,
+  },
+  
+  // When to Use Card Styles (Phase 1 Sub-step 2)
+  whenToUseContainer: {
+    gap: theme.spacing.lg,
+  },
+  whenToUseCard: {
+    backgroundColor: theme.colors.surfaceContainer,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    gap: theme.spacing.md,
+  },
+  whenToUseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  whenToUseTitle: {
+    fontSize: theme.fontSize.lg,
+    fontWeight: '600' as any,
+    color: theme.colors.foreground,
+  },
+  whenToUseDivider: {
+    height: 1,
+    backgroundColor: theme.colors.outline,
+    marginVertical: theme.spacing.sm,
+  },
+  whenToUseText: {
+    fontSize: theme.fontSize.base,
+    color: theme.colors.onSurfaceVariant,
+    lineHeight: theme.fontSize.base * 1.6,
+  },
+  backToWordButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.surfaceContainer,
+    borderRadius: theme.borderRadius.lg,
+    alignSelf: 'flex-start',
+  },
+  backToWordButtonText: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.foreground,
+    fontWeight: '500' as any,
   },
 
   // Quick Check Specific Styles - Dark theme
