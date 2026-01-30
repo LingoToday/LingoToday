@@ -36,6 +36,7 @@ import { VideoPlayer } from '../components/VideoPlayer';
 import { SpeakBackComponent } from '../components/SpeakBackComponent';
 import { purchaseService } from '../services/purchaseService';
 import { videoPreloadService } from '../services/videoPreloadService';
+import { generateEnhancedContent } from '../services/lessonEnhancementService';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { PRO_PRICING } from '../constants/pricing';
 
@@ -147,6 +148,15 @@ export default function LessonScreen() {
   
   // Phase 1 sub-step state: 'word' for word intro, 'usage' for when to use
   const [phase1SubStep, setPhase1SubStep] = useState<'word' | 'usage'>('word');
+
+  // Enhanced content state for "How to use" screen
+  const [enhancedContent, setEnhancedContent] = useState<{
+    pronunciation: string;
+    genderNote: string;
+    dailyLifeUsage: string;
+    originalNote: string;
+  } | null>(null);
+  const [isLoadingEnhanced, setIsLoadingEnhanced] = useState(false);
 
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
@@ -485,6 +495,58 @@ export default function LessonScreen() {
 
   // Use fallback lesson if API lesson is not available
   const currentLesson = lesson || fallbackLesson;
+
+  // Pre-fetch enhanced content when lesson loads for "How to use" screen
+  useEffect(() => {
+    const fetchEnhancedContent = async () => {
+      // Get the first step's note (word_review step) from currentLesson
+      if (!currentLesson?.lesson?.steps) return;
+      
+      const steps = currentLesson.lesson.steps;
+      const firstStep = Array.isArray(steps) ? steps[0] : null;
+      if (!firstStep) return;
+      
+      const note = firstStep?.content?.note;
+      const word = firstStep?.content?.word;
+      const translation = firstStep?.content?.translation || firstStep?.content?.english;
+      
+      if (!note || note.trim().length === 0 || !word) {
+        console.log('[Enhancement] No note or word found, skipping enhancement');
+        return;
+      }
+
+      if (!language) {
+        console.log('[Enhancement] No language found, skipping enhancement');
+        return;
+      }
+      
+      const currentLessonId = lessonId || `lesson_${Date.now()}`;
+      console.log('[Enhancement] Starting enhancement fetch for:', { language, lessonId: currentLessonId, word });
+      setIsLoadingEnhanced(true);
+      
+      try {
+        const content = await generateEnhancedContent(
+          language,
+          currentLessonId,
+          {
+            word: word,
+            translation: translation || '',
+            example: firstStep?.content?.example,
+            exampleTranslation: firstStep?.content?.exampleTranslation,
+            note: note,
+          }
+        );
+        console.log('[Enhancement] Received content:', content);
+        setEnhancedContent(content);
+      } catch (error) {
+        console.error('[Enhancement] Error fetching enhanced content:', error);
+      } finally {
+        setIsLoadingEnhanced(false);
+      }
+    };
+
+    fetchEnhancedContent();
+  }, [currentLesson, language, lessonId]);
 
   // Helper to normalize asset URLs consistently
   const normalizeAssetUrl = (url: string, stepNumber?: number): string => {
@@ -2647,13 +2709,44 @@ export default function LessonScreen() {
                     </View>
                   )}
                   
-                  {/* Screen 2: When to Use (only shown if note exists and on usage sub-step) */}
+                  {/* Screen 2: How to Use (only shown if note exists and on usage sub-step) */}
                   {phase1SubStep === 'usage' && stepData.note && (
                     <View style={styles.whenToUseContainer}>
                       <View style={styles.whenToUseCard}>
-                        <Text style={styles.whenToUseTitleCentered}>When to use</Text>
+                        <Text style={styles.whenToUseTitleCentered}>How to use</Text>
                         <View style={styles.whenToUseDivider} />
-                        <Text style={styles.whenToUseTextCentered}>{stepData.note}</Text>
+                        
+                        {isLoadingEnhanced ? (
+                          <View style={styles.enhancedLoadingContainer}>
+                            <ActivityIndicator size="small" color={theme.colors.primary} />
+                            <Text style={styles.enhancedLoadingText}>Generating tips...</Text>
+                          </View>
+                        ) : enhancedContent ? (
+                          <View style={styles.enhancedContentContainer}>
+                            {enhancedContent.pronunciation && (
+                              <View style={styles.enhancedSection}>
+                                <Text style={styles.enhancedSectionLabel}>Pronunciation</Text>
+                                <Text style={styles.whenToUseTextCentered}>{enhancedContent.pronunciation}</Text>
+                              </View>
+                            )}
+                            
+                            {enhancedContent.genderNote && (
+                              <View style={styles.enhancedSection}>
+                                <Text style={styles.enhancedSectionLabel}>Male / Female</Text>
+                                <Text style={styles.whenToUseTextCentered}>{enhancedContent.genderNote}</Text>
+                              </View>
+                            )}
+                            
+                            {enhancedContent.dailyLifeUsage && (
+                              <View style={styles.enhancedSection}>
+                                <Text style={styles.enhancedSectionLabel}>Daily Life Usage</Text>
+                                <Text style={styles.whenToUseTextCentered}>{enhancedContent.dailyLifeUsage}</Text>
+                              </View>
+                            )}
+                          </View>
+                        ) : (
+                          <Text style={styles.whenToUseTextCentered}>{stepData.note}</Text>
+                        )}
                       </View>
                     </View>
                   )}
@@ -3443,6 +3536,30 @@ const styles = StyleSheet.create({
     color: theme.colors.onSurfaceVariant,
     lineHeight: theme.fontSize.base * 1.6,
     textAlign: 'center' as any,
+  },
+  enhancedLoadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing.lg,
+    gap: theme.spacing.sm,
+  },
+  enhancedLoadingText: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.onSurfaceVariant,
+  },
+  enhancedContentContainer: {
+    gap: theme.spacing.md,
+  },
+  enhancedSection: {
+    gap: theme.spacing.xs,
+  },
+  enhancedSectionLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: '600' as any,
+    color: theme.colors.primary,
+    textAlign: 'center' as any,
+    textTransform: 'uppercase' as any,
+    letterSpacing: 0.5,
   },
   backToWordButton: {
     flexDirection: 'row',
