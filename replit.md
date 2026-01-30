@@ -41,12 +41,13 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **expo-secure-store**: Secure credential storage.
 
 ## Recent Changes (Jan 30, 2026)
-**Lesson Step 1 Screen Split**: Split Phase 1 (Word Review) into two separate screens for better UX:
+**Lesson Step 1 Screen Split**: Split Phase 1 (Word Review) into two separate screens for better UX in `LessonScreenNew.tsx`:
 - **Screen 1 - Word/Phrase Introduction**: Shows the lesson word/phrase, translation label, and pronunciation button only
-- **Screen 2 - When to Use**: Displays usage notes in a nicely formatted dark card with header, divider, and readable text styling
-- **Conditional Skip**: If `lesson.content.note` is empty/undefined, the "When to use" screen is skipped and user proceeds directly to Phase 2 (Quick Check)
-- **Navigation**: Added back button on "When to use" screen to return to word intro; navigation from Phase 2 back to Phase 1 resets to word intro screen
-- **New Component**: `phase1SubStep` state manages sub-step navigation ('word' | 'usage')
+- **Screen 2 - When to Use**: Displays usage notes in a nicely formatted card with header, divider, and readable text styling
+- **Conditional Skip**: If `stepData.note` is empty/undefined, the "When to use" screen is skipped and user proceeds directly to Step 2 (Quick Check)
+- **Navigation**: Added back button on "When to use" screen to return to word intro; state resets when navigating between steps via useEffect on currentStep
+- **State Management**: `phase1SubStep` state manages sub-step navigation ('word' | 'usage') with proper reset on step changes
+- **Fallback Guard**: If usage screen is selected but no note exists, word intro is shown instead
 
 ## Previous Changes (Jan 27, 2026)
 **OpenAI TTS Pronunciation Integration**: Upgraded pronunciation feature to use OpenAI's TTS API for more natural-sounding audio:
