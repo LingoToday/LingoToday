@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     color: '#1d4ed8',
   },
   translationText: {
-    fontSize: theme.fontSize.xl,
+    fontSize: theme.fontSize['3xl'],
     color: '#1e40af',
   },
   speakButton: {
