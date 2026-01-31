@@ -86,10 +86,34 @@ export async function generateEnhancedContent(
       return { content: null, fromCache: false, error: errorMsg, httpStatus: response.httpStatus };
     }
     
+    // Helper to safely convert any value to string
+    const toStringValue = (value: any): string => {
+      if (!value) return '';
+      if (typeof value === 'string') return value;
+      if (typeof value === 'object') {
+        // Handle objects with common keys from backend
+        const parts: string[] = [];
+        if (value.scenario) parts.push(value.scenario);
+        if (value.example) parts.push(`Example: ${value.example}`);
+        if (value.male) parts.push(`Male: ${value.male}`);
+        if (value.female) parts.push(`Female: ${value.female}`);
+        if (value.formal) parts.push(`Formal: ${value.formal}`);
+        if (value.informal) parts.push(`Informal: ${value.informal}`);
+        if (value.text) parts.push(value.text);
+        if (value.phonetic) parts.push(value.phonetic);
+        // If no recognized keys, stringify the whole thing
+        if (parts.length === 0) {
+          return JSON.stringify(value);
+        }
+        return parts.join('\n\n');
+      }
+      return String(value);
+    };
+
     const enhancedContent: EnhancedContent = {
-      pronunciation: response.enhancedContent.pronunciation || '',
-      genderNote: response.enhancedContent.genderNote || '',
-      dailyLifeUsage: response.enhancedContent.dailyLifeUsage || '',
+      pronunciation: toStringValue(response.enhancedContent.pronunciation),
+      genderNote: toStringValue(response.enhancedContent.genderNote),
+      dailyLifeUsage: toStringValue(response.enhancedContent.dailyLifeUsage),
       originalNote: lessonInfo.note,
     };
 
