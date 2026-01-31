@@ -40,7 +40,15 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Jan 30, 2026)
+## Recent Changes (Jan 31, 2026)
+**AI-Enhanced "How to Use" - UX Improvement**: Removed loading spinner to improve user experience:
+- **No More "Generating tips..." Spinner**: Users now see the original note immediately instead of a loading spinner
+- **Silent Enhancement**: Enhanced content loads in the background and replaces original note when ready
+- **Pre-fetch On Lesson Load**: Content is fetched when lesson screen mounts (step 1), not when user reaches "How to use" screen
+- **Fallback**: If enhanced content isn't ready, original note displays; content upgrades seamlessly when available
+- **Backend Database Caching Required**: For instant tips across all users, the backend at www.lingotoday.co needs to implement database storage for enhanced content (check cache first, generate with OpenAI if not found, store for reuse)
+
+## Previous Changes (Jan 30, 2026)
 **AI-Enhanced "How to Use" Content**: Enhanced the "When to Use" screen with AI-generated content via backend API:
 - **Backend Endpoint**: New `POST /api/lessons/enhance` endpoint required - accepts `{ language, lessonId, word, translation, example?, exampleTranslation?, note }`, returns `{ success, enhancedContent: { pronunciation, genderNote, dailyLifeUsage } }` using OpenAI GPT
 - **Enhanced Content Sections**: Pronunciation (phonetic spelling for English speakers), Male/Female forms (gender/formal variants), Daily Life Usage (practical examples)

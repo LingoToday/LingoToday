@@ -156,7 +156,6 @@ export default function LessonScreen() {
     dailyLifeUsage: string;
     originalNote: string;
   } | null>(null);
-  const [isLoadingEnhanced, setIsLoadingEnhanced] = useState(false);
   
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
@@ -534,8 +533,6 @@ export default function LessonScreen() {
         return;
       }
       
-      setIsLoadingEnhanced(true);
-      
       try {
         const result = await generateEnhancedContent(
           language,
@@ -554,8 +551,6 @@ export default function LessonScreen() {
         }
       } catch (error) {
         console.error('[Enhancement] Error fetching enhanced content:', error);
-      } finally {
-        setIsLoadingEnhanced(false);
       }
     };
 
@@ -2730,12 +2725,7 @@ export default function LessonScreen() {
                         <Text style={styles.whenToUseTitleCentered}>How to use</Text>
                         <View style={styles.whenToUseDivider} />
                         
-                        {isLoadingEnhanced ? (
-                          <View style={styles.enhancedLoadingContainer}>
-                            <ActivityIndicator size="small" color={theme.colors.primary} />
-                            <Text style={styles.enhancedLoadingText}>Generating tips...</Text>
-                          </View>
-                        ) : enhancedContent ? (
+                        {enhancedContent ? (
                           <View style={styles.enhancedContentContainer}>
                             {enhancedContent.pronunciation && (
                               <View style={styles.enhancedSection}>
@@ -3551,16 +3541,6 @@ const styles = StyleSheet.create({
     color: theme.colors.onSurfaceVariant,
     lineHeight: theme.fontSize.base * 1.6,
     textAlign: 'center' as any,
-  },
-  enhancedLoadingContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing.lg,
-    gap: theme.spacing.sm,
-  },
-  enhancedLoadingText: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.onSurfaceVariant,
   },
   enhancedContentContainer: {
     gap: theme.spacing.md,
