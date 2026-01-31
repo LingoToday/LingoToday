@@ -22,6 +22,40 @@ function getCacheKey(language: string, lessonId: string): string {
   return `${CACHE_KEY_PREFIX}${language}_${lessonId}`;
 }
 
+// Helper to safely convert any value to string (handles backend returning objects instead of strings)
+function toStringValue(value: any): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    // Handle objects with common keys from backend
+    const parts: string[] = [];
+    if (value.scenario) parts.push(value.scenario);
+    if (value.example) parts.push(`Example: ${value.example}`);
+    if (value.male) parts.push(`Male: ${value.male}`);
+    if (value.female) parts.push(`Female: ${value.female}`);
+    if (value.formal) parts.push(`Formal: ${value.formal}`);
+    if (value.informal) parts.push(`Informal: ${value.informal}`);
+    if (value.text) parts.push(value.text);
+    if (value.phonetic) parts.push(value.phonetic);
+    // If no recognized keys, stringify the whole thing
+    if (parts.length === 0) {
+      return JSON.stringify(value);
+    }
+    return parts.join('\n\n');
+  }
+  return String(value);
+}
+
+// Normalize cached content to ensure all fields are strings
+function normalizeCachedContent(cached: any, originalNote?: string): EnhancedContent {
+  return {
+    pronunciation: toStringValue(cached.pronunciation),
+    genderNote: toStringValue(cached.genderNote),
+    dailyLifeUsage: toStringValue(cached.dailyLifeUsage),
+    originalNote: cached.originalNote || originalNote || '',
+  };
+}
+
 export async function getEnhancedContent(
   language: string,
   lessonId: string
@@ -31,7 +65,9 @@ export async function getEnhancedContent(
   try {
     const cached = await AsyncStorage.getItem(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      const parsed = JSON.parse(cached);
+      // Normalize to handle old cached data with object values
+      return normalizeCachedContent(parsed);
     }
   } catch (error) {
     console.warn('Error reading cached enhanced content:', error);
@@ -86,30 +122,6 @@ export async function generateEnhancedContent(
       return { content: null, fromCache: false, error: errorMsg, httpStatus: response.httpStatus };
     }
     
-    // Helper to safely convert any value to string
-    const toStringValue = (value: any): string => {
-      if (!value) return '';
-      if (typeof value === 'string') return value;
-      if (typeof value === 'object') {
-        // Handle objects with common keys from backend
-        const parts: string[] = [];
-        if (value.scenario) parts.push(value.scenario);
-        if (value.example) parts.push(`Example: ${value.example}`);
-        if (value.male) parts.push(`Male: ${value.male}`);
-        if (value.female) parts.push(`Female: ${value.female}`);
-        if (value.formal) parts.push(`Formal: ${value.formal}`);
-        if (value.informal) parts.push(`Informal: ${value.informal}`);
-        if (value.text) parts.push(value.text);
-        if (value.phonetic) parts.push(value.phonetic);
-        // If no recognized keys, stringify the whole thing
-        if (parts.length === 0) {
-          return JSON.stringify(value);
-        }
-        return parts.join('\n\n');
-      }
-      return String(value);
-    };
-
     const enhancedContent: EnhancedContent = {
       pronunciation: toStringValue(response.enhancedContent.pronunciation),
       genderNote: toStringValue(response.enhancedContent.genderNote),
