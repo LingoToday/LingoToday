@@ -158,29 +158,6 @@ export default function LessonScreen() {
   } | null>(null);
   const [isLoadingEnhanced, setIsLoadingEnhanced] = useState(false);
   
-  // Debug info state for troubleshooting enhancement API
-  const [debugInfo, setDebugInfo] = useState<{
-    status: string;
-    apiCalled: boolean;
-    response: string;
-    error: string;
-    lessonId: string;
-    word: string;
-    hasNote: boolean;
-    apiUrl: string;
-    httpStatus: number;
-  }>({
-    status: 'Not started',
-    apiCalled: false,
-    response: '',
-    error: '',
-    lessonId: '',
-    word: '',
-    hasNote: false,
-    apiUrl: '',
-    httpStatus: 0,
-  });
-
   // Video refs for controlling playback
   const videoChoiceRef = useRef<Video>(null);
   const proVideoRef = useRef<Video>(null);
@@ -523,11 +500,9 @@ export default function LessonScreen() {
   useEffect(() => {
     const fetchEnhancedContent = async () => {
       console.log('[Enhancement] === Starting enhancement check ===');
-      setDebugInfo(prev => ({ ...prev, status: 'Starting check...' }));
       
       // Get step1 data from currentLesson (lesson structure uses step1, step2, etc. as direct properties)
       if (!currentLesson?.lesson) {
-        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No lesson', error: 'currentLesson.lesson is empty' }));
         return;
       }
       
@@ -542,7 +517,6 @@ export default function LessonScreen() {
       }
       
       if (!step1Data) {
-        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No step1', error: 'lesson.step1 not found' }));
         return;
       }
       
@@ -551,29 +525,15 @@ export default function LessonScreen() {
       const translation = step1Data?.content?.translation || step1Data?.content?.english || step1Data?.translation || step1Data?.english;
       
       const currentLessonId = lessonId || `lesson_${Date.now()}`;
-      setDebugInfo(prev => ({ 
-        ...prev, 
-        lessonId: currentLessonId,
-        word: word || '(none)',
-        hasNote: !!note && note.trim().length > 0,
-      }));
       
       if (!note || note.trim().length === 0 || !word) {
-        setDebugInfo(prev => ({ 
-          ...prev, 
-          status: 'SKIP: Missing data', 
-          error: `note: ${!!note}, word: ${!!word}` 
-        }));
         return;
       }
 
       if (!language) {
-        setDebugInfo(prev => ({ ...prev, status: 'SKIP: No language', error: 'language param missing' }));
         return;
       }
       
-      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 'https://www.lingotoday.co';
-      setDebugInfo(prev => ({ ...prev, status: 'Calling API...', apiCalled: true, apiUrl: apiBaseUrl }));
       setIsLoadingEnhanced(true);
       
       try {
@@ -590,29 +550,10 @@ export default function LessonScreen() {
         );
         
         if (result.content) {
-          setDebugInfo(prev => ({ 
-            ...prev, 
-            status: result.fromCache ? 'CACHED' : 'SUCCESS', 
-            response: JSON.stringify(result.content).substring(0, 200),
-            error: '',
-            httpStatus: result.httpStatus || 200,
-          }));
           setEnhancedContent(result.content);
-        } else {
-          setDebugInfo(prev => ({ 
-            ...prev, 
-            status: result.fromCache ? 'CACHED (empty)' : `API Error (${result.httpStatus || 'unknown'})`, 
-            error: result.error || 'No content returned',
-            httpStatus: result.httpStatus || 0,
-          }));
         }
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        setDebugInfo(prev => ({ 
-          ...prev, 
-          status: 'ERROR', 
-          error: errorMsg,
-        }));
+        console.error('[Enhancement] Error fetching enhanced content:', error);
       } finally {
         setIsLoadingEnhanced(false);
       }
@@ -2822,23 +2763,6 @@ export default function LessonScreen() {
                         )}
                       </View>
                       
-                      {/* DEBUG PANEL - Remove after troubleshooting */}
-                      <View style={styles.debugPanel}>
-                        <Text style={styles.debugTitle}>DEBUG INFO</Text>
-                        <Text style={styles.debugText}>Status: {debugInfo.status}</Text>
-                        <Text style={styles.debugText}>HTTP Status: {debugInfo.httpStatus || '(none)'}</Text>
-                        <Text style={styles.debugText}>API Called: {debugInfo.apiCalled ? 'YES' : 'NO'}</Text>
-                        <Text style={styles.debugText}>API URL: {debugInfo.apiUrl || '(not set)'}</Text>
-                        <Text style={styles.debugText}>LessonId: {debugInfo.lessonId || '(none)'}</Text>
-                        <Text style={styles.debugText}>Word: {debugInfo.word || '(none)'}</Text>
-                        <Text style={styles.debugText}>Has Note: {debugInfo.hasNote ? 'YES' : 'NO'}</Text>
-                        {debugInfo.error ? (
-                          <Text style={styles.debugError}>Error: {debugInfo.error}</Text>
-                        ) : null}
-                        {debugInfo.response ? (
-                          <Text style={styles.debugSuccess}>Response: {debugInfo.response.substring(0, 100)}...</Text>
-                        ) : null}
-                      </View>
                     </View>
                   )}
                 </>
@@ -3668,38 +3592,6 @@ const styles = StyleSheet.create({
     fontWeight: '500' as any,
   },
   
-  // Debug panel styles - temporary for troubleshooting
-  debugPanel: {
-    marginTop: theme.spacing.lg,
-    padding: theme.spacing.md,
-    backgroundColor: 'rgba(255, 100, 100, 0.1)',
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 100, 100, 0.3)',
-  },
-  debugTitle: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: '700' as any,
-    color: '#ff6b6b',
-    marginBottom: theme.spacing.sm,
-    textAlign: 'center' as any,
-  },
-  debugText: {
-    fontSize: theme.fontSize.xs,
-    color: theme.colors.mutedForeground,
-    marginBottom: 2,
-  },
-  debugError: {
-    fontSize: theme.fontSize.xs,
-    color: '#ff6b6b',
-    marginTop: theme.spacing.xs,
-  },
-  debugSuccess: {
-    fontSize: theme.fontSize.xs,
-    color: theme.colors.primary,
-    marginTop: theme.spacing.xs,
-  },
-
   // Quick Check Specific Styles - Dark theme
   quickCheckHeader: {
     gap: theme.spacing.sm,
