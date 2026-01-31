@@ -6,7 +6,7 @@ export default ({ config }) => {
       // API Base URL - injected from environment variables
       // For local dev: Set in app.json extra section
       // For EAS builds: Set via EAS Secrets (eas secret:create)
-      apiBaseUrl: process.env.PRODUCTION_API_URL || config.extra?.apiBaseUrl || 'https://lingotoday.replit.app',
+      apiBaseUrl: process.env.PRODUCTION_API_URL || config.extra?.apiBaseUrl || 'https://www.lingotoday.co',
       // RevenueCat API keys - injected from environment variables
       // For local dev: Set in app.json extra section
       // For EAS builds: Set via EAS Secrets (eas secret:create)

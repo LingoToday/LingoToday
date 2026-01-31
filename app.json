@@ -72,7 +72,7 @@
     "scheme": "lingotoday",
     "sdkVersion": "54.0.0",
     "extra": {
-      "apiBaseUrl": "https://lingotoday.replit.app",
+      "apiBaseUrl": "https://www.lingotoday.co",
       "eas": {
         "projectId": "b5c4ecbe-0f0f-4f0f-8f8e-b155460d2f03"
       }

@@ -22,7 +22,7 @@ export const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }): Promise
     throw new Error('Invalid query key');
   }
   
-  const API_BASE_URL = Constants?.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
+  const API_BASE_URL = Constants?.expoConfig?.extra?.apiBaseUrl || 'https://www.lingotoday.co';
   const response = await fetch(`${API_BASE_URL}${url}`);
   
   if (!response.ok) {

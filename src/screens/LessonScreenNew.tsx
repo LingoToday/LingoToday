@@ -572,7 +572,7 @@ export default function LessonScreen() {
         return;
       }
       
-      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
+      const apiBaseUrl = Constants.expoConfig?.extra?.apiBaseUrl || 'https://www.lingotoday.co';
       setDebugInfo(prev => ({ ...prev, status: 'Calling API...', apiCalled: true, apiUrl: apiBaseUrl }));
       setIsLoadingEnhanced(true);
       
