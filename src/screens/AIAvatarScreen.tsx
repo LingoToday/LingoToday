@@ -67,8 +67,6 @@ const buildSessionContext = (
   };
   const targetLanguageName = languageNames[languageCode] || language;
 
-  const isConversationMode = reviewPhrases.length === 0;
-
   const reviewItems = reviewPhrases.map((phrase, index) => ({
     id: `r${index + 1}`,
     prompt_en: phrase,
@@ -84,24 +82,22 @@ const buildSessionContext = (
       level: level || 'beginner',
       course: courseTitle || 'Language Practice',
       lesson: lessonTitle || 'Review Session',
-      review_type: isConversationMode ? 'conversation' : 'recall_translation'
+      review_type: 'recall_translation'
     },
     session_rules: {
       duration_seconds: SESSION_HARD_LIMIT,
       target_seconds: SESSION_SOFT_LIMIT,
-      topic_strict: !isConversationMode,
-      redirect_line: isConversationMode
-        ? "Let's continue our conversation practice."
-        : "Let's get back to practising the phrases from this lesson."
+      topic_strict: true,
+      redirect_line: "Let's get back to practising the phrases from this lesson."
     },
-    review_items: isConversationMode ? [
+    review_items: reviewItems.length > 0 ? reviewItems : [
       {
-        id: 'c1',
-        prompt_en: 'Conversation Practice',
+        id: 'r1',
+        prompt_en: 'Practice conversation',
         expected_target: [],
-        notes: `Conduct a natural conversation practice in ${targetLanguageName}. Start by greeting the user and asking a simple question appropriate for ${level} level. Correct mistakes gently.`
+        notes: `Have a simple conversation practice in ${targetLanguageName}. Ask basic questions appropriate for the user's level.`
       }
-    ] : reviewItems
+    ]
   };
 };
 
@@ -579,33 +575,6 @@ function DirectAudioController({
       }
     };
 
-    // Check for existing tracks on mount
-    const checkExistingTracks = () => {
-      if (!room) return;
-      console.log('[AIAvatar] DirectAudioController: Checking existing remote tracks...');
-
-      let found = false;
-      room.remoteParticipants.forEach((participant: any) => {
-        participant.audioTrackPublications.forEach((pub: any) => {
-          if (pub.track) {
-            console.log('[AIAvatar] DirectAudioController: Found existing remote audio track:', pub.trackSid);
-            audioTrackRef.current = {
-              track: pub.track,
-              publication: pub,
-              participant: participant
-            };
-            found = true;
-          }
-        });
-      });
-
-      if (found) {
-        setHasAudioTrack(true);
-      }
-    };
-
-    checkExistingTracks();
-
     // Attach listeners
     room.on('trackSubscribed', handleTrackSubscribed);
     room.on('trackUnsubscribed', handleTrackUnsubscribed);
@@ -621,22 +590,11 @@ function DirectAudioController({
 
   // Build 18a: Log only, no AudioTrack render yet
   // Build 18b will add: renderAudio && hasAudioTrack && <AudioTrack />
-  const { AudioTrack } = modules || {};
-
   return (
     <View style={styles.directAudioStatus}>
       <Text style={styles.directAudioText}>
         {hasAudioTrack ? '🔊 Audio track ready' : '⏳ Waiting for audio...'}
       </Text>
-      {renderAudio && hasAudioTrack && audioTrackRef.current && AudioTrack && (
-        <View style={{ height: 1, width: 1, overflow: 'hidden' }}>
-          <AudioTrack trackRef={{
-            participant: audioTrackRef.current.participant,
-            publication: audioTrackRef.current.publication,
-            source: audioTrackRef.current.publication.source
-          }} />
-        </View>
-      )}
     </View>
   );
 }
@@ -1300,14 +1258,18 @@ function VoiceLoopController({
           console.log('[AIAvatar] >>> User stopped speaking');
           setAvatarState('processing');
 
-          // Build 26: Send stop_listening IMMEDIATELY on VAD end.
-          // Do not wait for transcription. This triggers the avatar to respond.
-          // Clear any existing fallback timer just in case
+          // Build 25: Set up fallback timer - if transcription_ended doesn't arrive in 3s, send stop_listening anyway
+          // This prevents deadlock if transcription fails or is delayed
           if (fallbackTimerRef.current) {
             clearTimeout(fallbackTimerRef.current);
-            fallbackTimerRef.current = null;
           }
-          sendStopListeningCommand('user.speak_ended');
+          fallbackTimerRef.current = setTimeout(() => {
+            if (!stopListeningSentRef.current) {
+              console.log('[AIAvatar] >>> Fallback: transcription_ended not received in 3s, sending stop_listening...');
+              sendStopListeningCommand('fallback_timeout');
+              stopListeningSentRef.current = true;
+            }
+          }, 3000);
         } else if (evt === 'avatar.speak_started') {
           console.log('[AIAvatar] >>> Avatar started speaking');
           setAvatarState('speaking');
@@ -1408,30 +1370,6 @@ function MicController({
         console.log('[AIAvatar] MicController: AudioSession available, starting...');
         const startAudioSession = async () => {
           try {
-            // Configure audio session for voice chat (playAndRecord)
-            // This is CRITICAL for the mic to work while hearing audio
-            await modules.AudioSession.configureAudio({
-              android: {
-                preferredOutputList: ['earpiece', 'speaker', 'headset', 'bluetooth'],
-                audioTypeOptions: {
-                  manageAudioFocus: true,
-                  audioMode: 'inCommunication',
-                  audioFocusMode: 'gain',
-                  audioAttributesUsageType: 'voiceCommunication',
-                  audioAttributesContentType: 'speech',
-                  audioStreamType: 'voiceCall',
-                  forceHandleAudioRouting: true
-                }
-              },
-              ios: {
-                defaultOutput: 'speaker',
-                audioCategory: 'playAndRecord',
-                audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP', 'mixWithOthers', 'defaultToSpeaker'],
-                audioMode: 'videoChat'
-              }
-            });
-            console.log('[AIAvatar] MicController: AudioSession configured');
-
             await modules.AudioSession.startAudioSession();
             console.log('[AIAvatar] MicController: AudioSession STARTED successfully');
             setAudioSessionStarted(true);
@@ -1702,7 +1640,7 @@ function MinimalLiveKitContent({
           )}
           {/* Build 18a: Direct audio via room events - avoids useTracks crash */}
           {enableDirectAudio && modules && (
-            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={true} />
+            <DirectAudioController modules={modules} isConnected={isConnected} renderAudio={false} />
           )}
           {/* Build 19c: Voice loop controller with debug telemetry */}
           {enableDataChannel && modules && (

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as SecureStore from 'expo-secure-store';
 import { theme } from '../lib/theme';
 import { Card, CardContent } from '../components/ui/Card';
-import { AuthContext } from '../contexts/AuthContext';
 
 const SECRET_TAP_COUNT = 5;
 const SECRET_TAP_TIMEOUT = 3000;
@@ -27,7 +26,6 @@ type NavigationProp = NativeStackNavigationProp<any>;
 
 export default function AIChatScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { user } = useContext(AuthContext)!;
   const { width } = useWindowDimensions();
   const isSmallScreen = width < 768;
 
@@ -77,11 +75,11 @@ export default function AIChatScreen() {
             {
               text: 'Start Session',
               onPress: () => navigation.navigate('AIAvatar', {
-                language: user?.selectedLanguage || 'German',
-                level: user?.selectedLevel || 'beginner',
-                courseTitle: 'General Practice',
-                lessonTitle: 'Conversation',
-                reviewPhrases: user?.reviewPhrases || [],
+                language: 'Italian',
+                level: 'beginner',
+                courseTitle: 'Essential Greetings',
+                lessonTitle: 'Hello and Goodbye',
+                reviewPhrases: ['Ciao', 'Buongiorno', 'Arrivederci'],
               })
             },
             {
@@ -122,11 +120,11 @@ export default function AIChatScreen() {
           {
             text: 'Start Session',
             onPress: () => navigation.navigate('AIAvatar', {
-              language: user?.selectedLanguage || 'German',
-              level: user?.selectedLevel || 'beginner',
-              courseTitle: 'General Practice',
-              lessonTitle: 'Conversation',
-              reviewPhrases: [],
+              language: 'Italian',
+              level: 'beginner',
+              courseTitle: 'Essential Greetings',
+              lessonTitle: 'Hello and Goodbye',
+              reviewPhrases: ['Ciao', 'Buongiorno', 'Arrivederci'],
             })
           }
         ]
