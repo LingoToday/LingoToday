@@ -208,15 +208,14 @@ export default function LessonModal({
 
   const handleCompleteLesson = () => {
     const completedCount = completedPhases.size;
-    const score = Math.round((completedCount / 4) * 100);
+    const score = Math.round((completedCount / 3) * 100);
     completeLessonMutation.mutate(score);
   };
 
   const canNavigateToPhase = (phase: Phase) => {
     if (phase === 1) return true;
     if (phase === 2) return completedPhases.has(1);
-    if (phase === 3) return completedPhases.has(1) && completedPhases.has(2);
-    if (phase === 4) return completedPhases.has(1) && completedPhases.has(2) && completedPhases.has(3);
+    if (phase === 4) return completedPhases.has(1) && completedPhases.has(2);
     return false;
   };
 
@@ -246,7 +245,7 @@ export default function LessonModal({
   // Render phases - matching web structure exactly
   const renderPhase1WordIntro = () => (
     <View style={styles.phaseContainer}>
-      <Text style={styles.phaseTitle}>Phase 1 — Word Review</Text>
+      <Text style={styles.phaseTitle}>Step 1 — Word Review</Text>
       
       {/* Word Introduction */}
       <View style={styles.wordIntroCard}>
@@ -272,7 +271,7 @@ export default function LessonModal({
 
   const renderPhase1WhenToUse = () => (
     <View style={styles.phaseContainer}>
-      <Text style={styles.phaseTitle}>Phase 1 — How to Use</Text>
+      <Text style={styles.phaseTitle}>Step 1 — How to Use</Text>
       
       {/* How to Use Card - nicely formatted with enhanced content */}
       <ScrollView style={styles.howToUseScrollView} showsVerticalScrollIndicator={false}>
@@ -340,7 +339,7 @@ export default function LessonModal({
 
   const renderPhase2 = () => (
     <View style={styles.phaseContainer}>
-      <Text style={styles.phaseTitle}>Phase 2 — Quick Check</Text>
+      <Text style={styles.phaseTitle}>Step 2 — Quick Check</Text>
       
       <Text style={styles.questionText}>
         {lesson.quiz?.question || `Which phrase means "${lesson.content.translation}"?`}
@@ -410,10 +409,10 @@ export default function LessonModal({
         ) : (
           <Button
             style={[styles.continueButton, !phase2Correct && styles.continueButtonDisabled]}
-            onPress={() => phase2Correct && setCurrentPhase(3)}
+            onPress={() => phase2Correct && setCurrentPhase(4)}
             disabled={!phase2Correct}
           >
-            <Text style={styles.continueButtonText}>Continue to Typing Practice</Text>
+            <Text style={styles.continueButtonText}>Continue to Listening</Text>
             <Ionicons name="arrow-forward" size={16} color="#ffffff" />
           </Button>
         )}
@@ -496,7 +495,7 @@ export default function LessonModal({
 
   const renderPhase4 = () => (
     <View style={styles.phaseContainer}>
-      <Text style={styles.phaseTitle}>Phase 4 — Listening & Contextual Application</Text>
+      <Text style={styles.phaseTitle}>Step 3 — Listening & Contextual Application</Text>
       
       {/* Audio Context */}
       <View style={styles.listeningCard}>
@@ -565,10 +564,10 @@ export default function LessonModal({
       <View style={styles.buttonRow}>
         <Button
           style={styles.backButton}
-          onPress={() => setCurrentPhase(3)}
+          onPress={() => setCurrentPhase(2)}
         >
           <Ionicons name="arrow-back" size={16} color={theme.colors.foreground} />
-          <Text style={styles.backButtonText}>Back to Typing Practice</Text>
+          <Text style={styles.backButtonText}>Back to Quick Check</Text>
         </Button>
         
         {!showPhase4Result ? (
@@ -615,7 +614,7 @@ export default function LessonModal({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.phaseNavigationContent}
           >
-            {[1, 2, 3, 4].map((phase) => (
+            {[1, 2, 4].map((phase, index) => (
               <TouchableOpacity
                 key={phase}
                 onPress={() => canNavigateToPhase(phase as Phase) && setCurrentPhase(phase as Phase)}
@@ -636,7 +635,7 @@ export default function LessonModal({
                       currentPhase === phase && styles.phaseNavNumberActive,
                       !canNavigateToPhase(phase as Phase) && styles.phaseNavNumberDisabled,
                     ]}>
-                      {phase}
+                      {index + 1}
                     </Text>
                   )}
                   <Text style={[
@@ -647,7 +646,6 @@ export default function LessonModal({
                   ]}>
                     {phase === 1 && 'Word Review'}
                     {phase === 2 && 'Quick Check'}
-                    {phase === 3 && 'Typing Practice'}
                     {phase === 4 && 'Listening & Context'}
                   </Text>
                 </View>
@@ -660,7 +658,6 @@ export default function LessonModal({
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {currentPhase === 1 && renderPhase1()}
           {currentPhase === 2 && renderPhase2()}
-          {currentPhase === 3 && renderPhase3()}
           {currentPhase === 4 && renderPhase4()}
         </ScrollView>
       </SafeAreaView>
