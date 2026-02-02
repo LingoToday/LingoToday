@@ -51,6 +51,11 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **Updated Flow**: Lessons now show only non-typing steps (typically 3 steps instead of 4)
 - **Files Modified**: `src/screens/LessonScreenNew.tsx`
 
+**Video Playback Fix - Play Once**: Fixed video auto-looping on lesson steps:
+- **Change**: Set `isLooping={false}` for video player in lesson steps
+- **Behavior**: Videos now play once and stop; users can replay using native controls if needed
+- **Files Modified**: `src/screens/LessonScreenNew.tsx`
+
 ## Previous Changes (Jan 31, 2026)
 **AI-Enhanced "How to Use" - UX Improvement**: Removed loading spinner to improve user experience:
 - **No More "Generating tips..." Spinner**: Users now see the original note immediately instead of a loading spinner
