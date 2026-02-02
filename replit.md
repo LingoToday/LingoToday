@@ -40,7 +40,16 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Jan 31, 2026)
+## Recent Changes (Feb 02, 2026)
+**Removed Fill-the-Gap Step from Lessons**: Simplified lesson flow by hiding the typing practice step:
+- **Step Removed**: Phase 3 (Typing Practice / "Fill in the missing letters") is now hidden from all lessons
+- **Updated Flow**: Lessons now have 3 steps: Step 1 (Word Review), Step 2 (Quick Check), Step 3 (Listening & Context)
+- **Navigation Adjusted**: Phase 2 now transitions directly to Phase 4 (displayed as Step 3)
+- **Scoring Updated**: Lesson completion scoring now based on 3 phases instead of 4
+- **UI Labels**: Step titles changed from "Phase X" to "Step X" for consistency
+- **Files Modified**: `src/components/LessonModal.tsx`
+
+## Previous Changes (Jan 31, 2026)
 **AI-Enhanced "How to Use" - UX Improvement**: Removed loading spinner to improve user experience:
 - **No More "Generating tips..." Spinner**: Users now see the original note immediately instead of a loading spinner
 - **Silent Enhancement**: Enhanced content loads in the background and replaces original note when ready
