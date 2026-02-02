@@ -2243,6 +2243,7 @@ export default function LessonScreen() {
                     useNativeControls
                     resizeMode={ResizeMode.CONTAIN}
                     shouldPlay={true}
+                    isLooping={false}
                     isMuted={false}
                   />
                 )}
@@ -2347,6 +2348,7 @@ export default function LessonScreen() {
                         useNativeControls
                         resizeMode={ResizeMode.CONTAIN}
                         shouldPlay={true}
+                        isLooping={false}
                         onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
                       />
                     )}
@@ -2391,6 +2393,7 @@ export default function LessonScreen() {
                         useNativeControls
                         resizeMode={ResizeMode.CONTAIN}
                         shouldPlay={true}
+                        isLooping={false}
                         onPlaybackStatusUpdate={handleVideoPlaybackStatusUpdate}
                       />
                     )}
