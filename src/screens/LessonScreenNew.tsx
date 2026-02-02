@@ -676,24 +676,36 @@ export default function LessonScreen() {
       return 1;
     }
     
-    // Handle steps array format (new database structure)
+    // Handle steps array format (new database structure) - exclude typing steps
     if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
-      return currentLesson.lesson.steps.length;
+      const nonTypingSteps = currentLesson.lesson.steps.filter((step: any) => step.stepType !== 'typing');
+      return nonTypingSteps.length;
     }
     
-    // Handle steps object format (named keys like word_review, typing, etc.)
+    // Handle steps object format (named keys like word_review, typing, etc.) - exclude typing steps
     if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
-      const stepKeys = Object.keys(currentLesson.lesson.steps);
+      const stepKeys = Object.keys(currentLesson.lesson.steps).filter(key => {
+        if (key === 'typing') return false; // Skip key named 'typing'
+        // Also check stepType property in case typing step has a different key name
+        const stepData = (currentLesson.lesson.steps as any)[key];
+        if (stepData?.stepType === 'typing' || stepData?.type === 'typing') return false;
+        return true;
+      });
       return stepKeys.length;
     }
     
-    // Handle legacy format (step1, step2, step3, step4, step5, etc.)
+    // Handle legacy format (step1, step2, step3, step4, step5, etc.) - exclude typing steps
     if (currentLesson.lesson) {
       let count = 0;
       for (let i = 1; i <= 10; i++) { // Check up to 10 steps
         const stepKey = `step${i}` as keyof typeof currentLesson.lesson;
-        if (currentLesson.lesson[stepKey]) {
-          count++;
+        const stepData = currentLesson.lesson[stepKey] as any;
+        if (stepData) {
+          // Skip typing steps in legacy format (detected by type_prompt or expectedAnswer fields)
+          const isTypingStep = stepData.type_prompt || stepData.expectedAnswer;
+          if (!isTypingStep) {
+            count++;
+          }
         } else {
           break; // Stop counting when we hit a missing step
         }
@@ -987,19 +999,31 @@ export default function LessonScreen() {
         }
         
         console.log(`🔄 Normalized ${normalizedSteps.length} steps`);
-        currentLesson.lesson.steps = normalizedSteps;
+        // Filter out typing steps (fill-the-gap) - they are hidden from the lesson flow
+        const filteredSteps = normalizedSteps.filter((step: any) => step.stepType !== 'typing');
+        console.log(`🔄 After filtering typing steps: ${filteredSteps.length} steps`);
+        currentLesson.lesson.steps = filteredSteps;
       }
 
       // Handle API lessons with steps object (object with named keys)
       if (currentLesson.lesson?.steps && !Array.isArray(currentLesson.lesson.steps)) {
+        // Filter out typing steps from the object format (check key name and stepType)
+        const allStepKeys = Object.keys(currentLesson.lesson.steps);
+        const stepKeys = allStepKeys.filter(key => {
+          if (key === 'typing') return false; // Skip key named 'typing'
+          // Also check stepType property in case typing step has a different key name
+          const stepData = (currentLesson.lesson.steps as any)[key];
+          if (stepData?.stepType === 'typing' || stepData?.type === 'typing') return false;
+          return true;
+        });
+        
         console.log('📋 Steps object detected:', {
-          stepKeys: Object.keys(currentLesson.lesson.steps),
+          stepKeys: stepKeys,
           currentStep,
           totalSteps: getTotalSteps()
         });
         
-        // Get all step keys and match them to step numbers dynamically
-        const stepKeys = Object.keys(currentLesson.lesson.steps);
+        // Get all step keys and match them to step numbers dynamically (typing already filtered)
         const stepKey = stepKeys[currentStep - 1]; // Array is 0-indexed, steps are 1-indexed
         
         console.log(`🔍 Looking for step ${currentStep}, found key: ${stepKey}`);
@@ -1209,7 +1233,9 @@ export default function LessonScreen() {
 
       // Handle API lessons with steps array (new structure from database)
       if (currentLesson.lesson?.steps && Array.isArray(currentLesson.lesson.steps)) {
-        const currentStepData: any = currentLesson.lesson.steps.find((step: any) => step.stepNumber === currentStep);
+        // Filter out typing steps (fill-the-gap) - they are hidden from the lesson flow
+        const nonTypingSteps = currentLesson.lesson.steps.filter((step: any) => step.stepType !== 'typing');
+        const currentStepData: any = nonTypingSteps[currentStep - 1]; // Access by index after filtering
         
         if (currentStepData) {
           // Handle video_choice step type - preserve all options for the renderer
@@ -1583,6 +1609,23 @@ export default function LessonScreen() {
   const stepData = useMemo(() => {
     return getCurrentStepData();
   }, [currentStep, currentLesson, language, courseId, lessonId, userData]);
+
+  // Auto-advance past typing steps (fill-the-gap) - they are hidden from the lesson flow
+  // This is a safety mechanism in case typing steps slip through filtering
+  // Check for 'type' (rendered type) which is 'type' for typing steps
+  useEffect(() => {
+    const isTypingStep = stepData?.type === 'type';
+    if (isTypingStep) {
+      console.log('⏭️ Auto-skipping typing step (fill-the-gap is hidden)');
+      const totalSteps = getTotalSteps();
+      if (currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        // If this was the last step somehow, just complete the lesson
+        setCurrentStep(currentStep + 1);
+      }
+    }
+  }, [stepData?.type, currentStep]);
 
   // Reset speak-back mode to true when arriving at a video_choice, pro_video, or review_mcq step
   useEffect(() => {

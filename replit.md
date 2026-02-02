@@ -41,13 +41,15 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **expo-secure-store**: Secure credential storage.
 
 ## Recent Changes (Feb 02, 2026)
-**Removed Fill-the-Gap Step from Lessons**: Simplified lesson flow by hiding the typing practice step:
-- **Step Removed**: Phase 3 (Typing Practice / "Fill in the missing letters") is now hidden from all lessons
-- **Updated Flow**: Lessons now have 3 steps: Step 1 (Word Review), Step 2 (Quick Check), Step 3 (Listening & Context)
-- **Navigation Adjusted**: Phase 2 now transitions directly to Phase 4 (displayed as Step 3)
-- **Scoring Updated**: Lesson completion scoring now based on 3 phases instead of 4
-- **UI Labels**: Step titles changed from "Phase X" to "Step X" for consistency
-- **Files Modified**: `src/components/LessonModal.tsx`
+**Removed Fill-the-Gap Step from Lessons**: Simplified lesson flow by completely hiding/skipping the typing practice step:
+- **Step Removed**: The "Complete the word" / fill-in-the-gap step is now completely hidden from all lessons
+- **Implementation Approach**: Multi-layered filtering in `LessonScreenNew.tsx`:
+  - **getTotalSteps()**: Filters typing steps for array format (`stepType !== 'typing'`), object format (key name and stepType check), and legacy format (`type_prompt`/`expectedAnswer` detection)
+  - **Step Data Access**: Object and array format step access filters out typing steps before selection
+  - **Legacy Normalization**: Typing steps filtered after normalizing legacy step format
+  - **Auto-Advance Safety**: useEffect auto-advances past any typing step that slips through (`stepData?.type === 'type'`)
+- **Updated Flow**: Lessons now show only non-typing steps (typically 3 steps instead of 4)
+- **Files Modified**: `src/screens/LessonScreenNew.tsx`
 
 ## Previous Changes (Jan 31, 2026)
 **AI-Enhanced "How to Use" - UX Improvement**: Removed loading spinner to improve user experience:
