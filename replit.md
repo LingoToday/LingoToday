@@ -52,8 +52,9 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **Files Modified**: `src/screens/LessonScreenNew.tsx`
 
 **Video Playback Fix - Play Once**: Fixed video auto-looping on lesson steps:
-- **Change**: Set `isLooping={false}` for video player in lesson steps
+- **Change**: Set `isLooping={false}` for all video players in lesson steps
 - **Behavior**: Videos now play once and stop; users can replay using native controls if needed
+- **Pro Videos**: Set `shouldPlay={false}` so pro videos do NOT auto-play; user must tap play button to start
 - **Files Modified**: `src/screens/LessonScreenNew.tsx`
 
 ## Previous Changes (Jan 31, 2026)

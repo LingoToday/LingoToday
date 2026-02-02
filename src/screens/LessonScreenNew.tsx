@@ -2568,7 +2568,7 @@ export default function LessonScreen() {
                         source={getVideoSourceWithAuth(stepData.videoUrl)}
                         useNativeControls={stepData.hasAccess}
                         resizeMode={ResizeMode.CONTAIN}
-                        shouldPlay={true}
+                        shouldPlay={false}
                         isLooping={false}
                         isMuted={!stepData.hasAccess}
                         onPlaybackStatusUpdate={stepData.hasAccess ? handleVideoPlaybackStatusUpdate : undefined}
