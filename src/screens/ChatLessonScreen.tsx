@@ -103,6 +103,18 @@ function PronunciationBubble({ pronunciationHint, phraseText, language }: Pronun
   const [isPlaying, setIsPlaying] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
 
+  const getLanguageName = (lang: string): string => {
+    const langMap: { [key: string]: string } = {
+      'it': 'italian',
+      'es': 'spanish',
+      'fr': 'french',
+      'de': 'german',
+      'en': 'english',
+      'pt': 'portuguese',
+    };
+    return langMap[lang.toLowerCase()] || lang;
+  };
+
   const playPronunciation = async () => {
     if (isPlaying) return;
 
@@ -113,7 +125,8 @@ function PronunciationBubble({ pronunciationHint, phraseText, language }: Pronun
         soundRef.current = null;
       }
 
-      const result = await apiClient.pronounceText(phraseText, language);
+      const languageName = getLanguageName(language);
+      const result = await apiClient.pronounceText(phraseText, languageName);
       
       if (!result.success || !result.audioBase64) {
         console.error('Pronunciation failed:', result.error);
@@ -161,13 +174,23 @@ function PronunciationBubble({ pronunciationHint, phraseText, language }: Pronun
         disabled={isPlaying}
         activeOpacity={0.7}
       >
-        <Ionicons 
-          name={isPlaying ? "volume-high" : "volume-medium-outline"} 
-          size={20} 
-          color={isPlaying ? theme.colors.primary : '#6B9BD2'} 
-          style={styles.pronunciationIcon}
-        />
+        <View style={styles.pronunciationIconContainer}>
+          <Ionicons 
+            name={isPlaying ? "volume-high" : "volume-medium-outline"} 
+            size={18} 
+            color={isPlaying ? theme.colors.primary : '#6B9BD2'} 
+          />
+          {!isPlaying && (
+            <Ionicons 
+              name="play" 
+              size={10} 
+              color="#6B9BD2" 
+              style={styles.playIndicator}
+            />
+          )}
+        </View>
         <Text style={styles.pronunciationText}>{pronunciationHint}</Text>
+        {!isPlaying && <Text style={styles.tapHint}>Tap to hear</Text>}
       </TouchableOpacity>
     </View>
   );
@@ -1297,11 +1320,26 @@ const styles = StyleSheet.create({
   pronunciationIcon: {
     marginRight: theme.spacing.sm,
   },
+  pronunciationIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: theme.spacing.sm,
+  },
+  playIndicator: {
+    marginLeft: -2,
+    marginTop: 6,
+  },
   pronunciationText: {
     color: theme.colors.foreground,
     fontSize: theme.fontSize.base,
     lineHeight: 22,
     fontStyle: 'italic',
+    flex: 1,
+  },
+  tapHint: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.xs,
+    marginLeft: theme.spacing.sm,
   },
   answeredNote: {
     color: theme.colors.mutedForeground,
