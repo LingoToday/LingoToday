@@ -234,10 +234,7 @@ function MCQCard({ question, options, correctAnswer, onAnswer, answered, userAns
               onPress={() => handleSelect(option)}
               disabled={answered}
             >
-              <Text style={[
-                styles.optionText,
-                (showCorrect || (isSelected && !answered)) && styles.optionTextSelected,
-              ]}>
+              <Text style={styles.optionText}>
                 {option}
               </Text>
               {showCorrect && (
@@ -1136,15 +1133,17 @@ const styles = StyleSheet.create({
   },
   optionSelected: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.toggleActive,
+    borderWidth: 2,
   },
   optionCorrect: {
     borderColor: theme.colors.success500,
-    backgroundColor: theme.colors.success50,
+    borderWidth: 2,
+    backgroundColor: 'transparent',
   },
   optionIncorrect: {
     borderColor: theme.colors.destructive,
-    backgroundColor: theme.colors.errorContainer,
+    borderWidth: 2,
+    backgroundColor: 'transparent',
   },
   optionText: {
     color: theme.colors.foreground,
