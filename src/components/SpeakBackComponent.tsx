@@ -434,9 +434,6 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
 
   const renderIdleState = () => (
     <View style={styles.container}>
-      <Text style={styles.promptText}>Say the word or phrase:</Text>
-      <Text style={styles.expectedText}>{expectedAnswer}</Text>
-      
       <TouchableOpacity
         style={[styles.micButton, disabled && styles.micButtonDisabled]}
         onPress={startRecording}
