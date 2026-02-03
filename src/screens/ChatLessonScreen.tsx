@@ -28,6 +28,7 @@ type MessageType =
   | 'translate_back_card'
   | 'speech_card'
   | 'context_card'
+  | 'continue_button'
   | 'feedback_success'
   | 'feedback_error';
 
@@ -345,6 +346,26 @@ function ChatInputBar({ mode, onModeToggle, onSendMessage, disabled }: ChatInput
   );
 }
 
+interface ContinueButtonProps {
+  onContinue: () => void;
+  disabled?: boolean;
+}
+
+function ContinueButton({ onContinue, disabled }: ContinueButtonProps) {
+  return (
+    <View style={styles.continueWrapper}>
+      <TouchableOpacity 
+        style={[styles.continueButton, disabled && styles.continueButtonDisabled]} 
+        onPress={onContinue}
+        disabled={disabled}
+      >
+        <Text style={styles.continueButtonText}>Tap to continue</Text>
+        <Ionicons name="chevron-forward" size={18} color={theme.colors.primaryForeground} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 export default function ChatLessonScreen() {
   const navigation = useNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -355,6 +376,7 @@ export default function ChatLessonScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentMethodIndex, setCurrentMethodIndex] = useState(0);
   const [availableMethods, setAvailableMethods] = useState<string[]>([]);
+  const [waitingForContinue, setWaitingForContinue] = useState(false);
   
   const methodIndexRef = useRef(0);
   const methodsRef = useRef<string[]>([]);
@@ -453,11 +475,26 @@ export default function ChatLessonScreen() {
       });
     }
 
-    setMessages(introMessages);
+    introMessages.push({
+      id: `continue-intro`,
+      type: 'continue_button',
+      content: 'Tap to continue',
+    });
 
-    setTimeout(() => {
+    setMessages(introMessages);
+    setWaitingForContinue(true);
+  };
+
+  const handleContinue = () => {
+    setWaitingForContinue(false);
+    setMessages(prev => prev.filter(msg => msg.type !== 'continue_button'));
+    
+    const phrase = phraseRef.current;
+    const methods = methodsRef.current;
+    
+    if (phrase && methods.length > 0) {
       showNextMethod(phrase, methods, 0);
-    }, 1500);
+    }
   };
 
   const showNextMethod = (phrase: V2Phrase, methods: string[], index: number) => {
@@ -785,6 +822,15 @@ export default function ChatLessonScreen() {
                   </View>
                 );
 
+              case 'continue_button':
+                return (
+                  <ContinueButton
+                    key={message.id}
+                    onContinue={handleContinue}
+                    disabled={!waitingForContinue}
+                  />
+                );
+
               default:
                 return null;
             }
@@ -1107,5 +1153,27 @@ const styles = StyleSheet.create({
   micHint: {
     color: theme.colors.mutedForeground,
     fontSize: theme.fontSize.sm,
+  },
+
+  continueWrapper: {
+    alignItems: 'center',
+    marginVertical: theme.spacing.lg,
+  },
+  continueButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.full,
+    gap: theme.spacing.xs,
+  },
+  continueButtonDisabled: {
+    opacity: 0.5,
+  },
+  continueButtonText: {
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: '600',
   },
 });
