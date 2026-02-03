@@ -30,6 +30,7 @@ type MessageType =
   | 'translate_back_card'
   | 'speech_card'
   | 'context_card'
+  | 'expand_card'
   | 'pronunciation_bubble'
   | 'continue_button'
   | 'feedback_success'
@@ -48,6 +49,7 @@ interface ChatMessage {
   cardType?: 'translateBack' | 'speech' | 'context';
   phraseText?: string;
   language?: string;
+  validation?: string;
 }
 
 interface CoachBubbleProps {
@@ -293,6 +295,88 @@ function GapCard({ prompt, expectedAnswers, onAnswer, answered }: GapCardProps) 
   );
 }
 
+interface ExpandCardProps {
+  prompt: string;
+  options: string[];
+  validation?: string;
+  onAnswer: (answer: string) => void;
+  answered: boolean;
+  selectedOptions?: string[];
+}
+
+function ExpandCard({ prompt, options, validation, onAnswer, answered, selectedOptions = [] }: ExpandCardProps) {
+  const [selected, setSelected] = useState<string[]>(selectedOptions);
+
+  useEffect(() => {
+    if (selectedOptions.length > 0) {
+      setSelected(selectedOptions);
+    }
+  }, [selectedOptions]);
+
+  const handleSelect = (option: string) => {
+    if (answered) return;
+    setSelected(prev => {
+      if (prev.includes(option)) {
+        return prev.filter(o => o !== option);
+      }
+      return [...prev, option];
+    });
+  };
+
+  const handleSubmit = () => {
+    if (answered || selected.length === 0) return;
+    onAnswer(selected.join(', '));
+  };
+
+  return (
+    <View style={styles.interactiveCard}>
+      <Text style={styles.cardPrompt}>{prompt}</Text>
+      <Text style={styles.cardLabel}>Select all that apply:</Text>
+      <View style={styles.optionsContainer}>
+        {options.map((option, index) => {
+          const isSelected = selected.includes(option);
+          const showSelected = answered && isSelected;
+
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.optionButton,
+                isSelected && styles.optionSelected,
+                showSelected && styles.optionCorrect,
+              ]}
+              onPress={() => handleSelect(option)}
+              disabled={answered}
+            >
+              <Text style={styles.optionText}>{option}</Text>
+              {isSelected && !answered && (
+                <Ionicons name="checkmark" size={18} color={theme.colors.accent} />
+              )}
+              {showSelected && (
+                <Ionicons name="checkmark-circle" size={20} color={theme.colors.success500} />
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      {!answered && (
+        <TouchableOpacity 
+          style={[styles.submitButton, selected.length === 0 && styles.submitButtonDisabled]} 
+          onPress={handleSubmit}
+          disabled={selected.length === 0}
+        >
+          <Text style={styles.submitButtonText}>Confirm Selection</Text>
+        </TouchableOpacity>
+      )}
+      {answered && validation && (
+        <View style={styles.validationBox}>
+          <Text style={styles.validationText}>{validation}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
 interface FreeInputCardProps {
   prompt: string;
   expectedAnswers: string[];
@@ -510,14 +594,10 @@ export default function ChatLessonScreen() {
   const loadPhraseData = async () => {
     try {
       setIsLoading(true);
-      const phrases = await apiClient.getV2Phrases({ 
-        language: 'it', 
-        level: 'A1', 
-        track: 'daily_life' 
-      });
+      // Fetch specific phrase 'A15_01' which has expand_prompt and expand_options
+      const phrase = await apiClient.getV2PhraseById('A15_01');
       
-      if (phrases && phrases.length > 0) {
-        const phrase = phrases[0];
+      if (phrase) {
         setCurrentPhrase(phrase);
         buildMethodsFromPhrase(phrase);
       } else {
@@ -548,6 +628,9 @@ export default function ChatLessonScreen() {
     }
     if (phrase.contextVariations && phrase.contextVariations.length > 0) {
       methods.push('context');
+    }
+    if (phrase.expandPrompt && phrase.expandOptions) {
+      methods.push('expand');
     }
 
     setAvailableMethods(methods);
@@ -713,6 +796,21 @@ export default function ChatLessonScreen() {
           }]);
         }
         break;
+
+      case 'expand':
+        if (phrase.expandPrompt && phrase.expandOptions) {
+          addCoachMessage("Now, let's expand on this phrase!");
+          setMessages(prev => [...prev, {
+            id: `expand-${index}`,
+            type: 'expand_card' as const,
+            content: phrase.expandPrompt!,
+            options: phrase.expandOptions!,
+            validation: phrase.expandValidation || undefined,
+            answered: false,
+            userAnswer: '',
+          }]);
+        }
+        break;
     }
   };
 
@@ -818,6 +916,29 @@ export default function ChatLessonScreen() {
         addCoachMessage("Good try! Keep practicing.");
       }
 
+      setTimeout(() => {
+        advanceToNextMethod();
+      }, 1000);
+    }, 500);
+  };
+
+  const handleExpandAnswer = (messageId: string, answer: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, answered: true, userAnswer: answer }
+        : msg
+    ));
+
+    setMessages(prev => [...prev, {
+      id: `user-${Date.now()}`,
+      type: 'user_response',
+      content: `Selected: ${answer}`,
+      isCorrect: true,
+    }]);
+
+    setTimeout(() => {
+      addCoachMessage("Great job exploring new variations! 🎉");
+      
       setTimeout(() => {
         advanceToNextMethod();
       }, 1000);
@@ -950,6 +1071,21 @@ export default function ChatLessonScreen() {
                       answered={message.answered || false}
                       cardType={cardType}
                       language={message.language || phraseRef.current?.language || 'it'}
+                    />
+                  </View>
+                );
+
+              case 'expand_card':
+                const expandSelectedOptions = message.userAnswer ? message.userAnswer.split(', ') : [];
+                return (
+                  <View key={message.id} style={styles.cardWrapper}>
+                    <ExpandCard
+                      prompt={message.content}
+                      options={message.options || []}
+                      validation={message.validation}
+                      onAnswer={(answer) => handleExpandAnswer(message.id, answer)}
+                      answered={message.answered || false}
+                      selectedOptions={expandSelectedOptions}
                     />
                   </View>
                 );
@@ -1180,6 +1316,36 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  submitButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.borderRadius.lg,
+    alignItems: 'center',
+    marginTop: theme.spacing.lg,
+  },
+  submitButtonDisabled: {
+    opacity: 0.5,
+  },
+  submitButtonText: {
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: '600',
+  },
+  validationBox: {
+    backgroundColor: theme.colors.surfaceContainer,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+    marginTop: theme.spacing.lg,
+    borderLeftWidth: 3,
+    borderLeftColor: theme.colors.accent,
+  },
+  validationText: {
+    color: theme.colors.foreground,
+    fontSize: theme.fontSize.sm,
+    lineHeight: 20,
   },
 
   cardLabel: {
