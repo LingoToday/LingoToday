@@ -25,7 +25,9 @@ type MessageType =
   | 'user_response'
   | 'mcq_card'
   | 'gap_card'
+  | 'translate_back_card'
   | 'speech_card'
+  | 'context_card'
   | 'feedback_success'
   | 'feedback_error';
 
@@ -35,9 +37,11 @@ interface ChatMessage {
   content: string;
   options?: string[];
   correctAnswer?: string;
+  expectedAnswers?: string[];
   answered?: boolean;
   userAnswer?: string;
   isCorrect?: boolean;
+  cardType?: 'translateBack' | 'speech' | 'context';
 }
 
 interface CoachBubbleProps {
@@ -56,9 +60,6 @@ function CoachBubble({ content, isPrompt, isFeedback }: CoachBubbleProps) {
 
   return (
     <View style={styles.coachRow}>
-      <View style={styles.coachAvatar}>
-        <Ionicons name="school" size={20} color={theme.colors.primary} />
-      </View>
       <View style={[styles.bubbleBase, getBubbleStyle()]}>
         <Text style={styles.coachText}>{content}</Text>
       </View>
@@ -186,6 +187,108 @@ function GapCard({ prompt, expectedAnswers, onAnswer, answered }: GapCardProps) 
   );
 }
 
+interface FreeInputCardProps {
+  prompt: string;
+  expectedAnswers: string[];
+  onAnswer: (answer: string, isCorrect: boolean) => void;
+  answered: boolean;
+  cardType: 'translateBack' | 'speech' | 'context';
+}
+
+function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }: FreeInputCardProps) {
+  const [inputValue, setInputValue] = useState('');
+  const [inputMode, setInputMode] = useState<'text' | 'mic'>('text');
+  const [isRecording, setIsRecording] = useState(false);
+
+  const handleSubmit = () => {
+    if (!inputValue.trim() || answered) return;
+    const normalizedInput = inputValue.toLowerCase().trim().replace(/[?!.,]/g, '');
+    const isCorrect = expectedAnswers.some(answer => {
+      const normalizedAnswer = answer.toLowerCase().trim().replace(/[?!.,]/g, '');
+      return normalizedAnswer === normalizedInput || 
+             normalizedAnswer.includes(normalizedInput) ||
+             normalizedInput.includes(normalizedAnswer);
+    });
+    onAnswer(inputValue, isCorrect);
+  };
+
+  const handleMicPress = () => {
+    setIsRecording(!isRecording);
+  };
+
+  const getCardTitle = () => {
+    switch (cardType) {
+      case 'translateBack': return 'Translate to Italian:';
+      case 'speech': return 'Say out loud:';
+      case 'context': return 'Respond in Italian:';
+      default: return '';
+    }
+  };
+
+  return (
+    <View style={styles.interactiveCard}>
+      <Text style={styles.cardLabel}>{getCardTitle()}</Text>
+      <Text style={styles.cardPrompt}>{prompt}</Text>
+      
+      <View style={styles.inputModeToggle}>
+        <TouchableOpacity
+          style={[styles.modeButton, inputMode === 'text' && styles.modeButtonActive]}
+          onPress={() => setInputMode('text')}
+          disabled={answered}
+        >
+          <Ionicons name="keypad-outline" size={18} color={inputMode === 'text' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
+          <Text style={[styles.modeButtonText, inputMode === 'text' && styles.modeButtonTextActive]}>Type</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.modeButton, inputMode === 'mic' && styles.modeButtonActive]}
+          onPress={() => setInputMode('mic')}
+          disabled={answered}
+        >
+          <Ionicons name="mic-outline" size={18} color={inputMode === 'mic' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
+          <Text style={[styles.modeButtonText, inputMode === 'mic' && styles.modeButtonTextActive]}>Speak</Text>
+        </TouchableOpacity>
+      </View>
+
+      {inputMode === 'text' ? (
+        <View style={styles.gapInputRow}>
+          <TextInput
+            style={[styles.gapInput, answered && styles.gapInputDisabled]}
+            value={inputValue}
+            onChangeText={setInputValue}
+            placeholder="Type your answer..."
+            placeholderTextColor={theme.colors.mutedForeground}
+            editable={!answered}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          {!answered && (
+            <TouchableOpacity style={styles.gapSubmitButton} onPress={handleSubmit}>
+              <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryForeground} />
+            </TouchableOpacity>
+          )}
+        </View>
+      ) : (
+        <View style={styles.micInputContainer}>
+          <TouchableOpacity 
+            style={[styles.micRecordButton, isRecording && styles.micRecordButtonActive]}
+            onPress={handleMicPress}
+            disabled={answered}
+          >
+            <Ionicons 
+              name={isRecording ? "stop" : "mic"} 
+              size={28} 
+              color={isRecording ? theme.colors.destructive : theme.colors.primary} 
+            />
+          </TouchableOpacity>
+          <Text style={styles.micHintText}>
+            {answered ? 'Answer submitted' : isRecording ? 'Tap to stop...' : 'Tap to record'}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
 interface ChatInputBarProps {
   mode: 'keyboard' | 'mic';
   onModeToggle: () => void;
@@ -300,7 +403,10 @@ export default function ChatLessonScreen() {
     if (phrase.productionGapMask && phrase.productionGapAnswers) {
       methods.push('production_gap');
     }
-    if (phrase.speechPrompt) {
+    if (phrase.translateBackPrompt && phrase.translateBackExpected) {
+      methods.push('translate_back');
+    }
+    if (phrase.speechPrompt && phrase.speechKeywords) {
       methods.push('speech');
     }
     if (phrase.contextVariations && phrase.contextVariations.length > 0) {
@@ -395,10 +501,33 @@ export default function ChatLessonScreen() {
         }
         break;
 
+      case 'translate_back':
+        if (phrase.translateBackPrompt && phrase.translateBackExpected) {
+          const translatePrompt = phrase.translateBackPrompt;
+          const translateExpected = phrase.translateBackExpected;
+          setMessages(prev => [...prev, {
+            id: `translate-${index}`,
+            type: 'translate_back_card' as const,
+            content: translatePrompt,
+            expectedAnswers: translateExpected,
+            cardType: 'translateBack',
+            answered: false,
+          }]);
+        }
+        break;
+
       case 'speech':
-        if (phrase.speechPrompt) {
-          addCoachMessage(phrase.speechPrompt);
-          setInputMode('mic');
+        if (phrase.speechPrompt && phrase.speechKeywords) {
+          const speechPrompt = phrase.speechPrompt;
+          const speechKeywords = phrase.speechKeywords;
+          setMessages(prev => [...prev, {
+            id: `speech-${index}`,
+            type: 'speech_card' as const,
+            content: speechPrompt,
+            expectedAnswers: speechKeywords,
+            cardType: 'speech',
+            answered: false,
+          }]);
         }
         break;
 
@@ -406,7 +535,14 @@ export default function ChatLessonScreen() {
         if (phrase.contextVariations && phrase.contextVariations.length > 0) {
           const variation = phrase.contextVariations[0];
           addCoachMessage(`Scenario: ${variation.scenario}`);
-          addCoachMessage(variation.prompt);
+          setMessages(prev => [...prev, {
+            id: `context-${index}`,
+            type: 'context_card' as const,
+            content: variation.prompt,
+            expectedAnswers: [variation.expected],
+            cardType: 'context',
+            answered: false,
+          }]);
         }
         break;
     }
@@ -480,6 +616,38 @@ export default function ChatLessonScreen() {
       } else {
         const correctAnswer = correctAnswerList[0] || 'the expected answer';
         addCoachMessage(`Close! The answer was "${correctAnswer}".`);
+      }
+
+      setTimeout(() => {
+        advanceToNextMethod();
+      }, 1000);
+    }, 500);
+  };
+
+  const handleFreeInputAnswer = (messageId: string, answer: string, isCorrect: boolean, cardType: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, answered: true, userAnswer: answer, isCorrect }
+        : msg
+    ));
+
+    setMessages(prev => [...prev, {
+      id: `user-${Date.now()}`,
+      type: 'user_response',
+      content: answer,
+      isCorrect,
+    }]);
+
+    setTimeout(() => {
+      if (isCorrect) {
+        const successMessages: Record<string, string> = {
+          translateBack: "Perfect translation! 🎯",
+          speech: "Great pronunciation! 🗣️",
+          context: "Excellent response! 💯",
+        };
+        addCoachMessage(successMessages[cardType] || "Well done! ✓");
+      } else {
+        addCoachMessage("Good try! Keep practicing.");
       }
 
       setTimeout(() => {
@@ -600,6 +768,23 @@ export default function ChatLessonScreen() {
                   </View>
                 );
 
+              case 'translate_back_card':
+              case 'speech_card':
+              case 'context_card':
+                const freeInputExpected = message.expectedAnswers || [];
+                const cardType = message.cardType || 'translateBack';
+                return (
+                  <View key={message.id} style={styles.cardWrapper}>
+                    <FreeInputCard
+                      prompt={message.content}
+                      expectedAnswers={freeInputExpected}
+                      onAnswer={(answer, isCorrect) => handleFreeInputAnswer(message.id, answer, isCorrect, cardType)}
+                      answered={message.answered || false}
+                      cardType={cardType}
+                    />
+                  </View>
+                );
+
               default:
                 return null;
             }
@@ -669,15 +854,6 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
     maxWidth: '85%',
   },
-  coachAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: theme.colors.surfaceContainer,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: theme.spacing.sm,
-  },
   bubbleBase: {
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
@@ -732,7 +908,6 @@ const styles = StyleSheet.create({
 
   cardWrapper: {
     marginVertical: theme.spacing.md,
-    marginLeft: 40,
   },
   interactiveCard: {
     backgroundColor: theme.colors.card,
@@ -815,6 +990,64 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  cardLabel: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.sm,
+    fontWeight: '500',
+    marginBottom: theme.spacing.xs,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  inputModeToggle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
+  },
+  modeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.surfaceContainer,
+    gap: theme.spacing.xs,
+  },
+  modeButtonActive: {
+    backgroundColor: theme.colors.primary,
+  },
+  modeButtonText: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.sm,
+    fontWeight: '500',
+  },
+  modeButtonTextActive: {
+    color: theme.colors.primaryForeground,
+  },
+  micInputContainer: {
+    alignItems: 'center',
+    paddingVertical: theme.spacing.lg,
+    gap: theme.spacing.md,
+  },
+  micRecordButton: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: theme.colors.surfaceContainer,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: theme.colors.primary,
+  },
+  micRecordButtonActive: {
+    backgroundColor: theme.colors.errorContainer,
+    borderColor: theme.colors.destructive,
+  },
+  micHintText: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.sm,
   },
 
   inputBar: {
