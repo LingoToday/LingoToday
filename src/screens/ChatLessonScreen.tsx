@@ -503,9 +503,11 @@ export default function ChatLessonScreen() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
+    // Scroll to end when new content is added, with slight delay to ensure UI renders
+    const timer = setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    }, 150);
+    return () => clearTimeout(timer);
   }, [messages]);
 
   const loadPhraseData = async () => {
