@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
@@ -28,6 +29,7 @@ type MessageType =
   | 'translate_back_card'
   | 'speech_card'
   | 'context_card'
+  | 'pronunciation_bubble'
   | 'continue_button'
   | 'feedback_success'
   | 'feedback_error';
@@ -43,6 +45,8 @@ interface ChatMessage {
   userAnswer?: string;
   isCorrect?: boolean;
   cardType?: 'translateBack' | 'speech' | 'context';
+  phraseText?: string;
+  language?: string;
 }
 
 interface CoachBubbleProps {
@@ -84,6 +88,86 @@ function UserBubble({ content, isCorrect }: UserBubbleProps) {
       ]}>
         <Text style={styles.userText}>{content}</Text>
       </View>
+    </View>
+  );
+}
+
+interface PronunciationBubbleProps {
+  pronunciationHint: string;
+  phraseText: string;
+  language: string;
+}
+
+function PronunciationBubble({ pronunciationHint, phraseText, language }: PronunciationBubbleProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const soundRef = useRef<Audio.Sound | null>(null);
+
+  const playPronunciation = async () => {
+    if (isPlaying) return;
+
+    setIsPlaying(true);
+    try {
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+      }
+
+      const result = await apiClient.pronounceText(phraseText, language);
+      
+      if (!result.success || !result.audioBase64) {
+        console.error('Pronunciation failed:', result.error);
+        setIsPlaying(false);
+        return;
+      }
+
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: `data:audio/mp3;base64,${result.audioBase64}` },
+        { shouldPlay: true }
+      );
+      
+      soundRef.current = sound;
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          setIsPlaying(false);
+          sound.unloadAsync();
+          if (soundRef.current === sound) {
+            soundRef.current = null;
+          }
+        }
+      });
+
+      console.log('🔊 Playing TTS for:', phraseText);
+    } catch (error) {
+      console.error('TTS error:', error);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
+  }, []);
+
+  return (
+    <View style={styles.coachRow}>
+      <TouchableOpacity 
+        style={[styles.bubbleBase, styles.pronunciationBubble, isPlaying && styles.pronunciationBubblePlaying]}
+        onPress={playPronunciation}
+        disabled={isPlaying}
+        activeOpacity={0.7}
+      >
+        <Ionicons 
+          name={isPlaying ? "volume-high" : "volume-medium-outline"} 
+          size={20} 
+          color={isPlaying ? theme.colors.primary : '#6B9BD2'} 
+          style={styles.pronunciationIcon}
+        />
+        <Text style={styles.pronunciationText}>{pronunciationHint}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -470,8 +554,10 @@ export default function ChatLessonScreen() {
     if (phrase.pronunciationHint) {
       introMessages.push({
         id: `intro-5`,
-        type: 'coach_text',
-        content: `🗣️ ${phrase.pronunciationHint}`,
+        type: 'pronunciation_bubble',
+        content: phrase.pronunciationHint,
+        phraseText: phrase.phrase,
+        language: phrase.language,
       });
     }
 
@@ -820,6 +906,16 @@ export default function ChatLessonScreen() {
                       cardType={cardType}
                     />
                   </View>
+                );
+
+              case 'pronunciation_bubble':
+                return (
+                  <PronunciationBubble
+                    key={message.id}
+                    pronunciationHint={message.content}
+                    phraseText={message.phraseText || ''}
+                    language={message.language || 'it'}
+                  />
                 );
 
               case 'continue_button':
@@ -1175,5 +1271,26 @@ const styles = StyleSheet.create({
     color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.base,
     fontWeight: '600',
+  },
+
+  pronunciationBubble: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surfaceContainer,
+    borderBottomLeftRadius: 4,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+  },
+  pronunciationBubblePlaying: {
+    backgroundColor: theme.colors.muted,
+  },
+  pronunciationIcon: {
+    marginRight: theme.spacing.sm,
+  },
+  pronunciationText: {
+    color: theme.colors.foreground,
+    fontSize: theme.fontSize.base,
+    lineHeight: 22,
+    fontStyle: 'italic',
   },
 });
