@@ -42,3 +42,22 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **HeyGen's Streaming API**: For AI Avatar integration.
 - **OpenAI TTS API**: For enhanced pronunciation.
 - **OpenAI Whisper API**: For speech-to-text transcription.
+
+## Recent Changes (Feb 03, 2026)
+
+**V2 Chat Lesson Screen**: Created WhatsApp/iMessage-style chat interface for V2 lessons:
+- **Screen**: `src/screens/ChatLessonScreen.tsx` - Full chat-based lesson experience
+- **Chat Components**:
+  - `CoachBubble`: Left-aligned speech bubbles (no avatar), supports prompts and feedback
+  - `UserBubble`: Right-aligned user responses with correct/incorrect color states
+  - `MCQCard`: Interactive multiple choice with answer validation
+  - `GapCard`: Fill-the-blank with text input
+  - `FreeInputCard`: Unified component for translateBack, speech, and context with text/mic toggle
+  - `ContinueButton`: Tap-to-continue between lesson steps
+- **Step-by-Step Flow**: 
+  - Intro messages (phrase, translation, meaning, pronunciation) → "Tap to continue" button
+  - User taps → First method card (MCQ) → User answers → Feedback
+  - Next method → User answers → And so on through all 5 methods
+- **All 5 Learning Methods**: Recognition MCQ, Production Gap, Translate Back, Speech Practice, Context Variations
+- **V2 API Integration**: Fetches phrases from V2 API (e.g., `it_a1_shopping_001`) and builds lesson flow from phrase method fields
+- **Navigation**: "Try V2" tab in bottom navigation for testing
