@@ -54,7 +54,19 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
   - `getV2PhraseById(phraseId)`: GET /api/v2/phrases/:phraseId - get single phrase
 - **Temporary Test**: Added console test in App.js that runs on app start (shows CORS warning on web, works on native)
 - **CORS Note**: Web preview blocked by CORS (backend needs Access-Control-Allow-Origin headers for web); native iOS/Android works correctly
-- **Next Steps (Phase 2+)**: Update onboarding to use V2 tracks, create phrase feed/list view, build lesson UI from phrase method fields
+
+**V2 Chat Lesson Screen - Phase 2**: Created WhatsApp/iMessage-style chat interface for V2 lessons:
+- **New Screen**: `src/screens/ChatLessonScreen.tsx` - Full chat-based lesson experience
+- **Chat Components**:
+  - `CoachBubble`: Left-aligned coach messages with avatar icon, support for prompts and feedback states
+  - `UserBubble`: Right-aligned user responses with correct/incorrect color states
+  - `MCQCard`: Interactive multiple choice card with answer validation and visual feedback
+  - `GapCard`: Interactive fill-the-blank card with text input and submit button
+  - `ChatInputBar`: Dynamic input bar with keyboard/mic mode toggle
+- **Navigation**: Added "Try V2" tab to bottom navigation (`BottomTabNavigator.tsx`) with flash icon
+- **V2 Integration**: Loads phrases from V2 API, builds lesson flow from phrase method fields (MCQ, gap-fill, speech, context)
+- **Flow**: Intro messages → Method cards → User answers → Feedback → Next method → Completion
+- **State Management**: Uses refs to prevent stale closure issues in async callbacks for proper method progression
 
 ## Previous Changes (Feb 02, 2026)
 **Removed Fill-the-Gap Step from Lessons**: Simplified lesson flow by completely hiding/skipping the typing practice step:
