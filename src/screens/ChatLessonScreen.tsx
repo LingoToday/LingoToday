@@ -627,13 +627,27 @@ export default function ChatLessonScreen() {
     switch (method) {
       case 'recognition_mcq':
         if (phrase.recognitionMcqQuestion && phrase.recognitionMcqOptions && phrase.recognitionMcqAnswer) {
-          const mcqQuestion = phrase.recognitionMcqQuestion;
           const mcqOptions = phrase.recognitionMcqOptions;
           const mcqAnswer = phrase.recognitionMcqAnswer;
+          
+          // Extract scenario by removing the phrase from the question
+          let scenario = phrase.recognitionMcqQuestion;
+          const phrasePattern = new RegExp(`[:\\s]*${phrase.phrase.replace(/[?]/g, '\\?')}[?\\s]*$`, 'i');
+          
+          if (phrasePattern.test(scenario)) {
+            scenario = scenario.replace(phrasePattern, '').trim();
+          } else if (scenario.includes(phrase.phrase)) {
+            // Fallback: remove phrase wherever it appears
+            scenario = scenario.replace(phrase.phrase, '').replace(/[:\s]+$/, '').trim();
+          }
+          
+          // Format: scenario + phrase in quotes + instruction
+          const formattedQuestion = `${scenario}\n\n"${phrase.phrase}"\n\nConfirm the meaning from the below:`;
+          
           setMessages(prev => [...prev, {
             id: `mcq-${index}`,
             type: 'mcq_card' as const,
-            content: mcqQuestion,
+            content: formattedQuestion,
             options: mcqOptions,
             correctAnswer: mcqAnswer,
             answered: false,
