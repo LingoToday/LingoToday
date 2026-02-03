@@ -18,6 +18,7 @@ import { Audio } from 'expo-av';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
+import { SpeakBackComponent } from '../components/SpeakBackComponent';
 import type { V2Phrase } from '../types';
 
 type MessageType = 
@@ -278,12 +279,12 @@ interface FreeInputCardProps {
   onAnswer: (answer: string, isCorrect: boolean) => void;
   answered: boolean;
   cardType: 'translateBack' | 'speech' | 'context';
+  language: string;
 }
 
-function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }: FreeInputCardProps) {
+function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType, language }: FreeInputCardProps) {
   const [inputValue, setInputValue] = useState('');
   const [inputMode, setInputMode] = useState<'text' | 'mic'>('text');
-  const [isRecording, setIsRecording] = useState(false);
 
   const handleSubmit = () => {
     if (!inputValue.trim() || answered) return;
@@ -297,8 +298,8 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }
     onAnswer(inputValue, isCorrect);
   };
 
-  const handleMicPress = () => {
-    setIsRecording(!isRecording);
+  const handleSpeechResult = (isCorrect: boolean, transcription: string) => {
+    onAnswer(transcription, isCorrect);
   };
 
   const getCardTitle = () => {
@@ -310,6 +311,27 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }
     }
   };
 
+  const getLanguageName = (lang: string): string => {
+    const langMap: { [key: string]: string } = {
+      'it': 'italian',
+      'es': 'spanish',
+      'fr': 'french',
+      'de': 'german',
+      'en': 'english',
+    };
+    return langMap[lang.toLowerCase()] || lang;
+  };
+
+  if (answered) {
+    return (
+      <View style={styles.interactiveCard}>
+        <Text style={styles.cardLabel}>{getCardTitle()}</Text>
+        <Text style={styles.cardPrompt}>{prompt}</Text>
+        <Text style={styles.answeredNote}>Answer submitted</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.interactiveCard}>
       <Text style={styles.cardLabel}>{getCardTitle()}</Text>
@@ -319,7 +341,6 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }
         <TouchableOpacity
           style={[styles.modeButton, inputMode === 'text' && styles.modeButtonActive]}
           onPress={() => setInputMode('text')}
-          disabled={answered}
         >
           <Ionicons name="keypad-outline" size={18} color={inputMode === 'text' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
           <Text style={[styles.modeButtonText, inputMode === 'text' && styles.modeButtonTextActive]}>Type</Text>
@@ -327,7 +348,6 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }
         <TouchableOpacity
           style={[styles.modeButton, inputMode === 'mic' && styles.modeButtonActive]}
           onPress={() => setInputMode('mic')}
-          disabled={answered}
         >
           <Ionicons name="mic-outline" size={18} color={inputMode === 'mic' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
           <Text style={[styles.modeButtonText, inputMode === 'mic' && styles.modeButtonTextActive]}>Speak</Text>
@@ -337,38 +357,27 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType }
       {inputMode === 'text' ? (
         <View style={styles.gapInputRow}>
           <TextInput
-            style={[styles.gapInput, answered && styles.gapInputDisabled]}
+            style={styles.gapInput}
             value={inputValue}
             onChangeText={setInputValue}
             placeholder="Type your answer..."
             placeholderTextColor={theme.colors.mutedForeground}
-            editable={!answered}
             autoCapitalize="none"
             autoCorrect={false}
           />
-          {!answered && (
-            <TouchableOpacity style={styles.gapSubmitButton} onPress={handleSubmit}>
-              <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryForeground} />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity style={styles.gapSubmitButton} onPress={handleSubmit}>
+            <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryForeground} />
+          </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.micInputContainer}>
-          <TouchableOpacity 
-            style={[styles.micRecordButton, isRecording && styles.micRecordButtonActive]}
-            onPress={handleMicPress}
-            disabled={answered}
-          >
-            <Ionicons 
-              name={isRecording ? "stop" : "mic"} 
-              size={28} 
-              color={isRecording ? theme.colors.destructive : theme.colors.primary} 
-            />
-          </TouchableOpacity>
-          <Text style={styles.micHintText}>
-            {answered ? 'Answer submitted' : isRecording ? 'Tap to stop...' : 'Tap to record'}
-          </Text>
-        </View>
+        <SpeakBackComponent
+          expectedAnswer={expectedAnswers[0] || ''}
+          alternativeAnswers={expectedAnswers.slice(1)}
+          language={getLanguageName(language)}
+          onResult={handleSpeechResult}
+          onSwitchToText={() => setInputMode('text')}
+          showPronunciationButton={true}
+        />
       )}
     </View>
   );
@@ -904,6 +913,7 @@ export default function ChatLessonScreen() {
                       onAnswer={(answer, isCorrect) => handleFreeInputAnswer(message.id, answer, isCorrect, cardType)}
                       answered={message.answered || false}
                       cardType={cardType}
+                      language={message.language || phraseRef.current?.language || 'it'}
                     />
                   </View>
                 );
@@ -1292,5 +1302,12 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     lineHeight: 22,
     fontStyle: 'italic',
+  },
+  answeredNote: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.sm,
+    marginTop: theme.spacing.md,
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
 });
