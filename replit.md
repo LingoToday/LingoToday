@@ -58,7 +58,8 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
   - Intro messages (phrase, translation, meaning, pronunciation) → "Tap to continue" button
   - User taps → First method card (MCQ) → User answers → Feedback
   - Next method → User answers → And so on through all 5 methods
-- **All 6 Learning Methods**: Recognition MCQ, Production Gap, Translate Back, Speech Practice, Context Variations, Expand (multi-select)
+- **All 7 Learning Methods**: Recognition MCQ, Production Gap, Translate Back, Speech Practice, Context Variations, Expand (multi-select), Video Response
 - **V2 API Integration**: Fetches phrases from V2 API by ID (e.g., `A15_01` for "Mi sveglio alle...") and builds lesson flow from phrase method fields
 - **Expand Method**: New `ExpandCard` component for multi-select options with validation display; uses `expandPrompt`, `expandOptions`, and `expandValidation` from V2 phrases
+- **Video Method**: New `VideoCard` component for portrait WhatsApp-style video messages with centered play button overlay; after video completes, displays "Can you respond to this?" prompt followed by speech/text input; uses `videoUrl`, `videoPrompt`, and `videoExpected` from V2 phrases
 - **Navigation**: "Try V2" tab in bottom navigation for testing

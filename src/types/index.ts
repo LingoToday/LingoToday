@@ -173,8 +173,9 @@ export interface V2Phrase {
   contextVariations: V2ContextVariation[] | null;
 
   // Video
+  videoUrl: string | null;
   videoPrompt: string | null;
-  videoExpected: string | null;
+  videoExpected: string[] | null;
 
   // Expand
   expandPrompt: string | null;

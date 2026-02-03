@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
@@ -31,6 +32,7 @@ type MessageType =
   | 'speech_card'
   | 'context_card'
   | 'expand_card'
+  | 'video_card'
   | 'pronunciation_bubble'
   | 'continue_button'
   | 'feedback_success'
@@ -46,10 +48,11 @@ interface ChatMessage {
   answered?: boolean;
   userAnswer?: string;
   isCorrect?: boolean;
-  cardType?: 'translateBack' | 'speech' | 'context';
+  cardType?: 'translateBack' | 'speech' | 'context' | 'video';
   phraseText?: string;
   language?: string;
   validation?: string | object;
+  videoUrl?: string;
 }
 
 interface CoachBubbleProps {
@@ -379,6 +382,82 @@ function ExpandCard({ prompt, options, validation, onAnswer, answered, selectedO
   );
 }
 
+interface VideoCardProps {
+  videoUrl: string;
+  onVideoWatched: () => void;
+  watched: boolean;
+}
+
+function VideoCard({ videoUrl, onVideoWatched, watched }: VideoCardProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasWatched, setHasWatched] = useState(watched);
+  
+  const player = useVideoPlayer(videoUrl, player => {
+    player.loop = false;
+  });
+
+  const handlePlayPress = () => {
+    if (!isPlaying) {
+      player.play();
+      setIsPlaying(true);
+    } else {
+      player.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    const subscription = player.addListener('statusChange', (status) => {
+      if (status.status === 'readyToPlay' && !hasWatched) {
+        // Video ready
+      }
+    });
+
+    const playingSubscription = player.addListener('playingChange', (data) => {
+      setIsPlaying(data.isPlaying);
+    });
+
+    const endSubscription = player.addListener('playToEnd', () => {
+      if (!hasWatched) {
+        setHasWatched(true);
+        onVideoWatched();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+      playingSubscription.remove();
+      endSubscription.remove();
+    };
+  }, [player, hasWatched, onVideoWatched]);
+
+  return (
+    <View style={styles.coachRow}>
+      <View style={styles.videoBubble}>
+        <TouchableOpacity 
+          style={styles.videoContainer} 
+          onPress={handlePlayPress}
+          activeOpacity={0.9}
+        >
+          <VideoView
+            player={player}
+            style={styles.videoPlayer}
+            contentFit="cover"
+            nativeControls={false}
+          />
+          {!isPlaying && (
+            <View style={styles.playButtonOverlay}>
+              <View style={styles.playButton}>
+                <Ionicons name="play" size={32} color={theme.colors.foreground} />
+              </View>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
 interface FreeInputCardProps {
   prompt: string;
   expectedAnswers: string[];
@@ -634,6 +713,9 @@ export default function ChatLessonScreen() {
     if (phrase.expandPrompt && phrase.expandOptions) {
       methods.push('expand');
     }
+    if (phrase.videoUrl && phrase.videoExpected) {
+      methods.push('video');
+    }
 
     setAvailableMethods(methods);
     methodsRef.current = methods;
@@ -815,6 +897,21 @@ export default function ChatLessonScreen() {
           }]);
         }
         break;
+
+      case 'video':
+        if (phrase.videoUrl && phrase.videoExpected) {
+          const videoUrl = phrase.videoUrl;
+          const videoExpected = phrase.videoExpected;
+          setMessages(prev => [...prev, {
+            id: `video-${index}`,
+            type: 'video_card' as const,
+            content: phrase.videoPrompt || 'Watch this video',
+            videoUrl: videoUrl,
+            expectedAnswers: videoExpected,
+            answered: false,
+          }]);
+        }
+        break;
     }
   };
 
@@ -949,6 +1046,41 @@ export default function ChatLessonScreen() {
     }, 500);
   };
 
+  const handleVideoWatched = (messageId: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, answered: true }
+        : msg
+    ));
+  };
+
+  const handleVideoResponse = (messageId: string, answer: string, isCorrect: boolean) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, userAnswer: answer, isCorrect }
+        : msg
+    ));
+
+    setMessages(prev => [...prev, {
+      id: `user-${Date.now()}`,
+      type: 'user_response',
+      content: answer,
+      isCorrect,
+    }]);
+
+    setTimeout(() => {
+      if (isCorrect) {
+        addCoachMessage("Perfect response! 🎬");
+      } else {
+        addCoachMessage("Good effort! Keep practicing your responses.");
+      }
+
+      setTimeout(() => {
+        advanceToNextMethod();
+      }, 1000);
+    }, 500);
+  };
+
   const handleSendMessage = (message: string) => {
     setMessages(prev => [...prev, {
       id: `user-${Date.now()}`,
@@ -1065,7 +1197,7 @@ export default function ChatLessonScreen() {
               case 'speech_card':
               case 'context_card':
                 const freeInputExpected = message.expectedAnswers || [];
-                const cardType = message.cardType || 'translateBack';
+                const cardType = (message.cardType || 'translateBack') as 'translateBack' | 'speech' | 'context';
                 return (
                   <View key={message.id} style={styles.cardWrapper}>
                     <FreeInputCard
@@ -1091,6 +1223,37 @@ export default function ChatLessonScreen() {
                       answered={message.answered || false}
                       selectedOptions={expandSelectedOptions}
                     />
+                  </View>
+                );
+
+              case 'video_card':
+                return (
+                  <View key={message.id} style={styles.cardWrapper}>
+                    <VideoCard
+                      videoUrl={message.videoUrl || ''}
+                      onVideoWatched={() => handleVideoWatched(message.id)}
+                      watched={message.answered || false}
+                    />
+                    {message.answered && !message.userAnswer && (
+                      <View style={{ marginTop: theme.spacing.md }}>
+                        <CoachBubble content="Can you respond to this?" />
+                        <View style={{ marginTop: theme.spacing.md }}>
+                          <FreeInputCard
+                            prompt={message.content || ''}
+                            expectedAnswers={message.expectedAnswers || []}
+                            onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
+                            answered={!!message.userAnswer}
+                            cardType="speech"
+                            language={phraseRef.current?.language || 'it'}
+                          />
+                        </View>
+                      </View>
+                    )}
+                    {message.userAnswer && (
+                      <View style={{ marginTop: theme.spacing.md }}>
+                        <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
+                      </View>
+                    )}
                   </View>
                 );
 
@@ -1532,5 +1695,44 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
     fontStyle: 'italic',
     textAlign: 'center',
+  },
+
+  // Video card styles
+  videoBubble: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    overflow: 'hidden',
+    maxWidth: '75%',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  videoContainer: {
+    width: 200,
+    aspectRatio: 9 / 16, // Portrait video format
+    backgroundColor: theme.colors.surfaceContainer,
+    position: 'relative',
+  },
+  videoPlayer: {
+    width: '100%',
+    height: '100%',
+  },
+  playButtonOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  playButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 4, // Offset play icon for visual centering
   },
 });
