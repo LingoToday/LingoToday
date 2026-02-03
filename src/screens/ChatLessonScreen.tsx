@@ -785,7 +785,9 @@ export default function ChatLessonScreen() {
       case 'context':
         if (phrase.contextVariations && phrase.contextVariations.length > 0) {
           const variation = phrase.contextVariations[0];
-          addCoachMessage(`Scenario: ${variation.scenario}`);
+          if (variation.scenario) {
+            addCoachMessage(`Scenario: ${variation.scenario}`);
+          }
           setMessages(prev => [...prev, {
             id: `context-${index}`,
             type: 'context_card' as const,
