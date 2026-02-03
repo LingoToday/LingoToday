@@ -179,7 +179,7 @@ export interface V2Phrase {
   // Expand
   expandPrompt: string | null;
   expandOptions: string[] | null;
-  expandValidation: string | null;
+  expandValidation: string | object | null;
 
   createdAt: string;
   updatedAt: string;

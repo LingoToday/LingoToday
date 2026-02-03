@@ -49,7 +49,7 @@ interface ChatMessage {
   cardType?: 'translateBack' | 'speech' | 'context';
   phraseText?: string;
   language?: string;
-  validation?: string;
+  validation?: string | object;
 }
 
 interface CoachBubbleProps {
@@ -298,7 +298,7 @@ function GapCard({ prompt, expectedAnswers, onAnswer, answered }: GapCardProps) 
 interface ExpandCardProps {
   prompt: string;
   options: string[];
-  validation?: string;
+  validation?: string | object;
   onAnswer: (answer: string) => void;
   answered: boolean;
   selectedOptions?: string[];
@@ -370,7 +370,9 @@ function ExpandCard({ prompt, options, validation, onAnswer, answered, selectedO
       )}
       {answered && validation && (
         <View style={styles.validationBox}>
-          <Text style={styles.validationText}>{validation}</Text>
+          <Text style={styles.validationText}>
+            {typeof validation === 'string' ? validation : JSON.stringify(validation)}
+          </Text>
         </View>
       )}
     </View>
