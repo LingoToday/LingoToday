@@ -40,7 +40,23 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **@livekit/react-native**: WebRTC streaming for AI Avatar.
 - **expo-secure-store**: Secure credential storage.
 
-## Recent Changes (Feb 02, 2026)
+## Recent Changes (Feb 03, 2026)
+**V2 Lesson Engine API Integration - Phase 1**: Added frontend API client methods to fetch data from the new V2 phrase-based lesson system:
+- **New Types Added** (`src/types/index.ts`):
+  - `V2StatusResponse`: Check if V2 engine is enabled
+  - `V2TracksResponse`: Available learning tracks (raw string array)
+  - `V2Phrase`: Complete phrase object with all method fields (MCQ, gap, speech, context, etc.)
+  - `V2ContextVariation`: Context variation scenario structure
+- **New API Methods Added** (`src/lib/apiClient.ts`):
+  - `getV2Status()`: GET /api/v2/status - check if V2 is enabled
+  - `getV2Tracks(language, level)`: GET /api/v2/tracks?language=it&level=A1 - get available tracks
+  - `getV2Phrases(options)`: GET /api/v2/phrases?language=it&level=A1&track=daily_life - get phrases
+  - `getV2PhraseById(phraseId)`: GET /api/v2/phrases/:phraseId - get single phrase
+- **Temporary Test**: Added console test in App.js that runs on app start (shows CORS warning on web, works on native)
+- **CORS Note**: Web preview blocked by CORS (backend needs Access-Control-Allow-Origin headers for web); native iOS/Android works correctly
+- **Next Steps (Phase 2+)**: Update onboarding to use V2 tracks, create phrase feed/list view, build lesson UI from phrase method fields
+
+## Previous Changes (Feb 02, 2026)
 **Removed Fill-the-Gap Step from Lessons**: Simplified lesson flow by completely hiding/skipping the typing practice step:
 - **Step Removed**: The "Complete the word" / fill-in-the-gap step is now completely hidden from all lessons
 - **Implementation Approach**: Multi-layered filtering in `LessonScreenNew.tsx`:

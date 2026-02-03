@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import type { V2StatusResponse, V2Phrase } from '../types';
 
 export interface User {
   id: string;
@@ -736,6 +737,52 @@ export class ApiClient {
         httpStatus: 0 
       };
     }
+  }
+
+  // ============================================
+  // V2 Lesson Engine API Methods
+  // ============================================
+
+  /**
+   * Check if V2 lesson engine is enabled
+   * GET /api/v2/status
+   */
+  async getV2Status(): Promise<V2StatusResponse> {
+    return this.makeRequest('/api/v2/status');
+  }
+
+  /**
+   * Get available learning tracks for a language/level combination
+   * GET /api/v2/tracks?language=it&level=A1
+   */
+  async getV2Tracks(language: string, level: string): Promise<string[]> {
+    const params = new URLSearchParams({ language, level });
+    return this.makeRequest(`/api/v2/tracks?${params.toString()}`);
+  }
+
+  /**
+   * Get phrases with optional filtering
+   * GET /api/v2/phrases?language=it&level=A1&track=daily_life
+   */
+  async getV2Phrases(options?: {
+    language?: string;
+    level?: string;
+    track?: string;
+  }): Promise<V2Phrase[]> {
+    const params = new URLSearchParams();
+    if (options?.language) params.append('language', options.language);
+    if (options?.level) params.append('level', options.level);
+    if (options?.track) params.append('track', options.track);
+    const queryString = params.toString();
+    return this.makeRequest(`/api/v2/phrases${queryString ? `?${queryString}` : ''}`);
+  }
+
+  /**
+   * Get a single phrase by its phraseId
+   * GET /api/v2/phrases/:phraseId
+   */
+  async getV2PhraseById(phraseId: string): Promise<V2Phrase> {
+    return this.makeRequest(`/api/v2/phrases/${phraseId}`);
   }
 }
 

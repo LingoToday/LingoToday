@@ -97,3 +97,90 @@ export type MainTabParamList = {
   Account: undefined;
   Progress: undefined;
 };
+
+// V2 Lesson Engine Types
+
+export interface V2StatusResponse {
+  version: string;
+  enabled: boolean;
+  timestamp: string;
+}
+
+// Note: The tracks endpoint returns a raw string array, not a wrapper object
+// This type is kept for documentation but the actual response is string[]
+export type V2TracksResponse = string[];
+
+export interface V2ContextVariation {
+  scenario: string;
+  prompt: string;
+  expected: string;
+}
+
+export interface V2Phrase {
+  id: number;
+  phraseId: string;
+  language: string;
+  level: string;
+  phrase: string;
+  translation: string;
+  primaryTrack: string;
+  secondaryTrack: string | null;
+  difficulty: number;
+  phraseKind: string;
+  videoSceneId: string | null;
+  isActive: boolean;
+
+  // Pattern fields
+  patternKey: string | null;
+  patternForm: string | null;
+  patternMeaning: string | null;
+  patternExample1: string | null;
+  patternExample2: string | null;
+
+  // Hints
+  meaningNote: string | null;
+  pronunciationHint: string | null;
+  ttsAudioKey: string | null;
+
+  // Recognition MCQ
+  recognitionMcqQuestion: string | null;
+  recognitionMcqOptions: string[] | null;
+  recognitionMcqAnswer: string | null;
+
+  // Audio Recognition MCQ
+  recognitionAudioMcqOptions: string[] | null;
+  recognitionAudioMcqAnswer: string | null;
+
+  // Gap-Fill Production
+  productionGapMask: string | null;
+  productionGapAnswers: string[] | null;
+
+  // Translate Back
+  translateBackPrompt: string | null;
+  translateBackExpected: string[] | null;
+
+  // Speech Practice
+  speechPrompt: string | null;
+  speechKeywords: string[] | null;
+
+  // Listening
+  listeningAudioKey: string | null;
+  listeningQuestion: string | null;
+  listeningOptions: string[] | null;
+  listeningAnswer: string | null;
+
+  // Context Variations
+  contextVariations: V2ContextVariation[] | null;
+
+  // Video
+  videoPrompt: string | null;
+  videoExpected: string | null;
+
+  // Expand
+  expandPrompt: string | null;
+  expandOptions: string[] | null;
+  expandValidation: string | null;
+
+  createdAt: string;
+  updatedAt: string;
+}
