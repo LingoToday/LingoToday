@@ -663,8 +663,8 @@ export default function ChatLessonScreen() {
   const loadPhraseData = async () => {
     try {
       setIsLoading(true);
-      // Fetch specific phrase 'A15_01' which has expand_prompt and expand_options
-      const phrase = await apiClient.getV2PhraseById('A15_01');
+      // Fetch specific phrase for V2 chat test (video phrase)
+      const phrase = await apiClient.getV2PhraseById('it_A1_daily_life_il_menu_per_favore_12');
       
       if (phrase) {
         setCurrentPhrase(phrase);
