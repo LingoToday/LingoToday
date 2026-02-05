@@ -440,7 +440,7 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
         disabled={disabled}
         activeOpacity={0.8}
       >
-        <Ionicons name="mic" size={48} color="#fff" />
+        <Ionicons name="mic" size={24} color="#fff" />
       </TouchableOpacity>
       
       <Text style={styles.hintText}>Tap to record</Text>
@@ -503,7 +503,7 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
           onPress={stopRecording}
           activeOpacity={0.8}
         >
-          <Ionicons name="stop" size={48} color="#fff" />
+          <Ionicons name="stop" size={24} color="#fff" />
         </TouchableOpacity>
       </Animated.View>
       
@@ -590,18 +590,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   micButton: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: theme.spacing.md,
     shadowColor: theme.colors.primary,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowRadius: 4,
+    elevation: 4,
   },
   micButtonDisabled: {
     backgroundColor: theme.colors.mutedForeground,
