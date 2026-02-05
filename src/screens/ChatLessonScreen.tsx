@@ -58,6 +58,7 @@ interface ChatMessage {
   language?: string;
   validation?: string | object;
   videoUrl?: string;
+  videoPlayed?: boolean;
 }
 
 interface CoachBubbleProps {
@@ -390,18 +391,18 @@ function ExpandCard({ prompt, options, validation, onAnswer, answered, selectedO
 interface VideoCardProps {
   videoUrl: string;
   authToken: string | null;
-  onVideoWatched: () => void;
-  watched: boolean;
+  onVideoPlayed: () => void;
+  played: boolean;
 }
 
-function VideoCard({ videoUrl, authToken, onVideoWatched, watched }: VideoCardProps) {
-  const [hasWatched, setHasWatched] = useState(watched);
+function VideoCard({ videoUrl, authToken, onVideoPlayed, played }: VideoCardProps) {
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(played);
   const videoRef = useRef<any>(null);
 
   const handlePlaybackStatusUpdate = (status: any) => {
-    if (status.isLoaded && status.didJustFinish && !hasWatched) {
-      setHasWatched(true);
-      onVideoWatched();
+    if (status.isLoaded && status.isPlaying && !hasStartedPlaying) {
+      setHasStartedPlaying(true);
+      onVideoPlayed();
     }
   };
 
@@ -442,7 +443,7 @@ interface FreeInputCardProps {
 
 function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType, language }: FreeInputCardProps) {
   const [inputValue, setInputValue] = useState('');
-  const [inputMode, setInputMode] = useState<'text' | 'mic'>('text');
+  const [inputMode, setInputMode] = useState<'text' | 'mic'>('mic');
 
   const handleSubmit = () => {
     if (!inputValue.trim() || answered) return;
@@ -1035,10 +1036,10 @@ export default function ChatLessonScreen() {
     }, 500);
   };
 
-  const handleVideoWatched = (messageId: string) => {
+  const handleVideoPlayed = (messageId: string) => {
     setMessages(prev => prev.map(msg => 
       msg.id === messageId 
-        ? { ...msg, answered: true }
+        ? { ...msg, videoPlayed: true }
         : msg
     ));
   };
@@ -1222,22 +1223,22 @@ export default function ChatLessonScreen() {
                       key={`${message.id}-${authToken ? 'auth' : 'noauth'}`}
                       videoUrl={message.videoUrl || ''}
                       authToken={authToken}
-                      onVideoWatched={() => handleVideoWatched(message.id)}
-                      watched={message.answered || false}
+                      onVideoPlayed={() => handleVideoPlayed(message.id)}
+                      played={message.videoPlayed || false}
                     />
-                    {message.answered && !message.userAnswer && (
+                    <View style={{ marginTop: theme.spacing.md }}>
+                      <CoachBubble content="Can you respond to this?" />
+                    </View>
+                    {message.videoPlayed && !message.userAnswer && (
                       <View style={{ marginTop: theme.spacing.md }}>
-                        <CoachBubble content="Can you respond to this?" />
-                        <View style={{ marginTop: theme.spacing.md }}>
-                          <FreeInputCard
-                            prompt={message.content || ''}
-                            expectedAnswers={message.expectedAnswers || []}
-                            onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
-                            answered={!!message.userAnswer}
-                            cardType="speech"
-                            language={phraseRef.current?.language || 'it'}
-                          />
-                        </View>
+                        <FreeInputCard
+                          prompt={message.content || ''}
+                          expectedAnswers={message.expectedAnswers || []}
+                          onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
+                          answered={!!message.userAnswer}
+                          cardType="speech"
+                          language={phraseRef.current?.language || 'it'}
+                        />
                       </View>
                     )}
                     {message.userAnswer && (
