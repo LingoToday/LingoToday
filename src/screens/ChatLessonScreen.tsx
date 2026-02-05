@@ -888,7 +888,8 @@ export default function ChatLessonScreen() {
 
       case 'video':
         if (phrase.videoPath && phrase.videoExpected) {
-          const videoUrl = `${API_BASE_URL}/api/videos/${phrase.videoPath}`;
+          const cleanVideoPath = phrase.videoPath.replace(/^\/+/, '');
+          const videoUrl = `${API_BASE_URL}/api/videos/${cleanVideoPath}`;
           const videoExpected = phrase.videoExpected;
           setMessages(prev => [...prev, {
             id: `video-${index}`,
