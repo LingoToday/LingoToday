@@ -15,12 +15,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import { ResizeMode } from 'expo-av';
+import Constants from 'expo-constants';
 
 import { theme } from '../lib/theme';
 import { apiClient } from '../lib/apiClient';
 import { SpeakBackComponent } from '../components/SpeakBackComponent';
+import { VideoPlayer } from '../components/VideoPlayer';
+import * as SecureStore from 'expo-secure-store';
 import type { V2Phrase } from '../types';
+
+const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
 
 type MessageType = 
   | 'coach_text'
@@ -384,75 +389,43 @@ function ExpandCard({ prompt, options, validation, onAnswer, answered, selectedO
 
 interface VideoCardProps {
   videoUrl: string;
+  authToken: string | null;
   onVideoWatched: () => void;
   watched: boolean;
 }
 
-function VideoCard({ videoUrl, onVideoWatched, watched }: VideoCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+function VideoCard({ videoUrl, authToken, onVideoWatched, watched }: VideoCardProps) {
   const [hasWatched, setHasWatched] = useState(watched);
-  
-  const player = useVideoPlayer(videoUrl, player => {
-    player.loop = false;
-  });
+  const videoRef = useRef<any>(null);
 
-  const handlePlayPress = () => {
-    if (!isPlaying) {
-      player.play();
-      setIsPlaying(true);
-    } else {
-      player.pause();
-      setIsPlaying(false);
+  const handlePlaybackStatusUpdate = (status: any) => {
+    if (status.isLoaded && status.didJustFinish && !hasWatched) {
+      setHasWatched(true);
+      onVideoWatched();
     }
   };
 
-  useEffect(() => {
-    const subscription = player.addListener('statusChange', (status) => {
-      if (status.status === 'readyToPlay' && !hasWatched) {
-        // Video ready
-      }
-    });
-
-    const playingSubscription = player.addListener('playingChange', (data) => {
-      setIsPlaying(data.isPlaying);
-    });
-
-    const endSubscription = player.addListener('playToEnd', () => {
-      if (!hasWatched) {
-        setHasWatched(true);
-        onVideoWatched();
-      }
-    });
-
-    return () => {
-      subscription.remove();
-      playingSubscription.remove();
-      endSubscription.remove();
-    };
-  }, [player, hasWatched, onVideoWatched]);
+  const videoSource = {
+    uri: videoUrl,
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+  };
 
   return (
     <View style={styles.coachRow}>
       <View style={styles.videoBubble}>
-        <TouchableOpacity 
-          style={styles.videoContainer} 
-          onPress={handlePlayPress}
-          activeOpacity={0.9}
-        >
-          <VideoView
-            player={player}
+        <View style={styles.videoContainer}>
+          <VideoPlayer
+            source={videoSource}
             style={styles.videoPlayer}
-            contentFit="cover"
-            nativeControls={false}
+            useNativeControls={true}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={false}
+            isLooping={false}
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            videoRef={videoRef}
+            aspectRatio={9 / 16}
           />
-          {!isPlaying && (
-            <View style={styles.playButtonOverlay}>
-              <View style={styles.playButton}>
-                <Ionicons name="play" size={32} color={theme.colors.foreground} />
-              </View>
-            </View>
-          )}
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -655,12 +628,27 @@ export default function ChatLessonScreen() {
   const [currentMethodIndex, setCurrentMethodIndex] = useState(0);
   const [availableMethods, setAvailableMethods] = useState<string[]>([]);
   const [waitingForContinue, setWaitingForContinue] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
   
   const methodIndexRef = useRef(0);
   const methodsRef = useRef<string[]>([]);
   const phraseRef = useRef<V2Phrase | null>(null);
 
   useEffect(() => {
+    const getToken = async () => {
+      try {
+        if (Platform.OS === 'web') {
+          const token = localStorage.getItem('authToken');
+          setAuthToken(token);
+        } else {
+          const token = await SecureStore.getItemAsync('authToken');
+          setAuthToken(token);
+        }
+      } catch (error) {
+        console.error('Error getting auth token:', error);
+      }
+    };
+    getToken();
     loadPhraseData();
   }, []);
 
@@ -713,7 +701,7 @@ export default function ChatLessonScreen() {
     if (phrase.expandPrompt && phrase.expandOptions) {
       methods.push('expand');
     }
-    if (phrase.videoUrl && phrase.videoExpected) {
+    if (phrase.videoPath && phrase.videoExpected) {
       methods.push('video');
     }
 
@@ -899,8 +887,8 @@ export default function ChatLessonScreen() {
         break;
 
       case 'video':
-        if (phrase.videoUrl && phrase.videoExpected) {
-          const videoUrl = phrase.videoUrl;
+        if (phrase.videoPath && phrase.videoExpected) {
+          const videoUrl = `${API_BASE_URL}/api/videos/${phrase.videoPath}`;
           const videoExpected = phrase.videoExpected;
           setMessages(prev => [...prev, {
             id: `video-${index}`,
@@ -1230,7 +1218,9 @@ export default function ChatLessonScreen() {
                 return (
                   <View key={message.id} style={styles.cardWrapper}>
                     <VideoCard
+                      key={`${message.id}-${authToken ? 'auth' : 'noauth'}`}
                       videoUrl={message.videoUrl || ''}
+                      authToken={authToken}
                       onVideoWatched={() => handleVideoWatched(message.id)}
                       watched={message.answered || false}
                     />
