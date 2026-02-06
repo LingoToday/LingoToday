@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import type { V2StatusResponse, V2Phrase } from '../types';
+import type { V2StatusResponse, V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest, V2AttemptResponse, V2PhraseProgress } from '../types';
 
 export interface User {
   id: string;
@@ -783,6 +783,45 @@ export class ApiClient {
    */
   async getV2PhraseById(phraseId: string): Promise<V2Phrase> {
     return this.makeRequest(`/api/v2/phrases/${phraseId}`);
+  }
+
+  /**
+   * Get a V2 learning session
+   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life
+   */
+  async getV2Session(userId: string, language: string, level: string, track: string): Promise<V2Session> {
+    const params = new URLSearchParams({ userId, language, level, track });
+    return this.makeRequest(`/api/v2/session?${params.toString()}`);
+  }
+
+  /**
+   * Report exercise attempt results
+   * POST /api/v2/attempts
+   */
+  async postV2Attempt(attempt: V2AttemptRequest): Promise<V2AttemptResponse> {
+    return this.makeRequest('/api/v2/attempts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(attempt),
+    });
+  }
+
+  /**
+   * Get user's review queue
+   * GET /api/v2/review?userId=123&limit=10
+   */
+  async getV2Review(userId: string, limit: number = 10): Promise<V2SessionPhrase[]> {
+    const params = new URLSearchParams({ userId, limit: limit.toString() });
+    return this.makeRequest(`/api/v2/review?${params.toString()}`);
+  }
+
+  /**
+   * Get user progress on a specific phrase
+   * GET /api/v2/progress/:userId?phraseId=xxx
+   */
+  async getV2Progress(userId: string, phraseId?: string): Promise<V2PhraseProgress | null> {
+    const params = phraseId ? `?phraseId=${phraseId}` : '';
+    return this.makeRequest(`/api/v2/progress/${userId}${params}`);
   }
 }
 

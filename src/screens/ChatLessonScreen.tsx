@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { ResizeMode } from 'expo-av';
 import Constants from 'expo-constants';
@@ -23,9 +23,18 @@ import { apiClient } from '../lib/apiClient';
 import { SpeakBackComponent } from '../components/SpeakBackComponent';
 import { VideoPlayer } from '../components/VideoPlayer';
 import * as SecureStore from 'expo-secure-store';
-import type { V2Phrase } from '../types';
+import type { V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest } from '../types';
+import { AuthContext } from '../contexts/AuthContext';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
+
+type ChatLessonRouteParams = {
+  language?: string;
+  level?: string;
+  track?: string;
+  courseId?: string;
+  lessonId?: string;
+};
 
 type MessageType = 
   | 'coach_text'
@@ -620,6 +629,10 @@ function ContinueButton({ onContinue, disabled }: ContinueButtonProps) {
 
 export default function ChatLessonScreen() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const routeParams = (route.params as ChatLessonRouteParams) || {};
+  const authContext = React.useContext(AuthContext);
+  const user = authContext?.user;
   const scrollViewRef = useRef<ScrollView>(null);
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -631,9 +644,17 @@ export default function ChatLessonScreen() {
   const [waitingForContinue, setWaitingForContinue] = useState(false);
   const [authToken, setAuthToken] = useState<string | null>(null);
   
+  const [sessionPhrases, setSessionPhrases] = useState<V2SessionPhrase[]>([]);
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionComplete, setSessionComplete] = useState(false);
+  
   const methodIndexRef = useRef(0);
   const methodsRef = useRef<string[]>([]);
   const phraseRef = useRef<V2Phrase | null>(null);
+  const phraseIndexRef = useRef(0);
+  const sessionPhrasesRef = useRef<V2SessionPhrase[]>([]);
+  const exerciseStartTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     const getToken = async () => {
@@ -650,7 +671,7 @@ export default function ChatLessonScreen() {
       }
     };
     getToken();
-    loadPhraseData();
+    loadSession();
   }, []);
 
   useEffect(() => {
@@ -661,24 +682,121 @@ export default function ChatLessonScreen() {
     return () => clearTimeout(timer);
   }, [messages]);
 
-  const loadPhraseData = async () => {
+  const loadSession = async () => {
     try {
       setIsLoading(true);
-      // Fetch specific phrase for V2 chat test (video phrase)
-      const phrase = await apiClient.getV2PhraseById('it_A1_daily_life_il_menu_per_favore_12');
       
-      if (phrase) {
-        setCurrentPhrase(phrase);
-        buildMethodsFromPhrase(phrase);
+      const userId = user?.id || 'demo-user';
+      const langMap: Record<string, string> = {
+        'italian': 'it', 'spanish': 'es', 'french': 'fr', 'german': 'de', 'english': 'en',
+        'it': 'it', 'es': 'es', 'fr': 'fr', 'de': 'de', 'en': 'en',
+      };
+      const language = langMap[(routeParams.language || user?.selectedLanguage || 'italian').toLowerCase()] || 'it';
+      const level = (routeParams.level || user?.selectedLevel || 'A1').toUpperCase();
+      
+      const courseIdToTrack: Record<string, string> = {
+        'course1': 'daily_life',
+        'course2': 'travel',
+        'course3': 'food_dining',
+        'course4': 'shopping',
+        'course5': 'work_business',
+      };
+      let track = routeParams.track || 'daily_life';
+      if (!routeParams.track && routeParams.courseId) {
+        track = courseIdToTrack[routeParams.courseId] || routeParams.courseId;
+      }
+      
+      console.log('[V2 Session] Loading session:', { userId, language, level, track, routeParams });
+      const session = await apiClient.getV2Session(userId, language, level, track);
+      
+      if (session && session.phrases && session.phrases.length > 0) {
+        setSessionId(session.sessionId);
+        setSessionPhrases(session.phrases);
+        sessionPhrasesRef.current = session.phrases;
+        phraseIndexRef.current = 0;
+        setCurrentPhraseIndex(0);
+        
+        startPhrase(session.phrases[0], 0, session.phrases.length);
       } else {
-        addCoachMessage("No phrases available yet. Check back soon!");
+        addCoachMessage("No phrases available for this lesson yet. Check back soon!");
       }
     } catch (error) {
-      console.error('Error loading phrases:', error);
+      console.error('Error loading session:', error);
       addCoachMessage("Couldn't load lesson data. Please try again later.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const startPhrase = (sessionPhrase: V2SessionPhrase, phraseIndex: number, totalPhrases: number) => {
+    const phrase = sessionPhrase.phrase;
+    const methods = sessionPhrase.methods;
+    
+    setCurrentPhrase(phrase);
+    phraseRef.current = phrase;
+    methodsRef.current = methods;
+    methodIndexRef.current = 0;
+    setCurrentMethodIndex(0);
+    setAvailableMethods(methods);
+    
+    const phraseNumber = phraseIndex + 1;
+    const phraseTypeEmoji = sessionPhrase.phraseType === 'new' ? '🆕' : sessionPhrase.phraseType === 'weak' ? '💪' : '🔄';
+    const phraseTypeLabel = sessionPhrase.phraseType === 'new' ? 'New phrase' : sessionPhrase.phraseType === 'weak' ? 'Let\'s strengthen this one' : 'Review time';
+    
+    const introMessages: ChatMessage[] = [];
+    
+    if (phraseIndex > 0) {
+      introMessages.push({
+        id: `divider-${phraseIndex}`,
+        type: 'coach_text',
+        content: `── Phrase ${phraseNumber} of ${totalPhrases} ──`,
+      });
+    }
+    
+    introMessages.push(
+      {
+        id: `intro-${phraseIndex}-1`,
+        type: 'coach_text',
+        content: `${phraseTypeEmoji} ${phraseTypeLabel}`,
+      },
+      {
+        id: `intro-${phraseIndex}-2`,
+        type: 'coach_text',
+        content: `"${phrase.phrase}"`,
+      },
+      {
+        id: `intro-${phraseIndex}-3`,
+        type: 'coach_text',
+        content: `This means: "${phrase.translation}"`,
+      }
+    );
+
+    if (phrase.meaningNote) {
+      introMessages.push({
+        id: `intro-${phraseIndex}-4`,
+        type: 'coach_text',
+        content: `💡 ${phrase.meaningNote}`,
+      });
+    }
+
+    if (phrase.pronunciationHint) {
+      introMessages.push({
+        id: `intro-${phraseIndex}-5`,
+        type: 'pronunciation_bubble',
+        content: phrase.pronunciationHint,
+        phraseText: phrase.phrase,
+        language: phrase.language,
+      });
+    }
+
+    introMessages.push({
+      id: `continue-intro-${phraseIndex}`,
+      type: 'continue_button',
+      content: 'Tap to continue',
+    });
+
+    setMessages(prev => [...prev, ...introMessages]);
+    setWaitingForContinue(true);
   };
 
   const buildMethodsFromPhrase = (phrase: V2Phrase) => {
@@ -772,10 +890,25 @@ export default function ChatLessonScreen() {
 
   const showNextMethod = (phrase: V2Phrase, methods: string[], index: number) => {
     if (index >= methods.length) {
-      addCoachMessage("Great job! You've completed this phrase! 🎉");
+      const nextPhraseIndex = phraseIndexRef.current + 1;
+      const allPhrases = sessionPhrasesRef.current;
+      
+      if (nextPhraseIndex < allPhrases.length) {
+        addCoachMessage("Great work on that phrase! 🎉 Moving to the next one...");
+        phraseIndexRef.current = nextPhraseIndex;
+        setCurrentPhraseIndex(nextPhraseIndex);
+        
+        setTimeout(() => {
+          startPhrase(allPhrases[nextPhraseIndex], nextPhraseIndex, allPhrases.length);
+        }, 1500);
+      } else {
+        setSessionComplete(true);
+        addCoachMessage("🎉 Amazing! You've completed this lesson! Great work today!");
+      }
       return;
     }
 
+    exerciseStartTimeRef.current = Date.now();
     const method = methods[index];
     setCurrentMethodIndex(index);
 
@@ -913,6 +1046,28 @@ export default function ChatLessonScreen() {
     }]);
   };
 
+  const reportAttempt = async (exerciseType: string, isCorrect: boolean, userAnswer: string, expectedAnswer: string) => {
+    try {
+      const userId = user?.id || 'demo-user';
+      const phrase = phraseRef.current;
+      if (!phrase) return;
+      
+      const responseTimeMs = Date.now() - exerciseStartTimeRef.current;
+      
+      await apiClient.postV2Attempt({
+        userId: parseInt(userId) || 0,
+        phraseId: phrase.phraseId,
+        exerciseType,
+        isCorrect,
+        responseTimeMs,
+        userAnswer,
+        expectedAnswer,
+      });
+    } catch (error) {
+      console.error('Error reporting attempt:', error);
+    }
+  };
+
   const advanceToNextMethod = () => {
     const nextIndex = methodIndexRef.current + 1;
     methodIndexRef.current = nextIndex;
@@ -939,6 +1094,8 @@ export default function ChatLessonScreen() {
       content: answer,
       isCorrect,
     }]);
+
+    reportAttempt('recognition_mcq', isCorrect, answer, phraseRef.current?.recognitionMcqAnswer || '');
 
     setTimeout(() => {
       if (isCorrect) {
@@ -967,6 +1124,8 @@ export default function ChatLessonScreen() {
       isCorrect,
     }]);
 
+    reportAttempt('production_gap', isCorrect, answer, correctAnswerList[0] || '');
+
     setTimeout(() => {
       if (isCorrect) {
         addCoachMessage("Excellent! You got it! 🌟");
@@ -994,6 +1153,13 @@ export default function ChatLessonScreen() {
       content: answer,
       isCorrect,
     }]);
+
+    const exerciseTypeMap: Record<string, string> = {
+      'translateBack': 'translate_back',
+      'speech': 'speech',
+      'context': 'context_variation',
+    };
+    reportAttempt(exerciseTypeMap[cardType] || cardType, isCorrect, answer, phraseRef.current?.translateBackExpected?.[0] || '');
 
     setTimeout(() => {
       if (isCorrect) {
@@ -1027,6 +1193,8 @@ export default function ChatLessonScreen() {
       isCorrect: true,
     }]);
 
+    reportAttempt('expand', true, answer, '');
+
     setTimeout(() => {
       addCoachMessage("Great job exploring new variations! 🎉");
       
@@ -1057,6 +1225,8 @@ export default function ChatLessonScreen() {
       content: answer,
       isCorrect,
     }]);
+
+    reportAttempt('video', isCorrect, answer, phraseRef.current?.videoExpected?.[0] || '');
 
     setTimeout(() => {
       if (isCorrect) {
@@ -1101,7 +1271,7 @@ export default function ChatLessonScreen() {
           <Ionicons name="arrow-back" size={24} color={theme.colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {currentPhrase?.phrase || 'Chat Lesson'}
+          {currentPhrase?.phrase || 'Lesson'}
         </Text>
         <View style={styles.headerSpacer} />
       </View>

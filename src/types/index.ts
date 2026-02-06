@@ -185,3 +185,39 @@ export interface V2Phrase {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface V2PhraseProgress {
+  masteryScore: number;
+  accuracy: number;
+  totalAttempts: number;
+  lastSeen: string | null;
+  nextReviewAt: string | null;
+}
+
+export interface V2SessionPhrase {
+  phrase: V2Phrase;
+  phraseType: 'new' | 'weak' | 'review';
+  methods: string[];
+  progress: V2PhraseProgress | null;
+}
+
+export interface V2Session {
+  sessionId: string;
+  template: string;
+  phrases: V2SessionPhrase[];
+}
+
+export interface V2AttemptRequest {
+  userId: number;
+  phraseId: string;
+  exerciseType: string;
+  isCorrect: boolean;
+  responseTimeMs: number;
+  userAnswer: string;
+  expectedAnswer: string;
+}
+
+export interface V2AttemptResponse {
+  success: boolean;
+  progress?: V2PhraseProgress;
+}

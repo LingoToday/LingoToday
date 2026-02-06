@@ -7,12 +7,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DashboardScreenNew from '../screens/DashboardScreenNew';
 import AccountScreenNew from '../screens/AccountScreenNew';
 import AIChatScreen from '../screens/AIChatScreen';
-import ChatLessonScreen from '../screens/ChatLessonScreen';
 import { theme } from '../lib/theme';
 
 export type MainTabParamList = {
   Home: undefined;
-  TryV2: undefined;
   AIChat: undefined;
   Profile: undefined;
 };
@@ -54,20 +52,6 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="TryV2"
-        component={ChatLessonScreen}
-        options={{
-          tabBarLabel: 'Try V2',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'flash' : 'flash-outline'}
               size={size}
               color={color}
             />

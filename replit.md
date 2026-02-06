@@ -43,23 +43,18 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **OpenAI TTS API**: For enhanced pronunciation.
 - **OpenAI Whisper API**: For speech-to-text transcription.
 
-## Recent Changes (Feb 03, 2026)
+## Recent Changes (Feb 06, 2026)
 
-**V2 Chat Lesson Screen**: Created WhatsApp/iMessage-style chat interface for V2 lessons:
-- **Screen**: `src/screens/ChatLessonScreen.tsx` - Full chat-based lesson experience
-- **Chat Components**:
-  - `CoachBubble`: Left-aligned speech bubbles (no avatar), supports prompts and feedback
-  - `UserBubble`: Right-aligned user responses with correct/incorrect color states
-  - `MCQCard`: Interactive multiple choice with answer validation
-  - `GapCard`: Fill-the-blank with text input
-  - `FreeInputCard`: Unified component for translateBack, speech, and context with text/mic toggle
-  - `ContinueButton`: Tap-to-continue between lesson steps
-- **Step-by-Step Flow**: 
-  - Intro messages (phrase, translation, meaning, pronunciation) → "Tap to continue" button
-  - User taps → First method card (MCQ) → User answers → Feedback
-  - Next method → User answers → And so on through all 5 methods
+**V2 Lesson Engine Full Integration**: All users now use the V2 chat-based lesson experience:
+- **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=daily_life` fetches 4-5 phrases per session with server-assigned methods (new/weak/review categorization, SM-2 spaced repetition)
+- **Attempt Reporting**: `POST /api/v2/attempts` reports each exercise result (exerciseType, isCorrect, responseTimeMs, userAnswer, expectedAnswer) for mastery tracking
+- **Multi-Phrase Sessions**: ChatLessonScreen loops through multiple phrases in a session, showing phrase type indicators (new/weak/review) and progress counters
+- **Navigation**: Dashboard lesson taps now route to ChatLessonScreen (replaced LessonScreenNew). "Try V2" test tab removed from bottom navigation.
+- **API Client**: New methods `getV2Session()`, `postV2Attempt()`, `getV2Review()`, `getV2Progress()` in `src/lib/apiClient.ts`
+- **Types**: New types `V2Session`, `V2SessionPhrase`, `V2PhraseProgress`, `V2AttemptRequest`, `V2AttemptResponse` in `src/types/index.ts`
+
+**V2 Chat Lesson Screen** (`src/screens/ChatLessonScreen.tsx`):
+- **Chat Components**: CoachBubble, UserBubble, MCQCard, GapCard, FreeInputCard (defaults to speech mode), ExpandCard, VideoCard, PronunciationBubble, ContinueButton
 - **All 7 Learning Methods**: Recognition MCQ, Production Gap, Translate Back, Speech Practice, Context Variations, Expand (multi-select), Video Response
-- **V2 API Integration**: Fetches phrases from V2 API by ID (e.g., `A15_01` for "Mi sveglio alle...") and builds lesson flow from phrase method fields
-- **Expand Method**: New `ExpandCard` component for multi-select options with validation display; uses `expandPrompt`, `expandOptions`, and `expandValidation` from V2 phrases
-- **Video Method**: New `VideoCard` component for portrait WhatsApp-style video messages using VideoPlayer component with JWT authentication; constructs video URL from `${API_BASE_URL}/api/videos/${phrase.videoPath}` with Authorization Bearer token header; after video completes, displays "Can you respond to this?" prompt followed by speech/text input; uses `videoPath`, `videoPrompt`, and `videoExpected` from V2 phrases
-- **Navigation**: "Try V2" tab in bottom navigation for testing
+- **Video Method**: VideoCard with JWT-authenticated streaming via `${API_BASE_URL}/api/videos/${videoPath}`. Shows "Can you respond to this?" immediately with video; Type/Speak input appears after user presses play.
+- **Route Params**: Accepts language, level, track, courseId, lessonId from navigation; maps language names to codes and courseId to track

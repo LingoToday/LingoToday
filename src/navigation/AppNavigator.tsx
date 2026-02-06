@@ -31,6 +31,7 @@ import LessonExampleScreen from '../screens/LessonExampleScreen';
 import SubscriptionScreenNew from '../screens/SubscriptionScreenNew';
 import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
 import AIAvatarScreen from '../screens/AIAvatarScreen';
+import ChatLessonScreen from '../screens/ChatLessonScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 
 import { theme } from '../lib/theme';
@@ -226,7 +227,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             
             <Stack.Screen 
               name="Lesson" 
-              component={LessonScreenNew}
+              component={ChatLessonScreen}
             />
             <Stack.Screen 
               name="LessonComplete" 
@@ -267,7 +268,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             
             <Stack.Screen 
               name="Lesson" 
-              component={LessonScreenNew}
+              component={ChatLessonScreen}
             />
             <Stack.Screen 
               name="LessonComplete" 
