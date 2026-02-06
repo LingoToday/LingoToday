@@ -1,0 +1,55 @@
+
+How the Mobile App Gets Data and Builds Lessons
+The mobile app doesn't need to contain any lesson logic itself — the server handles everything. The app just calls a few endpoints and renders whatever comes back.
+Step 1: Get a Session (the main call)
+When the user taps "Start Lesson," the app calls:
+GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life
+
+The server does all the heavy lifting:
+* Fetches all phrases for that language/level/track (ordered by sortOrder)
+* Looks up the user's progress on each phrase
+* Categorizes every phrase as new (never seen), weak (low mastery or got it wrong recently), or review (due for spaced repetition)
+* Picks 4-5 phrases using a rotating template pattern (e.g., new, new, weak, review)
+* Assigns 3 method blocks per phrase based on whether it's new/weak/review and whether it has a video
+The response looks like:
+{
+"sessionId": "session_123_...",
+"template": "A",
+"phrases": [
+{
+"phrase": { /* full phrase data with all exercise fields */ },
+"phraseType": "new",
+"methods": ["speech", "video", "recognition_mcq"],
+"progress": null
+},
+{
+"phrase": { ... },
+"phraseType": "weak",
+"methods": ["gap_fill", "speech", "context_variation"],
+"progress": { "masteryScore": 0.3, "accuracy": 0.5, ... }
+}
+]
+}
+
+The app renders each phrase's methods array in order — those are your method block screens.
+Step 2: Report Results
+After the user completes each exercise, the app calls:
+POST /api/v2/attempts
+{
+"userId": 123,
+"phraseId": "it_A1_daily_life_ciao_01",
+"exerciseType": "recognition_mcq",
+"isCorrect": true,
+"responseTimeMs": 2400,
+"userAnswer": "Hello",
+"expectedAnswer": "Hello"
+}
+
+The server updates the user's mastery score and spaced repetition schedule (SM-2 algorithm) and returns updated progress. The app can show a mini progress indicator if you want.
+Step 3: Supporting Endpoints
+* Available languages/levels/tracks: GET /api/v2/tracks?language=it&level=A1 — use this to populate the language/level picker
+* Review queue: GET /api/v2/review?userId=123&limit=10 — for a dedicated "Review" screen showing phrases that are due
+* User progress: GET /api/v2/progress/123?phraseId=it_A1_basics_ciao_01 — for checking progress on a specific phrase
+* Phrase list: GET /api/v2/phrases?language=it&level=A1 — if you need to show a browseable phrase list
+Step 4: Videos
+Phrases with generated videos have a videoPath field. The app streams videos through the existing authenticated endpoint (the web app already does this). The methods array will include "video" only for phrases that have videos.
