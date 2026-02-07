@@ -694,17 +694,7 @@ export default function ChatLessonScreen() {
       const language = langMap[(routeParams.language || user?.selectedLanguage || 'italian').toLowerCase()] || 'it';
       const level = (routeParams.level || user?.selectedLevel || 'A1').toUpperCase();
       
-      const courseIdToTrack: Record<string, string> = {
-        'course1': 'daily_life',
-        'course2': 'travel',
-        'course3': 'food_dining',
-        'course4': 'shopping',
-        'course5': 'work_business',
-      };
-      let track = routeParams.track || 'daily_life';
-      if (!routeParams.track && routeParams.courseId) {
-        track = courseIdToTrack[routeParams.courseId] || routeParams.courseId;
-      }
+      const track = routeParams.track || routeParams.courseId || 'daily_life';
       
       console.log('[V2 Session] Loading session:', { userId, language, level, track, routeParams });
       const session = await apiClient.getV2Session(userId, language, level, track);

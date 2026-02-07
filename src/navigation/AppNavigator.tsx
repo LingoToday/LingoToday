@@ -46,7 +46,7 @@ export type RootStackParamList = {
   MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
   Courses: { language?: string } | undefined;
   Progress: undefined;
-  Lesson: { lessonId: string; language?: string; courseId?: string; from?: string; id?: string };
+  Lesson: { lessonId: string; language?: string; courseId?: string; track?: string; from?: string; id?: string };
   LessonComplete: { lessonTitle: string; lessonId: string; courseId: string; score: number; language: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
@@ -118,6 +118,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             lessonId: data.lessonId,
             language: data.language,
             courseId: data.courseId,
+            track: data.track,
             timestamp: Date.now()
           }));
         } catch (error) {
@@ -141,7 +142,8 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
           navigationRef.current.navigate('Lesson', {
             language: data.language as string,
             courseId: data.courseId as string,
-            lessonId: data.lessonId as string
+            lessonId: data.lessonId as string,
+            track: data.track as string,
           });
         }
       }
@@ -177,7 +179,8 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
                 navigationRef.current?.navigate('Lesson', {
                   language: navigationData.language,
                   courseId: navigationData.courseId,
-                  lessonId: navigationData.lessonId
+                  lessonId: navigationData.lessonId,
+                  track: navigationData.track,
                 });
               }, 100);
             } else {

@@ -178,6 +178,7 @@ export default function DashboardScreenNew() {
       title: 'Basic Greetings',
       description: 'Learn how to say hello and goodbye',
       category: 'Greetings',
+      track: 'basics_greetings',
       isReview: false,
       isIRLLesson: false,
     },
@@ -187,6 +188,7 @@ export default function DashboardScreenNew() {
       title: 'Polite Expressions',
       description: 'Please, thank you, and excuse me',
       category: 'Greetings',
+      track: 'basics_greetings',
       isReview: false,
       isIRLLesson: false,
     },
@@ -219,7 +221,8 @@ useEffect(() => {
       navigation.navigate('Lesson', {
         language: data.language,
         courseId: data.courseId,
-        lessonId: data.lessonId
+        lessonId: data.lessonId,
+        track: data.track,
       });
     }
   });
@@ -540,7 +543,8 @@ useEffect(() => {
                             onPress={() => navigation.navigate('Lesson', {
                               language: effectiveDashboardData.user.selectedLanguage || 'italian',
                               courseId: upcomingLessons[0]?.courseId || 'course1',
-                              lessonId: upcomingLessons[0]?.lessonId || 'lesson1'
+                              lessonId: upcomingLessons[0]?.lessonId || 'lesson1',
+                              track: upcomingLessons[0]?.track,
                             })}
                           >
                             <Text style={styles.nextLessonButtonText}>
@@ -561,7 +565,8 @@ useEffect(() => {
                               onPress={() => navigation.navigate('Lesson', {
                                 language: effectiveDashboardData.user.selectedLanguage || 'italian',
                                 courseId: lesson.courseId,
-                                lessonId: lesson.lessonId
+                                lessonId: lesson.lessonId,
+                                track: lesson.track,
                               })}
                             >
                               <View style={styles.upcomingItemContent}>
