@@ -544,7 +544,7 @@ useEffect(() => {
 
                 <Card style={styles.upcomingCard}>
                   <CardHeader style={styles.upcomingHeader}>
-                    <Text style={styles.upcomingTitle}>Your Tracks</Text>
+                    <Text style={styles.upcomingTitle}>Your learning journey</Text>
                   </CardHeader>
                   <CardContent style={styles.upcomingContent}>
                     {v2Tracks.length > 0 ? (
