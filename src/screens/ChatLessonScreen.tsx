@@ -10,6 +10,7 @@ import {
   Platform,
   ActivityIndicator,
   Animated,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +27,9 @@ import * as SecureStore from 'expo-secure-store';
 import type { V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest } from '../types';
 import { AuthContext } from '../contexts/AuthContext';
 import { loadChatHistory, saveChatHistory, StoredChatMessage } from '../services/chatHistoryService';
+import { purchaseService } from '../services/purchaseService';
+import { PRO_PRICING } from '../constants/pricing';
+import { useQueryClient } from '@tanstack/react-query';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
 
@@ -403,9 +407,12 @@ interface VideoCardProps {
   authToken: string | null;
   onVideoPlayed: () => void;
   played: boolean;
+  hasProAccess: boolean;
+  onUpgrade: () => void;
+  isPurchasing: boolean;
 }
 
-function VideoCard({ videoUrl, authToken, onVideoPlayed, played }: VideoCardProps) {
+function VideoCard({ videoUrl, authToken, onVideoPlayed, played, hasProAccess, onUpgrade, isPurchasing }: VideoCardProps) {
   const [hasStartedPlaying, setHasStartedPlaying] = useState(played);
   const videoRef = useRef<any>(null);
 
@@ -428,14 +435,33 @@ function VideoCard({ videoUrl, authToken, onVideoPlayed, played }: VideoCardProp
           <VideoPlayer
             source={videoSource}
             style={styles.videoPlayer}
-            useNativeControls={true}
+            useNativeControls={hasProAccess}
             resizeMode={ResizeMode.COVER}
             shouldPlay={false}
             isLooping={false}
-            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            isMuted={!hasProAccess}
+            onPlaybackStatusUpdate={hasProAccess ? handlePlaybackStatusUpdate : undefined}
             videoRef={videoRef}
             aspectRatio={9 / 16}
           />
+          {!hasProAccess && (
+            <View style={styles.videoPaywallOverlay}>
+              <View style={styles.videoPaywallCard}>
+                <Text style={styles.videoPaywallTitle}>Unlock Pro Learner video lessons</Text>
+                <Text style={styles.videoPaywallSubtitle}>to accelerate your learning!</Text>
+                <Text style={styles.videoPaywallPrice}>{PRO_PRICING.GBP.monthly}/month</Text>
+                <TouchableOpacity
+                  style={[styles.videoPaywallButton, isPurchasing && styles.videoPaywallButtonDisabled]}
+                  onPress={onUpgrade}
+                  disabled={isPurchasing}
+                >
+                  <Text style={styles.videoPaywallButtonText}>
+                    {isPurchasing ? "Processing..." : "Upgrade & Unlock All Videos"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -634,7 +660,39 @@ export default function ChatLessonScreen() {
   const routeParams = (route.params as ChatLessonRouteParams) || {};
   const authContext = React.useContext(AuthContext);
   const user = authContext?.user;
+  const queryClient = useQueryClient();
   const scrollViewRef = useRef<ScrollView>(null);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  const userTier = (user as any)?.priceTier || 'free';
+  const hasProAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
+
+  const handleUpgrade = async () => {
+    setIsPurchasing(true);
+    try {
+      await purchaseService.initialize(user?.id);
+      const packages = await purchaseService.getOfferings();
+      if (packages.length === 0) {
+        throw new Error('No subscription packages available');
+      }
+      const packageToPurchase = packages[0];
+      const result = await purchaseService.purchasePackage(packageToPurchase);
+      if (result.success) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] })
+        ]);
+        Alert.alert('Success!', 'You now have access to all Pro Learner video lessons!', [{ text: 'OK' }]);
+      } else if (result.error !== 'Purchase cancelled') {
+        throw new Error(result.error || 'Purchase failed');
+      }
+    } catch (error: any) {
+      console.error('Purchase error:', error);
+      Alert.alert('Purchase Error', error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentPhrase, setCurrentPhrase] = useState<V2Phrase | null>(null);
@@ -1461,26 +1519,33 @@ export default function ChatLessonScreen() {
                       authToken={authToken}
                       onVideoPlayed={() => handleVideoPlayed(message.id)}
                       played={message.videoPlayed || false}
+                      hasProAccess={hasProAccess}
+                      onUpgrade={handleUpgrade}
+                      isPurchasing={isPurchasing}
                     />
-                    <View style={{ marginTop: theme.spacing.md }}>
-                      <CoachBubble content="Can you respond to this?" />
-                    </View>
-                    {message.videoPlayed && !message.userAnswer && (
-                      <View style={{ marginTop: theme.spacing.md }}>
-                        <FreeInputCard
-                          prompt={message.content || ''}
-                          expectedAnswers={message.expectedAnswers || []}
-                          onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
-                          answered={!!message.userAnswer}
-                          cardType="speech"
-                          language={phraseRef.current?.language || 'it'}
-                        />
-                      </View>
-                    )}
-                    {message.userAnswer && (
-                      <View style={{ marginTop: theme.spacing.md }}>
-                        <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
-                      </View>
+                    {hasProAccess && (
+                      <>
+                        <View style={{ marginTop: theme.spacing.md }}>
+                          <CoachBubble content="Can you respond to this?" />
+                        </View>
+                        {message.videoPlayed && !message.userAnswer && (
+                          <View style={{ marginTop: theme.spacing.md }}>
+                            <FreeInputCard
+                              prompt={message.content || ''}
+                              expectedAnswers={message.expectedAnswers || []}
+                              onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
+                              answered={!!message.userAnswer}
+                              cardType="speech"
+                              language={phraseRef.current?.language || 'it'}
+                            />
+                          </View>
+                        )}
+                        {message.userAnswer && (
+                          <View style={{ marginTop: theme.spacing.md }}>
+                            <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
+                          </View>
+                        )}
+                      </>
                     )}
                   </View>
                 );
@@ -1989,5 +2054,63 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  videoPaywallOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.sm,
+  },
+  videoPaywallCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    maxWidth: '95%',
+    shadowColor: theme.colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  videoPaywallTitle: {
+    fontSize: theme.fontSize.base,
+    fontWeight: '700' as any,
+    color: theme.colors.primaryForeground,
+    textAlign: 'center',
+  },
+  videoPaywallSubtitle: {
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.primaryForeground,
+    textAlign: 'center',
+  },
+  videoPaywallPrice: {
+    fontSize: theme.fontSize.base,
+    fontWeight: '700' as any,
+    color: theme.colors.primaryForeground,
+    textAlign: 'center',
+  },
+  videoPaywallButton: {
+    backgroundColor: '#7C3AED',
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.md,
+    width: '100%',
+    alignItems: 'center',
+  },
+  videoPaywallButtonDisabled: {
+    opacity: 0.6,
+  },
+  videoPaywallButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600' as any,
+    fontSize: theme.fontSize.sm,
   },
 });
