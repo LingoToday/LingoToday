@@ -25,6 +25,7 @@ import { VideoPlayer } from '../components/VideoPlayer';
 import * as SecureStore from 'expo-secure-store';
 import type { V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest } from '../types';
 import { AuthContext } from '../contexts/AuthContext';
+import { loadChatHistory, saveChatHistory, StoredChatMessage } from '../services/chatHistoryService';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
 
@@ -48,7 +49,8 @@ type MessageType =
   | 'pronunciation_bubble'
   | 'continue_button'
   | 'feedback_success'
-  | 'feedback_error';
+  | 'feedback_error'
+  | 'session_divider';
 
 interface ChatMessage {
   id: string;
@@ -66,6 +68,7 @@ interface ChatMessage {
   validation?: string | object;
   videoUrl?: string;
   videoPlayed?: boolean;
+  isHistorical?: boolean;
 }
 
 interface CoachBubbleProps {
@@ -653,6 +656,11 @@ export default function ChatLessonScreen() {
   const phraseIndexRef = useRef(0);
   const sessionPhrasesRef = useRef<V2SessionPhrase[]>([]);
   const exerciseStartTimeRef = useRef<number>(Date.now());
+  
+  const resolvedLanguageRef = useRef('it');
+  const resolvedLevelRef = useRef('A1');
+  const resolvedTrackRef = useRef('basics');
+  const historyLoadedRef = useRef(false);
 
   useEffect(() => {
     const getToken = async () => {
@@ -672,12 +680,41 @@ export default function ChatLessonScreen() {
     loadSession();
   }, []);
 
+  const savePendingRef = useRef(false);
+  const prevMessageCountRef = useRef(0);
+  
   useEffect(() => {
-    // Scroll to end when new content is added, with slight delay to ensure UI renders
-    const timer = setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 150);
-    return () => clearTimeout(timer);
+    const isNewContent = messages.length > prevMessageCountRef.current;
+    prevMessageCountRef.current = messages.length;
+    
+    if (isNewContent && savePendingRef.current) {
+      const timer = setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (!savePendingRef.current) return;
+    const hasNewMessages = messages.some(m => !m.isHistorical && m.type !== 'session_divider');
+    if (!hasNewMessages) return;
+    
+    const nonDividerMessages = messages.filter(m => m.type !== 'session_divider' && m.type !== 'continue_button');
+    if (nonDividerMessages.length === 0) return;
+    
+    const toStore: StoredChatMessage[] = nonDividerMessages.map(m => ({
+      ...m,
+      isHistorical: undefined,
+      timestamp: (m as any).timestamp || Date.now(),
+      sessionId: sessionId || undefined,
+    }));
+    saveChatHistory(
+      resolvedLanguageRef.current,
+      resolvedLevelRef.current,
+      resolvedTrackRef.current,
+      toStore
+    );
   }, [messages]);
 
   const loadSession = async () => {
@@ -703,10 +740,39 @@ export default function ChatLessonScreen() {
       
       const track = routeParams.track || 'basics';
       
+      resolvedLanguageRef.current = language;
+      resolvedLevelRef.current = level;
+      resolvedTrackRef.current = track;
+      
+      const history = await loadChatHistory(language, level, track);
+      const historicalMessages: ChatMessage[] = [];
+      if (history.length > 0) {
+        history.forEach(msg => {
+          if (msg.type !== 'continue_button') {
+            historicalMessages.push({
+              ...msg,
+              type: msg.type as MessageType,
+              cardType: msg.cardType as ChatMessage['cardType'],
+              answered: true,
+              isHistorical: true,
+            });
+          }
+        });
+        historicalMessages.push({
+          id: `session-divider-${Date.now()}`,
+          type: 'session_divider',
+          content: 'New Session',
+        });
+        setMessages(historicalMessages);
+        historyLoadedRef.current = true;
+      }
+      
       console.log('[V2 Session] Params:', { userId, language, level, track, routeParams });
       
       const session = await apiClient.getV2Session(userId, language, level, track);
       console.log('[V2 Session] Response: phrases=' + (session?.phrases?.length || 0));
+      
+      savePendingRef.current = true;
       
       if (session && session.phrases && session.phrases.length > 0) {
         setSessionId(session.sessionId);
@@ -1438,6 +1504,15 @@ export default function ChatLessonScreen() {
                   />
                 );
 
+              case 'session_divider':
+                return (
+                  <View key={message.id} style={styles.sessionDivider}>
+                    <View style={styles.sessionDividerLine} />
+                    <Text style={styles.sessionDividerText}>{message.content}</Text>
+                    <View style={styles.sessionDividerLine} />
+                  </View>
+                );
+
               default:
                 return null;
             }
@@ -1896,5 +1971,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 4,
+  },
+  sessionDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: theme.spacing.lg,
+    gap: 12,
+  },
+  sessionDividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: theme.colors.border,
+  },
+  sessionDividerText: {
+    fontSize: 12,
+    color: theme.colors.mutedForeground,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 });

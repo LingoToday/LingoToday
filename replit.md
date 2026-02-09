@@ -52,6 +52,7 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=basics` — backend handles phrase ordering via sort_order and user progress. No lessonId/courseId needed.
 - **Level Mapping**: ChatLessonScreen converts human-readable levels (Beginner→A1, etc.) to CEFR codes as safety net.
 - **userId Handling**: Non-numeric user IDs converted to numeric via parseInt with fallback to 1.
+- **Chat History Persistence**: Chat messages are persisted to AsyncStorage per track (keyed by `chat_history_{language}_{level}_{track}`). When reopening a track, previous session messages load at the top with a "New Session" divider, and new content appears below. Historical interactive cards (MCQ, gap fill, etc.) render as read-only. Service: `src/services/chatHistoryService.ts`. Max 500 messages per track.
 
 ## Changes (Feb 06, 2026)
 
