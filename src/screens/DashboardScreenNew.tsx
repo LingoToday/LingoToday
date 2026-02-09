@@ -550,10 +550,6 @@ useEffect(() => {
                     {v2Tracks.length > 0 ? (
                       <View style={styles.upcomingList}>
                         {v2Tracks.map((trackItem, index) => {
-                          const statusIcon = trackItem.status === 'completed' ? 'checkmark-circle' : 
-                                            trackItem.status === 'in_progress' ? 'play-circle' : 'add-circle-outline';
-                          const statusColor = trackItem.status === 'completed' ? theme.colors.success500 : 
-                                             trackItem.status === 'in_progress' ? theme.colors.primary : theme.colors.mutedForeground;
                           const isFirst = index === 0;
                           
                           return (
@@ -573,7 +569,6 @@ useEffect(() => {
                                 <>
                                   <View style={styles.nextLessonInfo}>
                                     <View style={styles.nextLessonHeader}>
-                                      <Ionicons name={statusIcon} size={20} color={theme.colors.primaryForeground} />
                                       <Text style={styles.nextLessonTitle}>{trackItem.title}</Text>
                                     </View>
                                     <Text style={styles.nextLessonDescription}>{trackItem.description}</Text>
@@ -596,9 +591,6 @@ useEffect(() => {
                                 </>
                               ) : (
                                 <>
-                                  <View style={styles.trackIconContainer}>
-                                    <Ionicons name={statusIcon} size={24} color={statusColor} />
-                                  </View>
                                   <View style={styles.trackItemContent}>
                                     <Text style={styles.upcomingItemTitle}>{trackItem.title}</Text>
                                     <Text style={styles.upcomingItemDescription}>{trackItem.description}</Text>
