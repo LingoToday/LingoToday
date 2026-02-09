@@ -648,7 +648,6 @@ export default function ChatLessonScreen() {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionComplete, setSessionComplete] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<string | null>(null);
   
   const methodIndexRef = useRef(0);
   const methodsRef = useRef<string[]>([]);
@@ -689,6 +688,7 @@ export default function ChatLessonScreen() {
       
       const rawUserId = user?.id || '1';
       const userId = String(parseInt(rawUserId) || 1);
+      
       const langMap: Record<string, string> = {
         'italian': 'it', 'spanish': 'es', 'french': 'fr', 'german': 'de', 'english': 'en',
         'it': 'it', 'es': 'es', 'fr': 'fr', 'de': 'de', 'en': 'en',
@@ -710,27 +710,10 @@ export default function ChatLessonScreen() {
       const rawTrackParam = routeParams.track || routeParams.courseId || 'basics';
       const track = courseIdToTrack[rawTrackParam] || rawTrackParam;
       
-      const debugParams = {
-        rawUserId,
-        parsedUserId: userId,
-        rawLanguage: routeParams.language,
-        userLanguage: user?.selectedLanguage,
-        language,
-        level,
-        rawTrack: routeParams.track,
-        rawCourseId: routeParams.courseId,
-        resolvedTrack: track,
-        allRouteParams: JSON.stringify(routeParams),
-      };
-      console.log('[V2 Session] Loading session with params:', JSON.stringify(debugParams, null, 2));
+      console.log('[V2 Session] Params:', { userId, language, level, track, routeParams });
       
       const session = await apiClient.getV2Session(userId, language, level, track);
-      console.log('[V2 Session] API response:', JSON.stringify({
-        sessionId: session?.sessionId,
-        phraseCount: session?.phrases?.length || 0,
-        phrases: session?.phrases?.map((p: V2SessionPhrase) => p.phrase?.phrase).slice(0, 3),
-        rawResponse: session,
-      }, null, 2));
+      console.log('[V2 Session] Response: phrases=' + (session?.phrases?.length || 0));
       
       if (session && session.phrases && session.phrases.length > 0) {
         setSessionId(session.sessionId);
@@ -738,20 +721,13 @@ export default function ChatLessonScreen() {
         sessionPhrasesRef.current = session.phrases;
         phraseIndexRef.current = 0;
         setCurrentPhraseIndex(0);
-        setDebugInfo(null);
         
         startPhrase(session.phrases[0], 0, session.phrases.length);
       } else {
-        const debugStr = `API params: userId=${userId}, lang=${language}, level=${level}, track=${track}\nRoute params: ${JSON.stringify(routeParams)}\nUser ID (raw): ${rawUserId}\nAPI response: ${JSON.stringify(session)}`;
-        setDebugInfo(debugStr);
         addCoachMessage("No phrases available for this lesson yet. Check back soon!");
       }
     } catch (error: any) {
-      const rawUserId = user?.id || '1';
-      const errMsg = error?.message || String(error);
-      const debugStr = `Error: ${errMsg}\nRoute params: ${JSON.stringify(routeParams)}\nUser ID (raw): ${rawUserId}`;
-      console.error('[V2 Session] Error loading session:', errMsg, error);
-      setDebugInfo(debugStr);
+      console.error('[V2 Session] Error:', error?.message || error);
       addCoachMessage("Couldn't load lesson data. Please try again later.");
     } finally {
       setIsLoading(false);
@@ -1473,12 +1449,6 @@ export default function ChatLessonScreen() {
                 return null;
             }
           })}
-          {debugInfo && (
-            <View style={styles.debugPanel}>
-              <Text style={styles.debugTitle}>DEBUG INFO (temporary)</Text>
-              <Text style={styles.debugText}>{debugInfo}</Text>
-            </View>
-          )}
         </ScrollView>
 
         <ChatInputBar
@@ -1933,26 +1903,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 4,
-  },
-  debugPanel: {
-    marginTop: 16,
-    marginHorizontal: 12,
-    padding: 12,
-    backgroundColor: '#1a1a2e',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e74c3c',
-  },
-  debugTitle: {
-    color: '#e74c3c',
-    fontWeight: '700',
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  debugText: {
-    color: '#ecf0f1',
-    fontSize: 11,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    lineHeight: 16,
   },
 });

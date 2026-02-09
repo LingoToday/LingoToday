@@ -43,7 +43,15 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **OpenAI TTS API**: For enhanced pronunciation.
 - **OpenAI Whisper API**: For speech-to-text transcription.
 
-## Recent Changes (Feb 06, 2026)
+## Recent Changes (Feb 09, 2026)
+
+**V2 Session API Parameter Fixes**:
+- **Level Mapping**: ChatLessonScreen now converts human-readable levels (Beginner→A1, Intermediate→B1, Advanced→C1) to CEFR codes. Backend also accepts both formats.
+- **Track Resolution**: Added courseId-to-track fallback mapping (course1→basics, course2→daily_life, course3→holiday, course4→social, course5→work) for when upcoming-lessons API doesn't include track field.
+- **Level in Navigation**: All navigation paths to Lesson screen (dashboard taps, notification handlers, pending navigation) now pass `level` from upcoming-lessons API response.
+- **userId Handling**: Non-numeric user IDs (e.g., local_xxx) are converted to numeric via parseInt with fallback to 1.
+
+## Changes (Feb 06, 2026)
 
 **V2 Lesson Engine Full Integration**: All users now use the V2 chat-based lesson experience:
 - **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=daily_life` fetches 4-5 phrases per session with server-assigned methods (new/weak/review categorization, SM-2 spaced repetition)

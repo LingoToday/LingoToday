@@ -46,7 +46,7 @@ export type RootStackParamList = {
   MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
   Courses: { language?: string } | undefined;
   Progress: undefined;
-  Lesson: { lessonId: string; language?: string; courseId?: string; track?: string; from?: string; id?: string };
+  Lesson: { lessonId: string; language?: string; courseId?: string; track?: string; level?: string; from?: string; id?: string };
   LessonComplete: { lessonTitle: string; lessonId: string; courseId: string; score: number; language: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
@@ -144,6 +144,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
             courseId: data.courseId as string,
             lessonId: data.lessonId as string,
             track: data.track as string,
+            level: data.level as string,
           });
         }
       }
@@ -181,6 +182,7 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
                   courseId: navigationData.courseId,
                   lessonId: navigationData.lessonId,
                   track: navigationData.track,
+                  level: navigationData.level,
                 });
               }, 100);
             } else {

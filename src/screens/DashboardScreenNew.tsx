@@ -179,6 +179,7 @@ export default function DashboardScreenNew() {
       description: 'Learn how to say hello and goodbye',
       category: 'Greetings',
       track: 'basics',
+      level: 'A1',
       isReview: false,
       isIRLLesson: false,
     },
@@ -189,6 +190,7 @@ export default function DashboardScreenNew() {
       description: 'Please, thank you, and excuse me',
       category: 'Greetings',
       track: 'basics',
+      level: 'A1',
       isReview: false,
       isIRLLesson: false,
     },
@@ -223,6 +225,7 @@ useEffect(() => {
         courseId: data.courseId,
         lessonId: data.lessonId,
         track: data.track,
+        level: data.level,
       });
     }
   });
@@ -285,7 +288,9 @@ useEffect(() => {
     queryKey: ["/api/upcoming-lessons"],
     queryFn: async () => {
       try {
-        return await apiClient.getUpcomingLessons();
+        const result = await apiClient.getUpcomingLessons();
+        console.log('[Dashboard] upcoming-lessons response:', JSON.stringify(result?.lessons?.[0], null, 2));
+        return result;
       } catch (error) {
         console.warn('⚠️ Upcoming lessons API failed, using fallback:', error);
         return {
@@ -545,6 +550,7 @@ useEffect(() => {
                               courseId: upcomingLessons[0]?.courseId || 'course1',
                               lessonId: upcomingLessons[0]?.lessonId || 'lesson1',
                               track: upcomingLessons[0]?.track,
+                              level: upcomingLessons[0]?.level,
                             })}
                           >
                             <Text style={styles.nextLessonButtonText}>
@@ -567,6 +573,7 @@ useEffect(() => {
                                 courseId: lesson.courseId,
                                 lessonId: lesson.lessonId,
                                 track: lesson.track,
+                                level: lesson.level,
                               })}
                             >
                               <View style={styles.upcomingItemContent}>
