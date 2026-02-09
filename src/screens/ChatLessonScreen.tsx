@@ -710,9 +710,12 @@ export default function ChatLessonScreen() {
       const rawTrackParam = routeParams.track || routeParams.courseId || 'basics';
       const track = courseIdToTrack[rawTrackParam] || rawTrackParam;
       
-      console.log('[V2 Session] Params:', { userId, language, level, track, routeParams });
+      const lessonId = routeParams.lessonId;
+      const courseId = routeParams.courseId;
       
-      const session = await apiClient.getV2Session(userId, language, level, track);
+      console.log('[V2 Session] Params:', { userId, language, level, track, lessonId, courseId, routeParams });
+      
+      const session = await apiClient.getV2Session(userId, language, level, track, lessonId, courseId);
       console.log('[V2 Session] Response: phrases=' + (session?.phrases?.length || 0));
       
       if (session && session.phrases && session.phrases.length > 0) {

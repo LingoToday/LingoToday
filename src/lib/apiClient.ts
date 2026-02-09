@@ -787,10 +787,12 @@ export class ApiClient {
 
   /**
    * Get a V2 learning session
-   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life
+   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life&lessonId=lesson1&courseId=course1
    */
-  async getV2Session(userId: string, language: string, level: string, track: string): Promise<V2Session> {
+  async getV2Session(userId: string, language: string, level: string, track: string, lessonId?: string, courseId?: string): Promise<V2Session> {
     const params = new URLSearchParams({ userId, language, level, track });
+    if (lessonId) params.append('lessonId', lessonId);
+    if (courseId) params.append('courseId', courseId);
     return this.makeRequest(`/api/v2/session?${params.toString()}`);
   }
 

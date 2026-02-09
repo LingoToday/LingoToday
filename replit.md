@@ -46,6 +46,7 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 ## Recent Changes (Feb 09, 2026)
 
 **V2 Session API Parameter Fixes**:
+- **LessonId/CourseId Forwarding**: ChatLessonScreen now passes `lessonId` and `courseId` from route params to the V2 session API, so the backend returns phrases for the specific lesson the user tapped on the dashboard.
 - **Level Mapping**: ChatLessonScreen now converts human-readable levels (Beginner→A1, Intermediate→B1, Advanced→C1) to CEFR codes. Backend also accepts both formats.
 - **Track Resolution**: Added courseId-to-track fallback mapping (course1→basics, course2→daily_life, course3→holiday, course4→social, course5→work) for when upcoming-lessons API doesn't include track field.
 - **Level in Navigation**: All navigation paths to Lesson screen (dashboard taps, notification handlers, pending navigation) now pass `level` from upcoming-lessons API response.
