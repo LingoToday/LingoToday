@@ -694,9 +694,21 @@ export default function ChatLessonScreen() {
         'it': 'it', 'es': 'es', 'fr': 'fr', 'de': 'de', 'en': 'en',
       };
       const language = langMap[(routeParams.language || user?.selectedLanguage || 'italian').toLowerCase()] || 'it';
-      const level = (routeParams.level || user?.selectedLevel || 'A1').toUpperCase();
       
-      const track = routeParams.track || routeParams.courseId || 'basics';
+      const levelMap: Record<string, string> = {
+        'beginner': 'A1', 'elementary': 'A2', 'intermediate': 'B1',
+        'upper intermediate': 'B2', 'advanced': 'C1', 'proficient': 'C2',
+        'a1': 'A1', 'a2': 'A2', 'b1': 'B1', 'b2': 'B2', 'c1': 'C1', 'c2': 'C2',
+      };
+      const rawLevel = (routeParams.level || user?.selectedLevel || 'A1').toLowerCase();
+      const level = levelMap[rawLevel] || rawLevel.toUpperCase();
+      
+      const courseIdToTrack: Record<string, string> = {
+        'course1': 'basics', 'course2': 'daily_life', 'course3': 'holiday',
+        'course4': 'social', 'course5': 'work',
+      };
+      const rawTrackParam = routeParams.track || routeParams.courseId || 'basics';
+      const track = courseIdToTrack[rawTrackParam] || rawTrackParam;
       
       const debugParams = {
         rawUserId,
