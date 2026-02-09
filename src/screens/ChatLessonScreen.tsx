@@ -28,7 +28,6 @@ import type { V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest } from '../
 import { AuthContext } from '../contexts/AuthContext';
 import { loadChatHistory, saveChatHistory, StoredChatMessage } from '../services/chatHistoryService';
 import { purchaseService } from '../services/purchaseService';
-import { PRO_PRICING } from '../constants/pricing';
 import { useQueryClient } from '@tanstack/react-query';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
@@ -447,16 +446,14 @@ function VideoCard({ videoUrl, authToken, onVideoPlayed, played, hasProAccess, o
           {!hasProAccess && (
             <View style={styles.videoPaywallOverlay}>
               <View style={styles.videoPaywallCard}>
-                <Text style={styles.videoPaywallTitle}>Unlock Pro Learner video lessons</Text>
-                <Text style={styles.videoPaywallSubtitle}>to accelerate your learning!</Text>
-                <Text style={styles.videoPaywallPrice}>{PRO_PRICING.GBP.monthly}/month</Text>
+                <Text style={styles.videoPaywallTitle}>Enhance your learning.{'\n'}Sign up to Pro and access all videos</Text>
                 <TouchableOpacity
                   style={[styles.videoPaywallButton, isPurchasing && styles.videoPaywallButtonDisabled]}
                   onPress={onUpgrade}
                   disabled={isPurchasing}
                 >
                   <Text style={styles.videoPaywallButtonText}>
-                    {isPurchasing ? "Processing..." : "Upgrade & Unlock All Videos"}
+                    {isPurchasing ? "Processing..." : "Upgrade"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -2086,19 +2083,8 @@ const styles = StyleSheet.create({
     color: theme.colors.primaryForeground,
     textAlign: 'center',
   },
-  videoPaywallSubtitle: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.primaryForeground,
-    textAlign: 'center',
-  },
-  videoPaywallPrice: {
-    fontSize: theme.fontSize.base,
-    fontWeight: '700' as any,
-    color: theme.colors.primaryForeground,
-    textAlign: 'center',
-  },
   videoPaywallButton: {
-    backgroundColor: '#7C3AED',
+    backgroundColor: '#000000',
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.lg,
     borderRadius: theme.borderRadius.md,
