@@ -45,12 +45,13 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 
 ## Recent Changes (Feb 09, 2026)
 
-**V2 Session API Parameter Fixes**:
-- **LessonId/CourseId Forwarding**: ChatLessonScreen now passes `lessonId` and `courseId` from route params to the V2 session API, so the backend returns phrases for the specific lesson the user tapped on the dashboard.
-- **Level Mapping**: ChatLessonScreen now converts human-readable levels (Beginner→A1, Intermediate→B1, Advanced→C1) to CEFR codes. Backend also accepts both formats.
-- **Track Resolution**: Added courseId-to-track fallback mapping (course1→basics, course2→daily_life, course3→holiday, course4→social, course5→work) for when upcoming-lessons API doesn't include track field.
-- **Level in Navigation**: All navigation paths to Lesson screen (dashboard taps, notification handlers, pending navigation) now pass `level` from upcoming-lessons API response.
-- **userId Handling**: Non-numeric user IDs (e.g., local_xxx) are converted to numeric via parseInt with fallback to 1.
+**V2 Track-Based Dashboard**:
+- **Dashboard Redesign**: Replaced V1 "Coming Up Next" (individual phrases/lessons) with V2 "Your Tracks" section showing track cards (Basics, Daily Life, Holiday, Social) with progress bars, phrase counts, and status badges (new/in_progress/completed).
+- **V2 Upcoming Lessons API**: Dashboard now fetches from `GET /api/v2/upcoming-lessons?userId=X` which returns tracks with progress data, replacing the old V1 `/api/upcoming-lessons` endpoint.
+- **Track-Based Navigation**: Tapping a track navigates with `language`, `level`, and `track` only. Dropped `lessonId` and `courseId` (V1 concepts) from all navigation paths.
+- **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=basics` — backend handles phrase ordering via sort_order and user progress. No lessonId/courseId needed.
+- **Level Mapping**: ChatLessonScreen converts human-readable levels (Beginner→A1, etc.) to CEFR codes as safety net.
+- **userId Handling**: Non-numeric user IDs converted to numeric via parseInt with fallback to 1.
 
 ## Changes (Feb 06, 2026)
 

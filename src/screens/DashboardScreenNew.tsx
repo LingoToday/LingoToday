@@ -28,6 +28,7 @@ import { Badge } from '../components/ui/Badge';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import { useSheetManager } from '../contexts/SheetManagerContext';
 import { useResponsiveBreakpoints } from '../hooks/useResponsiveBreakpoints';
+import { V2UpcomingLesson, V2UpcomingLessonsResponse } from '../types';
 
 // Type definitions - matching web exactly
 interface User {
@@ -171,28 +172,54 @@ export default function DashboardScreenNew() {
     progress: [],
   });
 
-  const fallbackUpcomingLessons = [
+  const fallbackV2Tracks: V2UpcomingLesson[] = [
     {
-      courseId: 'course1',
-      lessonId: 'lesson1',
-      title: 'Basic Greetings',
-      description: 'Learn how to say hello and goodbye',
-      category: 'Greetings',
-      track: 'basics',
+      id: 'it_A1_basics',
+      language: 'it',
       level: 'A1',
-      isReview: false,
-      isIRLLesson: false,
+      track: 'basics',
+      title: 'Basics',
+      description: 'Essential greetings and introductions',
+      phraseCount: 45,
+      progress: { attempted: 0, mastered: 0, total: 45, percent: 0 },
+      status: 'new',
+      sortOrder: 1,
     },
     {
-      courseId: 'course1',
-      lessonId: 'lesson2',
-      title: 'Polite Expressions',
-      description: 'Please, thank you, and excuse me',
-      category: 'Greetings',
-      track: 'basics',
+      id: 'it_A1_daily_life',
+      language: 'it',
       level: 'A1',
-      isReview: false,
-      isIRLLesson: false,
+      track: 'daily_life',
+      title: 'Daily Life',
+      description: 'Everyday conversations and routines',
+      phraseCount: 12,
+      progress: { attempted: 0, mastered: 0, total: 12, percent: 0 },
+      status: 'new',
+      sortOrder: 2,
+    },
+    {
+      id: 'it_A1_holiday',
+      language: 'it',
+      level: 'A1',
+      track: 'holiday',
+      title: 'Holiday',
+      description: 'Travel and vacation phrases',
+      phraseCount: 0,
+      progress: { attempted: 0, mastered: 0, total: 0, percent: 0 },
+      status: 'new',
+      sortOrder: 3,
+    },
+    {
+      id: 'it_A1_social',
+      language: 'it',
+      level: 'A1',
+      track: 'social',
+      title: 'Social',
+      description: 'Making friends and socializing',
+      phraseCount: 0,
+      progress: { attempted: 0, mastered: 0, total: 0, percent: 0 },
+      status: 'new',
+      sortOrder: 4,
     },
   ];
 
@@ -209,23 +236,19 @@ useEffect(() => {
     
     const data = response.notification.request.content.data;
     
-    if (data?.action === 'openLesson' && data?.courseId && data?.lessonId && data?.language) {
-      console.log('🎯 Navigating to lesson:', {
+    if (data?.action === 'openLesson' && data?.language && data?.track) {
+      console.log('🎯 Navigating to track:', {
         language: data.language,
-        courseId: data.courseId,
-        lessonId: data.lessonId
-      });
-      
-      // Dismiss any open sheets before navigating
-      await sheetManager.dismissAllSheets();
-      
-      // Navigate to the lesson
-      navigation.navigate('Lesson', {
-        language: data.language,
-        courseId: data.courseId,
-        lessonId: data.lessonId,
         track: data.track,
         level: data.level,
+      });
+      
+      await sheetManager.dismissAllSheets();
+      
+      navigation.navigate('Lesson', {
+        language: data.language,
+        track: data.track as string,
+        level: (data.level as string) || 'A1',
       });
     }
   });
@@ -242,7 +265,7 @@ useEffect(() => {
     React.useCallback(() => {
       console.log('🔄 Dashboard screen focused - refetching data');
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/upcoming-lessons"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v2/upcoming-lessons"] });
       queryClient.invalidateQueries({ queryKey: ["/api/course-stats"] });
     }, [queryClient])
   );
@@ -283,19 +306,21 @@ useEffect(() => {
     retry: 1,
   });
 
-  // Fetch upcoming lessons with fallback
-  const { data: upcomingLessonsResponse } = useQuery<{ lessons: any[], timestamp: number }>({
-    queryKey: ["/api/upcoming-lessons"],
+  const { data: v2TracksResponse } = useQuery<V2UpcomingLessonsResponse>({
+    queryKey: ["/api/v2/upcoming-lessons"],
     queryFn: async () => {
       try {
-        const result = await apiClient.getUpcomingLessons();
-        console.log('[Dashboard] upcoming-lessons response:', JSON.stringify(result?.lessons?.[0], null, 2));
+        const rawUserId = user?.id || '1';
+        const userId = String(parseInt(rawUserId) || 1);
+        const result = await apiClient.getV2UpcomingLessons(userId);
+        console.log('[Dashboard] V2 upcoming-lessons response:', JSON.stringify(result?.lessons?.[0], null, 2));
         return result;
       } catch (error) {
-        console.warn('⚠️ Upcoming lessons API failed, using fallback:', error);
+        console.warn('⚠️ V2 upcoming lessons API failed, using fallback:', error);
         return {
-          lessons: fallbackUpcomingLessons,
-          timestamp: Date.now(),
+          language: 'it',
+          languageName: 'Italian',
+          lessons: fallbackV2Tracks,
         };
       }
     },
@@ -306,7 +331,7 @@ useEffect(() => {
   // Use effective data (API or fallback)
   const effectiveDashboardData = dashboardData || getFallbackData();
   const effectiveCourseStats = courseStats || { totalCourses: 5, totalLessons: 78 };
-  const upcomingLessons = upcomingLessonsResponse?.lessons || fallbackUpcomingLessons;
+  const v2Tracks = v2TracksResponse?.lessons || fallbackV2Tracks;
 
   // REMOVED: Local notification scheduling (now handled by backend push notifications)
   // Backend reads user preferences and sends push notifications via Expo Push Service
@@ -316,7 +341,7 @@ useEffect(() => {
     setRefreshing(true);
     try {
       await queryClient.refetchQueries({ queryKey: ["/api/dashboard"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/upcoming-lessons"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/v2/upcoming-lessons"] });
     } catch (error) {
       console.error('Refresh error:', error);
     } finally {
@@ -381,7 +406,7 @@ useEffect(() => {
     userName: effectiveDashboardData.user.firstName,
     statsData: stats,
     progressCount: allProgress.length,
-    upcomingCount: upcomingLessons.length,
+    upcomingCount: v2Tracks.length,
   });
 
   // Generate recent lessons - matching web logic exactly
@@ -517,87 +542,88 @@ useEffect(() => {
                   </Card>
                 )}
 
-                {/* Coming Up Next - matching web exactly */}
                 <Card style={styles.upcomingCard}>
                   <CardHeader style={styles.upcomingHeader}>
-                    <Text style={styles.upcomingTitle}>Coming Up Next</Text>
+                    <Text style={styles.upcomingTitle}>Your Tracks</Text>
                   </CardHeader>
                   <CardContent style={styles.upcomingContent}>
-                    {upcomingLessons.length > 0 ? (
-                      <>
-                        {/* Next lesson - prominent display */}
-                        <View style={[
-                          styles.nextLessonCard,
-                          { backgroundColor: upcomingLessons[0]?.isReview ? theme.colors.warning500 : theme.colors.primary }
-                        ]}>
-                          <View style={styles.nextLessonInfo}>
-                            <View style={styles.nextLessonHeader}>
-                              {upcomingLessons[0]?.isReview && (
-                                <Ionicons name="trophy" size={20} color={theme.colors.primaryForeground} />
-                              )}
-                              <Text style={styles.nextLessonTitle}>
-                                {upcomingLessons[0]?.title || 'Basic Greetings'}
-                              </Text>
-                            </View>
-                            <Text style={styles.nextLessonDescription}>
-                              {upcomingLessons[0]?.description || 'Learn how to say hello and goodbye'}
-                            </Text>
-                          </View>
-                          <TouchableOpacity 
-                            style={styles.nextLessonButton}
-                            onPress={() => navigation.navigate('Lesson', {
-                              language: effectiveDashboardData.user.selectedLanguage || 'italian',
-                              courseId: upcomingLessons[0]?.courseId || 'course1',
-                              lessonId: upcomingLessons[0]?.lessonId || 'lesson1',
-                              track: upcomingLessons[0]?.track,
-                              level: upcomingLessons[0]?.level,
-                            })}
-                          >
-                            <Text style={styles.nextLessonButtonText}>
-                              {upcomingLessons[0]?.isReview ? 'Review Now' : 'Start Now'}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-
-                        {/* Upcoming lessons - compact list */}
-                        <View style={styles.upcomingList}>
-                          {upcomingLessons.slice(1, 8).map((lesson, index) => (
-                            <TouchableOpacity 
-                              key={`${lesson.courseId}-${lesson.lessonId}-${index}`} 
+                    {v2Tracks.length > 0 ? (
+                      <View style={styles.upcomingList}>
+                        {v2Tracks.map((trackItem, index) => {
+                          const statusIcon = trackItem.status === 'completed' ? 'checkmark-circle' : 
+                                            trackItem.status === 'in_progress' ? 'play-circle' : 'add-circle-outline';
+                          const statusColor = trackItem.status === 'completed' ? theme.colors.success500 : 
+                                             trackItem.status === 'in_progress' ? theme.colors.primary : theme.colors.mutedForeground;
+                          const isFirst = index === 0;
+                          
+                          return (
+                            <TouchableOpacity
+                              key={trackItem.id}
                               style={[
-                                styles.upcomingItem,
-                                lesson.isReview && styles.upcomingItemReview
+                                isFirst ? styles.nextLessonCard : styles.trackItem,
+                                isFirst && { backgroundColor: theme.colors.primary },
                               ]}
                               onPress={() => navigation.navigate('Lesson', {
-                                language: effectiveDashboardData.user.selectedLanguage || 'italian',
-                                courseId: lesson.courseId,
-                                lessonId: lesson.lessonId,
-                                track: lesson.track,
-                                level: lesson.level,
+                                language: trackItem.language,
+                                track: trackItem.track,
+                                level: trackItem.level,
                               })}
                             >
-                              <View style={styles.upcomingItemContent}>
-                                <Text style={[
-                                  styles.upcomingItemTitle,
-                                  lesson.isReview && styles.upcomingItemTitleReview
-                                ]}>
-                                  {lesson.title}
-                                </Text>
-                                <Text style={[
-                                  styles.upcomingItemDescription,
-                                  lesson.isReview && styles.upcomingItemDescriptionReview
-                                ]}>
-                                  {lesson.description}
-                                </Text>
-                              </View>
+                              {isFirst ? (
+                                <>
+                                  <View style={styles.nextLessonInfo}>
+                                    <View style={styles.nextLessonHeader}>
+                                      <Ionicons name={statusIcon} size={20} color={theme.colors.primaryForeground} />
+                                      <Text style={styles.nextLessonTitle}>{trackItem.title}</Text>
+                                    </View>
+                                    <Text style={styles.nextLessonDescription}>{trackItem.description}</Text>
+                                    {trackItem.phraseCount > 0 && (
+                                      <View style={styles.trackProgressRow}>
+                                        <View style={styles.trackProgressBarBg}>
+                                          <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%`, backgroundColor: theme.colors.primaryForeground }]} />
+                                        </View>
+                                        <Text style={[styles.trackProgressText, { color: theme.colors.primaryForeground }]}>
+                                          {trackItem.progress.mastered}/{trackItem.progress.total} phrases
+                                        </Text>
+                                      </View>
+                                    )}
+                                  </View>
+                                  <View style={styles.nextLessonButton}>
+                                    <Text style={styles.nextLessonButtonText}>
+                                      {trackItem.status === 'new' ? 'Start' : trackItem.status === 'in_progress' ? 'Continue' : 'Review'}
+                                    </Text>
+                                  </View>
+                                </>
+                              ) : (
+                                <>
+                                  <View style={styles.trackIconContainer}>
+                                    <Ionicons name={statusIcon} size={24} color={statusColor} />
+                                  </View>
+                                  <View style={styles.trackItemContent}>
+                                    <Text style={styles.upcomingItemTitle}>{trackItem.title}</Text>
+                                    <Text style={styles.upcomingItemDescription}>{trackItem.description}</Text>
+                                    {trackItem.phraseCount > 0 && (
+                                      <View style={styles.trackProgressRow}>
+                                        <View style={styles.trackProgressBarBg}>
+                                          <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%` }]} />
+                                        </View>
+                                        <Text style={styles.trackProgressText}>
+                                          {trackItem.progress.mastered}/{trackItem.progress.total}
+                                        </Text>
+                                      </View>
+                                    )}
+                                  </View>
+                                  <Ionicons name="chevron-forward" size={20} color={theme.colors.mutedForeground} />
+                                </>
+                              )}
                             </TouchableOpacity>
-                          ))}
-                        </View>
-                      </>
+                          );
+                        })}
+                      </View>
                     ) : (
                       <View style={styles.noLessonsContainer}>
                         <Ionicons name="checkmark-circle" size={48} color={theme.colors.success500} />
-                        <Text style={styles.noLessonsTitle}>All lessons completed!</Text>
+                        <Text style={styles.noLessonsTitle}>All tracks completed!</Text>
                         <Text style={styles.noLessonsSubtitle}>Check back later for new content.</Text>
                       </View>
                     )}
@@ -1067,6 +1093,49 @@ const createStyles = (isTablet: boolean) => StyleSheet.create({
   },
   upcomingItemDescriptionReview: {
     color: theme.colors.textSecondary,
+  },
+  trackItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Platform.OS === 'android' ? 12 : 14,
+    borderRadius: 8,
+    backgroundColor: theme.colors.surfaceDark,
+    gap: 12,
+  },
+  trackIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trackItemContent: {
+    flex: 1,
+    gap: 4,
+  },
+  trackProgressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 4,
+  },
+  trackProgressBarBg: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: theme.colors.border,
+    overflow: 'hidden' as const,
+  },
+  trackProgressBarFill: {
+    height: '100%',
+    borderRadius: 2,
+    backgroundColor: theme.colors.primary,
+  },
+  trackProgressText: {
+    fontSize: 11,
+    color: theme.colors.mutedForeground,
+    minWidth: 45,
   },
 
   // No Lessons (matching web exactly)

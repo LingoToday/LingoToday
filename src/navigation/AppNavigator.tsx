@@ -46,7 +46,7 @@ export type RootStackParamList = {
   MainTabs: { screen?: 'Home' | 'Profile' } | undefined;
   Courses: { language?: string } | undefined;
   Progress: undefined;
-  Lesson: { lessonId: string; language?: string; courseId?: string; track?: string; level?: string; from?: string; id?: string };
+  Lesson: { language: string; track: string; level: string; from?: string; };
   LessonComplete: { lessonTitle: string; lessonId: string; courseId: string; score: number; language: string };
   Checkpoint: { courseId: string; checkpointId: string };
   Subscribe: undefined;
@@ -141,10 +141,8 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
           
           navigationRef.current.navigate('Lesson', {
             language: data.language as string,
-            courseId: data.courseId as string,
-            lessonId: data.lessonId as string,
-            track: data.track as string,
-            level: data.level as string,
+            track: (data.track as string) || 'basics',
+            level: (data.level as string) || 'A1',
           });
         }
       }
@@ -179,10 +177,8 @@ export default function AppNavigator({ isAuthenticated, isLoading, user }: AppNa
               setTimeout(() => {
                 navigationRef.current?.navigate('Lesson', {
                   language: navigationData.language,
-                  courseId: navigationData.courseId,
-                  lessonId: navigationData.lessonId,
-                  track: navigationData.track,
-                  level: navigationData.level,
+                  track: navigationData.track || 'basics',
+                  level: navigationData.level || 'A1',
                 });
               }, 100);
             } else {

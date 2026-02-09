@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import type { V2StatusResponse, V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest, V2AttemptResponse, V2PhraseProgress } from '../types';
+import type { V2StatusResponse, V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest, V2AttemptResponse, V2PhraseProgress, V2UpcomingLessonsResponse } from '../types';
 
 export interface User {
   id: string;
@@ -786,13 +786,20 @@ export class ApiClient {
   }
 
   /**
-   * Get a V2 learning session
-   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life&lessonId=lesson1&courseId=course1
+   * Get V2 upcoming lessons (tracks with progress)
+   * GET /api/v2/upcoming-lessons?userId=123
    */
-  async getV2Session(userId: string, language: string, level: string, track: string, lessonId?: string, courseId?: string): Promise<V2Session> {
+  async getV2UpcomingLessons(userId?: string): Promise<V2UpcomingLessonsResponse> {
+    const params = userId ? `?userId=${userId}` : '';
+    return this.makeRequest(`/api/v2/upcoming-lessons${params}`);
+  }
+
+  /**
+   * Get a V2 learning session
+   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life
+   */
+  async getV2Session(userId: string, language: string, level: string, track: string): Promise<V2Session> {
     const params = new URLSearchParams({ userId, language, level, track });
-    if (lessonId) params.append('lessonId', lessonId);
-    if (courseId) params.append('courseId', courseId);
     return this.makeRequest(`/api/v2/session?${params.toString()}`);
   }
 

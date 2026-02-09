@@ -110,6 +110,32 @@ export interface V2StatusResponse {
 // This type is kept for documentation but the actual response is string[]
 export type V2TracksResponse = string[];
 
+export interface V2UpcomingLessonProgress {
+  attempted: number;
+  mastered: number;
+  total: number;
+  percent: number;
+}
+
+export interface V2UpcomingLesson {
+  id: string;
+  language: string;
+  level: string;
+  track: string;
+  title: string;
+  description: string;
+  phraseCount: number;
+  progress: V2UpcomingLessonProgress;
+  status: 'new' | 'in_progress' | 'completed';
+  sortOrder: number;
+}
+
+export interface V2UpcomingLessonsResponse {
+  language: string;
+  languageName: string;
+  lessons: V2UpcomingLesson[];
+}
+
 export interface V2ContextVariation {
   scenario: string;
   prompt: string;

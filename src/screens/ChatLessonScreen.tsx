@@ -32,8 +32,6 @@ type ChatLessonRouteParams = {
   language?: string;
   level?: string;
   track?: string;
-  courseId?: string;
-  lessonId?: string;
 };
 
 type MessageType = 
@@ -703,19 +701,11 @@ export default function ChatLessonScreen() {
       const rawLevel = (routeParams.level || user?.selectedLevel || 'A1').toLowerCase();
       const level = levelMap[rawLevel] || rawLevel.toUpperCase();
       
-      const courseIdToTrack: Record<string, string> = {
-        'course1': 'basics', 'course2': 'daily_life', 'course3': 'holiday',
-        'course4': 'social', 'course5': 'work',
-      };
-      const rawTrackParam = routeParams.track || routeParams.courseId || 'basics';
-      const track = courseIdToTrack[rawTrackParam] || rawTrackParam;
+      const track = routeParams.track || 'basics';
       
-      const lessonId = routeParams.lessonId;
-      const courseId = routeParams.courseId;
+      console.log('[V2 Session] Params:', { userId, language, level, track, routeParams });
       
-      console.log('[V2 Session] Params:', { userId, language, level, track, lessonId, courseId, routeParams });
-      
-      const session = await apiClient.getV2Session(userId, language, level, track, lessonId, courseId);
+      const session = await apiClient.getV2Session(userId, language, level, track);
       console.log('[V2 Session] Response: phrases=' + (session?.phrases?.length || 0));
       
       if (session && session.phrases && session.phrases.length > 0) {
