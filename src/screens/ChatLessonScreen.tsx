@@ -1520,29 +1520,25 @@ export default function ChatLessonScreen() {
                       onUpgrade={handleUpgrade}
                       isPurchasing={isPurchasing}
                     />
-                    {hasProAccess && (
-                      <>
-                        <View style={{ marginTop: theme.spacing.md }}>
-                          <CoachBubble content="Can you respond to this?" />
-                        </View>
-                        {message.videoPlayed && !message.userAnswer && (
-                          <View style={{ marginTop: theme.spacing.md }}>
-                            <FreeInputCard
-                              prompt={message.content || ''}
-                              expectedAnswers={message.expectedAnswers || []}
-                              onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
-                              answered={!!message.userAnswer}
-                              cardType="speech"
-                              language={phraseRef.current?.language || 'it'}
-                            />
-                          </View>
-                        )}
-                        {message.userAnswer && (
-                          <View style={{ marginTop: theme.spacing.md }}>
-                            <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
-                          </View>
-                        )}
-                      </>
+                    <View style={{ marginTop: theme.spacing.md }}>
+                      <CoachBubble content="Can you respond to this?" />
+                    </View>
+                    {(message.videoPlayed || !hasProAccess) && !message.userAnswer && (
+                      <View style={{ marginTop: theme.spacing.md }}>
+                        <FreeInputCard
+                          prompt={message.content || ''}
+                          expectedAnswers={message.expectedAnswers || []}
+                          onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
+                          answered={!!message.userAnswer}
+                          cardType="speech"
+                          language={phraseRef.current?.language || 'it'}
+                        />
+                      </View>
+                    )}
+                    {message.userAnswer && (
+                      <View style={{ marginTop: theme.spacing.md }}>
+                        <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
+                      </View>
                     )}
                   </View>
                 );
