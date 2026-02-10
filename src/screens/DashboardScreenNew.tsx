@@ -569,7 +569,6 @@ useEffect(() => {
                                     <View style={styles.nextLessonHeader}>
                                       <Text style={styles.nextLessonTitle}>{trackItem.title}</Text>
                                     </View>
-                                    <Text style={styles.nextLessonDescription}>{trackItem.description}</Text>
                                     {trackItem.phraseCount > 0 && (
                                       <View style={styles.trackProgressRow}>
                                         <View style={styles.trackProgressBarBg}>
@@ -591,7 +590,6 @@ useEffect(() => {
                                 <>
                                   <View style={styles.trackItemContent}>
                                     <Text style={styles.upcomingItemTitle}>{trackItem.title}</Text>
-                                    <Text style={styles.upcomingItemDescription}>{trackItem.description}</Text>
                                     {trackItem.phraseCount > 0 && (
                                       <View style={styles.trackProgressRow}>
                                         <View style={styles.trackProgressBarBg}>
