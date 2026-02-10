@@ -234,7 +234,6 @@ export interface V2Session {
 }
 
 export interface V2AttemptRequest {
-  userId: number;
   phraseId: string;
   exerciseType: string;
   isCorrect: boolean;

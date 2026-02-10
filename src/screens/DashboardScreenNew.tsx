@@ -310,9 +310,7 @@ useEffect(() => {
     queryKey: ["/api/v2/upcoming-lessons"],
     queryFn: async () => {
       try {
-        const rawUserId = user?.id || '1';
-        const userId = String(parseInt(rawUserId) || 1);
-        const result = await apiClient.getV2UpcomingLessons(userId);
+        const result = await apiClient.getV2UpcomingLessons();
         console.log('[Dashboard] V2 upcoming-lessons response:', JSON.stringify(result?.lessons?.[0], null, 2));
         return result;
       } catch (error) {

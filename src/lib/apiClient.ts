@@ -787,19 +787,20 @@ export class ApiClient {
 
   /**
    * Get V2 upcoming lessons (tracks with progress)
-   * GET /api/v2/upcoming-lessons?userId=123
+   * GET /api/v2/upcoming-lessons
+   * Backend resolves user from JWT automatically
    */
-  async getV2UpcomingLessons(userId?: string): Promise<V2UpcomingLessonsResponse> {
-    const params = userId ? `?userId=${userId}` : '';
-    return this.makeRequest(`/api/v2/upcoming-lessons${params}`);
+  async getV2UpcomingLessons(): Promise<V2UpcomingLessonsResponse> {
+    return this.makeRequest('/api/v2/upcoming-lessons');
   }
 
   /**
    * Get a V2 learning session
-   * GET /api/v2/session?userId=123&language=it&level=A1&track=daily_life
+   * GET /api/v2/session?language=it&level=A1&track=daily_life
+   * Backend resolves user from JWT automatically
    */
-  async getV2Session(userId: string, language: string, level: string, track: string): Promise<V2Session> {
-    const params = new URLSearchParams({ userId, language, level, track });
+  async getV2Session(language: string, level: string, track: string): Promise<V2Session> {
+    const params = new URLSearchParams({ language, level, track });
     return this.makeRequest(`/api/v2/session?${params.toString()}`);
   }
 
