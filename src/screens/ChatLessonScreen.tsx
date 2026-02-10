@@ -497,7 +497,7 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType, 
   const getCardTitle = () => {
     switch (cardType) {
       case 'translateBack': return 'Translate to Italian:';
-      case 'speech': return 'Say out loud:';
+      case 'speech': return '';
       case 'context': return 'Respond in Italian:';
       default: return '';
     }
