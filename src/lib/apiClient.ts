@@ -796,11 +796,10 @@ export class ApiClient {
 
   /**
    * Get a V2 learning session
-   * GET /api/v2/session?language=it&level=A1&track=daily_life
-   * Backend resolves user from JWT automatically
+   * GET /api/v2/session?userId=1&language=it&level=A1&track=daily_life
    */
-  async getV2Session(language: string, level: string, track: string): Promise<V2Session> {
-    const params = new URLSearchParams({ language, level, track });
+  async getV2Session(userId: string, language: string, level: string, track: string): Promise<V2Session> {
+    const params = new URLSearchParams({ userId, language, level, track });
     return this.makeRequest(`/api/v2/session?${params.toString()}`);
   }
 

@@ -46,10 +46,9 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 ## Recent Changes (Feb 10, 2026)
 
 **JWT-Based User Resolution (userId removal)**:
-- **All V2 API calls now rely on JWT** for user identification. Removed explicit `userId` query parameter from `getV2UpcomingLessons()`, `getV2Session()`, and `postV2Attempt()`.
 - **Upcoming Lessons**: `GET /api/v2/upcoming-lessons` — no query params needed, backend resolves user from JWT. Progress (mastered count) now reflects actual phrase attempts.
-- **Session API**: `GET /api/v2/session?language=it&level=A1&track=basics` — only language, level, track params needed.
-- **Attempt Reporting**: `POST /api/v2/attempts` — body no longer includes `userId`, backend resolves from JWT.
+- **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=basics` — still requires userId query param.
+- **Attempt Reporting**: `POST /api/v2/attempts` — body still includes `userId`, backend has not yet migrated this endpoint to JWT resolution.
 - **Dashboard label**: Changed "Your Tracks" to "Your learning journey".
 
 ## Changes (Feb 09, 2026)

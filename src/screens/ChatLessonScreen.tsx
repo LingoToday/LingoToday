@@ -776,6 +776,9 @@ export default function ChatLessonScreen() {
     try {
       setIsLoading(true);
       
+      const rawUserId = user?.id || '1';
+      const userId = String(parseInt(rawUserId) || 1);
+      
       const langMap: Record<string, string> = {
         'italian': 'it', 'spanish': 'es', 'french': 'fr', 'german': 'de', 'english': 'en',
         'it': 'it', 'es': 'es', 'fr': 'fr', 'de': 'de', 'en': 'en',
@@ -819,9 +822,9 @@ export default function ChatLessonScreen() {
         historyLoadedRef.current = true;
       }
       
-      console.log('[V2 Session] Params:', { language, level, track, routeParams });
+      console.log('[V2 Session] Params:', { userId, language, level, track, routeParams });
       
-      const session = await apiClient.getV2Session(language, level, track);
+      const session = await apiClient.getV2Session(userId, language, level, track);
       console.log('[V2 Session] Response: phrases=' + (session?.phrases?.length || 0));
       
       savePendingRef.current = true;
@@ -1165,12 +1168,15 @@ export default function ChatLessonScreen() {
 
   const reportAttempt = async (exerciseType: string, isCorrect: boolean, userAnswer: string, expectedAnswer: string) => {
     try {
+      const rawUserId = user?.id || '1';
+      const numericUserId = parseInt(rawUserId) || 1;
       const phrase = phraseRef.current;
       if (!phrase) return;
       
       const responseTimeMs = Date.now() - exerciseStartTimeRef.current;
       
       await apiClient.postV2Attempt({
+        userId: numericUserId,
         phraseId: phrase.phraseId,
         exerciseType,
         isCorrect,
