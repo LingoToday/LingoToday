@@ -43,21 +43,27 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **OpenAI TTS API**: For enhanced pronunciation.
 - **OpenAI Whisper API**: For speech-to-text transcription.
 
-## Recent Changes (Feb 09, 2026)
+## Recent Changes (Feb 10, 2026)
+
+**JWT-Based User Resolution (userId removal)**:
+- **All V2 API calls now rely on JWT** for user identification. Removed explicit `userId` query parameter from `getV2UpcomingLessons()`, `getV2Session()`, and `postV2Attempt()`.
+- **Upcoming Lessons**: `GET /api/v2/upcoming-lessons` — no query params needed, backend resolves user from JWT. Progress (mastered count) now reflects actual phrase attempts.
+- **Session API**: `GET /api/v2/session?language=it&level=A1&track=basics` — only language, level, track params needed.
+- **Attempt Reporting**: `POST /api/v2/attempts` — body no longer includes `userId`, backend resolves from JWT.
+- **Dashboard label**: Changed "Your Tracks" to "Your learning journey".
+
+## Changes (Feb 09, 2026)
 
 **V2 Track-Based Dashboard**:
-- **Dashboard Redesign**: Replaced V1 "Coming Up Next" (individual phrases/lessons) with V2 "Your Tracks" section showing track cards (Basics, Daily Life, Holiday, Social) with progress bars, phrase counts, and status badges (new/in_progress/completed).
-- **V2 Upcoming Lessons API**: Dashboard now fetches from `GET /api/v2/upcoming-lessons?userId=X` which returns tracks with progress data, replacing the old V1 `/api/upcoming-lessons` endpoint.
+- **Dashboard Redesign**: Replaced V1 "Coming Up Next" (individual phrases/lessons) with V2 "Your learning journey" section showing track cards (Basics, Daily Life, Holiday, Social) with progress bars, phrase counts, and status badges (new/in_progress/completed).
 - **Track-Based Navigation**: Tapping a track navigates with `language`, `level`, and `track` only. Dropped `lessonId` and `courseId` (V1 concepts) from all navigation paths.
-- **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=basics` — backend handles phrase ordering via sort_order and user progress. No lessonId/courseId needed.
 - **Level Mapping**: ChatLessonScreen converts human-readable levels (Beginner→A1, etc.) to CEFR codes as safety net.
-- **userId Handling**: Non-numeric user IDs converted to numeric via parseInt with fallback to 1.
 - **Chat History Persistence**: Chat messages are persisted to AsyncStorage per track (keyed by `chat_history_{language}_{level}_{track}`). When reopening a track, previous session messages load at the top with a "New Session" divider, and new content appears below. Historical interactive cards (MCQ, gap fill, etc.) render as read-only. Service: `src/services/chatHistoryService.ts`. Max 500 messages per track.
 
 ## Changes (Feb 06, 2026)
 
 **V2 Lesson Engine Full Integration**: All users now use the V2 chat-based lesson experience:
-- **Session API**: `GET /api/v2/session?userId=X&language=it&level=A1&track=daily_life` fetches 4-5 phrases per session with server-assigned methods (new/weak/review categorization, SM-2 spaced repetition)
+- **Session API**: `GET /api/v2/session?language=it&level=A1&track=daily_life` fetches 4-5 phrases per session with server-assigned methods (new/weak/review categorization, SM-2 spaced repetition)
 - **Attempt Reporting**: `POST /api/v2/attempts` reports each exercise result (exerciseType, isCorrect, responseTimeMs, userAnswer, expectedAnswer) for mastery tracking
 - **Multi-Phrase Sessions**: ChatLessonScreen loops through multiple phrases in a session, showing phrase type indicators (new/weak/review) and progress counters
 - **Navigation**: Dashboard lesson taps now route to ChatLessonScreen (replaced LessonScreenNew). "Try V2" test tab removed from bottom navigation.
