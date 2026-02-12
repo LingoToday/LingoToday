@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import styles from '../styles/OnboardingStyles';
 
-const flexibilityImage = require('../attached_assets/Gemini_Generated_Image_9i25319i25319i25_1770927201736.png');
+const flexibilityImage = require('../../attached_assets/Gemini_Generated_Image_9i25319i25319i25_1770927201736.png');
 
 const OnboardingFlexibilityScreen = () => (
   <View style={styles.screenContent}>

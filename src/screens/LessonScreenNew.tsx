@@ -370,13 +370,13 @@ export default function LessonScreen() {
     
     switch (courseId) {
       case 'course1':
-        return require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
+        return require('../../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
       case 'course2':
-        return require('../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV');
+        return require('../../attached_assets/Italian beginners cours 2 introduction video_1757602127178.MOV');
       case 'course3':
-        return require('../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV');
+        return require('../../attached_assets/Italian beginners cours 3 introduction video_1757602127174.MOV');
       default:
-        return require('../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
+        return require('../../attached_assets/italian beginners course 1 introduction_1763387065863.mp4');
     }
   };
 
