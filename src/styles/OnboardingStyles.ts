@@ -417,6 +417,46 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
 
+  // Vocabulary Assessment Screens
+  vocabLevelIndicator: {
+    fontSize: 14,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.primary,
+    textAlign: 'center',
+    marginBottom: 20,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  vocabWordGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+    width: '100%',
+  },
+  vocabPill: {
+    backgroundColor: theme.colors.card,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+  },
+  vocabPillSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 2,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  vocabPillText: {
+    fontSize: 14,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+  vocabPillTextSelected: {
+    color: theme.colors.primary,
+    fontWeight: "600" as TextStyle["fontWeight"],
+  },
+
   // Challenge Assessment Screens
   challengeStatement: {
     fontSize: 20,
