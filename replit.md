@@ -43,7 +43,17 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **OpenAI TTS API**: For enhanced pronunciation.
 - **OpenAI Whisper API**: For speech-to-text transcription.
 
-## Recent Changes (Feb 10, 2026)
+## Recent Changes (Feb 12, 2026)
+
+**Onboarding Flow Expansion (11 screens)**:
+- **Age Selection (Screen 2)**: 2x2 grid with age ranges (18-24, 25-34, 35-44, 45+), inserted after language selection.
+- **Gender Selection (Screen 3)**: Vertical list with emoji icons (Female, Male, Rather not to say).
+- **Current Language Level (Screen 4)**: Staggered 2-column grid with 7 proficiency levels (Total Beginner through Proficient), includes its own fixed-bottom Continue button.
+- **Screen flow**: Language → Age → Gender → Current Level → Level → Learning Style → Registration → Notifications → Testimonials → Learning Plan → Payment (11 total).
+- New state variables (`selectedAge`, `selectedGender`, `selectedCurrentLevel`) added to onboarding persistence.
+- New styles in `src/styles/OnboardingStyles.ts`: `ageCard`, `genderCard`, `currentLevelGrid` families.
+
+## Changes (Feb 10, 2026)
 
 **JWT-Based User Resolution (userId removal)**:
 - **Upcoming Lessons**: `GET /api/v2/upcoming-lessons` — no query params needed, backend resolves user from JWT. Progress (mastered count) now reflects actual phrase attempts.
