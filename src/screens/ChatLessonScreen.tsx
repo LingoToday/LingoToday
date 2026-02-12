@@ -1543,24 +1543,54 @@ export default function ChatLessonScreen() {
                       onUpgrade={handleUpgrade}
                       isPurchasing={isPurchasing}
                     />
-                    <View style={{ marginTop: theme.spacing.md }}>
-                      <CoachBubble content="Can you respond to this?" />
-                    </View>
-                    {(message.videoPlayed || !hasProAccess) && !message.userAnswer && (
-                      <View style={{ marginTop: theme.spacing.md }}>
-                        <FreeInputCard
-                          prompt={message.content || ''}
-                          expectedAnswers={message.expectedAnswers || []}
-                          onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
-                          answered={!!message.userAnswer}
-                          cardType="speech"
-                          language={phraseRef.current?.language || 'it'}
-                        />
-                      </View>
-                    )}
-                    {message.userAnswer && (
-                      <View style={{ marginTop: theme.spacing.md }}>
-                        <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
+                    {hasProAccess ? (
+                      <>
+                        <View style={{ marginTop: theme.spacing.md }}>
+                          <CoachBubble content="Can you respond to this?" />
+                        </View>
+                        {(message.videoPlayed) && !message.userAnswer && (
+                          <View style={{ marginTop: theme.spacing.md }}>
+                            <FreeInputCard
+                              prompt={message.content || ''}
+                              expectedAnswers={message.expectedAnswers || []}
+                              onAnswer={(answer, isCorrect) => handleVideoResponse(message.id, answer, isCorrect)}
+                              answered={!!message.userAnswer}
+                              cardType="speech"
+                              language={phraseRef.current?.language || 'it'}
+                            />
+                          </View>
+                        )}
+                        {message.userAnswer && (
+                          <View style={{ marginTop: theme.spacing.md }}>
+                            <UserBubble content={message.userAnswer} isCorrect={message.isCorrect} />
+                          </View>
+                        )}
+                      </>
+                    ) : (
+                      <View style={styles.videoUpgradeSection}>
+                        <TouchableOpacity
+                          style={[styles.videoUnlockButton, isPurchasing && styles.videoPaywallButtonDisabled]}
+                          onPress={handleUpgrade}
+                          disabled={isPurchasing}
+                        >
+                          <Ionicons name="lock-open-outline" size={18} color={theme.colors.primaryForeground} />
+                          <Text style={styles.videoUnlockButtonText}>
+                            {isPurchasing ? "Processing..." : "Unlock real life scenario videos"}
+                          </Text>
+                        </TouchableOpacity>
+                        {!message.answered && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              setMessages(prev => prev.map(msg =>
+                                msg.id === message.id ? { ...msg, answered: true } : msg
+                              ));
+                              advanceToNextMethod();
+                            }}
+                            style={styles.continueWithoutButton}
+                          >
+                            <Text style={styles.continueWithoutText}>Continue without</Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     )}
                   </View>
@@ -2032,13 +2062,13 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
     overflow: 'hidden',
-    maxWidth: '75%',
+    maxWidth: '85%',
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
   videoContainer: {
-    width: 200,
-    aspectRatio: 9 / 16, // Portrait video format
+    width: 260,
+    aspectRatio: 9 / 16,
     backgroundColor: theme.colors.surfaceContainer,
     position: 'relative',
   },
@@ -2150,5 +2180,33 @@ const styles = StyleSheet.create({
     color: theme.colors.primaryForeground,
     fontSize: theme.fontSize.base,
     fontWeight: '700' as any,
+  },
+  videoUpgradeSection: {
+    alignItems: 'center' as const,
+    marginTop: theme.spacing.md,
+    gap: 12,
+  },
+  videoUnlockButton: {
+    backgroundColor: theme.colors.primary,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    gap: 8,
+    width: '100%',
+  },
+  videoUnlockButtonText: {
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.sm,
+    fontWeight: '700' as any,
+  },
+  continueWithoutButton: {
+    paddingVertical: 8,
+  },
+  continueWithoutText: {
+    color: theme.colors.mutedForeground,
+    fontSize: theme.fontSize.xs,
   },
 });
