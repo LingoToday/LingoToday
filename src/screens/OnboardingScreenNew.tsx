@@ -25,6 +25,7 @@ import OnboardingVocabularyScreen from './OnboardingVocabularyScreen';
 import OnboardingInterestsScreen from './OnboardingInterestsScreen';
 import OnboardingEventsScreen from './OnboardingEventsScreen';
 import OnboardingLoadingScreen from './OnboardingLoadingScreen';
+import OnboardingGrowthChartScreen from './OnboardingGrowthChartScreen';
 import * as WebBrowser from 'expo-web-browser';
 import * as Notifications from 'expo-notifications';
 import { AuthContext } from '../contexts/AuthContext';
@@ -194,7 +195,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 28;
+  const totalScreens = 29;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -323,13 +324,14 @@ export default function OnboardingScreen() {
       case 18: return selectedInterests.length > 0;
       case 19: return selectedEvent !== '';
       case 20: return false;
-      case 21: return selectedLevel !== '';
-      case 22: return selectedLearningStyle !== '';
-      case 23: return false;
-      case 24: return true;
+      case 21: return true;
+      case 22: return selectedLevel !== '';
+      case 23: return selectedLearningStyle !== '';
+      case 24: return false;
       case 25: return true;
       case 26: return true;
       case 27: return true;
+      case 28: return true;
       default: return false;
     }
   };
@@ -613,18 +615,20 @@ export default function OnboardingScreen() {
           onGoalSelect={setSelectedGoal}
         />;
       case 21:
+        return <OnboardingGrowthChartScreen />;
+      case 22:
         return <LevelSelectionScreen 
           selectedLevel={selectedLevel} 
           onLevelSelect={handleLevelSelect}
           levels={levels}
         />;
-      case 22:
+      case 23:
         return <LearningStyleScreen 
           selectedStyle={selectedLearningStyle} 
           onStyleSelect={handleLearningStyleSelect}
           styles={learningStyles}
         />;
-      case 23:
+      case 24:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -633,21 +637,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 24:
+      case 25:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 25:
-        return <TestimonialsScreen onContinue={nextScreen} />;
       case 26:
+        return <TestimonialsScreen onContinue={nextScreen} />;
+      case 27:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 27:
+      case 28:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -710,8 +714,8 @@ const handlePaymentSuccess = async () => {
             </Text>
           </View>
 
-          {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 26 && (
+          {/* Android-only skip button for Learning Plan screen - positioned at top right of content */}
+          {Platform.OS === 'android' && currentScreen === 27 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -735,7 +739,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 27 ? (
+          {currentScreen === 28 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -752,8 +756,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on current level (3, has own), loading (20), registration (23), testimonials (25), learning plan (26), payment (27) */}
-          {currentScreen < 27 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 23 && currentScreen !== 25 && currentScreen !== 26 && (
+          {/* Continue button - hide on current level (3, has own), loading (20), registration (24), testimonials (26), learning plan (27), payment (28) */}
+          {currentScreen < 28 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 24 && currentScreen !== 26 && currentScreen !== 27 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}

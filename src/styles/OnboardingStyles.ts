@@ -487,6 +487,58 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
 
+  // Growth Chart Screen (personalized plan)
+  growthChartHeader: {
+    fontSize: 26,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: 8,
+    marginTop: 12,
+  },
+  growthChartSubheader: {
+    fontSize: 15,
+    fontWeight: "400" as TextStyle["fontWeight"],
+    color: theme.colors.mutedForeground,
+    textAlign: 'center',
+    marginBottom: 32,
+    paddingHorizontal: 16,
+    lineHeight: 22,
+  },
+  growthChartContainer: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderRadius: 20,
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 8,
+    alignItems: 'center',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+  },
+  growthChartLegend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 24,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  growthChartLegendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  growthChartLegendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  growthChartLegendLabel: {
+    fontSize: 13,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+
   // Daily Practice Goal Overlay (on Loading Screen)
   goalOverlayBackdrop: {
     position: 'absolute',
