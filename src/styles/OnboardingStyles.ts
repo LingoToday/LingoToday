@@ -417,6 +417,84 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
 
+  // Personal Interests Screen (3-column grid)
+  interestsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: theme.spacing.sm,
+    maxWidth: 384,
+    width: '100%',
+  },
+  interestCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '31%',
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    minHeight: 90,
+  },
+  interestCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  interestEmoji: {
+    fontSize: 24,
+    marginBottom: theme.spacing.xs,
+  },
+  interestLabel: {
+    fontSize: theme.fontSize.xs,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+  },
+  interestLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  interestCheckIcon: {
+    position: 'absolute',
+    top: theme.spacing.xs,
+    right: theme.spacing.xs,
+  },
+
+  // Upcoming Events Screen
+  eventCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+  },
+  eventCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  eventEmoji: {
+    fontSize: 24,
+  },
+  eventLabel: {
+    flex: 1,
+    fontSize: theme.fontSize.base,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+  eventLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  eventCheckIcon: {
+    marginLeft: 'auto',
+    flexShrink: 0,
+  },
+
   // Vocabulary Assessment Screens
   vocabLevelIndicator: {
     fontSize: 14,

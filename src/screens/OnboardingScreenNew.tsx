@@ -22,6 +22,8 @@ import OnboardingFlexibilityScreen from './OnboardingFlexibilityScreen';
 import OnboardingChallengeScreen from './OnboardingChallengeScreen';
 import OnboardingImprovementAreasScreen from './OnboardingImprovementAreasScreen';
 import OnboardingVocabularyScreen from './OnboardingVocabularyScreen';
+import OnboardingInterestsScreen from './OnboardingInterestsScreen';
+import OnboardingEventsScreen from './OnboardingEventsScreen';
 import * as WebBrowser from 'expo-web-browser';
 import * as Notifications from 'expo-notifications';
 import { AuthContext } from '../contexts/AuthContext';
@@ -174,6 +176,8 @@ export default function OnboardingScreen() {
   const [vocabKnown1, setVocabKnown1] = useState<string[]>([]);
   const [vocabKnown2, setVocabKnown2] = useState<string[]>([]);
   const [vocabKnown3, setVocabKnown3] = useState<string[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -188,7 +192,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 25;
+  const totalScreens = 27;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -213,6 +217,8 @@ export default function OnboardingScreen() {
       setVocabKnown1([]);
       setVocabKnown2([]);
       setVocabKnown3([]);
+      setSelectedInterests([]);
+      setSelectedEvent('');
       setSelectedLevel('');
       setSelectedLearningStyle('');
       setNotificationsEnabled(false);
@@ -253,6 +259,8 @@ export default function OnboardingScreen() {
         vocabKnown1,
         vocabKnown2,
         vocabKnown3,
+        interests: selectedInterests,
+        event: selectedEvent,
         level: selectedLevel,
         learningStyle: selectedLearningStyle,
         notifications: notificationsEnabled,
@@ -265,10 +273,10 @@ export default function OnboardingScreen() {
   };
   
   useEffect(() => {
-    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || challengeAnswer1 || challengeAnswer2 || challengeAnswer3 || selectedImprovementAreas.length || vocabKnown1.length || vocabKnown2.length || vocabKnown3.length || selectedLevel || selectedLearningStyle) {
+    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || challengeAnswer1 || challengeAnswer2 || challengeAnswer3 || selectedImprovementAreas.length || vocabKnown1.length || vocabKnown2.length || vocabKnown3.length || selectedInterests.length || selectedEvent || selectedLevel || selectedLearningStyle) {
       saveToLocalStorage();
     }
-  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, challengeAnswer1, challengeAnswer2, challengeAnswer3, selectedImprovementAreas, vocabKnown1, vocabKnown2, vocabKnown3, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
+  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, challengeAnswer1, challengeAnswer2, challengeAnswer3, selectedImprovementAreas, vocabKnown1, vocabKnown2, vocabKnown3, selectedInterests, selectedEvent, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -308,13 +316,15 @@ export default function OnboardingScreen() {
       case 15: return true;
       case 16: return true;
       case 17: return true;
-      case 18: return selectedLevel !== '';
-      case 19: return selectedLearningStyle !== '';
-      case 20: return false;
-      case 21: return true;
-      case 22: return true;
+      case 18: return selectedInterests.length > 0;
+      case 19: return selectedEvent !== '';
+      case 20: return selectedLevel !== '';
+      case 21: return selectedLearningStyle !== '';
+      case 22: return false;
       case 23: return true;
       case 24: return true;
+      case 25: return true;
+      case 26: return true;
       default: return false;
     }
   };
@@ -582,18 +592,28 @@ export default function OnboardingScreen() {
           onToggle={(word) => toggleMultiSelect(word, vocabKnown3, setVocabKnown3)}
         />;
       case 18:
+        return <OnboardingInterestsScreen
+          selectedInterests={selectedInterests}
+          onToggle={(value) => toggleMultiSelect(value, selectedInterests, setSelectedInterests)}
+        />;
+      case 19:
+        return <OnboardingEventsScreen
+          selectedEvent={selectedEvent}
+          onEventSelect={setSelectedEvent}
+        />;
+      case 20:
         return <LevelSelectionScreen 
           selectedLevel={selectedLevel} 
           onLevelSelect={handleLevelSelect}
           levels={levels}
         />;
-      case 19:
+      case 21:
         return <LearningStyleScreen 
           selectedStyle={selectedLearningStyle} 
           onStyleSelect={handleLearningStyleSelect}
           styles={learningStyles}
         />;
-      case 20:
+      case 22:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -602,21 +622,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 21:
+      case 23:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 22:
+      case 24:
         return <TestimonialsScreen onContinue={nextScreen} />;
-      case 23:
+      case 25:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 24:
+      case 26:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -680,7 +700,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 23 && (
+          {Platform.OS === 'android' && currentScreen === 25 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -704,7 +724,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 24 ? (
+          {currentScreen === 26 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -721,8 +741,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on current level (3, has own), registration (20), testimonials (22), learning plan (23), payment (24) */}
-          {currentScreen < 24 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 22 && currentScreen !== 23 && (
+          {/* Continue button - hide on current level (3, has own), registration (22), testimonials (24), learning plan (25), payment (26) */}
+          {currentScreen < 26 && currentScreen !== 3 && currentScreen !== 22 && currentScreen !== 24 && currentScreen !== 25 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
