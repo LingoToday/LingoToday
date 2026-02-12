@@ -19,7 +19,7 @@ const OnboardingEventsScreen = ({ selectedEvent, onEventSelect }: {
 }) => (
   <View style={styles.screenContent}>
     <Text style={styles.screenTitle}>
-      Are there any important event happening soon to get prepared for?
+      Are there any important events happening soon to get prepared for?
     </Text>
     <Text style={styles.screenSubtitle}>
       Help us understand your plans
