@@ -1577,11 +1577,13 @@ export default function ChatLessonScreen() {
           })}
         </ScrollView>
 
-        <ChatInputBar
-          mode={inputMode}
-          onModeToggle={toggleInputMode}
-          onSendMessage={handleSendMessage}
-        />
+        {sessionComplete && (
+          <ChatInputBar
+            mode={inputMode}
+            onModeToggle={toggleInputMode}
+            onSendMessage={handleSendMessage}
+          />
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
