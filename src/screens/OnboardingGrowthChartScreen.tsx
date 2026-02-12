@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, Easing } from 'react-native';
-import Svg, { Path, Circle, Line, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, { Path, Circle, Line, Defs, LinearGradient, Stop, Text as SvgText, G } from 'react-native-svg';
+
+const AnimatedG = Animated.createAnimatedComponent(G);
 import { theme } from '../lib/theme';
 import styles from '../styles/OnboardingStyles';
 
@@ -181,15 +183,17 @@ const OnboardingGrowthChartScreen = () => {
             </React.Fragment>
           ))}
 
-          <Line
-            x1={PADDING_LEFT + 200}
-            y1={CHART_HEIGHT - PADDING_BOTTOM - 120}
-            x2={PADDING_LEFT + 200}
-            y2={CHART_HEIGHT - PADDING_BOTTOM - 52}
-            stroke="rgba(236, 72, 153, 0.4)"
-            strokeWidth={1}
-            strokeDasharray="3,3"
-          />
+          <AnimatedG opacity={dotOpacity as any}>
+            <Line
+              x1={CHART_WIDTH - 10}
+              y1={PADDING_TOP + 7}
+              x2={CHART_WIDTH - 10}
+              y2={CHART_HEIGHT - PADDING_BOTTOM - 60 - 6}
+              stroke="rgba(236, 72, 153, 0.5)"
+              strokeWidth={1.5}
+              strokeDasharray="4,4"
+            />
+          </AnimatedG>
 
           <SvgText
             x={PADDING_LEFT}
@@ -201,11 +205,12 @@ const OnboardingGrowthChartScreen = () => {
             Today
           </SvgText>
           <SvgText
-            x={PADDING_LEFT + 185}
+            x={CHART_WIDTH - 10}
             y={CHART_HEIGHT - 2}
             fill="rgba(255,255,255,0.5)"
             fontSize={12}
             fontWeight="500"
+            textAnchor="middle"
           >
             Week 4
           </SvgText>
@@ -220,6 +225,29 @@ const OnboardingGrowthChartScreen = () => {
           >
             Your level
           </SvgText>
+
+          <AnimatedG opacity={dotOpacity as any}>
+            <SvgText
+              x={CHART_WIDTH - 22}
+              y={PADDING_TOP - 6}
+              fill="#EC4899"
+              fontSize={14}
+              fontWeight="700"
+              textAnchor="end"
+            >
+              LingoToday
+            </SvgText>
+            <SvgText
+              x={CHART_WIDTH - 22}
+              y={CHART_HEIGHT - PADDING_BOTTOM - 70}
+              fill="#3B82F6"
+              fontSize={14}
+              fontWeight="700"
+              textAnchor="end"
+            >
+              Other apps
+            </SvgText>
+          </AnimatedG>
         </Svg>
 
         <View style={styles.growthChartLegend}>
