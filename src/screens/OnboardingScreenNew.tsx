@@ -38,6 +38,7 @@ import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Constants from 'expo-constants';
+import { Asset } from 'expo-asset';
 import { Alert, AlertDescription } from '../components/ui/Alert';
 
 // Import API client
@@ -232,14 +233,17 @@ export default function OnboardingScreen() {
     }
   };
   
-  // Load from AsyncStorage on mount - matching web behavior exactly
   useEffect(() => {
     const loadOnboardingData = async () => {
-      // Clear onboarding state immediately (for testing) - matching web behavior
       await clearOnboardingState();
     };
     
     loadOnboardingData();
+
+    Asset.loadAsync([
+      require('../../attached_assets/Flexibility_Messaging__1770935348200.png'),
+      require('../../attached_assets/Loading_&_Plan_Creation_1770935409900.png'),
+    ]).catch(() => {});
   }, []);
   
   // Save to AsyncStorage whenever data changes - matching web localStorage functionality
