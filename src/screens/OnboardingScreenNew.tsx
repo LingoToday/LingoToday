@@ -88,6 +88,40 @@ const currentLevelOptions = [
   { value: 'proficient', label: 'Proficient' },
 ];
 
+const motivationOptions = [
+  { value: 'career_growth', label: 'Career growth', emoji: '💼' },
+  { value: 'travel', label: 'Travel', emoji: '✈️' },
+  { value: 'study_abroad', label: 'Study abroad', emoji: '🎓' },
+  { value: 'living_abroad', label: 'Living abroad', emoji: '🏠' },
+  { value: 'personal_development', label: 'Personal development', emoji: '🌱' },
+];
+
+const useCaseOptions = [
+  { value: 'hotel_booking', label: 'Hotel booking', emoji: '🏨' },
+  { value: 'emergencies', label: 'Emergencies', emoji: '🚨' },
+  { value: 'food_and_cafe', label: 'Food and cafe', emoji: '☕' },
+  { value: 'city_navigation', label: 'City navigation', emoji: '🗺️' },
+  { value: 'health', label: 'Health', emoji: '🏥' },
+  { value: 'transport', label: 'Transport', emoji: '🚌' },
+  { value: 'culture_etiquette', label: 'Culture & Etiquette', emoji: '🎭' },
+  { value: 'shopping', label: 'Shopping', emoji: '🛍️' },
+  { value: 'problem_solving', label: 'Problem solving', emoji: '🧩' },
+];
+
+const learningGoalOptions = [
+  { value: 'speak_confidently', label: 'Speak confidently with natives', emoji: '🗣️' },
+  { value: 'watch_movies', label: 'Watch movies without subtitles', emoji: '🎬' },
+  { value: 'understand_conversations', label: 'Understand conversations effortlessly', emoji: '👂' },
+  { value: 'read_fluently', label: 'Read texts fluently', emoji: '📖' },
+];
+
+const experienceOptions = [
+  { value: 'recently', label: 'Recently' },
+  { value: 'a_year_ago', label: 'A year ago' },
+  { value: 'more_than_a_year_ago', label: 'More than a year ago' },
+  { value: 'never', label: 'Never' },
+];
+
 const learningStyles = [
   {
     value: 'mobile',
@@ -121,6 +155,10 @@ export default function OnboardingScreen() {
   const [selectedAge, setSelectedAge] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
   const [selectedCurrentLevel, setSelectedCurrentLevel] = useState('');
+  const [selectedMotivations, setSelectedMotivations] = useState<string[]>([]);
+  const [selectedUseCases, setSelectedUseCases] = useState<string[]>([]);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [selectedExperience, setSelectedExperience] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -135,7 +173,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 11;
+  const totalScreens = 15;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -147,6 +185,10 @@ export default function OnboardingScreen() {
       setSelectedAge('');
       setSelectedGender('');
       setSelectedCurrentLevel('');
+      setSelectedMotivations([]);
+      setSelectedUseCases([]);
+      setSelectedGoals([]);
+      setSelectedExperience('');
       setSelectedLevel('');
       setSelectedLearningStyle('');
       setNotificationsEnabled(false);
@@ -174,6 +216,10 @@ export default function OnboardingScreen() {
         age: selectedAge,
         gender: selectedGender,
         currentLevel: selectedCurrentLevel,
+        motivations: selectedMotivations,
+        useCases: selectedUseCases,
+        goals: selectedGoals,
+        experience: selectedExperience,
         level: selectedLevel,
         learningStyle: selectedLearningStyle,
         notifications: notificationsEnabled,
@@ -186,10 +232,10 @@ export default function OnboardingScreen() {
   };
   
   useEffect(() => {
-    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedLevel || selectedLearningStyle) {
+    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedLevel || selectedLearningStyle) {
       saveToLocalStorage();
     }
-  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
+  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -201,19 +247,31 @@ export default function OnboardingScreen() {
     }
   };
 
+  const toggleMultiSelect = (value: string, selected: string[], setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+    if (selected.includes(value)) {
+      setter(selected.filter(v => v !== value));
+    } else {
+      setter([...selected, value]);
+    }
+  };
+
   const canContinueFromScreen = (screen: number) => {
     switch (screen) {
       case 0: return selectedLanguage !== '';
       case 1: return selectedAge !== '';
       case 2: return selectedGender !== '';
       case 3: return selectedCurrentLevel !== '';
-      case 4: return selectedLevel !== '';
-      case 5: return selectedLearningStyle !== '';
-      case 6: return false;
-      case 7: return true;
-      case 8: return true;
-      case 9: return true;
-      case 10: return true;
+      case 4: return selectedMotivations.length > 0;
+      case 5: return selectedUseCases.length > 0;
+      case 6: return selectedGoals.length > 0;
+      case 7: return selectedExperience !== '';
+      case 8: return selectedLevel !== '';
+      case 9: return selectedLearningStyle !== '';
+      case 10: return false;
+      case 11: return true;
+      case 12: return true;
+      case 13: return true;
+      case 14: return true;
       default: return false;
     }
   };
@@ -405,18 +463,38 @@ export default function OnboardingScreen() {
           onContinue={nextScreen}
         />;
       case 4:
+        return <LearningMotivationScreen
+          selectedMotivations={selectedMotivations}
+          onToggle={(value) => toggleMultiSelect(value, selectedMotivations, setSelectedMotivations)}
+        />;
+      case 5:
+        return <UseCaseScenariosScreen
+          selectedUseCases={selectedUseCases}
+          onToggle={(value) => toggleMultiSelect(value, selectedUseCases, setSelectedUseCases)}
+        />;
+      case 6:
+        return <LearningGoalsScreen
+          selectedGoals={selectedGoals}
+          onToggle={(value) => toggleMultiSelect(value, selectedGoals, setSelectedGoals)}
+        />;
+      case 7:
+        return <PreviousExperienceScreen
+          selectedExperience={selectedExperience}
+          onExperienceSelect={setSelectedExperience}
+        />;
+      case 8:
         return <LevelSelectionScreen 
           selectedLevel={selectedLevel} 
           onLevelSelect={handleLevelSelect}
           levels={levels}
         />;
-      case 5:
+      case 9:
         return <LearningStyleScreen 
           selectedStyle={selectedLearningStyle} 
           onStyleSelect={handleLearningStyleSelect}
           styles={learningStyles}
         />;
-      case 6:
+      case 10:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -425,21 +503,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 7:
+      case 11:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 8:
+      case 12:
         return <TestimonialsScreen onContinue={nextScreen} />;
-      case 9:
+      case 13:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 10:
+      case 14:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -503,7 +581,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 9 && (
+          {Platform.OS === 'android' && currentScreen === 13 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -527,7 +605,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 10 ? (
+          {currentScreen === 14 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -544,8 +622,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on registration, payment, current level (has own), testimonials, and learning plan screens */}
-          {currentScreen < 10 && currentScreen !== 3 && currentScreen !== 6 && currentScreen !== 8 && currentScreen !== 9 && (
+          {/* Continue button - hide on current level (3, has own), registration (10), testimonials (12), learning plan (13), payment (14) */}
+          {currentScreen < 14 && currentScreen !== 3 && currentScreen !== 10 && currentScreen !== 12 && currentScreen !== 13 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
@@ -743,6 +821,161 @@ const CurrentLevelScreen = ({ selectedCurrentLevel, onCurrentLevelSelect, onCont
           />
         </View>
       </Button>
+    </View>
+  </View>
+);
+
+const LearningMotivationScreen = ({ selectedMotivations, onToggle }: {
+  selectedMotivations: string[];
+  onToggle: (value: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      Why do you want to learn a new language?
+    </Text>
+    
+    <View style={styles.levelsList}>
+      {motivationOptions.map((option) => {
+        const isSelected = selectedMotivations.includes(option.value);
+        return (
+          <TouchableOpacity
+            key={option.value}
+            onPress={() => onToggle(option.value)}
+            style={[
+              styles.genderCard,
+              isSelected && styles.multiSelectCardSelected,
+            ]}
+            testID={`button-motivation-${option.value}`}
+          >
+            <Text style={styles.genderEmoji}>{option.emoji}</Text>
+            <Text style={[
+              styles.genderLabel,
+              isSelected && styles.genderLabelSelected,
+            ]}>
+              {option.label}
+            </Text>
+            {isSelected && (
+              <View style={styles.multiSelectCheck}>
+                <Ionicons name="checkmark-circle" size={24} color={theme.colors.primary} />
+              </View>
+            )}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  </View>
+);
+
+const UseCaseScenariosScreen = ({ selectedUseCases, onToggle }: {
+  selectedUseCases: string[];
+  onToggle: (value: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      Where would you use the new language?
+    </Text>
+    
+    <View style={styles.levelsList}>
+      {useCaseOptions.map((option) => {
+        const isSelected = selectedUseCases.includes(option.value);
+        return (
+          <TouchableOpacity
+            key={option.value}
+            onPress={() => onToggle(option.value)}
+            style={[
+              styles.genderCard,
+              isSelected && styles.multiSelectCardSelected,
+            ]}
+            testID={`button-usecase-${option.value}`}
+          >
+            <Text style={styles.genderEmoji}>{option.emoji}</Text>
+            <Text style={[
+              styles.genderLabel,
+              isSelected && styles.genderLabelSelected,
+            ]}>
+              {option.label}
+            </Text>
+            {isSelected && (
+              <View style={styles.multiSelectCheck}>
+                <Ionicons name="checkmark-circle" size={24} color={theme.colors.primary} />
+              </View>
+            )}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  </View>
+);
+
+const LearningGoalsScreen = ({ selectedGoals, onToggle }: {
+  selectedGoals: string[];
+  onToggle: (value: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      What level do you aim to achieve?
+    </Text>
+    
+    <View style={styles.goalsGrid}>
+      {learningGoalOptions.map((option) => {
+        const isSelected = selectedGoals.includes(option.value);
+        return (
+          <TouchableOpacity
+            key={option.value}
+            onPress={() => onToggle(option.value)}
+            style={[
+              styles.goalCard,
+              isSelected && styles.goalCardSelected,
+            ]}
+            testID={`button-goal-${option.value}`}
+          >
+            <Text style={styles.goalEmoji}>{option.emoji}</Text>
+            <Text style={[
+              styles.goalLabel,
+              isSelected && styles.goalLabelSelected,
+            ]}>
+              {option.label}
+            </Text>
+            {isSelected && (
+              <View style={styles.goalCheckIcon}>
+                <Ionicons name="checkmark-circle" size={20} color={theme.colors.primary} />
+              </View>
+            )}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  </View>
+);
+
+const PreviousExperienceScreen = ({ selectedExperience, onExperienceSelect }: {
+  selectedExperience: string;
+  onExperienceSelect: (experience: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      When did you last pick up a new language?
+    </Text>
+    
+    <View style={styles.levelsList}>
+      {experienceOptions.map((option) => (
+        <TouchableOpacity
+          key={option.value}
+          onPress={() => onExperienceSelect(option.value)}
+          style={[
+            styles.levelCard,
+            selectedExperience === option.value && styles.levelCardSelected,
+          ]}
+          testID={`button-experience-${option.value}`}
+        >
+          <Text style={[
+            styles.levelTitle,
+            selectedExperience === option.value && styles.levelTitleSelected,
+          ]}>
+            {option.label}
+          </Text>
+        </TouchableOpacity>
+      ))}
     </View>
   </View>
 );

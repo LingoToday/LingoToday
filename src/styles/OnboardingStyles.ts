@@ -330,6 +330,61 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
+  // Multi-select (Motivation, Use Cases)
+  multiSelectCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  multiSelectCheck: {
+    marginLeft: 'auto',
+  },
+
+  // Learning Goals (2x2 grid)
+  goalsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: theme.spacing.lg,
+    maxWidth: 384,
+    width: '100%',
+  },
+  goalCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '47%',
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    minHeight: 120,
+  },
+  goalCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  goalEmoji: {
+    fontSize: theme.fontSize['2.5xl'],
+    marginBottom: theme.spacing.sm,
+  },
+  goalLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    lineHeight: theme.lineHeight.sm,
+  },
+  goalLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  goalCheckIcon: {
+    position: 'absolute',
+    top: theme.spacing.sm,
+    right: theme.spacing.sm,
+  },
+
   // Registration Screen
   errorAlert: {
     borderColor: theme.colors.errorContainer,
