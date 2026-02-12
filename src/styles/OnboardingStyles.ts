@@ -64,14 +64,16 @@ const styles = StyleSheet.create({
   continueButton: {
     backgroundColor: theme.colors.primary,
     paddingHorizontal: theme.spacing.xxl,
-    paddingVertical: theme.spacing.md,
+    height: 60,
     borderRadius: theme.borderRadius.full,
-    minWidth: 140,
+    width: '100%',
     shadowColor: theme.colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   continueButtonDisabled: {
     backgroundColor: theme.colors.muted,
@@ -169,13 +171,13 @@ const styles = StyleSheet.create({
 
   // Level Selection
   levelsList: {
-    gap: theme.spacing.lg,
+    gap: theme.spacing.md,
     maxWidth: 512,
     width: '100%',
   },
   levelCard: {
     width: '100%',
-    padding: theme.spacing.xl,
+    padding: theme.spacing.lg,
     borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
     borderColor: theme.colors.border,
@@ -186,16 +188,16 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   levelTitle: {
-    fontSize: theme.fontSize.xl,
+    fontSize: theme.fontSize.lg,
     fontWeight: "700" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
   },
   levelTitleSelected: {
     color: theme.colors.foreground,
   },
   levelDescription: {
-    fontSize: theme.fontSize.base,
+    fontSize: theme.fontSize.sm,
     color: theme.colors.mutedForeground,
   },
   levelDescriptionSelected: {
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
   // Gender Selection
   genderCard: {
     width: '100%',
-    padding: theme.spacing.xl,
+    padding: theme.spacing.lg,
     borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
     borderColor: theme.colors.border,
@@ -287,7 +289,7 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.lg,
   },
   genderLabel: {
-    fontSize: theme.fontSize.xl,
+    fontSize: theme.fontSize.lg,
     fontWeight: "600" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
   },
@@ -389,13 +391,13 @@ const styles = StyleSheet.create({
   barrierCard: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md,
     borderWidth: 2,
     borderColor: theme.colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
   },
   barrierCardSelected: {
     borderColor: theme.colors.primary,
@@ -640,13 +642,13 @@ const styles = StyleSheet.create({
   eventCard: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md,
     borderWidth: 2,
     borderColor: theme.colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
   },
   eventCardSelected: {
     borderColor: theme.colors.primary,
@@ -658,7 +660,7 @@ const styles = StyleSheet.create({
   },
   eventLabel: {
     flex: 1,
-    fontSize: theme.fontSize.base,
+    fontSize: theme.fontSize.sm,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
   },
