@@ -385,6 +385,38 @@ const styles = StyleSheet.create({
     right: theme.spacing.sm,
   },
 
+  // Barriers / Past Experience Feedback
+  barrierCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+  },
+  barrierCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  barrierLabel: {
+    flex: 1,
+    fontSize: theme.fontSize.sm,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    lineHeight: theme.lineHeight.normal,
+  },
+  barrierLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  barrierCheckIcon: {
+    marginLeft: 'auto',
+    flexShrink: 0,
+  },
+
   // Registration Screen
   errorAlert: {
     borderColor: theme.colors.errorContainer,
