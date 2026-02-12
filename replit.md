@@ -45,8 +45,8 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 
 ## Recent Changes (Feb 12, 2026)
 
-**Onboarding Flow Expansion (18 screens)**:
-- **Screen flow**: Language (0) → Age (1) → Gender (2) → Current Level (3) → Learning Motivation (4) → Use Case Scenarios (5) → Learning Goals (6) → Previous Experience (7) → Previous Learning Methods (8) → Past Experience Feedback (9) → Flexibility Messaging (10) → Level (11) → Learning Style (12) → Registration (13) → Notifications (14) → Testimonials (15) → Learning Plan (16) → Payment (17).
+**Onboarding Flow Expansion (22 screens)**:
+- **Screen flow**: Language (0) → Age (1) → Gender (2) → Current Level (3) → Learning Motivation (4) → Use Case Scenarios (5) → Learning Goals (6) → Previous Experience (7) → Previous Learning Methods (8) → Past Experience Feedback (9) → Flexibility Messaging (10) → Challenge 1 (11) → Challenge 2 (12) → Challenge 3 (13) → Improvement Areas (14) → Level (15) → Learning Style (16) → Registration (17) → Notifications (18) → Testimonials (19) → Learning Plan (20) → Payment (21).
 - **Age Selection (Screen 1)**: 2x2 grid with age ranges (18-24, 25-34, 35-44, 45+).
 - **Gender Selection (Screen 2)**: Vertical list with emoji icons (Female, Male, Rather not to say).
 - **Current Language Level (Screen 3)**: Single-column list with 7 proficiency levels, includes its own fixed-bottom Continue button.
@@ -57,9 +57,11 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **Previous Learning Methods (Screen 8)**: File `OnboardingMethodsScreen.tsx`. Multi-select scrollable vertical list (school, language school, college/university, tutor, self education, abroad, never learned). Uses checkmark indicators.
 - **Past Experience Feedback (Screen 9)**: File `OnboardingBarriersScreen.tsx`. Multi-select scrollable list of full text blocks describing barriers (cost, speaking practice, time, discomfort, no tailored program, scheduling, eager to enhance). Custom `barrierCard` styling.
 - **Flexibility Messaging (Screen 10)**: File `OnboardingFlexibilityScreen.tsx`. Informational screen with rounded-edge image and motivational text about flexible learning. No user input required.
-- New state variables: `selectedAge`, `selectedGender`, `selectedCurrentLevel`, `selectedMotivations[]`, `selectedUseCases[]`, `selectedGoals[]`, `selectedExperience`, `selectedMethods[]`, `selectedBarriers[]`.
+- **Challenge Assessment (Screens 11-13)**: File `OnboardingChallengeScreen.tsx`. Reusable component with statement header, "Is this statement true for you?" subheader, and 3 single-select options (True, Partially true, That's not true for me). Three instances with different statements about fluency comprehension, vocabulary limitations, and sentence formation.
+- **Improvement Areas (Screen 14)**: File `OnboardingImprovementAreasScreen.tsx`. 2x4 grid multi-select with emojis (Speaking, Listening, Vocabulary, Grammar, Reading, Travel, Interesting Facts, Pronunciation).
+- New state variables: `selectedAge`, `selectedGender`, `selectedCurrentLevel`, `selectedMotivations[]`, `selectedUseCases[]`, `selectedGoals[]`, `selectedExperience`, `selectedMethods[]`, `selectedBarriers[]`, `challengeAnswer1`, `challengeAnswer2`, `challengeAnswer3`, `selectedImprovementAreas[]`.
 - `toggleMultiSelect` helper for array-based selections.
-- New styles in `src/styles/OnboardingStyles.ts`: `ageCard`, `genderCard`, `currentLevelGrid`, `multiSelectCardSelected`, `multiSelectCheck`, `goalsGrid`, `goalCard`, `barrierCard`, `flexibilityImage`, `flexibilityText` families.
+- New styles in `src/styles/OnboardingStyles.ts`: `ageCard`, `genderCard`, `currentLevelGrid`, `multiSelectCardSelected`, `multiSelectCheck`, `goalsGrid`, `goalCard`, `barrierCard`, `flexibilityImage`, `flexibilityText`, `challengeStatement`, `challengeSubheader`, `improvementGrid`, `improvementCard` families.
 
 ## Changes (Feb 10, 2026)
 

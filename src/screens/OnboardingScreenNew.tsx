@@ -19,6 +19,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import OnboardingMethodsScreen from './OnboardingMethodsScreen';
 import OnboardingBarriersScreen from './OnboardingBarriersScreen';
 import OnboardingFlexibilityScreen from './OnboardingFlexibilityScreen';
+import OnboardingChallengeScreen from './OnboardingChallengeScreen';
+import OnboardingImprovementAreasScreen from './OnboardingImprovementAreasScreen';
 import * as WebBrowser from 'expo-web-browser';
 import * as Notifications from 'expo-notifications';
 import { AuthContext } from '../contexts/AuthContext';
@@ -164,6 +166,10 @@ export default function OnboardingScreen() {
   const [selectedExperience, setSelectedExperience] = useState('');
   const [selectedMethods, setSelectedMethods] = useState<string[]>([]);
   const [selectedBarriers, setSelectedBarriers] = useState<string[]>([]);
+  const [challengeAnswer1, setChallengeAnswer1] = useState('');
+  const [challengeAnswer2, setChallengeAnswer2] = useState('');
+  const [challengeAnswer3, setChallengeAnswer3] = useState('');
+  const [selectedImprovementAreas, setSelectedImprovementAreas] = useState<string[]>([]);
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -178,7 +184,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 18;
+  const totalScreens = 22;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -196,6 +202,10 @@ export default function OnboardingScreen() {
       setSelectedExperience('');
       setSelectedMethods([]);
       setSelectedBarriers([]);
+      setChallengeAnswer1('');
+      setChallengeAnswer2('');
+      setChallengeAnswer3('');
+      setSelectedImprovementAreas([]);
       setSelectedLevel('');
       setSelectedLearningStyle('');
       setNotificationsEnabled(false);
@@ -229,6 +239,10 @@ export default function OnboardingScreen() {
         experience: selectedExperience,
         methods: selectedMethods,
         barriers: selectedBarriers,
+        challengeAnswer1,
+        challengeAnswer2,
+        challengeAnswer3,
+        improvementAreas: selectedImprovementAreas,
         level: selectedLevel,
         learningStyle: selectedLearningStyle,
         notifications: notificationsEnabled,
@@ -241,10 +255,10 @@ export default function OnboardingScreen() {
   };
   
   useEffect(() => {
-    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || selectedLevel || selectedLearningStyle) {
+    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || challengeAnswer1 || challengeAnswer2 || challengeAnswer3 || selectedImprovementAreas.length || selectedLevel || selectedLearningStyle) {
       saveToLocalStorage();
     }
-  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
+  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, challengeAnswer1, challengeAnswer2, challengeAnswer3, selectedImprovementAreas, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -277,13 +291,17 @@ export default function OnboardingScreen() {
       case 8: return selectedMethods.length > 0;
       case 9: return selectedBarriers.length > 0;
       case 10: return true;
-      case 11: return selectedLevel !== '';
-      case 12: return selectedLearningStyle !== '';
-      case 13: return false;
-      case 14: return true;
-      case 15: return true;
-      case 16: return true;
-      case 17: return true;
+      case 11: return challengeAnswer1 !== '';
+      case 12: return challengeAnswer2 !== '';
+      case 13: return challengeAnswer3 !== '';
+      case 14: return selectedImprovementAreas.length > 0;
+      case 15: return selectedLevel !== '';
+      case 16: return selectedLearningStyle !== '';
+      case 17: return false;
+      case 18: return true;
+      case 19: return true;
+      case 20: return true;
+      case 21: return true;
       default: return false;
     }
   };
@@ -507,18 +525,41 @@ export default function OnboardingScreen() {
       case 10:
         return <OnboardingFlexibilityScreen />;
       case 11:
+        return <OnboardingChallengeScreen
+          statement="I don't understand when someone speaks fluently."
+          selectedAnswer={challengeAnswer1}
+          onAnswerSelect={setChallengeAnswer1}
+        />;
+      case 12:
+        return <OnboardingChallengeScreen
+          statement="I find it hard to express myself because my vocabulary is limited."
+          selectedAnswer={challengeAnswer2}
+          onAnswerSelect={setChallengeAnswer2}
+        />;
+      case 13:
+        return <OnboardingChallengeScreen
+          statement="I often struggle with forming sentences correctly when I speak."
+          selectedAnswer={challengeAnswer3}
+          onAnswerSelect={setChallengeAnswer3}
+        />;
+      case 14:
+        return <OnboardingImprovementAreasScreen
+          selectedAreas={selectedImprovementAreas}
+          onToggle={(value) => toggleMultiSelect(value, selectedImprovementAreas, setSelectedImprovementAreas)}
+        />;
+      case 15:
         return <LevelSelectionScreen 
           selectedLevel={selectedLevel} 
           onLevelSelect={handleLevelSelect}
           levels={levels}
         />;
-      case 12:
+      case 16:
         return <LearningStyleScreen 
           selectedStyle={selectedLearningStyle} 
           onStyleSelect={handleLearningStyleSelect}
           styles={learningStyles}
         />;
-      case 13:
+      case 17:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -527,21 +568,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 14:
+      case 18:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 15:
+      case 19:
         return <TestimonialsScreen onContinue={nextScreen} />;
-      case 16:
+      case 20:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 17:
+      case 21:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -605,7 +646,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 16 && (
+          {Platform.OS === 'android' && currentScreen === 20 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -629,7 +670,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 17 ? (
+          {currentScreen === 21 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -646,8 +687,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on current level (3, has own), registration (13), testimonials (15), learning plan (16), payment (17) */}
-          {currentScreen < 17 && currentScreen !== 3 && currentScreen !== 13 && currentScreen !== 15 && currentScreen !== 16 && (
+          {/* Continue button - hide on current level (3, has own), registration (17), testimonials (19), learning plan (20), payment (21) */}
+          {currentScreen < 21 && currentScreen !== 3 && currentScreen !== 17 && currentScreen !== 19 && currentScreen !== 20 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}

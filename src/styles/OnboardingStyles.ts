@@ -417,6 +417,67 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
 
+  // Challenge Assessment Screens
+  challengeStatement: {
+    fontSize: 20,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: theme.spacing.md,
+    lineHeight: 28,
+  },
+  challengeSubheader: {
+    fontSize: 15,
+    fontWeight: "400" as TextStyle["fontWeight"],
+    color: theme.colors.mutedForeground,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xxl,
+  },
+
+  // Improvement Areas (2x4 grid)
+  improvementGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: theme.spacing.md,
+    maxWidth: 384,
+    width: '100%',
+  },
+  improvementCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '47%',
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    minHeight: 100,
+  },
+  improvementCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  improvementEmoji: {
+    fontSize: 28,
+    marginBottom: theme.spacing.xs,
+  },
+  improvementLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+  },
+  improvementLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  improvementCheckIcon: {
+    position: 'absolute',
+    top: theme.spacing.xs,
+    right: theme.spacing.xs,
+  },
+
   // Flexibility Messaging Screen
   flexibilityImage: {
     width: '100%',
