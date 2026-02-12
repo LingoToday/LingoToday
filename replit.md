@@ -45,13 +45,18 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 
 ## Recent Changes (Feb 12, 2026)
 
-**Onboarding Flow Expansion (11 screens)**:
-- **Age Selection (Screen 2)**: 2x2 grid with age ranges (18-24, 25-34, 35-44, 45+), inserted after language selection.
-- **Gender Selection (Screen 3)**: Vertical list with emoji icons (Female, Male, Rather not to say).
-- **Current Language Level (Screen 4)**: Staggered 2-column grid with 7 proficiency levels (Total Beginner through Proficient), includes its own fixed-bottom Continue button.
-- **Screen flow**: Language → Age → Gender → Current Level → Level → Learning Style → Registration → Notifications → Testimonials → Learning Plan → Payment (11 total).
-- New state variables (`selectedAge`, `selectedGender`, `selectedCurrentLevel`) added to onboarding persistence.
-- New styles in `src/styles/OnboardingStyles.ts`: `ageCard`, `genderCard`, `currentLevelGrid` families.
+**Onboarding Flow Expansion (15 screens)**:
+- **Screen flow**: Language (0) → Age (1) → Gender (2) → Current Level (3) → Learning Motivation (4) → Use Case Scenarios (5) → Learning Goals (6) → Previous Experience (7) → Level (8) → Learning Style (9) → Registration (10) → Notifications (11) → Testimonials (12) → Learning Plan (13) → Payment (14).
+- **Age Selection (Screen 1)**: 2x2 grid with age ranges (18-24, 25-34, 35-44, 45+).
+- **Gender Selection (Screen 2)**: Vertical list with emoji icons (Female, Male, Rather not to say).
+- **Current Language Level (Screen 3)**: Single-column list with 7 proficiency levels, includes its own fixed-bottom Continue button.
+- **Learning Motivation (Screen 4)**: Multi-select vertical list with emojis and checkmarks (career, travel, study abroad, living abroad, personal development).
+- **Use Case Scenarios (Screen 5)**: Multi-select scrollable vertical list with emojis and checkmarks (hotel booking, emergencies, food, navigation, health, transport, culture, shopping, problem solving).
+- **Learning Goals (Screen 6)**: 2x2 grid, multi-select with checkmarks (speak confidently, watch movies, understand conversations, read fluently).
+- **Previous Experience (Screen 7)**: Single-select vertical list (recently, a year ago, more than a year ago, never).
+- New state variables: `selectedAge`, `selectedGender`, `selectedCurrentLevel`, `selectedMotivations[]`, `selectedUseCases[]`, `selectedGoals[]`, `selectedExperience`.
+- `toggleMultiSelect` helper for array-based selections.
+- New styles in `src/styles/OnboardingStyles.ts`: `ageCard`, `genderCard`, `currentLevelGrid`, `multiSelectCardSelected`, `multiSelectCheck`, `goalsGrid`, `goalCard` families.
 
 ## Changes (Feb 10, 2026)
 
