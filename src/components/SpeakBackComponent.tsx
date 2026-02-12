@@ -434,6 +434,8 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
 
   const renderIdleState = () => (
     <View style={styles.container}>
+      <Text style={styles.expectedText}>{expectedAnswer}</Text>
+      
       <TouchableOpacity
         style={[styles.micButton, disabled && styles.micButtonDisabled]}
         onPress={startRecording}
@@ -465,11 +467,6 @@ export const SpeakBackComponent: React.FC<SpeakBackComponentProps> = ({
       )}
       
       {error && <Text style={styles.errorText}>{error}</Text>}
-      
-      <TouchableOpacity style={styles.switchButton} onPress={onSwitchToText}>
-        <Ionicons name="keypad-outline" size={20} color={theme.colors.mutedForeground} />
-        <Text style={styles.switchButtonText}>Can't talk right now? Switch to text</Text>
-      </TouchableOpacity>
     </View>
   );
 

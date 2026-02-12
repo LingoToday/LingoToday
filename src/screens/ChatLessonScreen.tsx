@@ -528,23 +528,6 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType, 
     <View style={styles.interactiveCard}>
       <Text style={styles.cardLabel}>{getCardTitle()}</Text>
       <Text style={styles.cardPrompt}>{prompt}</Text>
-      
-      <View style={styles.inputModeToggle}>
-        <TouchableOpacity
-          style={[styles.modeButton, inputMode === 'text' && styles.modeButtonActive]}
-          onPress={() => setInputMode('text')}
-        >
-          <Ionicons name="keypad-outline" size={18} color={inputMode === 'text' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
-          <Text style={[styles.modeButtonText, inputMode === 'text' && styles.modeButtonTextActive]}>Type</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.modeButton, inputMode === 'mic' && styles.modeButtonActive]}
-          onPress={() => setInputMode('mic')}
-        >
-          <Ionicons name="mic-outline" size={18} color={inputMode === 'mic' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
-          <Text style={[styles.modeButtonText, inputMode === 'mic' && styles.modeButtonTextActive]}>Speak</Text>
-        </TouchableOpacity>
-      </View>
 
       {inputMode === 'text' ? (
         <View style={styles.gapInputRow}>
@@ -571,6 +554,23 @@ function FreeInputCard({ prompt, expectedAnswers, onAnswer, answered, cardType, 
           showPronunciationButton={true}
         />
       )}
+
+      <View style={styles.inputModeToggle}>
+        <TouchableOpacity
+          style={[styles.modeButton, inputMode === 'text' && styles.modeButtonActive]}
+          onPress={() => setInputMode('text')}
+        >
+          <Ionicons name="keypad-outline" size={18} color={inputMode === 'text' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
+          <Text style={[styles.modeButtonText, inputMode === 'text' && styles.modeButtonTextActive]}>Type</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.modeButton, inputMode === 'mic' && styles.modeButtonActive]}
+          onPress={() => setInputMode('mic')}
+        >
+          <Ionicons name="mic-outline" size={18} color={inputMode === 'mic' ? theme.colors.primaryForeground : theme.colors.mutedForeground} />
+          <Text style={[styles.modeButtonText, inputMode === 'mic' && styles.modeButtonTextActive]}>Speak</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
