@@ -417,6 +417,22 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
 
+  // Flexibility Messaging Screen
+  flexibilityImage: {
+    width: '100%',
+    height: 280,
+    borderRadius: 20,
+    marginBottom: 24,
+  },
+  flexibilityText: {
+    fontSize: 16,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    lineHeight: 24,
+    paddingHorizontal: 8,
+  },
+
   // Registration Screen
   errorAlert: {
     borderColor: theme.colors.errorContainer,
