@@ -417,6 +417,76 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
 
+  // Loading & Plan Creation Screen
+  loadingHeader: {
+    fontSize: 22,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  loadingProgressContainer: {
+    width: 220,
+    height: 220,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 40,
+  },
+  loadingImageContainer: {
+    position: 'absolute',
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingImage: {
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+  },
+  loadingPercentContainer: {
+    position: 'absolute',
+    bottom: -8,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+  },
+  loadingPercent: {
+    fontSize: 16,
+    fontWeight: "800" as TextStyle["fontWeight"],
+    color: theme.colors.background,
+  },
+  loadingChecklist: {
+    width: '100%',
+    gap: 16,
+  },
+  loadingChecklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  loadingChecklistEmoji: {
+    fontSize: 20,
+  },
+  loadingChecklistLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "500" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+  loadingChecklistStatus: {
+    fontSize: 14,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.mutedForeground,
+  },
+  loadingChecklistStatusDone: {
+    color: theme.colors.primary,
+  },
+
   // Personal Interests Screen (3-column grid)
   interestsGrid: {
     flexDirection: 'row',
