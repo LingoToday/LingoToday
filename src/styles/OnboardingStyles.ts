@@ -241,6 +241,98 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
   },
 
+  // Age Selection
+  ageCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '47%',
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    minHeight: 80,
+  },
+  ageCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+  },
+  ageLabel: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+  },
+  ageLabelSelected: {
+    color: theme.colors.foreground,
+  },
+
+  // Gender Selection
+  genderCard: {
+    width: '100%',
+    padding: theme.spacing.xl,
+    borderRadius: theme.borderRadius.xl,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  genderCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+  },
+  genderEmoji: {
+    fontSize: theme.fontSize['2.5xl'],
+    marginRight: theme.spacing.lg,
+  },
+  genderLabel: {
+    fontSize: theme.fontSize.xl,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+  genderLabelSelected: {
+    color: theme.colors.foreground,
+  },
+
+  // Current Language Level (staggered grid)
+  currentLevelGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: theme.spacing.sm,
+    maxWidth: 384,
+    width: '100%',
+  },
+  currentLevelCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    minWidth: '45%',
+    alignItems: 'center',
+  },
+  currentLevelCardSelected: {
+    borderColor: theme.colors.primary,
+    borderWidth: 3,
+  },
+  currentLevelLabel: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+  },
+  currentLevelLabelSelected: {
+    color: theme.colors.foreground,
+  },
+  currentLevelContinueSection: {
+    marginTop: theme.spacing.xxl,
+    alignItems: 'center',
+    width: '100%',
+  },
+
   // Registration Screen
   errorAlert: {
     borderColor: theme.colors.errorContainer,

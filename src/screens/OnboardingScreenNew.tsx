@@ -65,6 +65,29 @@ const levels = [
   },
 ];
 
+const ageRanges = [
+  { value: '18-24', label: '18-24' },
+  { value: '25-34', label: '25-34' },
+  { value: '35-44', label: '35-44' },
+  { value: '45+', label: '45 +' },
+];
+
+const genderOptions = [
+  { value: 'female', label: 'Female', emoji: '👩' },
+  { value: 'male', label: 'Male', emoji: '👨' },
+  { value: 'rather_not_say', label: 'Rather not to say', emoji: '🤐' },
+];
+
+const currentLevelOptions = [
+  { value: 'total_beginner', label: 'Total Beginner' },
+  { value: 'beginner', label: 'Beginner' },
+  { value: 'pre_intermediate', label: 'Pre-Intermediate' },
+  { value: 'intermediate', label: 'Intermediate' },
+  { value: 'upper_intermediate', label: 'Upper Intermediate' },
+  { value: 'advanced', label: 'Advanced' },
+  { value: 'proficient', label: 'Proficient' },
+];
+
 const learningStyles = [
   {
     value: 'mobile',
@@ -95,6 +118,9 @@ export default function OnboardingScreen() {
   const [currentScreen, setCurrentScreen] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [selectedAge, setSelectedAge] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [selectedCurrentLevel, setSelectedCurrentLevel] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -109,7 +135,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 8;
+  const totalScreens = 11;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -118,6 +144,9 @@ export default function OnboardingScreen() {
       await AsyncStorage.removeItem('lingoToday_onboarding');
       setCurrentScreen(0);
       setSelectedLanguage('');
+      setSelectedAge('');
+      setSelectedGender('');
+      setSelectedCurrentLevel('');
       setSelectedLevel('');
       setSelectedLearningStyle('');
       setNotificationsEnabled(false);
@@ -142,6 +171,9 @@ export default function OnboardingScreen() {
     try {
       const data = {
         language: selectedLanguage,
+        age: selectedAge,
+        gender: selectedGender,
+        currentLevel: selectedCurrentLevel,
         level: selectedLevel,
         learningStyle: selectedLearningStyle,
         notifications: notificationsEnabled,
@@ -154,10 +186,10 @@ export default function OnboardingScreen() {
   };
   
   useEffect(() => {
-    if (selectedLanguage || selectedLevel || selectedLearningStyle) {
+    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedLevel || selectedLearningStyle) {
       saveToLocalStorage();
     }
-  }, [selectedLanguage, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
+  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -172,13 +204,16 @@ export default function OnboardingScreen() {
   const canContinueFromScreen = (screen: number) => {
     switch (screen) {
       case 0: return selectedLanguage !== '';
-      case 1: return selectedLevel !== '';
-      case 2: return selectedLearningStyle !== '';
-      case 3: return false; // Registration screen should never allow continue - user must create account first
-      case 4: return true; // Notifications screen always allows continue
-      case 5: return true; // Testimonials screen (has its own continue)
-      case 6: return true; // Learning plan screen
-      case 7: return true; // Payment screen
+      case 1: return selectedAge !== '';
+      case 2: return selectedGender !== '';
+      case 3: return selectedCurrentLevel !== '';
+      case 4: return selectedLevel !== '';
+      case 5: return selectedLearningStyle !== '';
+      case 6: return false;
+      case 7: return true;
+      case 8: return true;
+      case 9: return true;
+      case 10: return true;
       default: return false;
     }
   };
@@ -354,18 +389,34 @@ export default function OnboardingScreen() {
           languages={languages}
         />;
       case 1:
+        return <AgeSelectionScreen
+          selectedAge={selectedAge}
+          onAgeSelect={setSelectedAge}
+        />;
+      case 2:
+        return <GenderSelectionScreen
+          selectedGender={selectedGender}
+          onGenderSelect={setSelectedGender}
+        />;
+      case 3:
+        return <CurrentLevelScreen
+          selectedCurrentLevel={selectedCurrentLevel}
+          onCurrentLevelSelect={setSelectedCurrentLevel}
+          onContinue={nextScreen}
+        />;
+      case 4:
         return <LevelSelectionScreen 
           selectedLevel={selectedLevel} 
           onLevelSelect={handleLevelSelect}
           levels={levels}
         />;
-      case 2:
+      case 5:
         return <LearningStyleScreen 
           selectedStyle={selectedLearningStyle} 
           onStyleSelect={handleLearningStyleSelect}
           styles={learningStyles}
         />;
-      case 3:
+      case 6:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -374,21 +425,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 4:
+      case 7:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 5:
+      case 8:
         return <TestimonialsScreen onContinue={nextScreen} />;
-      case 6:
+      case 9:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 7:
+      case 10:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -452,7 +503,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* Android-only skip button for Learning Plan screen (case 6) - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 6 && (
+          {Platform.OS === 'android' && currentScreen === 9 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -476,7 +527,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 7 ? (
+          {currentScreen === 10 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -493,8 +544,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on registration, payment, and learning plan screens - matching web logic */}
-          {currentScreen < 7 && currentScreen !== 3 && currentScreen !== 5 && currentScreen !== 6 && (
+          {/* Continue button - hide on registration, payment, current level (has own), testimonials, and learning plan screens */}
+          {currentScreen < 10 && currentScreen !== 3 && currentScreen !== 6 && currentScreen !== 8 && currentScreen !== 9 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
@@ -562,6 +613,136 @@ const LanguageSelectionScreen = ({ selectedLanguage, onLanguageSelect, languages
           </Text>
         </TouchableOpacity>
       ))}
+    </View>
+  </View>
+);
+
+const AgeSelectionScreen = ({ selectedAge, onAgeSelect }: {
+  selectedAge: string;
+  onAgeSelect: (age: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      Start speaking a new language with LingoToday
+    </Text>
+    <Text style={styles.screenSubtitle}>
+      Get your personalised learning plan tailored to your language goals
+    </Text>
+    
+    <View style={styles.languageGrid}>
+      {ageRanges.map((age) => (
+        <TouchableOpacity
+          key={age.value}
+          onPress={() => onAgeSelect(age.value)}
+          style={[
+            styles.ageCard,
+            selectedAge === age.value && styles.ageCardSelected,
+          ]}
+          testID={`button-age-${age.value}`}
+        >
+          <Text style={[
+            styles.ageLabel,
+            selectedAge === age.value && styles.ageLabelSelected,
+          ]}>
+            {age.label}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  </View>
+);
+
+const GenderSelectionScreen = ({ selectedGender, onGenderSelect }: {
+  selectedGender: string;
+  onGenderSelect: (gender: string) => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      What is your gender?
+    </Text>
+    <Text style={styles.screenSubtitle}>
+      Our tutors want to address you correctly.
+    </Text>
+    
+    <View style={styles.levelsList}>
+      {genderOptions.map((option) => (
+        <TouchableOpacity
+          key={option.value}
+          onPress={() => onGenderSelect(option.value)}
+          style={[
+            styles.genderCard,
+            selectedGender === option.value && styles.genderCardSelected,
+          ]}
+          testID={`button-gender-${option.value}`}
+        >
+          <Text style={styles.genderEmoji}>{option.emoji}</Text>
+          <Text style={[
+            styles.genderLabel,
+            selectedGender === option.value && styles.genderLabelSelected,
+          ]}>
+            {option.label}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  </View>
+);
+
+const CurrentLevelScreen = ({ selectedCurrentLevel, onCurrentLevelSelect, onContinue }: {
+  selectedCurrentLevel: string;
+  onCurrentLevelSelect: (level: string) => void;
+  onContinue: () => void;
+}) => (
+  <View style={styles.screenContent}>
+    <Text style={styles.screenTitle}>
+      What is your current language level?
+    </Text>
+    
+    <View style={styles.currentLevelGrid}>
+      {currentLevelOptions.map((level) => (
+        <TouchableOpacity
+          key={level.value}
+          onPress={() => onCurrentLevelSelect(level.value)}
+          style={[
+            styles.currentLevelCard,
+            selectedCurrentLevel === level.value && styles.currentLevelCardSelected,
+          ]}
+          testID={`button-currentlevel-${level.value}`}
+        >
+          <Text style={[
+            styles.currentLevelLabel,
+            selectedCurrentLevel === level.value && styles.currentLevelLabelSelected,
+          ]}>
+            {level.label}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+
+    <View style={styles.currentLevelContinueSection}>
+      <Button
+        onPress={onContinue}
+        disabled={selectedCurrentLevel === ''}
+        style={[
+          styles.continueButton,
+          selectedCurrentLevel === '' && styles.continueButtonDisabled
+        ]}
+      >
+        <View style={styles.continueButtonContent}>
+          <Text style={[
+            styles.continueButtonText,
+            selectedCurrentLevel === '' && styles.continueButtonTextDisabled
+          ]}>
+            Continue
+          </Text>
+          <Ionicons 
+            name="arrow-forward" 
+            size={20} 
+            color={selectedCurrentLevel === '' ? "#9CA3AF" : theme.colors.primaryForeground} 
+            style={styles.continueButtonIcon}
+          />
+        </View>
+      </Button>
     </View>
   </View>
 );
