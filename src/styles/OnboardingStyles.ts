@@ -391,7 +391,8 @@ const styles = StyleSheet.create({
   barrierCard: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
     borderWidth: 2,
     borderColor: theme.colors.border,
     flexDirection: 'row',
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
-    lineHeight: theme.lineHeight.normal,
+    lineHeight: theme.lineHeight.sm,
   },
   barrierLabelSelected: {
     color: theme.colors.foreground,
