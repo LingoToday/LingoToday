@@ -295,23 +295,20 @@ const styles = StyleSheet.create({
     color: theme.colors.foreground,
   },
 
-  // Current Language Level (staggered grid)
+  // Current Language Level (single column list)
   currentLevelGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: theme.spacing.sm,
-    maxWidth: 384,
+    gap: theme.spacing.md,
+    maxWidth: 512,
     width: '100%',
   },
   currentLevelCard: {
+    width: '100%',
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.xl,
     borderWidth: 2,
     borderColor: theme.colors.border,
-    minWidth: '45%',
     alignItems: 'center',
   },
   currentLevelCardSelected: {
