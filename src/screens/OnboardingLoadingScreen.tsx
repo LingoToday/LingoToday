@@ -172,7 +172,7 @@ const OnboardingLoadingScreen = ({ onComplete, selectedGoal, onGoalSelect }: {
         </Svg>
         <View style={styles.loadingImageContainer}>
           <Image
-            source={require('../../attached_assets/Gemini_Generated_Image_9mgcok9mgcok9mgc_1770930709966.png')}
+            source={require('../../attached_assets/Loading_&_Plan_Creation_1770935409900.png')}
             style={styles.loadingImage}
             resizeMode="cover"
           />

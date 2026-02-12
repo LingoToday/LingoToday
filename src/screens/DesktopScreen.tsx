@@ -178,21 +178,21 @@ export default function DesktopScreen() {
       title: 'Mobile App',
       subtitle: 'Continuous Learning Anywhere',
       description: 'Take LingoToday beyond your desk. Our mobile app keeps your learning streak alive so your progress never pauses.',
-      image: require('../../attached_assets/Group 77_1755208831106.png')
+      image: null
     },
     {
       icon: 'videocam',
       title: 'Real-World Immersion',
       subtitle: 'See It, Speak It, Live It',
       description: 'Learn phrases in context with immersive video scenarios. Watch real conversations from native speakers in everyday situations.',
-      video: require('../../attached_assets/Grok-Video-32DC88E3-42B1-46FE-BBEA-8BDFB1F94C59_1755601704305.mov')
+      video: null
     },
     {
       icon: 'mic',
       title: 'Speaking Practice',
       subtitle: 'Build Confidence Through Conversation',
       description: 'Practice pronunciation and conversation with AI-powered speech recognition. Get instant feedback on your accent and fluency.',
-      image: require('../../attached_assets/speaking-practice-image.png')
+      image: null
     }
   ];
 
