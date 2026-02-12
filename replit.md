@@ -45,8 +45,9 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 
 ## Recent Changes (Feb 12, 2026)
 
-**Onboarding Flow Expansion (29 screens)**:
-- **Screen flow**: Language (0) → Age (1) → Gender (2) → Current Level (3) → Learning Motivation (4) → Use Case Scenarios (5) → Learning Goals (6) → Previous Experience (7) → Previous Learning Methods (8) → Past Experience Feedback (9) → Flexibility Messaging (10) → Challenge 1 (11) → Challenge 2 (12) → Challenge 3 (13) → Improvement Areas (14) → Vocab A1-A2 (15) → Vocab B1-B2 (16) → Vocab C1-C2 (17) → Personal Interests (18) → Upcoming Events (19) → Loading & Plan Creation (20) → Growth Chart (21) → Level (22) → Learning Style (23) → Registration (24) → Notifications (25) → Testimonials (26) → Learning Plan (27) → Payment (28).
+**Onboarding Flow (27 screens)**:
+- **Screen flow**: Language (0) → Age (1) → Gender (2) → Current Level (3) → Learning Motivation (4) → Use Case Scenarios (5) → Learning Goals (6) → Previous Experience (7) → Previous Learning Methods (8) → Past Experience Feedback (9) → Flexibility Messaging (10) → Challenge 1 (11) → Challenge 2 (12) → Challenge 3 (13) → Improvement Areas (14) → Vocab A1-A2 (15) → Vocab B1-B2 (16) → Vocab C1-C2 (17) → Personal Interests (18) → Upcoming Events (19) → Loading & Plan Creation (20) → Growth Chart (21) → Registration (22) → Notifications (23) → Testimonials (24) → Learning Plan (25) → Payment (26).
+- **Removed screens**: Level Selection ("What's your starting point?") and Learning Style ("Where will you learn?") were removed from the flow.
 - **Age Selection (Screen 1)**: 2x2 grid with age ranges (18-24, 25-34, 35-44, 45+).
 - **Gender Selection (Screen 2)**: Vertical list with emoji icons (Female, Male, Rather not to say).
 - **Current Language Level (Screen 3)**: Single-column list with 7 proficiency levels, includes its own fixed-bottom Continue button.

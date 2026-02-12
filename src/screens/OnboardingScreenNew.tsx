@@ -196,7 +196,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 29;
+  const totalScreens = 27;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -329,13 +329,11 @@ export default function OnboardingScreen() {
       case 19: return selectedEvent !== '';
       case 20: return false;
       case 21: return true;
-      case 22: return selectedLevel !== '';
-      case 23: return selectedLearningStyle !== '';
-      case 24: return false;
+      case 22: return false;
+      case 23: return true;
+      case 24: return true;
       case 25: return true;
       case 26: return true;
-      case 27: return true;
-      case 28: return true;
       default: return false;
     }
   };
@@ -621,18 +619,6 @@ export default function OnboardingScreen() {
       case 21:
         return <OnboardingGrowthChartScreen />;
       case 22:
-        return <LevelSelectionScreen 
-          selectedLevel={selectedLevel} 
-          onLevelSelect={handleLevelSelect}
-          levels={levels}
-        />;
-      case 23:
-        return <LearningStyleScreen 
-          selectedStyle={selectedLearningStyle} 
-          onStyleSelect={handleLearningStyleSelect}
-          styles={learningStyles}
-        />;
-      case 24:
         return <RegistrationScreen 
           registerData={registerData}
           registerErrors={registerErrors}
@@ -641,21 +627,21 @@ export default function OnboardingScreen() {
           onRegister={handleRegister}
           navigation={navigation}
         />;
-      case 25:
+      case 23:
         return <NotificationScreen 
           notificationsEnabled={notificationsEnabled}
           onRequestPermission={requestNotificationPermission}
         />;
-      case 26:
+      case 24:
         return <TestimonialsScreen onContinue={nextScreen} />;
-      case 27:
+      case 25:
         return <LearningPlanScreen 
           selectedLanguage={selectedLanguageData}
           selectedLevel={selectedLevelData}
           selectedStyle={selectedLearningStyleData}
           onStartTrial={nextScreen}
         />;
-      case 28:
+      case 26:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -719,7 +705,7 @@ const handlePaymentSuccess = async () => {
           </View>
 
           {/* Android-only skip button for Learning Plan screen - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 27 && (
+          {Platform.OS === 'android' && currentScreen === 25 && (
             <TouchableOpacity
               onPress={handlePaymentSuccess}
               style={{
@@ -743,7 +729,7 @@ const handlePaymentSuccess = async () => {
           )}
 
           {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 28 ? (
+          {currentScreen === 26 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -760,8 +746,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on current level (3, has own), loading (20), registration (24), testimonials (26), learning plan (27), payment (28) */}
-          {currentScreen < 28 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 24 && currentScreen !== 26 && currentScreen !== 27 && (
+          {/* Continue button - hide on current level (3, has own), loading (20), registration (22), testimonials (24), learning plan (25), payment (26) */}
+          {currentScreen < 26 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 22 && currentScreen !== 24 && currentScreen !== 25 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
