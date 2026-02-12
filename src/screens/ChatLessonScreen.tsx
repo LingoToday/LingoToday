@@ -1038,18 +1038,15 @@ export default function ChatLessonScreen() {
           const mcqOptions = phrase.recognitionMcqOptions;
           const mcqAnswer = phrase.recognitionMcqAnswer;
           
-          // Extract scenario by removing the phrase from the question
           let scenario = phrase.recognitionMcqQuestion;
           const phrasePattern = new RegExp(`[:\\s]*${phrase.phrase.replace(/[?]/g, '\\?')}[?\\s]*$`, 'i');
           
           if (phrasePattern.test(scenario)) {
             scenario = scenario.replace(phrasePattern, '').trim();
           } else if (scenario.includes(phrase.phrase)) {
-            // Fallback: remove phrase wherever it appears
             scenario = scenario.replace(phrase.phrase, '').replace(/[:\s]+$/, '').trim();
           }
           
-          // Format: scenario + phrase in quotes + instruction
           const formattedQuestion = `${scenario}\n\n"${phrase.phrase}"\n\nConfirm the meaning from the below:`;
           
           setMessages(prev => [...prev, {
@@ -1060,6 +1057,9 @@ export default function ChatLessonScreen() {
             correctAnswer: mcqAnswer,
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping recognition_mcq - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1075,6 +1075,9 @@ export default function ChatLessonScreen() {
             options: gapAnswers,
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping production_gap - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1090,6 +1093,9 @@ export default function ChatLessonScreen() {
             cardType: 'translateBack',
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping translate_back - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1105,6 +1111,9 @@ export default function ChatLessonScreen() {
             cardType: 'speech',
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping speech - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1122,6 +1131,9 @@ export default function ChatLessonScreen() {
             cardType: 'context',
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping context - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1137,6 +1149,9 @@ export default function ChatLessonScreen() {
             answered: false,
             userAnswer: '',
           }]);
+        } else {
+          console.warn('[V2] Skipping expand - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
         break;
 
@@ -1153,7 +1168,15 @@ export default function ChatLessonScreen() {
             expectedAnswers: videoExpected,
             answered: false,
           }]);
+        } else {
+          console.warn('[V2] Skipping video - missing data');
+          setTimeout(() => advanceToNextMethod(), 100);
         }
+        break;
+
+      default:
+        console.warn('[V2] Unknown method:', method);
+        setTimeout(() => advanceToNextMethod(), 100);
         break;
     }
   };
@@ -1578,11 +1601,21 @@ export default function ChatLessonScreen() {
         </ScrollView>
 
         {sessionComplete && (
-          <ChatInputBar
-            mode={inputMode}
-            onModeToggle={toggleInputMode}
-            onSendMessage={handleSendMessage}
-          />
+          <View style={styles.sessionCompleteBar}>
+            <TouchableOpacity 
+              style={styles.continueSessionButton} 
+              onPress={() => {
+                setSessionComplete(false);
+                setMessages([]);
+                setIsLoading(true);
+                historyLoadedRef.current = false;
+                loadSession();
+              }}
+            >
+              <Text style={styles.continueSessionButtonText}>Continue</Text>
+              <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryForeground} />
+            </TouchableOpacity>
+          </View>
         )}
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -2096,5 +2129,26 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600' as any,
     fontSize: theme.fontSize.sm,
+  },
+  sessionCompleteBar: {
+    padding: 16,
+    paddingBottom: 24,
+    backgroundColor: theme.colors.background,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+  },
+  continueSessionButton: {
+    backgroundColor: theme.colors.primary,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
+  },
+  continueSessionButtonText: {
+    color: theme.colors.primaryForeground,
+    fontSize: theme.fontSize.base,
+    fontWeight: '700' as any,
   },
 });
