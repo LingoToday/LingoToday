@@ -179,6 +179,7 @@ export default function OnboardingScreen() {
   const [vocabKnown3, setVocabKnown3] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedEvent, setSelectedEvent] = useState('');
+  const [selectedGoal, setSelectedGoal] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -220,6 +221,7 @@ export default function OnboardingScreen() {
       setVocabKnown3([]);
       setSelectedInterests([]);
       setSelectedEvent('');
+      setSelectedGoal('');
       setSelectedLevel('');
       setSelectedLearningStyle('');
       setNotificationsEnabled(false);
@@ -262,6 +264,7 @@ export default function OnboardingScreen() {
         vocabKnown3,
         interests: selectedInterests,
         event: selectedEvent,
+        dailyGoal: selectedGoal,
         level: selectedLevel,
         learningStyle: selectedLearningStyle,
         notifications: notificationsEnabled,
@@ -274,10 +277,10 @@ export default function OnboardingScreen() {
   };
   
   useEffect(() => {
-    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || challengeAnswer1 || challengeAnswer2 || challengeAnswer3 || selectedImprovementAreas.length || vocabKnown1.length || vocabKnown2.length || vocabKnown3.length || selectedInterests.length || selectedEvent || selectedLevel || selectedLearningStyle) {
+    if (selectedLanguage || selectedAge || selectedGender || selectedCurrentLevel || selectedMotivations.length || selectedUseCases.length || selectedGoals.length || selectedExperience || selectedMethods.length || selectedBarriers.length || challengeAnswer1 || challengeAnswer2 || challengeAnswer3 || selectedImprovementAreas.length || vocabKnown1.length || vocabKnown2.length || vocabKnown3.length || selectedInterests.length || selectedEvent || selectedGoal || selectedLevel || selectedLearningStyle) {
       saveToLocalStorage();
     }
-  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, challengeAnswer1, challengeAnswer2, challengeAnswer3, selectedImprovementAreas, vocabKnown1, vocabKnown2, vocabKnown3, selectedInterests, selectedEvent, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
+  }, [selectedLanguage, selectedAge, selectedGender, selectedCurrentLevel, selectedMotivations, selectedUseCases, selectedGoals, selectedExperience, selectedMethods, selectedBarriers, challengeAnswer1, challengeAnswer2, challengeAnswer3, selectedImprovementAreas, vocabKnown1, vocabKnown2, vocabKnown3, selectedInterests, selectedEvent, selectedGoal, selectedLevel, selectedLearningStyle, notificationsEnabled, currentScreen]);
 
   const nextScreen = () => {
     if (currentScreen < totalScreens - 1) {
@@ -606,6 +609,8 @@ export default function OnboardingScreen() {
       case 20:
         return <OnboardingLoadingScreen
           onComplete={nextScreen}
+          selectedGoal={selectedGoal}
+          onGoalSelect={setSelectedGoal}
         />;
       case 21:
         return <LevelSelectionScreen 

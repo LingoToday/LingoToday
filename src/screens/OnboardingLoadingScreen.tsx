@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, Animated, Easing } from 'react-native';
+import { View, Text, Image, Animated, Easing, TouchableOpacity } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { theme } from '../lib/theme';
 import styles from '../styles/OnboardingStyles';
@@ -11,6 +11,13 @@ const checklistItems = [
   { emoji: '💬', label: 'Preparing interactive dialogues' },
   { emoji: '📚', label: 'Optimizing your learning path' },
   { emoji: '✅', label: 'Finishing your plan' },
+];
+
+const goalOptions = [
+  { value: '5', label: '5 min/day' },
+  { value: '10', label: '10 min/day' },
+  { value: '15', label: '15 min/day' },
+  { value: '30', label: '30 min/day' },
 ];
 
 const SIZE = 220;
@@ -38,12 +45,23 @@ const progressSteps = [
   { target: 100, duration: 700 },
 ];
 
-const OnboardingLoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
+const OnboardingLoadingScreen = ({ onComplete, selectedGoal, onGoalSelect }: {
+  onComplete: () => void;
+  selectedGoal: string;
+  onGoalSelect: (value: string) => void;
+}) => {
   const animatedProgress = useRef(new Animated.Value(0)).current;
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
   const [displayPercent, setDisplayPercent] = useState(0);
   const [completedItems, setCompletedItems] = useState<number[]>([]);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayDismissed, setOverlayDismissed] = useState(false);
   const hasCompleted = useRef(false);
+  const hasShownOverlay = useRef(false);
+  const isPaused = useRef(false);
+  const currentStepRef = useRef(0);
   const completeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const runNextStepRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const listener = animatedProgress.addListener(({ value }) => {
@@ -57,6 +75,17 @@ const OnboardingLoadingScreen = ({ onComplete }: { onComplete: () => void }) => 
       if (value >= 95) newCompleted.push(3);
       setCompletedItems(newCompleted);
 
+      if (value >= 40 && !hasShownOverlay.current) {
+        hasShownOverlay.current = true;
+        isPaused.current = true;
+        setShowOverlay(true);
+        Animated.timing(overlayOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      }
+
       if (value >= 100 && !hasCompleted.current) {
         hasCompleted.current = true;
         completeTimeout.current = setTimeout(() => {
@@ -65,20 +94,21 @@ const OnboardingLoadingScreen = ({ onComplete }: { onComplete: () => void }) => 
       }
     });
 
-    let currentStep = 0;
     const runNextStep = () => {
-      if (currentStep >= progressSteps.length) return;
-      const step = progressSteps[currentStep];
+      if (isPaused.current) return;
+      if (currentStepRef.current >= progressSteps.length) return;
+      const step = progressSteps[currentStepRef.current];
       Animated.timing(animatedProgress, {
         toValue: step.target,
         duration: step.duration,
         easing: Easing.out(Easing.quad),
         useNativeDriver: false,
       }).start(() => {
-        currentStep++;
+        currentStepRef.current++;
         runNextStep();
       });
     };
+    runNextStepRef.current = runNextStep;
 
     const timeout = setTimeout(() => {
       runNextStep();
@@ -91,6 +121,20 @@ const OnboardingLoadingScreen = ({ onComplete }: { onComplete: () => void }) => 
       animatedProgress.removeListener(listener);
     };
   }, []);
+
+  const handleGoalSelect = (value: string) => {
+    onGoalSelect(value);
+    Animated.timing(overlayOpacity, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setOverlayDismissed(true);
+      setShowOverlay(false);
+      isPaused.current = false;
+      runNextStepRef.current();
+    });
+  };
 
   const strokeDashoffset = animatedProgress.interpolate({
     inputRange: [0, 100],
@@ -155,6 +199,39 @@ const OnboardingLoadingScreen = ({ onComplete }: { onComplete: () => void }) => 
           );
         })}
       </View>
+
+      {showOverlay && !overlayDismissed && (
+        <Animated.View style={[styles.goalOverlayBackdrop, { opacity: overlayOpacity }]}>
+          <View style={styles.goalOverlayCard}>
+            <Text style={styles.goalOverlayTitle}>
+              What is your daily practice goal?
+            </Text>
+            <View style={styles.goalOverlayOptions}>
+              {goalOptions.map((option) => {
+                const isSelected = selectedGoal === option.value;
+                return (
+                  <TouchableOpacity
+                    key={option.value}
+                    onPress={() => handleGoalSelect(option.value)}
+                    style={[
+                      styles.goalOverlayOption,
+                      isSelected && styles.goalOverlayOptionSelected,
+                    ]}
+                    testID={`button-goal-${option.value}`}
+                  >
+                    <Text style={[
+                      styles.goalOverlayOptionText,
+                      isSelected && styles.goalOverlayOptionTextSelected,
+                    ]}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </Animated.View>
+      )}
     </View>
   );
 };

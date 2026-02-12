@@ -487,6 +487,59 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
 
+  // Daily Practice Goal Overlay (on Loading Screen)
+  goalOverlayBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  goalOverlayCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.xl,
+    padding: 24,
+    width: '85%',
+    maxWidth: 320,
+    alignItems: 'center',
+  },
+  goalOverlayTitle: {
+    fontSize: 18,
+    fontWeight: "700" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  goalOverlayOptions: {
+    width: '100%',
+    gap: 10,
+  },
+  goalOverlayOption: {
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.lg,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+  },
+  goalOverlayOptionSelected: {
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  goalOverlayOptionText: {
+    fontSize: 16,
+    fontWeight: "600" as TextStyle["fontWeight"],
+    color: theme.colors.foreground,
+  },
+  goalOverlayOptionTextSelected: {
+    color: theme.colors.primary,
+  },
+
   // Personal Interests Screen (3-column grid)
   interestsGrid: {
     flexDirection: 'row',
