@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   currentLevelLabel: {
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.sm,
     fontWeight: "600" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
     textAlign: 'center',
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   },
   barrierLabel: {
     flex: 1,
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.sm,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
     lineHeight: theme.lineHeight.sm,
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   eventLabel: {
     flex: 1,
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.sm,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
   },
