@@ -208,7 +208,7 @@ const OnboardingGrowthChartScreen = () => {
             fill="#FFFFFF"
             fontSize={12}
             fontWeight="500"
-            textAnchor="middle"
+            textAnchor="end"
           >
             4 weeks
           </SvgText>
