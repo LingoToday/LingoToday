@@ -23,8 +23,6 @@ const OTHER_PATH_LENGTH = 350;
 
 const lingoTodayDots = [
   { cx: PADDING_LEFT, cy: CHART_HEIGHT - PADDING_BOTTOM - 10, r: 6 },
-  { cx: PADDING_LEFT + 120, cy: CHART_HEIGHT - PADDING_BOTTOM - 70, r: 4 },
-  { cx: PADDING_LEFT + 200, cy: CHART_HEIGHT - PADDING_BOTTOM - 120, r: 4 },
   { cx: CHART_WIDTH - 10, cy: PADDING_TOP, r: 7 },
 ];
 
@@ -188,7 +186,7 @@ const OnboardingGrowthChartScreen = () => {
               x1={CHART_WIDTH - 10}
               y1={PADDING_TOP + 7}
               x2={CHART_WIDTH - 10}
-              y2={CHART_HEIGHT - PADDING_BOTTOM - 60 - 6}
+              y2={CHART_HEIGHT - PADDING_BOTTOM}
               stroke="rgba(236, 72, 153, 0.5)"
               strokeWidth={1.5}
               strokeDasharray="4,4"
@@ -207,12 +205,12 @@ const OnboardingGrowthChartScreen = () => {
           <SvgText
             x={CHART_WIDTH - 10}
             y={CHART_HEIGHT - 2}
-            fill="rgba(255,255,255,0.5)"
+            fill="#FFFFFF"
             fontSize={12}
             fontWeight="500"
             textAnchor="middle"
           >
-            Week 4
+            4 weeks
           </SvgText>
 
           <SvgText
