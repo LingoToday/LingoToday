@@ -16,7 +16,7 @@ const OnboardingChallengeScreen = ({ statement, selectedAnswer, onAnswerSelect }
 }) => (
   <View style={styles.screenContent}>
     <Text style={styles.challengeStatement}>
-      {statement}
+      "{statement}"
     </Text>
     <Text style={styles.challengeSubheader}>
       Is this statement true for you?

@@ -719,7 +719,7 @@ const styles = StyleSheet.create({
 
   // Challenge Assessment Screens
   challengeStatement: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "700" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
     textAlign: 'center',
@@ -729,7 +729,7 @@ const styles = StyleSheet.create({
   challengeSubheader: {
     fontSize: 15,
     fontWeight: "400" as TextStyle["fontWeight"],
-    color: theme.colors.mutedForeground,
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: theme.spacing.xxl,
   },
