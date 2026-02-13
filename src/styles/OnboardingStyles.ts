@@ -171,27 +171,29 @@ const styles = StyleSheet.create({
 
   // Level Selection
   levelsList: {
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
     maxWidth: 512,
     width: '100%',
   },
   levelCard: {
     width: '100%',
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md,
     borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
     borderColor: theme.colors.border,
     backgroundColor: theme.colors.card,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   levelCardSelected: {
     borderColor: theme.colors.primary,
     borderWidth: 3,
   },
   levelTitle: {
-    fontSize: theme.fontSize.lg,
+    fontSize: theme.fontSize.base,
     fontWeight: "700" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
-    marginBottom: theme.spacing.xs,
+    flex: 1,
   },
   levelTitleSelected: {
     color: theme.colors.foreground,
@@ -272,7 +274,7 @@ const styles = StyleSheet.create({
   // Gender Selection
   genderCard: {
     width: '100%',
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md,
     borderRadius: theme.borderRadius.xl,
     borderWidth: 2,
     borderColor: theme.colors.border,
@@ -289,7 +291,7 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.lg,
   },
   genderLabel: {
-    fontSize: theme.fontSize.lg,
+    fontSize: theme.fontSize.base,
     fontWeight: "600" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
   },
@@ -307,8 +309,8 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    paddingVertical: theme.spacing.lg,
-    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
     borderWidth: 2,
     borderColor: theme.colors.border,
     alignItems: 'center',
@@ -318,7 +320,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   currentLevelLabel: {
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.xs,
     fontWeight: "600" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
     textAlign: 'center',
@@ -340,6 +342,7 @@ const styles = StyleSheet.create({
   },
   multiSelectCheck: {
     marginLeft: 'auto',
+    flexShrink: 0,
   },
 
   // Learning Goals (2x2 grid)
@@ -391,8 +394,8 @@ const styles = StyleSheet.create({
   barrierCard: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
     borderWidth: 2,
     borderColor: theme.colors.border,
     flexDirection: 'row',
@@ -407,7 +410,7 @@ const styles = StyleSheet.create({
   },
   barrierLabel: {
     flex: 1,
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.xs,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
     lineHeight: theme.lineHeight.sm,
@@ -643,7 +646,8 @@ const styles = StyleSheet.create({
   eventCard: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.md,
+    padding: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderWidth: 2,
     borderColor: theme.colors.border,
     flexDirection: 'row',
@@ -661,7 +665,7 @@ const styles = StyleSheet.create({
   },
   eventLabel: {
     flex: 1,
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.xs,
     fontWeight: "500" as TextStyle["fontWeight"],
     color: theme.colors.foreground,
   },
