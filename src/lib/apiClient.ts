@@ -832,6 +832,17 @@ export class ApiClient {
     const params = phraseId ? `?phraseId=${phraseId}` : '';
     return this.makeRequest(`/api/v2/progress/${userId}${params}`);
   }
+
+  async postOnboardingProfile(profile: Record<string, any>): Promise<{ assignedLevel: string; startingTrack: string; recommendedDailyGoal: number }> {
+    return this.makeRequest('/api/onboarding-profile', {
+      method: 'POST',
+      body: JSON.stringify(profile),
+    });
+  }
+
+  async getOnboardingProfile(): Promise<Record<string, any>> {
+    return this.makeRequest('/api/onboarding-profile');
+  }
 }
 
 export const apiClient = new ApiClient();

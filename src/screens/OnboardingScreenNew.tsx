@@ -450,10 +450,53 @@ export default function OnboardingScreen() {
           
         } catch (settingsError) {
           console.error('❌ Error saving notification settings (non-critical):', settingsError);
-          // Don't fail registration if settings save fails
         }
         
-        // Clear temporary AsyncStorage and save final preferences
+        try {
+          console.log('📋 Sending onboarding profile to backend...');
+          const languageCodeMap: Record<string, string> = { italian: 'it', spanish: 'es', german: 'de', french: 'fr' };
+          const levelCodeMap: Record<string, string> = {
+            total_beginner: 'complete_beginner', beginner: 'beginner', pre_intermediate: 'some_basics',
+            intermediate: 'intermediate', upper_intermediate: 'upper_intermediate', advanced: 'advanced', proficient: 'fluent',
+          };
+          const onboardingProfile = {
+            language: languageCodeMap[selectedLanguage] || selectedLanguage,
+            age: selectedAge,
+            gender: selectedGender,
+            currentLevel: levelCodeMap[selectedCurrentLevel] || selectedCurrentLevel,
+            motivations: selectedMotivations,
+            useCases: selectedUseCases,
+            goals: selectedGoals,
+            experience: selectedExperience,
+            methods: selectedMethods,
+            barriers: selectedBarriers,
+            challengeAnswers: {
+              '1': challengeAnswer1,
+              '2': challengeAnswer2,
+              '3': challengeAnswer3,
+            },
+            improvementAreas: selectedImprovementAreas,
+            vocabKnown: {
+              a1a2: vocabKnown1,
+              b1b2: vocabKnown2,
+              c1c2: vocabKnown3,
+            },
+            interests: selectedInterests,
+            upcomingEvent: selectedEvent,
+            dailyGoal: selectedGoal,
+          };
+          const profileResponse = await apiClient.postOnboardingProfile(onboardingProfile);
+          console.log('✅ Onboarding profile saved:', profileResponse);
+          
+          await AsyncStorage.setItem('lingoToday_assigned_level', JSON.stringify({
+            assignedLevel: profileResponse.assignedLevel,
+            startingTrack: profileResponse.startingTrack,
+            recommendedDailyGoal: profileResponse.recommendedDailyGoal,
+          }));
+        } catch (profileError) {
+          console.error('❌ Error saving onboarding profile (non-critical):', profileError);
+        }
+        
         const finalData = {
           language: selectedLanguage,
           level: selectedLevel,
