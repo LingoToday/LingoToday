@@ -196,7 +196,7 @@ export default function OnboardingScreen() {
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const totalScreens = 27;
+  const totalScreens = 26;
 
   // Function to clear onboarding state (for testing/reset) - matching web exactly
   const clearOnboardingState = async () => {
@@ -333,7 +333,6 @@ export default function OnboardingScreen() {
       case 23: return true;
       case 24: return true;
       case 25: return true;
-      case 26: return true;
       default: return false;
     }
   };
@@ -678,13 +677,6 @@ export default function OnboardingScreen() {
       case 24:
         return <TestimonialsScreen onContinue={nextScreen} />;
       case 25:
-        return <LearningPlanScreen 
-          selectedLanguage={selectedLanguageData}
-          selectedLevel={selectedLevelData}
-          selectedStyle={selectedLearningStyleData}
-          onStartTrial={nextScreen}
-        />;
-      case 26:
         return <PaymentScreen onSuccess={handlePaymentSuccess} />;
       default:
         return null;
@@ -742,37 +734,11 @@ const handlePaymentSuccess = async () => {
                 ]} 
               />
             </View>
-            <Text style={styles.progressText}>
-              Step {currentScreen + 1} of {totalScreens}
-            </Text>
+            
           </View>
 
-          {/* Android-only skip button for Learning Plan screen - positioned at top right of content */}
-          {Platform.OS === 'android' && currentScreen === 25 && (
-            <TouchableOpacity
-              onPress={handlePaymentSuccess}
-              style={{
-                position: 'absolute',
-                top: Math.max(insets.top, 8),
-                right: 12,
-                zIndex: 100,
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                backgroundColor: theme.colors.muted,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              accessibilityLabel="Skip subscription"
-              accessibilityRole="button"
-            >
-              <Ionicons name="close" size={18} color={theme.colors.mutedForeground} />
-            </TouchableOpacity>
-          )}
-
-          {/* FIXED: Handle payment screen separately */}
-          {currentScreen === 26 ? (
+          {/* Handle payment screen separately */}
+          {currentScreen === 25 ? (
             // Payment screen - no wrapper ScrollView, handles its own keyboard/scroll
             <View style={[styles.screenContainer, isTransitioning && styles.screenTransitioning]}>
               {renderScreen()}
@@ -789,8 +755,8 @@ const handlePaymentSuccess = async () => {
             </View>
           )}
 
-          {/* Continue button - hide on current level (3, has own), loading (20), registration (22), testimonials (24), learning plan (25), payment (26) */}
-          {currentScreen < 26 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 22 && currentScreen !== 24 && currentScreen !== 25 && (
+          {/* Continue button - hide on current level (3, has own), loading (20), registration (22), testimonials (24), payment (25) */}
+          {currentScreen < 25 && currentScreen !== 3 && currentScreen !== 20 && currentScreen !== 22 && currentScreen !== 24 && (
             <View style={styles.continueSection}>
               <Button
                 onPress={nextScreen}
@@ -1556,90 +1522,6 @@ const NotificationScreen = ({
     </View>
   );
 };
-
-const LearningPlanScreen = ({ 
-  selectedLanguage, 
-  selectedLevel, 
-  selectedStyle,
-  onStartTrial
-}: {
-  selectedLanguage?: { name: string; flag: string; };
-  selectedLevel?: { title: string; };
-  selectedStyle?: { title: string; icon: string; };
-  onStartTrial: () => void;
-}) => (
-  <View style={styles.screenContent}>
-    <Text style={styles.screenTitle}>
-      Your Learning Plan is Ready
-    </Text>
-    
-    {/* Timeline - matching web exactly */}
-    <View style={styles.timelineCard}>
-      <View style={styles.timelineSpace}>
-        <View style={styles.timelineItem}>
-          <View style={[styles.timelineIcon, { backgroundColor: '#3B82F6' }]}>
-            <Text style={styles.timelineEmoji}>💬</Text>
-          </View>
-          <View style={styles.timelineContent}>
-            <Text style={styles.timelineText}>In 1 month → You'll hold everyday conversations</Text>
-          </View>
-        </View>
-        
-        <View style={styles.timelineItem}>
-          <View style={[styles.timelineIcon, { backgroundColor: '#10B981' }]}>
-            <Text style={styles.timelineEmoji}>✈️</Text>
-          </View>
-          <View style={styles.timelineContent}>
-            <Text style={styles.timelineText}>In 2 months → You'll navigate confidently abroad</Text>
-          </View>
-        </View>
-        
-        <View style={styles.timelineItem}>
-          <View style={[styles.timelineIcon, { backgroundColor: '#8B5CF6' }]}>
-            <Text style={styles.timelineEmoji}>🗣️</Text>
-          </View>
-          <View style={styles.timelineContent}>
-            <Text style={styles.timelineText}>In 3 months → You'll have real back-and-forth conversation</Text>
-          </View>
-        </View>
-        
-        <View style={styles.timelineItem}>
-          <View style={[styles.timelineIcon, { backgroundColor: '#F59E0B' }]}>
-            <Text style={styles.timelineEmoji}>🌟</Text>
-          </View>
-          <View style={styles.timelineContent}>
-            <Text style={styles.timelineText}>In 4 months + → You'll speak naturally and confidently in most situation</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-    
-    {/* Start Free Trial Section - matching web exactly */}
-    <View style={styles.trialSection}>
-      {/* No Payment Due Now text */}
-      <View style={styles.noPaymentContainer}>
-        <Text style={styles.noPaymentText}>✓ No Payment Due Now. Cancel Anytime</Text>
-      </View>
-      
-      {/* Start Free Trial Button */}
-      <View>
-        <Button 
-          onPress={onStartTrial}
-          style={styles.startTrialButton}
-        >
-          <Text style={styles.startTrialButtonText}>Start Free Trial</Text>
-        </Button>
-        
-        {/* Small text underneath - hidden on Android */}
-        {Platform.OS !== 'android' && (
-          <View style={styles.trialPriceContainer}>
-            <Text style={styles.trialPriceText}>3 days free trial then {PRO_PRICING.GBP.monthly}/month</Text>
-          </View>
-        )}
-      </View>
-    </View>
-  </View>
-);
 
 // IAP Purchase Component
 const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
