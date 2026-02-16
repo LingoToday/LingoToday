@@ -32,7 +32,7 @@ The app is built using React Native 0.81.4, Expo SDK 54, React Native Web, React
 - **React Native Web**: Web platform compatibility.
 - **React Navigation**: App navigation.
 - **React Query**: State management.
-- **RevenueCat**: In-app purchases and subscription management.
+- **RevenueCat**: In-app purchases and subscription management (react-native-purchases + react-native-purchases-ui for hosted paywalls).
 - **AsyncStorage**: Local data persistence.
 - **expo-notifications**: Push notifications.
 - **expo-web-browser**: In-app webview.

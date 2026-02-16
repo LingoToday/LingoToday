@@ -46,7 +46,7 @@ import { apiClient } from '../lib/apiClient';
 
 // Import IAP service
 import { purchaseService } from '../services/purchaseService';
-import { PurchasesPackage } from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 import { PRO_PRICING } from '../constants/pricing';
 
 const { width } = Dimensions.get('window');
@@ -1524,129 +1524,68 @@ const NotificationScreen = ({
 };
 
 // IAP Purchase Component
-const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [packages, setPackages] = useState<PurchasesPackage[]>([]);
-  const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
-  const [loadingOfferings, setLoadingOfferings] = useState(true);
+const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    initializeAndFetchOfferings();
-  }, []);
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const initializeAndFetchOfferings = async () => {
+  const initRevenueCat = async () => {
     try {
-      setLoadingOfferings(true);
-      setErrorMessage(null);
-      
-      // Get current user to initialize RevenueCat with user ID
+      setLoading(true);
+      setError(null);
       const user = await apiClient.getCurrentUser();
       const userId = (user as any)?.id || (user as any)?.email;
-      
-      // Initialize RevenueCat
       await purchaseService.initialize(userId);
-      
-      // Fetch available offerings
-      const availablePackages = await purchaseService.getOfferings();
-      
-      if (availablePackages.length === 0) {
-        setErrorMessage('No subscription plans are currently available. Please check your internet connection and try again.');
-        return;
-      }
-      
-      setPackages(availablePackages);
-      
-      // Auto-select the first package
-      if (availablePackages.length > 0) {
-        setSelectedPackage(availablePackages[0]);
-      }
-    } catch (error: any) {
-      console.error('Error fetching offerings:', error);
-      const message = error?.message || 'Unable to load subscription options. Please check your connection and try again.';
-      setErrorMessage(message);
-    } finally {
-      setLoadingOfferings(false);
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Error initializing RevenueCat for paywall:', err);
+      setError(err?.message || 'Failed to load subscription options.');
+      setLoading(false);
     }
   };
 
-  const handlePurchase = async () => {
-    if (!selectedPackage) {
-      RNAlert.alert('Error', 'Please select a subscription plan');
-      return;
-    }
+  useEffect(() => {
+    initRevenueCat();
+  }, []);
 
-    setIsProcessing(true);
-
+  const handlePurchaseCompleted = async ({ customerInfo }: { customerInfo: any }) => {
+    console.log('RevenueCat paywall purchase completed:', customerInfo);
     try {
-      const result = await purchaseService.purchasePackage(selectedPackage);
-
-      if (result.success) {
-        // Notify backend about the purchase to sync entitlements
-        try {
-          // Refresh user data to get updated subscription status
-          const updatedUser = await apiClient.getCurrentUser();
-          console.log('✅ User data refreshed after purchase:', updatedUser);
-        } catch (backendError) {
-          console.warn('⚠️ Failed to refresh user after purchase:', backendError);
-          // Continue anyway - RevenueCat webhook will eventually sync
-        }
-
-        RNAlert.alert(
-          '🎉 Welcome to LingoToday Pro!',
-          'Your subscription is now active. You have access to all premium features.',
-          [{ text: 'Continue', onPress: onSuccess }]
-        );
-      } else if (result.error === 'Purchase cancelled') {
-        // User cancelled, do nothing
-      } else {
-        RNAlert.alert('Purchase Failed', result.error || 'Unable to complete purchase. Please try again.');
-      }
-    } catch (error: any) {
-      console.error('Purchase error:', error);
-      RNAlert.alert('Purchase Error', error.message || 'An unexpected error occurred. Please try again.');
-    } finally {
-      setIsProcessing(false);
+      const updatedUser = await apiClient.getCurrentUser();
+      console.log('User data refreshed after purchase:', updatedUser);
+    } catch (backendError) {
+      console.warn('Failed to refresh user after purchase:', backendError);
     }
+    RNAlert.alert(
+      'Welcome to LingoToday Pro!',
+      'Your subscription is now active. You have access to all premium features.',
+      [{ text: 'Continue', onPress: onSuccess }]
+    );
   };
 
-  const handleRestore = async () => {
-    setIsProcessing(true);
-
-    try {
-      const result = await purchaseService.restorePurchases();
-
-      if (result.success) {
-        RNAlert.alert(
-          '✅ Purchase Restored',
-          'Your subscription has been restored successfully!',
-          [{ text: 'Continue', onPress: onSuccess }]
-        );
-      } else {
-        RNAlert.alert('No Purchases Found', 'We couldn\'t find any previous purchases for this account.');
-      }
-    } catch (error: any) {
-      console.error('Restore error:', error);
-      RNAlert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    // Open App Store subscription management on iOS
-    if (Platform.OS === 'ios') {
-      await WebBrowser.openBrowserAsync('https://apps.apple.com/account/subscriptions');
+  const handleRestoreCompleted = ({ customerInfo }: { customerInfo: any }) => {
+    console.log('RevenueCat paywall restore completed:', customerInfo);
+    const hasProAccess = typeof customerInfo?.entitlements?.active?.['pro'] !== 'undefined';
+    if (hasProAccess) {
+      RNAlert.alert(
+        'Purchase Restored',
+        'Your subscription has been restored successfully!',
+        [{ text: 'Continue', onPress: onSuccess }]
+      );
     } else {
-      // For Android, open Google Play subscriptions
-      await WebBrowser.openBrowserAsync('https://play.google.com/store/account/subscriptions');
+      RNAlert.alert(
+        'No Purchases Found',
+        'We couldn\'t find any previous purchases for this account.'
+      );
     }
   };
 
-  if (loadingOfferings) {
+  const handleDismiss = () => {
+    console.log('RevenueCat paywall dismissed');
+  };
+
+  if (loading) {
     return (
-      <View style={styles.stripeFormContainer}>
+      <View style={styles.screenContent}>
         <View style={styles.loadingContainer}>
           <Ionicons name="hourglass" size={32} color={theme.colors.primary} />
           <Text style={styles.loadingText}>Loading subscription options...</Text>
@@ -1655,227 +1594,38 @@ const IAPPurchaseForm = ({ onSuccess }: { onSuccess: () => void }) => {
     );
   }
 
-  if (errorMessage || packages.length === 0) {
-    return (
-      <View style={styles.stripeFormContainer}>
-        <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={48} color={theme.colors.destructive} style={{ marginBottom: 16 }} />
-          <Text style={styles.errorTitle}>Unable to Load Subscription Options</Text>
-          <Text style={styles.errorText}>
-            {errorMessage || 'No subscription options available at this time.'}
-          </Text>
-          <Button onPress={initializeAndFetchOfferings} style={styles.retryButton}>
-            <View style={styles.stripeButtonContent}>
-              <Ionicons name="refresh" size={16} color="#ffffff" style={{ marginRight: 8 }} />
-              <Text style={styles.retryButtonText}>Retry</Text>
-            </View>
-          </Button>
-        </View>
-      </View>
-    );
-  }
-
-  const formatPrice = (pkg: PurchasesPackage) => {
-    return pkg.product.priceString;
-  };
-
-  const getTrialText = (pkg: PurchasesPackage) => {
-    if (pkg.product.introPrice) {
-      const period = pkg.product.introPrice.periodNumberOfUnits;
-      const unit = pkg.product.introPrice.periodUnit.toLowerCase();
-      return `${period}-${unit} free trial`;
-    }
-    return null;
-  };
-
-  const getPackageIdentifier = (pkg: PurchasesPackage) => {
-    return pkg.identifier;
-  };
-
-  return (
-    <View style={styles.stripeFormContainer}>
-      {/* Display all available packages */}
-      {packages.map((pkg) => {
-        const isSelected = selectedPackage?.identifier === pkg.identifier;
-        const trialText = getTrialText(pkg);
-        
-        return (
-          <TouchableOpacity
-            key={getPackageIdentifier(pkg)}
-            style={[
-              styles.packageOption,
-              isSelected && styles.packageOptionSelected
-            ]}
-            onPress={() => setSelectedPackage(pkg)}
-            disabled={isProcessing}
-          >
-            <View style={styles.packageOptionContent}>
-              <View style={styles.packageRadio}>
-                {isSelected && <View style={styles.packageRadioSelected} />}
-              </View>
-              
-              <View style={styles.packageDetails}>
-                <View style={styles.packageHeader}>
-                  <Text style={styles.packageTitle}>
-                    {pkg.product.title}
-                  </Text>
-                  {trialText && (
-                    <View style={styles.trialBadge}>
-                      <Text style={styles.trialBadgeText}>{trialText}</Text>
-                    </View>
-                  )}
-                </View>
-                
-                <Text style={styles.packagePrice}>{formatPrice(pkg)}</Text>
-                
-                {pkg.product.description && (
-                  <Text style={styles.packageDescription} numberOfLines={2}>
-                    {pkg.product.description}
-                  </Text>
-                )}
-              </View>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-
-      {/* Purchase Button */}
-      <View style={styles.stripeButtonContainer}>
-        <Button
-          onPress={handlePurchase}
-          disabled={isProcessing || !selectedPackage}
-          style={[
-            styles.stripeSubmitButton,
-            (isProcessing || !selectedPackage) && styles.stripeSubmitButtonDisabled
-          ]}
-        >
-          <View style={styles.stripeButtonContent}>
-            {isProcessing && <Ionicons name="hourglass" size={16} color="#ffffff" style={{ marginRight: 8 }} />}
-            <Text style={[
-              styles.stripeSubmitButtonText,
-              (isProcessing || !selectedPackage) && styles.stripeSubmitButtonTextDisabled
-            ]}>
-              {isProcessing ? 'Processing...' : selectedPackage && getTrialText(selectedPackage) ? 'Start Free Trial' : 'Subscribe Now'}
-            </Text>
-          </View>
-        </Button>
-      </View>
-
-      {/* Restore Purchases Button */}
-      <TouchableOpacity onPress={handleRestore} disabled={isProcessing} style={styles.restorePurchasesButton}>
-        <Text style={styles.restorePurchasesText}>Restore Purchases</Text>
-      </TouchableOpacity>
-
-      {/* Manage Subscription Link */}
-      <TouchableOpacity onPress={handleManageSubscription} disabled={isProcessing} style={styles.restorePurchasesButton}>
-        <Text style={styles.restorePurchasesText}>Manage Subscription</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.stripeTermsText}>
-        By continuing, you agree to our Terms of Service and Privacy Policy.
-      </Text>
-    </View>
-  );
-};
-
-// Payment Screen Component with full apiClient integration - matching web exactly
-const PaymentScreen = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Check if user is authenticated on mount using apiClient
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setLoading(true);
-        await apiClient.getCurrentUser();
-      } catch (err: any) {
-        console.error('Error checking authentication:', err);
-        const errorMessage = err?.message || 'Failed to verify authentication. Please try again.';
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkAuth();
-  }, []);
-  
-  const handleSuccess = () => {
-    RNAlert.alert("🎉 Welcome to LingoToday Pro!", "Your subscription is active. You now have access to all premium features.");
-    // Navigate to dashboard after successful payment
-    setTimeout(() => {
-      onSuccess();
-    }, 2000);
-  };
-  
-  if (loading) {
-    return (
-      <View style={styles.screenContent}>
-        <Text style={styles.screenTitle}>Setting up Payment</Text>
-        <View style={styles.loadingContainer}>
-          <Ionicons name="hourglass" size={32} color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Loading payment form...</Text>
-        </View>
-      </View>
-    );
-  }
-  
   if (error) {
-    const isAuthError = error?.includes('authenticated') || error?.includes('registration');
-    
     return (
       <View style={styles.screenContent}>
-        <Text style={styles.screenTitle}>
-          {isAuthError ? 'Registration Required' : 'Payment Setup Failed'}
-        </Text>
+        <Text style={styles.screenTitle}>Payment Setup Failed</Text>
         <Text style={styles.screenSubtitle}>{error}</Text>
         <View style={styles.errorButtonsContainer}>
-          {isAuthError && (
-            <Button 
-              onPress={() => {/* Navigate back to registration */}} 
-              style={styles.errorButton}
-            >
-              <Text style={styles.errorButtonText}>Complete Registration</Text>
-            </Button>
-          )}
-          <Button 
-            onPress={() => setError(null)} 
-            style={[styles.errorButton, isAuthError && styles.errorButtonSecondary]}
+          <Button
+            onPress={initRevenueCat}
+            style={styles.errorButton}
           >
-            <Text style={[styles.errorButtonText, isAuthError && styles.errorButtonSecondaryText]}>Try Again</Text>
+            <Text style={styles.errorButtonText}>Try Again</Text>
           </Button>
         </View>
       </View>
     );
   }
-  
-  // FIXED: Wrap payment content in KeyboardAvoidingView with proper scrolling
+
   return (
-    <KeyboardAvoidingView 
-      style={styles.paymentKeyboardContainer}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-    >
-      <ScrollView 
-        contentContainerStyle={styles.paymentScrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        scrollEnabled={true}
-        bounces={false}
-      >
-        <View style={styles.paymentScreenContent}>
-          <Text style={styles.screenTitle}>
-            Complete Your Subscription
-          </Text>
-          <Text style={styles.screenSubtitle}>
-            Choose your plan and start learning today
-          </Text>
-          
-          <IAPPurchaseForm onSuccess={handleSuccess} />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <View style={{ flex: 1 }}>
+      <RevenueCatUI.Paywall
+        onPurchaseCompleted={handlePurchaseCompleted}
+        onRestoreCompleted={handleRestoreCompleted}
+        onDismiss={handleDismiss}
+        onPurchaseError={({ error: purchaseError }) => {
+          console.error('RevenueCat paywall purchase error:', purchaseError);
+        }}
+        onRestoreError={({ error: restoreError }) => {
+          console.error('RevenueCat paywall restore error:', restoreError);
+          RNAlert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+        }}
+      />
+    </View>
   );
 };
 
