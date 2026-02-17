@@ -12,6 +12,7 @@ import { apiClient } from '../lib/apiClient';
 import { purchaseService } from '../services/purchaseService';
 import { useAuth } from '../hooks/useAuth';
 import { getPriceDisplay } from '../constants/pricing';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 interface User {
   id: string;
@@ -51,6 +52,7 @@ export default function SubscriptionScreenNew() {
   const { logout } = useAuth();
   const queryClient = useQueryClient();
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [showPaywallModal, setShowPaywallModal] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/auth/user'],
@@ -63,7 +65,42 @@ export default function SubscriptionScreenNew() {
   const handleBack = () => navigation.goBack();
 
   const handleChangePlan = () => {
-    navigation.navigate('Subscribe' as never);
+    setShowPaywallModal(true);
+  };
+
+  const handlePaywallPurchaseCompleted = async ({ customerInfo }: { customerInfo: any }) => {
+    console.log('Paywall purchase completed:', customerInfo);
+    setShowPaywallModal(false);
+    try {
+      await apiClient.getCurrentUser();
+      await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+    } catch (backendError) {
+      console.warn('Failed to refresh user after purchase:', backendError);
+    }
+    Alert.alert(
+      'Plan Updated!',
+      'Your subscription has been updated successfully.',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const handlePaywallRestoreCompleted = ({ customerInfo }: { customerInfo: any }) => {
+    console.log('Paywall restore completed:', customerInfo);
+    const hasProAccess = typeof customerInfo?.entitlements?.active?.['pro'] !== 'undefined';
+    if (hasProAccess) {
+      setShowPaywallModal(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      Alert.alert(
+        'Purchase Restored',
+        'Your subscription has been restored successfully!',
+        [{ text: 'OK' }]
+      );
+    } else {
+      Alert.alert(
+        'No Purchases Found',
+        'We couldn\'t find any previous purchases for this account.'
+      );
+    }
   };
 
   const handleRestorePurchases = async () => {
@@ -357,6 +394,37 @@ export default function SubscriptionScreenNew() {
           </View>
         </View>
       </Modal>
+
+      {/* RevenueCat Paywall Modal */}
+      <Modal
+        visible={showPaywallModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowPaywallModal(false)}
+      >
+        <View style={styles.paywallModalContainer}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <TouchableOpacity
+              style={styles.paywallCloseButton}
+              onPress={() => setShowPaywallModal(false)}
+            >
+              <Ionicons name="close" size={28} color={theme.colors.foreground} />
+            </TouchableOpacity>
+            <RevenueCatUI.Paywall
+              onPurchaseCompleted={handlePaywallPurchaseCompleted}
+              onRestoreCompleted={handlePaywallRestoreCompleted}
+              onDismiss={() => setShowPaywallModal(false)}
+              onPurchaseError={({ error }) => {
+                console.error('Paywall purchase error:', error);
+              }}
+              onRestoreError={({ error }) => {
+                console.error('Paywall restore error:', error);
+                Alert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+              }}
+            />
+          </SafeAreaView>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -568,5 +636,21 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.base,
     color: theme.colors.foreground,
     fontWeight: '600',
+  },
+  paywallModalContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  paywallCloseButton: {
+    position: 'absolute',
+    top: 12,
+    right: 16,
+    zIndex: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: theme.colors.muted,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
