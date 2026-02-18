@@ -84,6 +84,14 @@ function getLanguageDisplayName(code: string): string {
     mandarin: 'Mandarin',
     japanese: 'Japanese',
     korean: 'Korean',
+    it: 'Italian',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    pt: 'Portuguese',
+    zh: 'Mandarin',
+    ja: 'Japanese',
+    ko: 'Korean',
   };
   return languages[code?.toLowerCase()] || code?.charAt(0).toUpperCase() + code?.slice(1) || 'Language';
 }
@@ -128,6 +136,91 @@ export const getLanguageSpecificNotification = (languageCode: string) => {
   const normalizedCode = languageCode?.toLowerCase();
   return notifications[normalizedCode as keyof typeof notifications] || notifications.italian;
 }
+
+const WeeklyStreakCircles = ({ streak }: { streak: number }) => {
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const todayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+  const completedDays: boolean[] = Array(7).fill(false);
+  for (let i = 0; i < Math.min(streak, todayIndex + 1); i++) {
+    completedDays[todayIndex - i] = true;
+  }
+
+  return (
+    <View style={weeklyStyles.container}>
+      {dayLabels.map((label, index) => {
+        const isCompleted = completedDays[index];
+        const isFuture = index > todayIndex;
+        return (
+          <View
+            key={index}
+            style={[
+              weeklyStyles.circle,
+              isCompleted
+                ? weeklyStyles.circleCompleted
+                : isFuture
+                  ? weeklyStyles.circleFuture
+                  : weeklyStyles.circleIncomplete,
+            ]}
+          >
+            <Text
+              style={[
+                weeklyStyles.circleText,
+                isCompleted
+                  ? weeklyStyles.circleTextCompleted
+                  : weeklyStyles.circleTextIncomplete,
+              ]}
+            >
+              {label}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+const weeklyStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 4,
+  },
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleCompleted: {
+    backgroundColor: '#A3E635',
+  },
+  circleIncomplete: {
+    backgroundColor: '#3B82F6',
+    borderWidth: 2,
+    borderColor: '#A3E635',
+  },
+  circleFuture: {
+    backgroundColor: theme.colors.muted,
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+  },
+  circleText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  circleTextCompleted: {
+    color: '#1a1a2e',
+  },
+  circleTextIncomplete: {
+    color: '#ffffff',
+  },
+});
 
 export default function DashboardScreenNew() {
   const { width } = useWindowDimensions();
@@ -473,50 +566,8 @@ useEffect(() => {
                       </Text> learning journey
                     </Text>
                     
-                    {/* Level and Progress */}
-                    <View style={styles.levelContainer}>
-                      <Badge style={styles.levelBadge}>
-                        <Text style={styles.levelBadgeText}>
-                          {effectiveDashboardData.user.selectedLevel ? 
-                            effectiveDashboardData.user.selectedLevel.charAt(0).toUpperCase() + 
-                            effectiveDashboardData.user.selectedLevel.slice(1).toLowerCase() : 'Beginner'}
-                        </Text>
-                      </Badge>
-                      <View style={styles.progressInfo}>
-                        <Text style={styles.progressText}>
-                          {stats.lessonsCompleted > 0
-                            ? `${stats.lessonsCompleted} lessons completed`
-                            : 'Start your first lesson'}
-                        </Text>
-                      </View>
-                    </View>
-
-                    {/* Stats Cards */}
-                    <View style={styles.statsGrid}>
-                      <View style={[styles.statCard, styles.statCardBlue, { 
-                        padding: isSmallHandset ? 12 : 16,
-                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
-                      }]}>
-                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.streak}</Text>
-                        <Text style={styles.statLabel}>Day Streak</Text>
-                      </View>
-                      
-                      <View style={[styles.statCard, styles.statCardGreen, { 
-                        padding: isSmallHandset ? 12 : 16,
-                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
-                      }]}>
-                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.lessonsCompleted}</Text>
-                        <Text style={styles.statLabel}>Lessons Done</Text>
-                      </View>
-                      
-                      <View style={[styles.statCard, styles.statCardPurple, { 
-                        padding: isSmallHandset ? 12 : 16,
-                        paddingVertical: Platform.OS === 'android' ? (isSmallHandset ? 10 : 14) : (isSmallHandset ? 12 : 16)
-                      }]}>
-                        <Text style={[styles.statValue, { fontSize: isSmallHandset ? 20 : 24 }]}>{stats.wordsLearned}</Text>
-                        <Text style={styles.statLabel}>Words Learned</Text>
-                      </View>
-                    </View>
+                    {/* Weekly Streak Circles */}
+                    <WeeklyStreakCircles streak={stats.streak} />
                   </CardContent>
                 </Card>
 
