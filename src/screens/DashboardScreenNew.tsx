@@ -201,7 +201,7 @@ const weeklyStyles = StyleSheet.create({
     backgroundColor: '#A3E635',
   },
   circleIncomplete: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: theme.colors.card,
     borderWidth: 2,
     borderColor: '#A3E635',
   },
