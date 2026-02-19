@@ -137,16 +137,28 @@ export const getLanguageSpecificNotification = (languageCode: string) => {
   return notifications[normalizedCode as keyof typeof notifications] || notifications.italian;
 }
 
-const WeeklyStreakCircles = ({ streak }: { streak: number }) => {
+const WeeklyStreakCircles = ({ progress }: { progress: ProgressData[] }) => {
   const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const today = new Date();
   const dayOfWeek = today.getDay();
   const todayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - todayIndex);
+  monday.setHours(0, 0, 0, 0);
+
   const completedDays: boolean[] = Array(7).fill(false);
-  for (let i = 0; i < Math.min(streak, todayIndex + 1); i++) {
-    completedDays[todayIndex - i] = true;
-  }
+  progress.forEach((p) => {
+    if (p.completedAt) {
+      const d = new Date(p.completedAt);
+      if (d >= monday) {
+        const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
+        if (idx <= todayIndex) {
+          completedDays[idx] = true;
+        }
+      }
+    }
+  });
 
   return (
     <View style={weeklyStyles.container}>
@@ -567,7 +579,7 @@ useEffect(() => {
                     </Text>
                     
                     {/* Weekly Streak Circles */}
-                    <WeeklyStreakCircles streak={stats.streak} />
+                    <WeeklyStreakCircles progress={effectiveDashboardData.progress || []} />
                   </CardContent>
                 </Card>
 
