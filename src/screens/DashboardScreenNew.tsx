@@ -584,24 +584,6 @@ useEffect(() => {
                 </Card>
 
 
-                {/* ADDED: Show info when notifications are disabled */}
-                {!effectiveDashboardData?.settings?.mobileNotificationsEnabled && (
-                  <Card style={styles.disabledNotificationCard}>
-                    <CardContent style={styles.disabledNotificationContent}>
-                      <View style={styles.disabledNotificationIcon}>
-                        <Ionicons name="notifications-off" size={20} color={theme.colors.warning500} />
-                      </View>
-                      <View style={styles.disabledNotificationInfo}>
-                        <Text style={styles.disabledNotificationTitle}>
-                          Notifications are disabled
-                        </Text>
-                        <Text style={styles.disabledNotificationSubtitle}>
-                          Enable notifications in your Profile settings to start receiving lesson reminders
-                        </Text>
-                      </View>
-                    </CardContent>
-                  </Card>
-                )}
 
                 <Card style={styles.upcomingCard}>
                   <CardHeader style={styles.upcomingHeader}>
