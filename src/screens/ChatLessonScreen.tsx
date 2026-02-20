@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Animated,
   Alert,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,6 +29,7 @@ import type { V2Phrase, V2Session, V2SessionPhrase, V2AttemptRequest } from '../
 import { AuthContext } from '../contexts/AuthContext';
 import { loadChatHistory, saveChatHistory, StoredChatMessage } from '../services/chatHistoryService';
 import { purchaseService } from '../services/purchaseService';
+import RevenueCatUI from 'react-native-purchases-ui';
 import { useQueryClient } from '@tanstack/react-query';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'https://lingotoday.replit.app';
@@ -660,34 +662,30 @@ export default function ChatLessonScreen() {
   const queryClient = useQueryClient();
   const scrollViewRef = useRef<ScrollView>(null);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [showPaywallModal, setShowPaywallModal] = useState(false);
 
   const userTier = (user as any)?.priceTier || 'free';
   const hasProAccess = userTier === 'pro' || userTier === 'pro-monthly' || userTier === 'pro-yearly';
 
-  const handleUpgrade = async () => {
-    setIsPurchasing(true);
-    try {
-      await purchaseService.initialize(user?.id);
-      const packages = await purchaseService.getOfferings();
-      if (packages.length === 0) {
-        throw new Error('No subscription packages available');
-      }
-      const packageToPurchase = packages[0];
-      const result = await purchaseService.purchasePackage(packageToPurchase);
-      if (result.success) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
-          queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] })
-        ]);
-        Alert.alert('Success!', 'You now have access to all Pro Learner video lessons!', [{ text: 'OK' }]);
-      } else if (result.error !== 'Purchase cancelled') {
-        throw new Error(result.error || 'Purchase failed');
-      }
-    } catch (error: any) {
-      console.error('Purchase error:', error);
-      Alert.alert('Purchase Error', error.message || 'Something went wrong. Please try again.');
-    } finally {
-      setIsPurchasing(false);
+  const handleUpgrade = () => {
+    setShowPaywallModal(true);
+  };
+
+  const handlePaywallPurchaseCompleted = async ({ customerInfo }: { customerInfo: any }) => {
+    setShowPaywallModal(false);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] }),
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] })
+    ]);
+    Alert.alert('Success!', 'You now have access to all Pro Learner video lessons!', [{ text: 'OK' }]);
+  };
+
+  const handlePaywallRestoreCompleted = ({ customerInfo }: { customerInfo: any }) => {
+    if (customerInfo?.activeSubscriptions?.length > 0) {
+      setShowPaywallModal(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
+      Alert.alert('Restored!', 'Your purchases have been restored successfully.');
     }
   };
   
@@ -1648,6 +1646,36 @@ export default function ChatLessonScreen() {
           </View>
         )}
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={showPaywallModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowPaywallModal(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <TouchableOpacity
+              style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, padding: 8 }}
+              onPress={() => setShowPaywallModal(false)}
+            >
+              <Ionicons name="close" size={28} color={theme.colors.foreground} />
+            </TouchableOpacity>
+            <RevenueCatUI.Paywall
+              onPurchaseCompleted={handlePaywallPurchaseCompleted}
+              onRestoreCompleted={handlePaywallRestoreCompleted}
+              onDismiss={() => setShowPaywallModal(false)}
+              onPurchaseError={({ error }) => {
+                console.error('Paywall purchase error:', error);
+              }}
+              onRestoreError={({ error }) => {
+                console.error('Paywall restore error:', error);
+                Alert.alert('Restore Failed', 'Unable to restore purchases. Please try again.');
+              }}
+            />
+          </SafeAreaView>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
