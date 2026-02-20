@@ -434,7 +434,7 @@ useEffect(() => {
   // Use effective data (API or fallback)
   const effectiveDashboardData = dashboardData || getFallbackData();
   const effectiveCourseStats = courseStats || { totalCourses: 5, totalLessons: 78 };
-  const v2Tracks = v2TracksResponse?.lessons || fallbackV2Tracks;
+  const v2Tracks = (v2TracksResponse?.lessons && v2TracksResponse.lessons.length > 0) ? v2TracksResponse.lessons : fallbackV2Tracks;
 
   // REMOVED: Local notification scheduling (now handled by backend push notifications)
   // Backend reads user preferences and sends push notifications via Expo Push Service
@@ -590,76 +590,85 @@ useEffect(() => {
                     <Text style={styles.upcomingTitle}>Your learning journey</Text>
                   </CardHeader>
                   <CardContent style={styles.upcomingContent}>
-                    {v2Tracks.length > 0 ? (
-                      <View style={styles.upcomingList}>
-                        {v2Tracks.map((trackItem, index) => {
-                          const isFirst = index === 0;
-                          
-                          return (
-                            <TouchableOpacity
-                              key={trackItem.id}
-                              style={[
-                                isFirst ? styles.nextLessonCard : styles.trackItem,
-                                isFirst && { backgroundColor: theme.colors.primary },
-                              ]}
-                              onPress={() => navigation.navigate('Lesson', {
-                                language: trackItem.language,
-                                track: trackItem.track,
-                                level: trackItem.level,
-                              })}
-                            >
-                              {isFirst ? (
-                                <>
-                                  <View style={styles.nextLessonInfo}>
-                                    <View style={styles.nextLessonHeader}>
-                                      <Text style={styles.nextLessonTitle}>{trackItem.title}</Text>
+                    {(() => {
+                      const tracksWithContent = v2Tracks.filter(t => t.progress.total > 0);
+                      const allCompleted = tracksWithContent.length > 0 && tracksWithContent.every(t => t.progress.mastered >= t.progress.total);
+
+                      if (allCompleted) {
+                        return (
+                          <View style={styles.noLessonsContainer}>
+                            <Ionicons name="checkmark-circle" size={48} color={theme.colors.success500} />
+                            <Text style={styles.noLessonsTitle}>All tracks completed!</Text>
+                            <Text style={styles.noLessonsSubtitle}>Check back later for new content.</Text>
+                          </View>
+                        );
+                      }
+
+                      return (
+                        <View style={styles.upcomingList}>
+                          {v2Tracks.map((trackItem, index) => {
+                            const isFirst = index === 0;
+
+                            return (
+                              <TouchableOpacity
+                                key={trackItem.id}
+                                style={[
+                                  isFirst ? styles.nextLessonCard : styles.trackItem,
+                                  isFirst && { backgroundColor: theme.colors.primary },
+                                ]}
+                                onPress={() => navigation.navigate('Lesson', {
+                                  language: trackItem.language,
+                                  track: trackItem.track,
+                                  level: trackItem.level,
+                                })}
+                              >
+                                {isFirst ? (
+                                  <>
+                                    <View style={styles.nextLessonInfo}>
+                                      <View style={styles.nextLessonHeader}>
+                                        <Text style={styles.nextLessonTitle}>{trackItem.title}</Text>
+                                      </View>
+                                      {trackItem.phraseCount > 0 && (
+                                        <View style={styles.trackProgressRow}>
+                                          <View style={styles.trackProgressBarBg}>
+                                            <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%`, backgroundColor: theme.colors.primaryForeground }]} />
+                                          </View>
+                                          <Text style={[styles.trackProgressText, { color: theme.colors.primaryForeground }]}>
+                                            {trackItem.progress.mastered}/{trackItem.progress.total} phrases
+                                          </Text>
+                                        </View>
+                                      )}
                                     </View>
-                                    {trackItem.phraseCount > 0 && (
-                                      <View style={styles.trackProgressRow}>
-                                        <View style={styles.trackProgressBarBg}>
-                                          <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%`, backgroundColor: theme.colors.primaryForeground }]} />
+                                    <View style={styles.nextLessonButton}>
+                                      <Text style={styles.nextLessonButtonText}>
+                                        {trackItem.status === 'new' ? 'Start' : trackItem.status === 'in_progress' ? 'Continue' : 'Review'}
+                                      </Text>
+                                    </View>
+                                  </>
+                                ) : (
+                                  <>
+                                    <View style={styles.trackItemContent}>
+                                      <Text style={styles.upcomingItemTitle}>{trackItem.title}</Text>
+                                      {trackItem.phraseCount > 0 && (
+                                        <View style={styles.trackProgressRow}>
+                                          <View style={styles.trackProgressBarBg}>
+                                            <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%` }]} />
+                                          </View>
+                                          <Text style={styles.trackProgressText}>
+                                            {trackItem.progress.mastered}/{trackItem.progress.total}
+                                          </Text>
                                         </View>
-                                        <Text style={[styles.trackProgressText, { color: theme.colors.primaryForeground }]}>
-                                          {trackItem.progress.mastered}/{trackItem.progress.total} phrases
-                                        </Text>
-                                      </View>
-                                    )}
-                                  </View>
-                                  <View style={styles.nextLessonButton}>
-                                    <Text style={styles.nextLessonButtonText}>
-                                      {trackItem.status === 'new' ? 'Start' : trackItem.status === 'in_progress' ? 'Continue' : 'Review'}
-                                    </Text>
-                                  </View>
-                                </>
-                              ) : (
-                                <>
-                                  <View style={styles.trackItemContent}>
-                                    <Text style={styles.upcomingItemTitle}>{trackItem.title}</Text>
-                                    {trackItem.phraseCount > 0 && (
-                                      <View style={styles.trackProgressRow}>
-                                        <View style={styles.trackProgressBarBg}>
-                                          <View style={[styles.trackProgressBarFill, { width: `${trackItem.progress.percent}%` }]} />
-                                        </View>
-                                        <Text style={styles.trackProgressText}>
-                                          {trackItem.progress.mastered}/{trackItem.progress.total}
-                                        </Text>
-                                      </View>
-                                    )}
-                                  </View>
-                                  <Ionicons name="chevron-forward" size={20} color={theme.colors.mutedForeground} />
-                                </>
-                              )}
-                            </TouchableOpacity>
-                          );
-                        })}
-                      </View>
-                    ) : (
-                      <View style={styles.noLessonsContainer}>
-                        <Ionicons name="checkmark-circle" size={48} color={theme.colors.success500} />
-                        <Text style={styles.noLessonsTitle}>All tracks completed!</Text>
-                        <Text style={styles.noLessonsSubtitle}>Check back later for new content.</Text>
-                      </View>
-                    )}
+                                      )}
+                                    </View>
+                                    <Ionicons name="chevron-forward" size={20} color={theme.colors.mutedForeground} />
+                                  </>
+                                )}
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+                      );
+                    })()}
                   </CardContent>
                 </Card>
 
